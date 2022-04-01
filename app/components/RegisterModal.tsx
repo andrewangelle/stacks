@@ -23,7 +23,8 @@ export function RegisterModal(){
   const [lastName, setLastName] = useState('');
   const [, setSignedIn] = useRecoilState(signedInState);
   const [, setToken] = useRecoilState(tokenState);
-  const navigate = useNavigate();  
+  const navigate = useNavigate(); 
+  const [isSubmitted, setSubmitted] = useState(false); 
   
   async function register(){
     const res = await fetch('/resources/register', {
@@ -43,7 +44,8 @@ export function RegisterModal(){
       setToken(result.session)
       navigate('/boards')
     }
-  }
+
+   }
 
   return (
     <RegisterModalRoot>
@@ -56,42 +58,49 @@ export function RegisterModal(){
           <RegisterModalContent>
             <RegisterModalClose>X</RegisterModalClose>
             <Center>
-              <FlexColumn>
-                <InputLabel htmlFor='email'>Email</InputLabel>
-                <input 
-                  name='email' 
-                  value={username}  
-                  onChange={event => setUsername(event.target.value)}
-                />
-              </FlexColumn>
+              {isSubmitted && (
+                <>Check your email for a confirmation link</> 
+              )}
+              {!isSubmitted && (
+                <>
+                  <FlexColumn>
+                    <InputLabel htmlFor='email'>Email</InputLabel>
+                    <input 
+                      name='email' 
+                      value={username}  
+                      onChange={event => setUsername(event.target.value)}
+                    />
+                  </FlexColumn>
 
-              <FlexColumn>
-                <InputLabel htmlFor='firstName'>First Name</InputLabel>
-                <input 
-                  name='firstName' 
-                  value={firstName}  
-                  onChange={event => setFirstName(event.target.value)}
-                />
-              </FlexColumn>
+                  <FlexColumn>
+                    <InputLabel htmlFor='firstName'>First Name</InputLabel>
+                    <input 
+                      name='firstName' 
+                      value={firstName}  
+                      onChange={event => setFirstName(event.target.value)}
+                    />
+                  </FlexColumn>
 
-              <FlexColumn>
-                <InputLabel htmlFor='lastName'>Last Name</InputLabel>
-                <input 
-                  name='lastName' 
-                  value={lastName}  
-                  onChange={event => setLastName(event.target.value)}
-                />
-              </FlexColumn>
+                  <FlexColumn>
+                    <InputLabel htmlFor='lastName'>Last Name</InputLabel>
+                    <input 
+                      name='lastName' 
+                      value={lastName}  
+                      onChange={event => setLastName(event.target.value)}
+                    />
+                  </FlexColumn>
 
-              <FlexColumn>
-                <InputLabel htmlFor='password'>Password</InputLabel>
-                <input 
-                  name='password'
-                  value={password}  
-                  onChange={event => setPassword(event.target.value)}
-                />
-              </FlexColumn>
-              <Button onClick={register} style={{padding: '8px 10px'}}>Register</Button>
+                  <FlexColumn>
+                    <InputLabel htmlFor='password'>Password</InputLabel>
+                    <input 
+                      name='password'
+                      value={password}  
+                      onChange={event => setPassword(event.target.value)}
+                    />
+                  </FlexColumn>
+                  <Button onClick={() => register().then(() =>    setSubmitted(true))} style={{padding: '8px 10px'}}>Register</Button>
+                </>
+              )}
             </Center>
 
           </RegisterModalContent>

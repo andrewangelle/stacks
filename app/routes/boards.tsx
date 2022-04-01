@@ -21,7 +21,7 @@ export default function BoardsPage() {
   console.log(token)
 
   useEffect(() => {
-    if(!isSignedIn || !(token!.access_token)){
+    if(!isSignedIn || !(token?.access_token)){
       setSignedIn(false)
       navigate('/')
     }
