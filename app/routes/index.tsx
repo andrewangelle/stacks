@@ -3,7 +3,6 @@ import { useNavigate, useLocation } from 'remix';
 import { useRecoilState } from 'recoil';
 
 import { signedInState, tokenState, TokenType } from '~/store';
-import { SignIn } from '~/components';
   
 export default function Index() {
   const [isSignedIn, setSignedIn] = useRecoilState(signedInState);
@@ -32,10 +31,12 @@ export default function Index() {
     if(isSignedIn) {
       navigate('/boards')
     }
+
+    if(!isSignedIn){
+      navigate('/signin')
+    }
   }, [token, setSignedIn, setToken, isSignedIn, navigate])
 
-  return (
-    <SignIn />
-  )
+  return null
 
 }

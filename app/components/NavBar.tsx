@@ -33,23 +33,28 @@ export function NavBar(){
   const [, setToken] = useRecoilState(tokenState);
   const location = useLocation();
   
-  const background = location.pathname === '/boards' ? blue : 'rgba(0,0,0,0.1)';
+  const background = location.pathname === '/boards' || location.pathname === '/signin' ? blue : 'rgba(0,0,0,0.1)';
 
   return (
     <NavBarContainer background={background}>
       <div>
-        <RiTrelloFill size={18} style={{color: 'white', verticalAlign: '-webkit-baseline-middle'}}></RiTrelloFill>
+        <RiTrelloFill 
+          size={18} 
+          style={{color: 'white', verticalAlign: '-webkit-baseline-middle'}}
+        />
         <span style={{verticalAlign: 'bottom'}}>stacks - a trello clone</span>
       </div>
       
-      <LogOutText 
-        onClick={() => {
-          setSignedIn(false);
-          setToken(null)
-        }}
-      >
-        Log out
-      </LogOutText>
+      {location.pathname !== '/signin' && (
+        <LogOutText 
+          onClick={() => {
+            setSignedIn(false);
+            setToken(null)
+          }}
+        >
+          Log out
+        </LogOutText>
+      )}
     </NavBarContainer>
   )
 }

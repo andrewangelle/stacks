@@ -23,6 +23,7 @@ export const RegisterModalOverlay = styled(Dialog.Overlay).attrs({'data-testid':
   display: grid;
   place-items: center;
   overflow-y: auto;
+  z-index: 2;
 `;
 
 export const RegisterModalContent = styled(Dialog.Content).attrs({'data-testid': 'RegisterModalContent'})` 
