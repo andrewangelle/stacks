@@ -8,8 +8,6 @@ export const action = async ({ request }: {request: Request}) => {
     password: password,
   });
 
-  console.log(error)
-
   if(error){
     return new Response(JSON.stringify({message: error.message}), {
       status: 401,

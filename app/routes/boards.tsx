@@ -11,14 +11,12 @@ export default function BoardsPage() {
   const [isSignedIn, setSignedIn] = useRecoilState(signedInState);
   const [token] = useRecoilState(tokenState)
   const navigate = useNavigate();
-  const userId = token?.user.id;
+  const userId = token?.user?.id;
 
   const { data: boards = [] } = useGetBoardsQuery(
     userId,
     {skip: !userId}
   );
-
-  console.log(token)
 
   useEffect(() => {
     if(!isSignedIn || !(token?.access_token)){

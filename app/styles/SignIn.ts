@@ -4,6 +4,7 @@ import { blue, Button, fontFamily } from '.';
 export const SignInButton = styled(Button)` 
   margin: 12px;
   padding: 8px 10px;
+  border: 1px solid ${blue};
 `
 
 export const RegisterButton = styled(Button)` 

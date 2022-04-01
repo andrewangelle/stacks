@@ -216,10 +216,10 @@ export const resourcesApi = createApi({
             resourcesApi.util.updateQueryData(
               'getCards', 
               { listId: arg.listId }, 
-              cache => ({
+              cache => ([
                 ...cache,
-                [data.data[0].id]: data.data[0]
-              }))
+                 data.data[0]
+              ]))
           )
         } catch {
 

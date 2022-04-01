@@ -33,6 +33,8 @@ export const Button = styled.button<{isDisabled?: boolean; secondary?: boolean}>
   text-align: center;
   justify-content: center;
   cursor: pointer;
+  white-space: nowrap;
+
 
   ${props => {
     if(props.secondary){
