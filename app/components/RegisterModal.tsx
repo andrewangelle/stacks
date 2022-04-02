@@ -93,6 +93,7 @@ export function RegisterModal(){
                   <FlexColumn>
                     <InputLabel htmlFor='password'>Password</InputLabel>
                     <input 
+                      type='password'
                       name='password'
                       value={password}  
                       onChange={event => setPassword(event.target.value)}

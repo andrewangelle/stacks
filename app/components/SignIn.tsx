@@ -61,7 +61,8 @@ export function SignIn() {
           </FlexColumn>
           <FlexColumn>
             <InputLabel htmlFor='username'>Password</InputLabel>
-            <input 
+            <input
+              type='password' 
               name='password' 
               value={password}  
               onChange={event => setPassword(event.target.value)}
