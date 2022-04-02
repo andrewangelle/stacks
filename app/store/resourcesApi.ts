@@ -278,6 +278,45 @@ export const resourcesApi = createApi({
       }
     }),
 
+    deleteCard: builder.mutation<void, {
+      id: string,
+      listId: string,
+      token: string,
+      userId: string
+    }>({
+      query: ({ 
+        id, 
+        listId,
+        token, 
+        userId 
+      }) => ({
+        url: `cards/${id}`,
+        method: 'delete',
+        body: {
+          id,
+          token,
+          userId
+        }
+      }),
+
+      async onQueryStarted(arg, {dispatch, queryFulfilled}){
+        try {
+          await queryFulfilled
+
+          dispatch(
+            resourcesApi.util.updateQueryData(
+              'getCards', 
+              { listId: arg.listId }, 
+              cache => cache.filter(item => item.id !== arg.id)
+            )
+          )
+        } catch {
+
+        }
+      }
+    }),
+
+
     getChecklists: builder.query<ChecklistType[], {cardId: string;}>({
       query: ({cardId}) => ({
         url: `checklists/get`,
@@ -485,6 +524,7 @@ export const {
   useGetCardsQuery,
   useCreateCardMutation,
   useUpdateCardMutation,
+  useDeleteCardMutation,
   useGetChecklistsQuery,
   useCreateChecklistMutation,
   useDeleteChecklistMutation,

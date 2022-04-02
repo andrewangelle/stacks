@@ -47,6 +47,13 @@ export const DeleteChecklistPopoverTrigger = styled(Popover.Trigger)`
   cursor: pointer;
 `;
 
+export const DeleteCardPopoverTrigger = styled(Popover.Trigger)` 
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  width: 100%;
+`;
+
 export const ChecklistPopoverContent = styled(Popover.Content)` 
   height: 227px;
   width: 304px;

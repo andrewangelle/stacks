@@ -5,7 +5,8 @@ import { BsCardHeading } from 'react-icons/bs';
 import { 
   CardModalChecklists, 
   CardModalDescription, 
-  CreateChecklist, 
+  CreateChecklist,
+  DeleteCardPopover 
 } from '~/components';
 import { 
   Button, 
@@ -127,7 +128,6 @@ export const EditDescriptionButton = styled(Button)`
   margin: -4px 0px 0px 0px;
 `;
 
-
 export function CardModal(
   props: ListCardType & {
     listId: string;
@@ -170,6 +170,12 @@ export function CardModal(
                 </CardModalSiderTitle>
 
                 <CreateChecklist cardId={props.id} />
+
+                <CardModalSiderTitle>
+                  Actions
+                </CardModalSiderTitle>
+
+                <DeleteCardPopover {...props} />                
               </CardModalSiderContainer>
 
             </Padding>
