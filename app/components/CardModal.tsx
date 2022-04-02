@@ -18,7 +18,8 @@ import {
   Flex, 
   fontFamily, 
   ListCardContainer, 
-  Padding 
+  Padding, 
+  red
 } from '~/styles';
 
 import { ListCardType, tokenState, useUpdateCardMutation } from '~/store';
@@ -134,11 +135,15 @@ export const EditDescriptionButton = styled(Button)`
 const EditCardTitleInput = styled(AddCardInput)` 
   width: 60%;
   margin: 0px 8px;
-`
+`;
+
 const EditCardTitleSaveButton = styled(Button)` 
-  position: absolute;
-  right: 0;
-  top: 4px;
+  margin: 0 4px 0 0;
+`;
+
+const EditCardTitleCancelButton = styled(EditCardTitleSaveButton)` 
+  border-color: ${red};
+  color: ${red};
 `
 export function CardModal(
   props: ListCardType & {
@@ -150,6 +155,7 @@ export function CardModal(
   const [isEditingTitle, setEditingTitle] = useState(false);
   const [editedTitle, setEditedTitle] = useState(props.cardTitle);
   const [updateCard] = useUpdateCardMutation();
+  
   function onSave(){
     updateCard({
       cardDescription: props.cardDescription,
@@ -191,11 +197,21 @@ export function CardModal(
 
                 {isEditingTitle && (
                   <div style={{position: 'relative'}}>
-                    <EditCardTitleInput
-                      value={editedTitle}
-                      onChange={event => setEditedTitle(prevState => event.target.value)}
-                    />
-                    <EditCardTitleSaveButton onClick={onSave}>Save</EditCardTitleSaveButton>
+                    <Flex>
+                      <EditCardTitleInput
+                        value={editedTitle}
+                        onChange={event => setEditedTitle(prevState => event.target.value)}
+                      />
+                      <EditCardTitleSaveButton onClick={onSave}>
+                        Save
+                      </EditCardTitleSaveButton>
+                      <EditCardTitleCancelButton 
+                        secondary 
+                        onClick={() => setEditingTitle(false)}
+                      >
+                        Cancel
+                      </EditCardTitleCancelButton>
+                    </Flex>
                   </div>
                   
                 )}
