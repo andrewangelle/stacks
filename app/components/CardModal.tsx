@@ -1,6 +1,8 @@
+import { useState } from 'react';
 import * as Dialog from '@radix-ui/react-dialog';
 import styled from 'styled-components';
 import { BsCardHeading } from 'react-icons/bs';
+import { useRecoilState } from 'recoil';
 
 import { 
   CardModalChecklists, 
@@ -9,6 +11,7 @@ import {
   DeleteCardPopover 
 } from '~/components';
 import { 
+  AddCardInput,
   Button, 
   CardModalSiderContainer, 
   CardModalSiderTitle, 
@@ -18,7 +21,7 @@ import {
   Padding 
 } from '~/styles';
 
-import { ListCardType } from '~/store';
+import { ListCardType, tokenState, useUpdateCardMutation } from '~/store';
 
 const Overlay = styled(Dialog.Overlay)` 
   background: rgba(0 0 0 / 0.5);
@@ -128,12 +131,37 @@ export const EditDescriptionButton = styled(Button)`
   margin: -4px 0px 0px 0px;
 `;
 
+const EditCardTitleInput = styled(AddCardInput)` 
+  width: 60%;
+  margin: 0px 8px;
+`
+const EditCardTitleSaveButton = styled(Button)` 
+  position: absolute;
+  right: 0;
+  top: 4px;
+`
 export function CardModal(
   props: ListCardType & {
     listId: string;
     listName: string;
   }
   ){
+  const [token] = useRecoilState(tokenState);
+  const [isEditingTitle, setEditingTitle] = useState(false);
+  const [editedTitle, setEditedTitle] = useState(props.cardTitle);
+  const [updateCard] = useUpdateCardMutation();
+  function onSave(){
+    updateCard({
+      cardDescription: props.cardDescription,
+      cardTitle: editedTitle,
+      cardId: props.id,
+      listId: props.listId,
+      token: token?.access_token!,
+      userId: token?.user.id!
+    })
+    setEditingTitle(false)
+
+  }
   return (
     <Dialog.Root>
       <ModalTrigger>
@@ -148,9 +176,29 @@ export function CardModal(
             <ModalClose>X</ModalClose>
 
             <Padding padding='15px'>
-              <Flex>
+              <Flex >
                 <BsCardHeading size={24} />
-                <ModalTitle>{props.cardTitle}</ModalTitle>
+
+                {!isEditingTitle && (
+                  <ModalTitle 
+                    onClick={() => {
+                      setEditingTitle(true)
+                    }}
+                  >
+                    {props.cardTitle}
+                  </ModalTitle>
+                )}
+
+                {isEditingTitle && (
+                  <div style={{position: 'relative'}}>
+                    <EditCardTitleInput
+                      value={editedTitle}
+                      onChange={event => setEditedTitle(prevState => event.target.value)}
+                    />
+                    <EditCardTitleSaveButton onClick={onSave}>Save</EditCardTitleSaveButton>
+                  </div>
+                  
+                )}
               </Flex>
 
               <ListName>{`in list ${props.listName}`}</ListName>
