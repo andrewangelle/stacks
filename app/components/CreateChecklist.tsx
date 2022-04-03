@@ -18,7 +18,7 @@ import {
 
 import { useCreateChecklistMutation, tokenState } from '~/store';
 
-export function CreateChecklist({ cardId }: { cardId: string }){
+export function CreateChecklist({ listId, cardId }: { listId: string; cardId: string }){
   const [token] = useRecoilState(tokenState)
   const [checklistTitle, setChecklistTitle] = useState('');
   const [createChecklist] = useCreateChecklistMutation();
@@ -55,6 +55,7 @@ export function CreateChecklist({ cardId }: { cardId: string }){
             createChecklist({
               checklistTitle,
               cardId,
+              listId,
               token: token?.access_token!,
               userId: token?.user.id!
             })

@@ -15,3 +15,4 @@ export * from './DragDropChecklistItems'
 export * from './RegisterModal';
 export * from './NavBar';
 export * from './DeleteCardPopover';
+export * from './DeleteListPopover';

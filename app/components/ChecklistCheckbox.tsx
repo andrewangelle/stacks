@@ -16,9 +16,9 @@ import {
   DeleteChecklistPopoverButton,
   DeleteChecklistPopoverContent,
   DeleteChecklistPopoverTrigger,
-  PopoverClose
+  PopoverClose,
+  CloseDescriptionButton
 } from "~/styles";
-import { CloseDescriptionButton, useOutsideClick } from "~/components";
 
 import { 
   ChecklistItemType, 
@@ -26,6 +26,7 @@ import {
   useDeleteChecklistItemMutation, 
   useUpdateChecklistItemMutation 
 } from "~/store";
+import { useOutsideClick } from "~/components";
 
 export function ChecklistCheckbox(props: ChecklistItemType){
   const [token] = useRecoilState(tokenState);

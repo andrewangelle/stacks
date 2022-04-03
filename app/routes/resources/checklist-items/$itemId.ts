@@ -26,7 +26,7 @@ export const action: ActionFunction = async ({
           label: userData.label,
           isCompleted: userData.isCompleted,
         }])
-        .match({ id: params.checklistId })
+        .match({ id: params.itemId })
 
       console.log({ data, error })
       return data
@@ -36,7 +36,7 @@ export const action: ActionFunction = async ({
       const { data, ...rest } = await client(userData.token)
         .from('checklist-items')
         .delete()
-        .match({ id: params.checklistId })
+        .match({ id: params.itemId })
        
       console.log({
         data,

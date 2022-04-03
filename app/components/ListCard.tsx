@@ -2,6 +2,7 @@ import { useEffect, useState, useRef, useCallback, MouseEvent } from 'react';
 import { useRecoilState } from 'recoil';
 import { useParams } from 'remix';
 
+import { CardModal, DragDropCard, DeleteListPopover } from '~/components';
 import { 
   ListContainer, 
   ListName, 
@@ -11,7 +12,6 @@ import {
   Flex, 
   AddCardButton, 
 } from "~/styles";
-import { CardModal, DragDropCard } from '~/components';
 
 import { 
   List, 
@@ -98,7 +98,6 @@ export function ListCard({ id, listTitle }: List){
 
   return (
     <ListContainer key={id}>
-
       <div ref={outsideClickRef}>
         {!isEditingName && (
           <ListName onClick={() => setIsEditingName(true)}>
@@ -113,6 +112,8 @@ export function ListCard({ id, listTitle }: List){
           />
         )}
       </div>
+
+      {!isEditingName && <DeleteListPopover id={id} listTitle={listTitle} />}
 
       {isEditing && (
         <AddCardInput 

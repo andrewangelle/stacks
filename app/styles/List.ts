@@ -1,5 +1,6 @@
+import { TiDelete } from 'react-icons/ti';
 import styled from 'styled-components';
-import { Button, fontFamily } from '.';
+import { Button, fontFamily } from '~/styles';
 
 export const ListGridContainer = styled.div` 
   display: grid;
@@ -69,4 +70,12 @@ export const ListCardContainer = styled.div`
   padding: 8px;
   margin: 4px auto;
   box-shadow: 0 1px 0 #091e4240;
+`;
+
+export const DeleteListEllipses = styled(TiDelete)` 
+  position: absolute;
+  top: 0;
+  right: 0;
+  padding: 15px 10px 12px;
+  cursor: pointer;
 `

@@ -30,6 +30,7 @@ export type ChecklistType = {
   checklistTitle: string;
   cardId: string;
   userId: string;
+  listId: string;
 }
 
 export type ChecklistItemType = {
@@ -176,6 +177,38 @@ export const resourcesApi = createApi({
                 ...cache,
                 data.data[0]
               ]))
+          )
+        } catch {
+
+        }
+      }
+    }),
+
+    deleteList: builder.mutation<{data: List[]}, {
+      id: string;
+      userId: string;
+      boardId: string;
+      token: string;
+    }>({
+      query: ({ token, id , boardId, userId }) => ({
+        url: `lists/${id}`,
+        method: 'delete',
+        body: {
+          id,
+          boardId,
+          token,
+          userId,
+        }
+      }),
+      async onQueryStarted(args, {dispatch, queryFulfilled}){
+        try {
+          await queryFulfilled
+          dispatch(
+            resourcesApi.util.updateQueryData(
+              'getLists', 
+              { boardId: args.boardId }, 
+              cache =>  cache.filter(item => item.id !== args.id)
+            )
           )
         } catch {
 
@@ -330,15 +363,17 @@ export const resourcesApi = createApi({
     createChecklist: builder.mutation<{data: ChecklistType[]}, {
       checklistTitle: string;
       cardId: string;
+      listId: string;
       token: string;
       userId: string;
     }>({
-      query: ({ checklistTitle, cardId, token, userId }) => ({
+      query: ({ listId, checklistTitle, cardId, token, userId }) => ({
         url: 'checklists/create',
         method: 'post',
         body: {
           checklistTitle, 
           cardId,
+          listId,
           token,
           userId
         }
@@ -406,16 +441,18 @@ export const resourcesApi = createApi({
       label: string;
       cardId: string;
       checklistId: string;
+      listId: string;
       token: string;
       userId: string;
     }>({
-      query: ({ label, cardId, checklistId, token, userId }) => ({
+      query: ({ label, cardId, checklistId, listId, token, userId }) => ({
         url: 'checklist-items/create',
         method: 'post',
         body: {
           label, 
           cardId,
           checklistId,
+          listId,
           token,
           userId
         }
@@ -518,16 +555,21 @@ export const {
   useGetBoardsQuery,
   useGetBoardQuery,
   useCreateBoardMutation,
+
   useGetListsQuery,
   useCreateListMutation,
   useUpdateListMutation,
+  useDeleteListMutation,
+
   useGetCardsQuery,
   useCreateCardMutation,
   useUpdateCardMutation,
   useDeleteCardMutation,
+
   useGetChecklistsQuery,
   useCreateChecklistMutation,
   useDeleteChecklistMutation,
+  
   useGetChecklistItemsQuery,
   useCreateChecklistItemMutation,
   useUpdateChecklistItemMutation,

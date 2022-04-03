@@ -16,7 +16,8 @@ export const action = async ({ request }: {request: Request}) => {
         .insert([{
           checklistTitle: userData.checklistTitle,
           cardId: userData.cardId,
-          userId: userData.userId
+          userId: userData.userId,
+          listId: userData.listId
         }])
        
       console.log({

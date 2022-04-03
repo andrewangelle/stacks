@@ -3,9 +3,7 @@ import {  useState } from "react";
 import { useRecoilState } from "recoil";
 
 import { 
-  CloseDescriptionButton, 
   DeleteChecklistPopover, 
-  ModalTitle, 
   ChecklistCheckbox 
 } from '~/components';
 import {
@@ -17,6 +15,8 @@ import {
   AddChecklistItemInput,
   AddChecklistItemButton,
   AddChecklistButton,
+  CardModalTitle,
+  CloseDescriptionButton,
 } from "~/styles";
 
 import { 
@@ -38,7 +38,8 @@ function Checklist(
   const [isEditing, setIsEditing] = useState(false);
   const [label, setLabel] = useState('');
   const [createChecklistItem] = useCreateChecklistItemMutation();
-  
+ 
+  console.log(props.listId)
   const completedItems = data?.filter(item => item.isCompleted);
   const progressValue = (completedItems?.length || 0) / (data?.length || 0)
   const progressPercent = Math.round((isNaN(progressValue) ? 0 : progressValue) * 100);
@@ -48,7 +49,7 @@ function Checklist(
       <ChecklistHeader key={props.id}>
         <Flex>
           <BsCheck2Square style={{marginRight: '4px'}} />
-          <ModalTitle>{props.checklistTitle}</ModalTitle>
+          <CardModalTitle>{props.checklistTitle}</CardModalTitle>
         </Flex>
         <DeleteChecklistPopover {...props} />
       </ChecklistHeader>
@@ -94,6 +95,7 @@ function Checklist(
                   label,
                   cardId: props.cardId,
                   checklistId: props.id,
+                  listId: props.listId,
                   token: token?.access_token!,
                   userId: token?.user.id!
 

@@ -17,6 +17,7 @@ export const action = async ({ request }: {request: Request}) => {
           label: userData.label,
           cardId: userData.cardId,
           checklistId: userData.checklistId,
+          listId: userData.listId,
           userId: userData.userId,
           isCompleted: false
         }])

@@ -3,11 +3,17 @@ import { IoMdList } from "react-icons/io";
 import { useRecoilState } from "recoil";
 
 import { 
-  Flex, 
+  CardDescriptionText,
+  CardModalTitle,
+  CloseDescriptionButton,
+  DescriptionContainer,
+  DescriptionInput,
+  DescriptionPlaceholder,
+  EditDescriptionButton,
+  Flex, SaveDescriptionButton, 
 } from "~/styles";
 
 import { tokenState, useUpdateCardMutation } from "~/store";
-import { DescriptionContainer, ModalTitle, EditDescriptionButton, CardDescriptionText, DescriptionPlaceholder, DescriptionInput, SaveDescriptionButton, CloseDescriptionButton } from ".";
 
 export function CardModalDescription({
   listId,
@@ -30,7 +36,7 @@ export function CardModalDescription({
     <DescriptionContainer>
       <Flex>
         <IoMdList size={24} />
-        <ModalTitle>Description</ModalTitle>
+        <CardModalTitle>Description</CardModalTitle>
         {cardDescription && !isEditing && (
           <EditDescriptionButton secondary onClick={() => setEditing(true)}>
             Edit

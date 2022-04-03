@@ -15,9 +15,15 @@ export const action = async ({ request }: {request: Request}) => {
         .from('checklists')
         .delete()
         .match({ id: userData.id })
-       
+
+      const { data: itemData } = await client(userData.token)
+        .from('checklist-items')
+        .delete()
+        .match({ checklistId: userData.id });
+        
       console.log({
         data,
+        itemData,
         rest
       })
       const responseData = {code: 'checklists:delete:success', message: 'success', data};
