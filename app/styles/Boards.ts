@@ -1,5 +1,6 @@
 import styled from 'styled-components';
 import * as Popover from '@radix-ui/react-popover';
+import { TiDelete } from 'react-icons/ti';
 
 export const green = 'rgb(81, 152, 57)';
 export const lightGreen = 'rgb(75, 191, 107)';
@@ -15,7 +16,8 @@ export const BoardsContainer = styled.div`
   justify-content: flex-start;
 `;
 
-export const BoardCard = styled.div<{background?: string;}>` 
+export const BoardCardContainer = styled.div<{background?: string;}>` 
+  position: relative;
   font-family: ${fontFamily};
   text-align: center;
   width: -webkit-fill-available;
@@ -29,7 +31,7 @@ export const BoardCard = styled.div<{background?: string;}>`
   margin: 10px;
 `
 
-export const CreateBoardCard = styled(BoardCard)` 
+export const CreateBoardCard = styled(BoardCardContainer)` 
   background: rgba(9, 30, 66, 0.04);
   width: 100%;
 
@@ -141,3 +143,9 @@ export const CreateBoardButton = styled.button<{isDisabled: boolean}>`
 `;
 
 
+export const DeleteBoardIcon = styled(TiDelete)` 
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  padding: 15px 10px;
+`

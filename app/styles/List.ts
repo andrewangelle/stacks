@@ -72,7 +72,7 @@ export const ListCardContainer = styled.div`
   box-shadow: 0 1px 0 #091e4240;
 `;
 
-export const DeleteListEllipses = styled(TiDelete)` 
+export const DeleteListIcon = styled(TiDelete)` 
   position: absolute;
   top: 0;
   right: 0;

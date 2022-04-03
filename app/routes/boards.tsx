@@ -3,7 +3,7 @@ import { useEffect } from 'react';
 import { useNavigate } from 'remix';
 
 import { CreateBoard, NavBar } from '~/components';
-import { BoardCard, BoardsContainer, Padding } from '~/styles';
+import { BoardCardContainer, BoardsContainer, Padding } from '~/styles';
 
 import { signedInState, tokenState, useGetBoardsQuery } from '~/store';
 
@@ -35,13 +35,13 @@ export default function BoardsPage() {
       <Padding padding="50px 30px 30px" >
         <BoardsContainer>
           {boards.map(board => (
-            <BoardCard
+            <BoardCardContainer
               key={board.id} 
               background={board.boardColor}
               onClick={() => navigate(`/board/${board.id}`)}
             >
               {board.boardTitle}
-            </BoardCard>
+            </BoardCardContainer>
           ))}
           <CreateBoard />
         </BoardsContainer>

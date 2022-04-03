@@ -8,7 +8,7 @@ import {
   DeleteChecklistPopoverButton, 
   PopoverClose,
   DeleteCardPopoverTrigger,
-  DeleteListEllipses
+  DeleteListIcon
 } from "~/styles";
 
 import { tokenState, useDeleteListMutation } from "~/store";
@@ -26,7 +26,7 @@ export function DeleteListPopover(
   return (
     <Popover.Root>
       <DeleteCardPopoverTrigger>
-        <DeleteListEllipses />
+        <DeleteListIcon />
       </DeleteCardPopoverTrigger>
 
       <DeleteChecklistPopoverContent>
