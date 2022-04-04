@@ -5,6 +5,7 @@ export type ChecklistItemType = {
   created_at: string;
   label: string;
   cardId: string;
+  listId: string;
   checklistId: string;
   isCompleted: boolean;
   userId: string;

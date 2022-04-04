@@ -28,6 +28,7 @@ import {
 } from '~/styles';
 
 import { ListCardType, tokenState, useUpdateCardMutation } from '~/store';
+import { CardModalActivity } from './CardModalActivity';
 
 
 export function CardModal(
@@ -113,6 +114,8 @@ export function CardModal(
 
               <CardModalChecklists cardId={props.id} />
 
+              <CardModalActivity listId={props.listId} cardId={props.id} />
+              
               <CardModalSiderContainer>
                 <CardModalSiderTitle>
                   Add to card

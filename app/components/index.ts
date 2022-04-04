@@ -16,3 +16,7 @@ export * from './RegisterModal';
 export * from './NavBar';
 export * from './DeleteCardPopover';
 export * from './DeleteListPopover';
+export * from './CardModalActivity';
+export * from './ActivityComment';
+export * from './ActivityLogo';
+export * from './DeleteCommentPopover';

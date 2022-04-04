@@ -39,7 +39,6 @@ function Checklist(
   const [label, setLabel] = useState('');
   const [createChecklistItem] = useCreateChecklistItemMutation();
  
-  console.log(props.listId)
   const completedItems = data?.filter(item => item.isCompleted);
   const progressValue = (completedItems?.length || 0) / (data?.length || 0)
   const progressPercent = Math.round((isNaN(progressValue) ? 0 : progressValue) * 100);

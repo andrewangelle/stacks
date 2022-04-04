@@ -5,3 +5,4 @@ export * from './Board';
 export * from './List';
 export * from './CardModal';
 export * from './Register';
+export * from './Activity';

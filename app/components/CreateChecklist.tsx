@@ -2,6 +2,7 @@ import { useState } from 'react';
 import * as Popover from '@radix-ui/react-popover';
 import { BsCheck2Square } from 'react-icons/bs';
 import { useRecoilState } from 'recoil';
+import { useParams } from 'remix';
 
 import { 
   CreateChecklistPopoverTrigger, 
@@ -16,12 +17,14 @@ import {
   CreateChecklistAddButton
 } from '~/styles';
 
-import { useCreateChecklistMutation, tokenState } from '~/store';
+import { useCreateChecklistMutation, tokenState, useCreateActivityMutation } from '~/store';
 
 export function CreateChecklist({ listId, cardId }: { listId: string; cardId: string }){
+  const params = useParams();
   const [token] = useRecoilState(tokenState)
   const [checklistTitle, setChecklistTitle] = useState('');
   const [createChecklist] = useCreateChecklistMutation();
+  const [createActivity] = useCreateActivityMutation();
   return (
     <Popover.Root>
       <CreateChecklistPopoverTrigger>
@@ -58,6 +61,15 @@ export function CreateChecklist({ listId, cardId }: { listId: string; cardId: st
               listId,
               token: token?.access_token!,
               userId: token?.user.id!
+            })
+            createActivity({
+              cardId,
+              listId,
+              boardId: params.id!,
+              token: token?.access_token!,
+              userId: token?.user.id!,
+              type: 'feed',
+              content: `added ${checklistTitle} to this card`
             })
           }}  
         >

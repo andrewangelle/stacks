@@ -2,6 +2,7 @@ import { useState, CSSProperties } from "react";
 import { AiOutlineCheck, AiOutlineEllipsis } from "react-icons/ai";
 import { useRecoilState } from "recoil";
 import * as Popover from '@radix-ui/react-popover';
+import { useParams } from "remix";
 
 import { 
   ChecklistCheckboxContainer, 
@@ -23,12 +24,14 @@ import {
 import { 
   ChecklistItemType, 
   tokenState, 
+  useCreateActivityMutation, 
   useDeleteChecklistItemMutation, 
   useUpdateChecklistItemMutation 
 } from "~/store";
 import { useOutsideClick } from "~/components";
 
 export function ChecklistCheckbox(props: ChecklistItemType){
+  const params = useParams();
   const [token] = useRecoilState(tokenState);
   const [updateItem] = useUpdateChecklistItemMutation();
   const [deleteChecklistItem] = useDeleteChecklistItemMutation();
@@ -36,6 +39,8 @@ export function ChecklistCheckbox(props: ChecklistItemType){
   const [isEditingLabel, setIsEditingLabel] = useState(false);
   const [isHovering, setHovering] = useState(false);
   const [isDeleteOpen, setDeleteOpen] = useState(false);
+  const [createActivity] = useCreateActivityMutation();
+
   const outsideClickRef = useOutsideClick(() => setDeleteOpen(false), isDeleteOpen);
 
   const checkIconStyles: CSSProperties = { 
@@ -58,15 +63,26 @@ export function ChecklistCheckbox(props: ChecklistItemType){
           borderColor: 'rgb(223 225, padding: 25 230)',
           verticalAlign: 'top'
         }}
-        onClick={() => updateItem({
-          id: props.id,
-          token: token?.access_token!,
-          userId: token?.user.id!,
-          cardId: props.cardId,
-          label: editedLabel,
-          checklistId: props.checklistId,
-          isCompleted: !props.isCompleted
-        })}
+        onClick={() => {
+          updateItem({
+            id: props.id,
+            token: token?.access_token!,
+            userId: token?.user.id!,
+            cardId: props.cardId,
+            label: editedLabel,
+            checklistId: props.checklistId,
+            isCompleted: !props.isCompleted
+          })
+          createActivity({
+            token: token?.access_token!,
+            userId: token?.user.id!,
+            cardId: props.cardId,
+            listId: props.listId,
+            boardId: params.id!,
+            type: 'feed',
+            content: `marked ${editedLabel} ${props.isCompleted ? 'incomplete' : 'complete'} on this card`
+          })
+        }}
       >
         <CheckboxIndicator>
           <AiOutlineCheck style={checkIconStyles} />

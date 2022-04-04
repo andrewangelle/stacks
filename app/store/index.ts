@@ -4,3 +4,7 @@ export * from './resourcesApi';
 export * from './boardsApi';
 export * from './listsApi';
 export * from './checklistsApi';
+export * from './checklistItemsApi';
+export * from './cardsApi';
+export * from './activityApi';
+export * from './profileApi';
