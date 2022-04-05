@@ -3,7 +3,7 @@ import { useRecoilState } from 'recoil';
 import { useNavigate } from 'remix';
 
 import {RegisterModal} from '~/components'
-import { Center, Padding, FlexColumn, Flex, SignInButton, InputLabel } from '~/styles';
+import { Center, Padding, FlexColumn, Flex, SignInButton, InputLabel, ErrorMessageContainer, CloseError } from '~/styles';
 
 import { signedInState, tokenState } from '~/store';
 import { NavBar } from './NavBar';
@@ -13,23 +13,29 @@ export function SignIn() {
   const [password, setPassword] = useState('');
   const [isSignedIn, setSignedIn] = useRecoilState(signedInState);
   const [token, setToken] = useRecoilState(tokenState);
+  const [hasError, setError] = useState(false);
   const navigate = useNavigate();  
 
+  console.log(hasError)
   async function signIn(){
-    const res = await fetch('/resources/signin', {
-      body: JSON.stringify({
-        email: username,
-        password: password
-      }),
-      method: 'POST',
-    })
-
-    const result = await res.json()
-
-    if(result.user.role === 'authenticated'){
-      setSignedIn(true)
-      setToken(result.session)
-      navigate('/boards')
+    try {
+      const res = await fetch('/resources/signin', {
+        body: JSON.stringify({
+          email: username,
+          password: password
+        }),
+        method: 'POST',
+      })
+  
+      const result = await res.json()
+  
+      if(result.user.role === 'authenticated'){
+        setSignedIn(true)
+        setToken(result.session)
+        navigate('/boards')
+      }
+    } catch(e){
+      setError(true)
     }
   }
 
@@ -59,6 +65,7 @@ export function SignIn() {
               onChange={event => setUsername(event.target.value)}
             />
           </FlexColumn>
+          
           <FlexColumn>
             <InputLabel htmlFor='username'>Password</InputLabel>
             <input
@@ -68,6 +75,18 @@ export function SignIn() {
               onChange={event => setPassword(event.target.value)}
             />
           </FlexColumn>
+
+          {hasError && (
+            <FlexColumn>
+              <ErrorMessageContainer>
+                <Center>
+                  Check your login info.
+                </Center>
+                <CloseError onClick={() => setError(false)}/>
+              </ErrorMessageContainer>
+            </FlexColumn>
+          )}
+
           <Flex>
             <SignInButton onClick={signIn}>Sign in</SignInButton>
             <RegisterModal />

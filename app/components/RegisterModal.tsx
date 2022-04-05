@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useRecoilState } from 'recoil';
 import { useNavigate } from 'remix';
 
@@ -6,6 +6,7 @@ import { signedInState, tokenState } from '~/store';
 import { 
   Button, 
   Center, 
+  ErrorMessageContainer, 
   FlexColumn, 
   InputLabel, 
   RegisterModalClose, 
@@ -19,8 +20,11 @@ import {
 export function RegisterModal(){
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
+  const [hasFormError, setFormError] = useState(false);
+  const [errorMessage, setErrorMessage] = useState('')
   const [, setSignedIn] = useRecoilState(signedInState);
   const [, setToken] = useRecoilState(tokenState);
   const navigate = useNavigate(); 
@@ -47,6 +51,64 @@ export function RegisterModal(){
 
    }
 
+   useEffect(() => {
+    if(
+      password.length > 0 && 
+      password !== confirmPassword
+    ){
+      setFormError(true)
+      setErrorMessage('passwords must match')
+    }
+
+    if(password.length === 0){
+      setFormError(true)
+      setErrorMessage('password is required')   
+    }
+
+    if(firstName.length === 0){
+      setFormError(true)
+      setErrorMessage('first name is required')   
+    }
+
+    if(lastName.length === 0){
+      setFormError(true)
+      setErrorMessage('last name is required')   
+    }
+
+    if(username.length === 0){
+      setFormError(true)
+      setErrorMessage('email is required')   
+    }
+
+    if(hasFormError && errorMessage === 'passwords must match' && password === confirmPassword){
+      setFormError(false)
+    }
+
+    if(hasFormError && errorMessage === 'first name is required' && firstName.length > 0){
+      setFormError(false)
+    }
+
+    if(hasFormError && errorMessage === 'last name is required' && lastName.length > 0){
+      setFormError(false)
+    }
+
+    if(hasFormError && errorMessage === 'email is required' && username.length > 0){
+      setFormError(false)
+    }
+
+    if(hasFormError && errorMessage === 'password is required' && password.length > 0){
+      setFormError(false)
+    }
+   }, [
+     errorMessage, 
+     password, 
+     confirmPassword, 
+     setFormError, 
+     hasFormError, 
+     firstName,
+     lastName,
+     username
+    ])
   return (
     <RegisterModalRoot>
       <RegisterModalTrigger style={{border: 'none', background: 'transparent'}}>
@@ -99,7 +161,33 @@ export function RegisterModal(){
                       onChange={event => setPassword(event.target.value)}
                     />
                   </FlexColumn>
-                  <Button onClick={() => register().then(() =>    setSubmitted(true))} style={{padding: '8px 10px'}}>Register</Button>
+
+                  <FlexColumn>
+                    <InputLabel htmlFor='confirmPassowrd'>Confirm Password</InputLabel>
+                    <input 
+                      type='password'
+                      name='confirmPassword'
+                      value={confirmPassword}  
+                      onChange={event => setConfirmPassword(event.target.value)}
+                    />
+                  </FlexColumn>
+
+                  {hasFormError && (
+                    <FlexColumn>
+                      <ErrorMessageContainer>
+                        <Center>
+                          {errorMessage}
+                        </Center>
+                      </ErrorMessageContainer>
+                    </FlexColumn>
+                  )}
+                  <Button 
+                    disabled={hasFormError}
+                    onClick={() => register().then(() => setSubmitted(true))} 
+                    style={{padding: '8px 10px'}}
+                  >
+                    Register
+                  </Button>
                 </>
               )}
             </Center>

@@ -35,6 +35,15 @@ export const Button = styled.button<{isDisabled?: boolean; secondary?: boolean}>
   cursor: pointer;
   white-space: nowrap;
 
+  ${props => {
+    if(props.disabled){
+      return `
+        background: grey;
+        cursor: not-allowed;
+      `
+    }
+  }}
+
 
   ${props => {
     if(props.secondary){

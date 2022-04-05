@@ -1,5 +1,4 @@
-import { resourcesApi } from ".";
-
+import { resourcesApi } from "~/store";
 
 export type ChecklistType = {
   id: string;
@@ -10,12 +9,8 @@ export type ChecklistType = {
   listId: string;
 }
 
-
 const checklistApi = resourcesApi.injectEndpoints({
   endpoints: builder => ({
-
-
-
     getChecklists: builder.query<ChecklistType[], {cardId: string;}>({
       query: ({cardId}) => ({
         url: `checklists/get`,
