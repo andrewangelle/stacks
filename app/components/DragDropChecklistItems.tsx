@@ -15,7 +15,7 @@ export function DragDropChecklistItem({
   label: string
 }>){
   const dispatch = useDispatch();
-  const [,dragRef] = useDrag({
+  const [{ isDragging }, dragRef] = useDrag({
     type: 'checklistItem',
     item: { id, name: label },
     collect: (monitor) => ({
@@ -35,10 +35,24 @@ export function DragDropChecklistItem({
 
   const ref = useRef<HTMLDivElement | null>(null);
   const dragDropRef = dragRef(dropRef(ref)) as unknown as React.MutableRefObject<HTMLDivElement | null>
+  const firstChild = (
+    Boolean(dragDropRef.current && dragDropRef.current?.firstChild) &&  dragDropRef.current?.firstChild!
+  ) as HTMLElement
+  const rect = firstChild && firstChild.getBoundingClientRect() as DOMRect;
 
   return (
     <div ref={dragDropRef}>
-      {children}
+      {!isDragging && children}
+      {isDragging && (
+        <div 
+          style={{
+            height: rect.height,
+            width: rect.width,
+            background: 'rgba(0,0,0,0.1)',
+            borderRadius: '5px',
+          }}
+        />
+      )}
     </div>
   )
 }
