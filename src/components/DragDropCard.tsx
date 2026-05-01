@@ -1,7 +1,7 @@
 import { type ReactNode, useRef } from 'react';
 import { useDrag, useDrop } from 'react-dnd';
 
-import { type ListCardType, reorderCards } from '~/store';
+import { type ListCardType, reorderCards } from '~/store/cardsApi';
 
 export function DragDropCard({
   id,

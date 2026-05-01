@@ -3,11 +3,9 @@ import { useParams } from '@tanstack/react-router';
 import { useAtom } from 'jotai';
 import { useState } from 'react';
 import { BsCheck2Square } from 'react-icons/bs';
-import {
-  tokenState,
-  useCreateActivityMutation,
-  useCreateChecklistMutation,
-} from '~/store';
+import { useCreateActivityMutation } from '~/store/activityApi';
+import { tokenState } from '~/store/atoms';
+import { useCreateChecklistMutation } from '~/store/checklistsApi';
 import {
   CardModalSiderButton,
   CardModalSiderButtonText,
@@ -19,7 +17,7 @@ import {
   CreateChecklistPopoverTrigger,
   CreateChecklistTitle,
   PopoverClose,
-} from '~/styles';
+} from '~/styles/CardModal';
 
 export function CreateChecklist({
   listId,

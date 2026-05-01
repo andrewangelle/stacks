@@ -2,18 +2,15 @@ import { useNavigate } from '@tanstack/react-router';
 import { useAtom } from 'jotai';
 import { useEffect, useState } from 'react';
 
-import { RegisterModal } from '~/components';
-import { signedInState, tokenState } from '~/store';
+import { RegisterModal } from '~/components/RegisterModal';
+import { signedInState, tokenState } from '~/store/atoms';
+import { Center, Flex, FlexColumn, Padding } from '~/styles/Page';
 import {
-  Center,
   CloseError,
   ErrorMessageContainer,
-  Flex,
-  FlexColumn,
   InputLabel,
-  Padding,
   SignInButton,
-} from '~/styles';
+} from '~/styles/SignIn';
 import { NavBar } from './NavBar';
 
 export function SignIn() {

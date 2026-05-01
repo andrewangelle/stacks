@@ -1,7 +1,11 @@
-import { Button, fontFamily } from '~/styles';
+import type { ComponentType, HTMLAttributes } from 'react';
 import { styled } from '~/styles/styled';
+import { fontFamily } from './Boards';
+import { Button } from './Page';
 
-export const AddListContainer = styled('div')`
+export const AddListContainer: ComponentType<
+  HTMLAttributes<HTMLDivElement> & { isEditing: boolean }
+> = styled('div')`
   position: relative;
   font-family: ${fontFamily};
   background-color: rgba(255, 255, 255, .3);
@@ -36,7 +40,9 @@ export const CloseAddListButton = styled(Button)`
   color: black;
 `;
 
-export const DrawerContainer = styled('div')`
+export const DrawerContainer: ComponentType<
+  HTMLAttributes<HTMLDivElement> & { background?: string; isOpen: boolean }
+> = styled('div')`
   min-height: 100vh;
   width: ${(props: { isOpen: boolean }) => (props.isOpen ? '24vw' : '0.7vw')};
   border-right: 1px solid white;
@@ -93,7 +99,9 @@ export const BoardsLinkContainer = styled('div')`
   }
 `;
 
-export const DrawerBoardEntry = styled('div')`
+export const DrawerBoardEntry: ComponentType<
+  HTMLAttributes<HTMLDivElement> & { isSelected: boolean }
+> = styled('div')`
   display: flex;
   cursor: pointer;
   ${(props: { isSelected: boolean }) => {

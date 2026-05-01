@@ -3,7 +3,8 @@ import { useAtom } from 'jotai';
 import { type CSSProperties, useState } from 'react';
 import { IoIosArrowBack, IoIosArrowDropright } from 'react-icons/io';
 import { RiTrelloFill } from 'react-icons/ri';
-import { tokenState, useGetBoardQuery, useGetBoardsQuery } from '~/store';
+import { tokenState } from '~/store/atoms';
+import { useGetBoardQuery, useGetBoardsQuery } from '~/store/boardsApi';
 import {
   BoardsLinkContainer,
   BoardTitle,
@@ -14,7 +15,7 @@ import {
   DrawerHeaderTitle,
   FlexColumn,
   YourBoardsTitle,
-} from '~/styles';
+} from '~/styles/Board';
 
 export const sharedDrawerArrowStyles: CSSProperties = {
   cursor: 'pointer',

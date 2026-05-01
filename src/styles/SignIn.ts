@@ -1,6 +1,7 @@
 import { TiDelete } from 'react-icons/ti';
+import { blue, fontFamily, red } from '~/styles/Boards';
+import { Button } from '~/styles/Page';
 import { styled } from '~/styles/styled';
-import { Button, blue, fontFamily, red } from '.';
 
 export const SignInButton = styled(Button)` 
   margin: 12px;

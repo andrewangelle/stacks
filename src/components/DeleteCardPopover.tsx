@@ -1,6 +1,7 @@
 import * as Popover from '@radix-ui/react-popover';
 import { useAtom } from 'jotai';
-import { type ListCardType, tokenState, useDeleteCardMutation } from '~/store';
+import { tokenState } from '~/store/atoms';
+import { type ListCardType, useDeleteCardMutation } from '~/store/cardsApi';
 import {
   CardModalSiderButton,
   CardModalSiderButtonText,
@@ -10,7 +11,7 @@ import {
   DeleteChecklistPopoverButton,
   DeleteChecklistPopoverContent,
   PopoverClose,
-} from '~/styles';
+} from '~/styles/CardModal';
 
 export function DeleteCardPopover(
   props: ListCardType & {

@@ -2,7 +2,8 @@ import * as Popover from '@radix-ui/react-popover';
 import { useParams } from '@tanstack/react-router';
 import { useAtom } from 'jotai';
 
-import { tokenState, useDeleteListMutation } from '~/store';
+import { tokenState } from '~/store/atoms';
+import { useDeleteListMutation } from '~/store/listsApi';
 import {
   ChecklistPopoverHeader,
   CreateBoardCloseBorder,
@@ -11,7 +12,7 @@ import {
   DeleteChecklistPopoverContent,
   DeleteListIcon,
   PopoverClose,
-} from '~/styles';
+} from '~/styles/CardModal';
 
 export function DeleteListPopover(props: { id: string; listTitle: string }) {
   const [token] = useAtom(tokenState);

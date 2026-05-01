@@ -2,9 +2,9 @@ import * as Popover from '@radix-ui/react-popover';
 import { useAtom } from 'jotai';
 import {
   type ActivityType,
-  tokenState,
   useDeleteActivityMutation,
-} from '~/store';
+} from '~/store/activityApi';
+import { tokenState } from '~/store/atoms';
 import {
   ChecklistPopoverHeader,
   CreateBoardCloseBorder,
@@ -12,7 +12,7 @@ import {
   DeleteChecklistPopoverContent,
   DeleteChecklistPopoverTrigger,
   PopoverClose,
-} from '~/styles';
+} from '~/styles/CardModal';
 
 export function DeleteCommentPopover(props: ActivityType) {
   const [token] = useAtom(tokenState);

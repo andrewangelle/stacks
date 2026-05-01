@@ -2,10 +2,10 @@ import * as Popover from '@radix-ui/react-popover';
 import { useAtom } from 'jotai';
 import { useState } from 'react';
 import { FaCheck } from 'react-icons/fa';
-import { tokenState, useCreateBoardMutation } from '~/store';
+import { tokenState } from '~/store/atoms';
+import { useCreateBoardMutation } from '~/store/boardsApi';
 import {
   blue,
-  Center,
   CreateBoardBackgroundChoice,
   CreateBoardBackgroundChoices,
   CreateBoardBackgroundText,
@@ -21,7 +21,9 @@ import {
   orange,
   PopoverClose,
   red,
-} from '~/styles';
+} from '~/styles/Boards';
+
+import { Center } from '~/styles/Page';
 
 const backgroundChoices = [green, lightGreen, blue, orange, red];
 

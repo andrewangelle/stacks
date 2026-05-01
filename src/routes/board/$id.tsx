@@ -5,14 +5,15 @@ import {
 } from '@tanstack/react-router';
 import { useAtom } from 'jotai';
 import { useEffect } from 'react';
-import { AddLists, DragDropList, Drawer, ListCard, NavBar } from '~/components';
-import {
-  signedInState,
-  tokenState,
-  useGetBoardQuery,
-  useGetListsQuery,
-} from '~/store';
-import { BoardPageBackground, Flex, Padding } from '~/styles';
+import { AddLists } from '~/components/AddList';
+import { DragDropList } from '~/components/DragDropList';
+import { Drawer } from '~/components/Drawer';
+import { ListCard } from '~/components/ListCard';
+import { NavBar } from '~/components/NavBar';
+import { signedInState, tokenState } from '~/store/atoms';
+import { useGetBoardQuery } from '~/store/boardsApi';
+import { useGetListsQuery } from '~/store/listsApi';
+import { BoardPageBackground, Flex, Padding } from '~/styles/Page';
 
 function BoardPage() {
   const params = useParams({ strict: false });

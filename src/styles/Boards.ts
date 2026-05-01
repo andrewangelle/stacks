@@ -1,4 +1,9 @@
 import * as Popover from '@radix-ui/react-popover';
+import type {
+  ButtonHTMLAttributes,
+  ComponentType,
+  HTMLAttributes,
+} from 'react';
 import { TiDelete } from 'react-icons/ti';
 import { styled } from '~/styles/styled';
 
@@ -17,7 +22,9 @@ export const BoardsContainer = styled('div')`
   justify-content: flex-start;
 `;
 
-export const BoardCardContainer = styled('div')`
+export const BoardCardContainer: ComponentType<
+  HTMLAttributes<HTMLDivElement> & { background?: string }
+> = styled('div')`
   position: relative;
   font-family: ${fontFamily};
   text-align: center;
@@ -95,7 +102,9 @@ export const CreateBoardBackgroundChoices = styled('div')`
   flex-wrap: wrap;
 `;
 
-export const CreateBoardBackgroundChoice = styled('div')`
+export const CreateBoardBackgroundChoice: ComponentType<
+  HTMLAttributes<HTMLDivElement> & { background: string }
+> = styled('div')`
   background: ${(props: { background: string }) => props.background};
   width: 40px;
   height: 32px;
@@ -128,7 +137,9 @@ export const CreateBoardTitleInput = styled('input')`
   height: 20px;
 `;
 
-export const CreateBoardButton = styled('button')`
+export const CreateBoardButton: ComponentType<
+  ButtonHTMLAttributes<HTMLButtonElement> & { isDisabled: boolean }
+> = styled('button')`
   background: ${(props: { isDisabled: boolean }) =>
     props.isDisabled ? 'rgba(9, 30, 66, 0.04)' : blue};
   color: ${(props: { isDisabled: boolean }) =>

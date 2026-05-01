@@ -1,7 +1,8 @@
 import { useAtom } from 'jotai';
 import { useState } from 'react';
 import { IoMdList } from 'react-icons/io';
-import { tokenState, useUpdateCardMutation } from '~/store';
+import { tokenState } from '~/store/atoms';
+import { useUpdateCardMutation } from '~/store/cardsApi';
 import {
   CardDescriptionText,
   CardModalTitle,
@@ -12,7 +13,7 @@ import {
   EditDescriptionButton,
   Flex,
   SaveDescriptionButton,
-} from '~/styles';
+} from '~/styles/CardModal';
 
 export function CardModalDescription({
   listId,

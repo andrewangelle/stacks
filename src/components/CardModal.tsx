@@ -2,13 +2,12 @@ import { useAtom } from 'jotai';
 import { useState } from 'react';
 import { BsCardHeading } from 'react-icons/bs';
 
-import {
-  CardModalChecklists,
-  CardModalDescription,
-  CreateChecklist,
-  DeleteCardPopover,
-} from '~/components';
-import { type ListCardType, tokenState, useUpdateCardMutation } from '~/store';
+import { CardModalChecklists } from '~/components/CardModalChecklists';
+import { CardModalDescription } from '~/components/CardModalDescription';
+import { CreateChecklist } from '~/components/CreateChecklist';
+import { DeleteCardPopover } from '~/components/DeleteCardPopover';
+import { tokenState } from '~/store/atoms';
+import { type ListCardType, useUpdateCardMutation } from '~/store/cardsApi';
 import {
   CardModalClose,
   CardModalContent,
@@ -26,7 +25,7 @@ import {
   Flex,
   ListCardContainer,
   Padding,
-} from '~/styles';
+} from '~/styles/CardModal';
 import { CardModalActivity } from './CardModalActivity';
 
 export function CardModal(

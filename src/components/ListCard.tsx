@@ -8,14 +8,12 @@ import {
   useState,
 } from 'react';
 
-import { CardModal, DeleteListPopover, DragDropCard } from '~/components';
-import {
-  type List,
-  tokenState,
-  useCreateCardMutation,
-  useGetCardsQuery,
-  useUpdateListMutation,
-} from '~/store';
+import { CardModal } from '~/components/CardModal';
+import { DeleteListPopover } from '~/components/DeleteListPopover';
+import { DragDropCard } from '~/components/DragDropCard';
+import { tokenState } from '~/store/atoms';
+import { useCreateCardMutation, useGetCardsQuery } from '~/store/cardsApi';
+import { type List, useUpdateListMutation } from '~/store/listsApi';
 import {
   AddCardButton,
   AddCardInput,
@@ -24,7 +22,7 @@ import {
   Flex,
   ListContainer,
   ListName,
-} from '~/styles';
+} from '~/styles/List';
 
 export function useOutsideClick<ElementType = HTMLDivElement>(
   handler: (e: MouseEvent<ElementType>) => void,

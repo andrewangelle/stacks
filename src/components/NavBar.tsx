@@ -1,8 +1,9 @@
 import { useLocation } from '@tanstack/react-router';
 import { useAtom } from 'jotai';
+import type { ComponentType, HTMLAttributes } from 'react';
 import { RiTrelloFill } from 'react-icons/ri';
-import { signedInState, tokenState } from '~/store';
-import { blue, fontFamily } from '~/styles';
+import { signedInState, tokenState } from '~/store/atoms';
+import { blue, fontFamily } from '~/styles/Boards';
 import { styled } from '~/styles/styled';
 
 const NavBarContainer = styled('div')`
@@ -16,7 +17,9 @@ const NavBarContainer = styled('div')`
   justify-content: space-around;
   color: white;
   position: fixed;
-`;
+` as unknown as ComponentType<
+  HTMLAttributes<HTMLDivElement> & { background: string }
+>;
 
 const LogOutText = styled('div')` 
   position: absolute;

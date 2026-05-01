@@ -5,7 +5,7 @@ import {
 } from '@tanstack/react-router';
 import { useAtom } from 'jotai';
 import { useEffect } from 'react';
-import { signedInState, type TokenType, tokenState } from '~/store';
+import { signedInState, type TokenType, tokenState } from '~/store/atoms';
 
 function Index() {
   const [isSignedIn, setSignedIn] = useAtom(signedInState);

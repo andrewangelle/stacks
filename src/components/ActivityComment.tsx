@@ -2,13 +2,14 @@ import { formatRelative } from 'date-fns';
 import { useAtom } from 'jotai';
 import { useState } from 'react';
 
-import { ActivityLogo, DeleteCommentPopover } from '~/components';
+import { ActivityLogo } from '~/components/ActivityLogo';
+import { DeleteCommentPopover } from '~/components/DeleteCommentPopover';
 import {
   type ActivityType,
-  tokenState,
-  useGetProfileQuery,
   useUpdateActivityMutation,
-} from '~/store';
+} from '~/store/activityApi';
+import { tokenState } from '~/store/atoms';
+import { useGetProfileQuery } from '~/store/profileApi';
 import {
   ActivityCommentContainer,
   ActivityCommentContent,
@@ -17,7 +18,7 @@ import {
   CloseAddCardButton,
   Flex,
   SaveCommentButton,
-} from '~/styles';
+} from '~/styles/Activity';
 
 export function ActivityComment(props: ActivityType) {
   const [token] = useAtom(tokenState);

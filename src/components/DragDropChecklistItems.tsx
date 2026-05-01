@@ -1,7 +1,10 @@
 import { type ReactNode, useRef } from 'react';
 import { useDrag, useDrop } from 'react-dnd';
 
-import { type ChecklistItemType, reorderChecklistItems } from '~/store';
+import {
+  type ChecklistItemType,
+  reorderChecklistItems,
+} from '~/store/checklistItemsApi';
 
 export function DragDropChecklistItem({
   id,

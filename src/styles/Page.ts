@@ -1,7 +1,14 @@
+import type {
+  ButtonHTMLAttributes,
+  ComponentType,
+  HTMLAttributes,
+} from 'react';
 import { styled } from '~/styles/styled';
 import { blue } from './Boards';
 
-export const Padding = styled('div')`
+export const Padding: ComponentType<
+  HTMLAttributes<HTMLDivElement> & { padding: string }
+> = styled('div')`
   padding: ${(props: { padding: string }) => props.padding};
 `;
 
@@ -22,7 +29,12 @@ export const Flex = styled('div')`
   display: flex;
 `;
 
-export const Button = styled('button')`
+export const Button: ComponentType<
+  ButtonHTMLAttributes<HTMLButtonElement> & {
+    isDisabled?: boolean;
+    secondary?: boolean;
+  }
+> = styled('button')`
   background: ${(props: { isDisabled?: boolean }) =>
     props.isDisabled ? 'rgba(9, 30, 66, 0.04)' : blue};
   color: ${(props: { isDisabled?: boolean }) =>
@@ -57,7 +69,9 @@ export const Button = styled('button')`
   }}
 `;
 
-export const BoardPageBackground = styled('div')`
+export const BoardPageBackground: ComponentType<
+  HTMLAttributes<HTMLDivElement> & { background?: string }
+> = styled('div')`
   height: 100vh;
   width: max-content;
   min-width: 100vw;

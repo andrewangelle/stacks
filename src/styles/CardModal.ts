@@ -2,8 +2,11 @@ import * as Checkbox from '@radix-ui/react-checkbox';
 import * as Dialog from '@radix-ui/react-dialog';
 import * as Popover from '@radix-ui/react-popover';
 import * as Progress from '@radix-ui/react-progress';
-import { AddCardInput, Button, darkGray, fontFamily, red } from '~/styles';
+import type { ComponentType, HTMLAttributes, LabelHTMLAttributes } from 'react';
 import { styled } from '~/styles/styled';
+import { darkGray, fontFamily, red } from './Boards';
+import { AddCardInput } from './List';
+import { Button } from './Page';
 
 export const CardModalSiderContainer = styled('div')` 
   position: absolute;
@@ -164,7 +167,9 @@ export const ChecklistProgressIndicator = styled(Progress.Indicator)`
   transition: width 660ms cubic-bezier(0.65, 0, 0.35, 1);
 `;
 
-export const ChecklistCheckboxContainer = styled('div')` 
+export const ChecklistCheckboxContainer: ComponentType<
+  HTMLAttributes<HTMLDivElement> & { isHovering: boolean }
+> = styled('div')` 
   padding: 10px 0px;
   width: 70%;
   position: relative;
@@ -189,7 +194,9 @@ export const CheckboxIndicator = styled(Checkbox.Indicator)`
   height: 16;
 `;
 
-export const CheckboxLabel = styled('label')` 
+export const CheckboxLabel: ComponentType<
+  LabelHTMLAttributes<HTMLLabelElement> & { checked: boolean }
+> = styled('label')` 
   margin: 0 0 0 8px;
   font-family: ${fontFamily};
   font-size: 14px;

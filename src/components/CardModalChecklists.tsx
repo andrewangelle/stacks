@@ -2,15 +2,18 @@ import { useAtom } from 'jotai';
 import { useState } from 'react';
 import { BsCheck2Square } from 'react-icons/bs';
 
-import { ChecklistCheckbox, DeleteChecklistPopover } from '~/components';
+import { ChecklistCheckbox } from '~/components/ChecklistCheckbox';
+import { DeleteChecklistPopover } from '~/components/DeleteChecklistPopover';
+import { tokenState } from '~/store/atoms';
 import {
   type ChecklistItemType,
-  type ChecklistType,
-  tokenState,
   useCreateChecklistItemMutation,
   useGetChecklistItemsQuery,
+} from '~/store/checklistItemsApi';
+import {
+  type ChecklistType,
   useGetChecklistsQuery,
-} from '~/store';
+} from '~/store/checklistsApi';
 import {
   AddChecklistButton,
   AddChecklistItemButton,
@@ -22,7 +25,7 @@ import {
   ChecklistProgressRoot,
   CloseDescriptionButton,
   Flex,
-} from '~/styles';
+} from '~/styles/CardModal';
 import { DragDropChecklistItem } from './DragDropChecklistItems';
 
 function Checklist(props: ChecklistType) {

@@ -4,13 +4,14 @@ import { useAtom } from 'jotai';
 import { useState } from 'react';
 import { MdOutlineFormatListBulleted } from 'react-icons/md';
 
-import { ActivityComment, ActivityLogo } from '~/components';
+import { ActivityComment } from '~/components/ActivityComment';
+import { ActivityLogo } from '~/components/ActivityLogo';
 import {
-  tokenState,
   useCreateActivityMutation,
   useGetActivityQuery,
-  useGetProfileQuery,
-} from '~/store';
+} from '~/store/activityApi';
+import { tokenState } from '~/store/atoms';
+import { useGetProfileQuery } from '~/store/profileApi';
 import {
   ActivityCommentContainer,
   ActivityContainer,
@@ -20,7 +21,7 @@ import {
   Flex,
   HideActivityButton,
   SaveCommentButton,
-} from '~/styles';
+} from '~/styles/Activity';
 
 export function CardModalActivity({
   listId,

@@ -2,20 +2,17 @@ import { useNavigate } from '@tanstack/react-router';
 import { useAtom } from 'jotai';
 import { useEffect, useState } from 'react';
 
-import { signedInState, tokenState } from '~/store';
+import { signedInState, tokenState } from '~/store/atoms';
+import { Button, Center, FlexColumn } from '~/styles/Page';
 import {
-  Button,
-  Center,
-  ErrorMessageContainer,
-  FlexColumn,
-  InputLabel,
   RegisterModalClose,
   RegisterModalContent,
   RegisterModalOverlay,
   RegisterModalPortal,
   RegisterModalRoot,
   RegisterModalTrigger,
-} from '~/styles';
+} from '~/styles/Register';
+import { ErrorMessageContainer, InputLabel } from '~/styles/SignIn';
 
 export function RegisterModal() {
   const [username, setUsername] = useState('');

@@ -1,9 +1,12 @@
 import { createFileRoute, useNavigate } from '@tanstack/react-router';
 import { useAtom } from 'jotai';
 import { useEffect } from 'react';
-import { CreateBoard, NavBar } from '~/components';
-import { signedInState, tokenState, useGetBoardsQuery } from '~/store';
-import { BoardCardContainer, BoardsContainer, Padding } from '~/styles';
+import { CreateBoard } from '~/components/CreateBoard';
+import { NavBar } from '~/components/NavBar';
+import { signedInState, tokenState } from '~/store/atoms';
+import { useGetBoardsQuery } from '~/store/boardsApi';
+import { BoardCardContainer, BoardsContainer } from '~/styles/Boards';
+import { Padding } from '~/styles/Page';
 
 function BoardsPage() {
   const [isSignedIn, setSignedIn] = useAtom(signedInState);

@@ -3,15 +3,17 @@ import { useParams } from '@tanstack/react-router';
 import { useAtom } from 'jotai';
 import { type CSSProperties, useState } from 'react';
 import { AiOutlineCheck, AiOutlineEllipsis } from 'react-icons/ai';
-import { useOutsideClick } from '~/components';
+import { useOutsideClick } from '~/components/ListCard';
 
 import {
   type ChecklistItemType,
-  tokenState,
   useCreateActivityMutation,
+} from '~/store/activityApi';
+import { tokenState } from '~/store/atoms';
+import {
   useDeleteChecklistItemMutation,
   useUpdateChecklistItemMutation,
-} from '~/store';
+} from '~/store/checklistItemsApi';
 import {
   AddChecklistButton,
   AddChecklistItemInput,
@@ -27,7 +29,7 @@ import {
   DeleteChecklistPopoverTrigger,
   Flex,
   PopoverClose,
-} from '~/styles';
+} from '~/styles/CardModal';
 
 export function ChecklistCheckbox(props: ChecklistItemType) {
   const params = useParams({ strict: false });

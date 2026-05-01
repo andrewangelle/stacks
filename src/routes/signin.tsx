@@ -1,5 +1,5 @@
 import { createFileRoute } from '@tanstack/react-router';
-import { SignIn } from '~/components';
+import { SignIn } from '~/components/SignIn';
 
 function SignInPage() {
   return <SignIn />;

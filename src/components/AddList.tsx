@@ -1,13 +1,14 @@
 import { useAtom } from 'jotai';
 import { useState } from 'react';
-import { tokenState, useCreateListMutation } from '~/store';
+import { tokenState } from '~/store/atoms';
+import { useCreateListMutation } from '~/store/listsApi';
 import {
   AddListButton,
   AddListContainer,
   AddListInput,
   CloseAddListButton,
   Flex,
-} from '~/styles';
+} from '~/styles/Board';
 
 export function AddLists({ boardId }: { boardId: string }) {
   const [token] = useAtom(tokenState);

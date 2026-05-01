@@ -12,6 +12,15 @@ export default defineConfig({
   server: {
     port: 3000,
   },
+  optimizeDeps: {
+    include: ['react-is', '@mui/utils/deepmerge', '@pigment-css/react'],
+  },
+  ssr: {
+    noExternal: ['react-is', '@mui/utils', '@pigment-css/react'],
+    optimizeDeps: {
+      include: ['react-is', '@mui/utils/deepmerge', '@pigment-css/react'],
+    },
+  },
   resolve: {
     alias: {
       'react/jsx-runtime.js': 'react/jsx-runtime',

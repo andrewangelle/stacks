@@ -1,7 +1,8 @@
 import { useAtom } from 'jotai';
-
-import { tokenState, useGetProfileQuery } from '~/store';
-import { ActivityNameCircle, Center } from '~/styles';
+import { tokenState } from '~/store/atoms';
+import { useGetProfileQuery } from '~/store/profileApi';
+import { ActivityNameCircle } from '~/styles/Activity';
+import { Center } from '~/styles/Page';
 
 export function getInitials(
   data: { firstName: string; lastName: string } | null,
