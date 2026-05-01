@@ -2,18 +2,17 @@ import * as Checkbox from '@radix-ui/react-checkbox';
 import * as Dialog from '@radix-ui/react-dialog';
 import * as Popover from '@radix-ui/react-popover';
 import * as Progress from '@radix-ui/react-progress';
-import styled from 'styled-components';
-
 import { AddCardInput, Button, darkGray, fontFamily, red } from '~/styles';
+import { styled } from '~/styles/styled';
 
-export const CardModalSiderContainer = styled.div` 
+export const CardModalSiderContainer = styled('div')` 
   position: absolute;
   right: 15px;
   width: 200px;
   top: 80px;
 `;
 
-export const CardModalSiderTitle = styled.div` 
+export const CardModalSiderTitle = styled('div')` 
   font-family: ${fontFamily};
   font-size: 14px;
   color: ${darkGray};
@@ -21,7 +20,7 @@ export const CardModalSiderTitle = styled.div`
   font-weight: 600;
 `;
 
-export const CardModalSiderButton = styled.div` 
+export const CardModalSiderButton = styled('div')` 
   font-family: ${fontFamily};
   background: #091e420a;
   border-radius: 5px;
@@ -30,7 +29,7 @@ export const CardModalSiderButton = styled.div`
   cursor: pointer;
 `;
 
-export const CardModalSiderButtonText = styled.span` 
+export const CardModalSiderButtonText = styled('span')` 
   font-family: ${fontFamily};
   font-size: 12px;
 `;
@@ -71,14 +70,14 @@ export const DeleteChecklistPopoverContent = styled(ChecklistPopoverContent)`
   height: 130px;
   padding: 10px;
 `;
-export const ChecklistPopoverHeader = styled.div` 
+export const ChecklistPopoverHeader = styled('div')` 
   display: flex;
   justify-content: center;
   color: rgba(9, 30, 66, .75);
   padding: 10px;
 `;
 
-export const CreateChecklistTitle = styled.div` 
+export const CreateChecklistTitle = styled('div')` 
   font-family: ${fontFamily};
   font-size: 12px;
   font-weight: 700;
@@ -86,7 +85,7 @@ export const CreateChecklistTitle = styled.div`
   padding: 10px;
 `;
 
-export const CreateChecklistInput = styled.input` 
+export const CreateChecklistInput = styled('input')` 
   padding: 8px 12px;
   border: none;
   box-shadow: inset 0 0 0 2px #dfe1e6;
@@ -115,7 +114,7 @@ color: black;
 margin: 0;
 `;
 
-export const AddChecklistItemInput = styled.textarea` 
+export const AddChecklistItemInput = styled('textarea')` 
   height: 30px;
   width: 60%;
   font-size: 14px;
@@ -137,13 +136,13 @@ export const DeleteChecklistPopoverButton = styled(Button)`
   padding: 8px 10px;
 `;
 
-export const ChecklistHeader = styled.div` 
+export const ChecklistHeader = styled('div')` 
   display: flex;
   justify-content: space-between;
   width: 70%;
 `;
 
-export const ChecklistProgressPercentage = styled.span`
+export const ChecklistProgressPercentage = styled('span')`
   color: #5e6c84;
   font-size: 11px;
   width: 32px;
@@ -165,20 +164,20 @@ export const ChecklistProgressIndicator = styled(Progress.Indicator)`
   transition: width 660ms cubic-bezier(0.65, 0, 0.35, 1);
 `;
 
-export const ChecklistCheckboxContainer = styled.div<{ isHovering: boolean }>` 
+export const ChecklistCheckboxContainer = styled('div')` 
   padding: 10px 0px;
   width: 70%;
   position: relative;
   cursor: pointer;
-  ${(props) => {
+  ${(props: { isHovering: boolean }) => {
     if (props.isHovering) {
       return 'background: rgb(223 225 230);';
     }
   }}
 `;
 
-export const CheckboxRoot = styled(Checkbox.Root)<{ checked: boolean }>` 
-  background-color: ${(props) => (props.checked ? '#5ba4cf' : 'white')};
+export const CheckboxRoot = styled(Checkbox.Root)` 
+  background-color: ${(props: { checked: boolean }) => (props.checked ? '#5ba4cf' : 'white')};
   width: 16;
   height: 16;
   position: relative;
@@ -190,11 +189,11 @@ export const CheckboxIndicator = styled(Checkbox.Indicator)`
   height: 16;
 `;
 
-export const CheckboxLabel = styled.label<{ checked: boolean }>` 
+export const CheckboxLabel = styled('label')` 
   margin: 0 0 0 8px;
   font-family: ${fontFamily};
   font-size: 14px;
-  ${(props) => {
+  ${(props: { checked: boolean }) => {
     if (props.checked) {
       return 'text-decoration: line-through;';
     }
@@ -251,16 +250,16 @@ export const CardModalTitle = styled(Dialog.Title)`
   font-size: 18px;
 `;
 
-export const CardModalListName = styled.div` 
+export const CardModalListName = styled('div')` 
   font-size: 14px;
   margin-left: 40px;
 `;
 
-export const DescriptionContainer = styled.div` 
+export const DescriptionContainer = styled('div')` 
   margin-top: 30px;
 `;
 
-export const DescriptionPlaceholder = styled.div` 
+export const DescriptionPlaceholder = styled('div')` 
   background: rgba(0,0,0, 0.03);
   height: 30px;
   width: 60%;
@@ -275,7 +274,7 @@ export const DescriptionPlaceholder = styled.div`
   }
 `;
 
-export const DescriptionInput = styled.textarea` 
+export const DescriptionInput = styled('textarea')` 
   height: 60px;
   width: 60%;
   margin-left: 40px;
@@ -298,7 +297,7 @@ export const CloseDescriptionButton = styled(Button)`
   color: black;
 `;
 
-export const CardDescriptionText = styled.div` 
+export const CardDescriptionText = styled('div')` 
   font-family: ${fontFamily};
   margin-left: 40px;
   font-size: 14px;

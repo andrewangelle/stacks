@@ -1,14 +1,14 @@
 import { TiDelete } from 'react-icons/ti';
-import styled from 'styled-components';
 import { Button, fontFamily } from '~/styles';
+import { styled } from '~/styles/styled';
 
-export const ListGridContainer = styled.div` 
+export const ListGridContainer = styled('div')` 
   display: grid;
   grid-template-rows: 100% 1fr max-content;
   grid-template-columns: 100px 1fr max-content;
 `;
 
-export const ListContainer = styled.div` 
+export const ListContainer = styled('div')` 
   background-color: #ebecf0;
   border-radius: 3px;
   box-sizing: border-box;
@@ -23,14 +23,14 @@ export const ListContainer = styled.div`
   margin: 0 15px;
 `;
 
-export const ListName = styled.div` 
+export const ListName = styled('div')` 
   font-family: ${fontFamily};
   color: black;
   font-weight: 700;
   font-size: 14px;
 `;
 
-export const AddCardText = styled.div` 
+export const AddCardText = styled('div')` 
   font-family: ${fontFamily};
   cursor: pointer;
   font-size: 14px;
@@ -42,7 +42,7 @@ export const AddCardText = styled.div`
   }
 `;
 
-export const AddCardInput = styled.input` 
+export const AddCardInput = styled('input')` 
   border-radius: 5px;
   border: none;
   padding: 6px 8px;
@@ -61,7 +61,7 @@ export const CloseAddCardButton = styled(Button)`
   padding: 8px;
 `;
 
-export const ListCardContainer = styled.div` 
+export const ListCardContainer = styled('div')` 
   width: 90%;
   border-radius: 5px;
   background: #fff;

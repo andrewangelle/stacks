@@ -1,25 +1,24 @@
 import { useLocation } from '@tanstack/react-router';
 import { useAtom } from 'jotai';
 import { RiTrelloFill } from 'react-icons/ri';
-import styled from 'styled-components';
-
 import { signedInState, tokenState } from '~/store';
 import { blue, fontFamily } from '~/styles';
+import { styled } from '~/styles/styled';
 
-const NavBarContainer = styled.div<{ background: string }>` 
+const NavBarContainer = styled('div')`
   font-family: ${fontFamily};
   width: 100vw;
   position: fixed;
   height: 40px;
   z-index: 1;
-  background: ${(props) => props.background};
+  background: ${(props: { background: string }) => props.background};
   display: flex;
   justify-content: space-around;
   color: white;
   position: fixed;
 `;
 
-const LogOutText = styled.div` 
+const LogOutText = styled('div')` 
   position: absolute;
   right: 15px;
   top: 25%;

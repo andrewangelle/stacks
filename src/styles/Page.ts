@@ -1,33 +1,32 @@
-import styled from 'styled-components';
+import { styled } from '~/styles/styled';
 import { blue } from './Boards';
 
-export const Padding = styled.div<{ padding: string }>` 
-  padding: ${(props) => props.padding};
+export const Padding = styled('div')`
+  padding: ${(props: { padding: string }) => props.padding};
 `;
 
-export const Center = styled.div` 
+export const Center = styled('div')` 
   position: absolute;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
 `;
 
-export const FlexColumn = styled.div` 
+export const FlexColumn = styled('div')` 
   display: flex;
   flex-direction: column;
   margin: 10px auto;
 `;
 
-export const Flex = styled.div` 
+export const Flex = styled('div')` 
   display: flex;
 `;
 
-export const Button = styled.button<{
-  isDisabled?: boolean;
-  secondary?: boolean;
-}>`
-  background: ${(props) => (props.isDisabled ? 'rgba(9, 30, 66, 0.04)' : blue)};
-  color: ${(props) => (props.isDisabled ? 'rgba(9, 30, 66, 0.08)' : '#fff')};
+export const Button = styled('button')`
+  background: ${(props: { isDisabled?: boolean }) =>
+    props.isDisabled ? 'rgba(9, 30, 66, 0.04)' : blue};
+  color: ${(props: { isDisabled?: boolean }) =>
+    props.isDisabled ? 'rgba(9, 30, 66, 0.08)' : '#fff'};
   border: none;
   border-radius: 5px;
   margin: auto;
@@ -38,7 +37,7 @@ export const Button = styled.button<{
   cursor: pointer;
   white-space: nowrap;
 
-  ${(props) => {
+  ${(props: { disabled?: boolean }) => {
     if (props.disabled) {
       return `
         background: grey;
@@ -47,10 +46,9 @@ export const Button = styled.button<{
     }
   }}
 
-
-  ${(props) => {
+  ${(props: { secondary?: boolean }) => {
     if (props.secondary) {
-      return ` 
+      return `
         background: rgba(9, 30, 66, 0.04);
         border: 1px solid ${blue};
         color: ${blue}
@@ -59,10 +57,10 @@ export const Button = styled.button<{
   }}
 `;
 
-export const BoardPageBackground = styled.div<{ background?: string }>` 
-  height: 100vh; 
-  width: max-content; 
+export const BoardPageBackground = styled('div')`
+  height: 100vh;
+  width: max-content;
   min-width: 100vw;
-  background: ${(props) => props.background};
+  background: ${(props: { background?: string }) => props.background};
   display: flex;
 `;

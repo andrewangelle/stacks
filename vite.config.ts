@@ -1,4 +1,5 @@
 import netlify from '@netlify/vite-plugin-tanstack-start';
+import { pigment } from '@pigment-css/vite-plugin';
 import viteReact from '@vitejs/plugin-react';
 import { tanstackStart } from '@tanstack/react-start/plugin/vite';
 import * as dotenv from 'dotenv';
@@ -21,6 +22,7 @@ export default defineConfig({
     tsConfigPaths({
       projects: ['./tsconfig.json'],
     }),
+    pigment({}),
     tanstackStart(),
     netlify(),
     viteReact(),

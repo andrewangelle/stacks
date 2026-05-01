@@ -1,25 +1,18 @@
 import * as Dialog from '@radix-ui/react-dialog';
-import styled from 'styled-components';
-
 import { blue, fontFamily } from '~/styles';
+import { styled } from '~/styles/styled';
 
-export const RegisterModalRoot = styled(Dialog.Root).attrs({
-  'data-testid': 'RegisterModalRoot',
-})`
+export const RegisterModalRoot = styled(Dialog.Root)`
   width: inherit;
   display: inherit;
 `;
 
-export const RegisterModalPortal = styled(Dialog.Portal).attrs({
-  'data-testid': 'RegisterModalPortal',
-})`
+export const RegisterModalPortal = styled(Dialog.Portal)`
   width: inherit;
   display: inherit;
 `;
 
-export const RegisterModalOverlay = styled(Dialog.Overlay).attrs({
-  'data-testid': 'RegisterModalOverlay',
-})` 
+export const RegisterModalOverlay = styled(Dialog.Overlay)` 
   background: rgba(0 0 0 / 0.5);
   position: fixed;
   top: 0;
@@ -32,9 +25,7 @@ export const RegisterModalOverlay = styled(Dialog.Overlay).attrs({
   z-index: 2;
 `;
 
-export const RegisterModalContent = styled(Dialog.Content).attrs({
-  'data-testid': 'RegisterModalContent',
-})` 
+export const RegisterModalContent = styled(Dialog.Content)` 
   position: relative;
   font-family: ${fontFamily};
   min-width: 700px;
@@ -48,9 +39,7 @@ export const RegisterModalContent = styled(Dialog.Content).attrs({
   border-radius: 5px;
 `;
 
-export const RegisterModalTrigger = styled(Dialog.Trigger).attrs({
-  'data-testid': 'RegisterModalTrigger',
-})` 
+export const RegisterModalTrigger = styled(Dialog.Trigger)` 
   border: none;
   padding: none;
   cursor: pointer;

@@ -1,6 +1,6 @@
 import * as Popover from '@radix-ui/react-popover';
 import { TiDelete } from 'react-icons/ti';
-import styled from 'styled-components';
+import { styled } from '~/styles/styled';
 
 export const green = 'rgb(81, 152, 57)';
 export const lightGreen = 'rgb(75, 191, 107)';
@@ -11,13 +11,13 @@ export const fontFamily =
   '-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Noto Sans,Ubuntu,Droid Sans,Helvetica Neue,sans-serif;';
 export const darkGray = '#5e6c84';
 
-export const BoardsContainer = styled.div` 
+export const BoardsContainer = styled('div')` 
   display: flex;
   flex-wrap: wrap;
   justify-content: flex-start;
 `;
 
-export const BoardCardContainer = styled.div<{ background?: string }>` 
+export const BoardCardContainer = styled('div')`
   position: relative;
   font-family: ${fontFamily};
   text-align: center;
@@ -28,7 +28,7 @@ export const BoardCardContainer = styled.div<{ background?: string }>`
   border-radius: 5px;
   font-size: 14px;
   cursor: pointer;
-  background: ${(props) => props.background};
+  background: ${(props: { background?: string }) => props.background};
   margin: 10px;
 `;
 
@@ -73,30 +73,30 @@ export const CreateBoardPopoverContent = styled(Popover.Content)`
   background: #fff;
 `;
 
-export const CreateBoardPopoverHeader = styled.div` 
+export const CreateBoardPopoverHeader = styled('div')` 
   display: flex;
   justify-content: center;
   color: rgba(9, 30, 66, .75);
 `;
 
-export const CreateBoardCloseBorder = styled.hr` 
+export const CreateBoardCloseBorder = styled('hr')` 
   margin: 5px;
 `;
 
-export const CreateBoardBackgroundText = styled.div` 
+export const CreateBoardBackgroundText = styled('div')` 
   font-family: ${fontFamily};
   font-size: 12px;
   font-weight: 700;
   color: rgba(9, 30, 66, .75);
 `;
 
-export const CreateBoardBackgroundChoices = styled.div` 
+export const CreateBoardBackgroundChoices = styled('div')` 
   display: flex;
   flex-wrap: wrap;
 `;
 
-export const CreateBoardBackgroundChoice = styled.div<{ background: string }>` 
-  background: ${(props) => props.background};
+export const CreateBoardBackgroundChoice = styled('div')`
+  background: ${(props: { background: string }) => props.background};
   width: 40px;
   height: 32px;
   border-radius: 5px;
@@ -106,7 +106,7 @@ export const CreateBoardBackgroundChoice = styled.div<{ background: string }>`
   cursor: pointer;
 
   &:hover {
-    ${(props) => {
+    ${(props: { background: string }) => {
       const rgbaNumbers = props.background
         .split('(')
         .join('')
@@ -122,15 +122,17 @@ export const CreateBoardBackgroundChoice = styled.div<{ background: string }>`
   }
 `;
 
-export const CreateBoardTitleInput = styled.input`
+export const CreateBoardTitleInput = styled('input')`
   width: 200px;
   margin: 5px;
   height: 20px;
 `;
 
-export const CreateBoardButton = styled.button<{ isDisabled: boolean }>` 
-  background: ${(props) => (props.isDisabled ? 'rgba(9, 30, 66, 0.04)' : blue)};
-  color: ${(props) => (props.isDisabled ? 'rgba(9, 30, 66, 0.08)' : '#fff')};
+export const CreateBoardButton = styled('button')`
+  background: ${(props: { isDisabled: boolean }) =>
+    props.isDisabled ? 'rgba(9, 30, 66, 0.04)' : blue};
+  color: ${(props: { isDisabled: boolean }) =>
+    props.isDisabled ? 'rgba(9, 30, 66, 0.08)' : '#fff'};
   border: none;
   border-radius: 5px;
   width: 200px;

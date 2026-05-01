@@ -1,5 +1,5 @@
 import { TiDelete } from 'react-icons/ti';
-import styled from 'styled-components';
+import { styled } from '~/styles/styled';
 import { Button, blue, fontFamily, red } from '.';
 
 export const SignInButton = styled(Button)` 
@@ -16,12 +16,12 @@ export const RegisterButton = styled(Button)`
   border: 1px solid ${blue};
 `;
 
-export const InputLabel = styled.label` 
+export const InputLabel = styled('label')` 
   font-family: ${fontFamily};
   width: 250px;
 `;
 
-export const ErrorMessageContainer = styled.div` 
+export const ErrorMessageContainer = styled('div')` 
   position: relative;
   width: 100%;
   background: ${red};
