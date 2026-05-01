@@ -36,7 +36,9 @@ export function CardModalDescription({
     <DescriptionContainer>
       <Flex>
         <IoMdList size={24} />
+
         <CardModalTitle>Description</CardModalTitle>
+        
         {cardDescription && !isEditing && (
           <EditDescriptionButton secondary onClick={() => setEditing(true)}>
             Edit
@@ -63,6 +65,7 @@ export function CardModalDescription({
             onChange={event => setDescription(event.target.value)}
             placeholder={placeHolderText}
           />
+
           <Flex>
             <SaveDescriptionButton
               onClick={() => {
@@ -79,11 +82,12 @@ export function CardModalDescription({
             >
               Save
             </SaveDescriptionButton>
+
             <CloseDescriptionButton 
               secondary 
               onClick={() => setEditing(false)}
             >
-                X
+              X
             </CloseDescriptionButton>
           </Flex>
         </>

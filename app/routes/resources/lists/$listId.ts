@@ -20,49 +20,47 @@ export const action: ActionFunction = async ({
     case 'PUT': {
       const userData = await request.json();
 
-      console.log(userData)
-
-      const { data, error } = await client(userData.token)
+      const { data } = await client(userData.token)
         .from('lists')
         .update([{
           listTitle: userData.listTitle,
         }])
         .match({ id: params.listId })
 
-      console.log({data, error})
-
       return data
-
     }
+
     case 'DELETE': {
-      const userData = await request.json()
+      const userData = await request.json();
+      const id = { id: userData.id };
+      const listId = { listId: userData.id }
+
       const { data } = await client(userData.token)
         .from('lists')
         .delete()
-        .match({ id: userData.id });
+        .match(id);
 
-      const { data: cardData } = await client(userData.token)
+      await client(userData.token)
         .from('cards')
         .delete()
-        .match({ listId: userData.id })
+        .match(listId)
 
-      const { data: checklistData } = await client(userData.token)
+      await client(userData.token)
         .from('checklists')
         .delete()
-        .match({ listId: userData.id });
+        .match(listId);
 
-      const { data: checklistItemData } = await client(userData.token)
+      await client(userData.token)
         .from('checklist-items')
         .delete()
-        .match({ listId: userData.id });     
+        .match(listId);     
        
-      console.log({
-        data,
-        cardData,
-        checklistData,
-        checklistItemData
-      })
-      const responseData = {code: 'lists:delete:success', message: 'success', data};
+      const responseData = {
+        code: 'lists:delete:success', 
+        message: 'success', 
+        data
+      };
+
       return new Response(JSON.stringify(responseData), responseOptions)
     }
   }

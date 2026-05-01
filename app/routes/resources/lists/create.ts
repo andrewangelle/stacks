@@ -7,23 +7,28 @@ const responseOptions = {
   }
 };
 
-export const action = async ({ request }: {request: Request}) => {
+export const action = async ({ request }: { request: Request }) => {
   switch(request.method){
     case 'POST':
-      const userData = await request.json()
-      const { data, ...rest } = await client(userData.token)
+      const userData = await request.json();
+
+      const { data } = await client(userData.token)
         .from('lists')
         .insert([{
           listTitle: userData.listTitle,
           boardId: userData.boardId,
           userId: userData.userId
-        }])
+        }]);
        
-      console.log({
-        data,
-        rest
-      })
-      const responseData = {code: 'lists:create:success', message: 'success', data};
-      return new Response(JSON.stringify(responseData), responseOptions)
+      const responseData = {
+        code: 'lists:create:success', 
+        message: 'success', 
+        data
+      };
+
+      return new Response(
+        JSON.stringify(responseData), 
+        responseOptions
+      )
   }
 }
