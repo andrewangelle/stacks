@@ -1,4 +1,4 @@
-import { useParams } from '@remix-run/react';
+import { useParams } from '@tanstack/react-router';
 import { formatRelative } from 'date-fns';
 import { useState } from 'react';
 import { MdOutlineFormatListBulleted } from 'react-icons/md';
@@ -30,7 +30,7 @@ export function CardModalActivity({
   listId: string;
 }) {
   const [showActivity, setShowActivity] = useState(false);
-  const params = useParams();
+  const params = useParams({ strict: false });
   const [token] = useRecoilState(tokenState);
   const { data } = useGetActivityQuery({ cardId });
   const [comment, setComment] = useState<string>('');

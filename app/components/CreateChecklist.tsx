@@ -1,5 +1,5 @@
 import * as Popover from '@radix-ui/react-popover';
-import { useParams } from '@remix-run/react';
+import { useParams } from '@tanstack/react-router';
 import { useState } from 'react';
 import { BsCheck2Square } from 'react-icons/bs';
 import { useRecoilState } from 'recoil';
@@ -28,7 +28,7 @@ export function CreateChecklist({
   listId: string;
   cardId: string;
 }) {
-  const params = useParams();
+  const params = useParams({ strict: false });
   const [token] = useRecoilState(tokenState);
   const [checklistTitle, setChecklistTitle] = useState('');
   const [createChecklist] = useCreateChecklistMutation();

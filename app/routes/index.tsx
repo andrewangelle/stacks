@@ -1,4 +1,4 @@
-import { useLocation, useNavigate } from '@remix-run/react';
+import { useLocation, useNavigate } from '@tanstack/react-router';
 import { useEffect } from 'react';
 import { useRecoilState } from 'recoil';
 
@@ -25,15 +25,15 @@ export default function Index() {
     if (token !== null && (token as TokenType).access_token && !isSignedIn) {
       setSignedIn(true);
       setToken(token);
-      navigate('/boards');
+      navigate({ to: '/boards' });
     }
 
     if (isSignedIn) {
-      navigate('/boards');
+      navigate({ to: '/boards' });
     }
 
     if (!isSignedIn) {
-      navigate('/signin');
+      navigate({ to: '/signin' });
     }
   }, [token, setSignedIn, setToken, isSignedIn, navigate]);
 

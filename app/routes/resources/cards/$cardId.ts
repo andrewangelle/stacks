@@ -1,5 +1,3 @@
-import type { ActionFunction, LoaderFunction } from '@remix-run/react';
-import type { Params } from 'react-router';
 import client from '~/modules/supabase';
 
 const responseOptions = {
@@ -9,12 +7,12 @@ const responseOptions = {
   },
 };
 
-export const action: ActionFunction = async ({
+export const action = async ({
   request,
   params,
 }: {
   request: Request;
-  params: Params<string>;
+  params: Record<string, string>;
 }) => {
   switch (request.method) {
     case 'PUT': {
@@ -68,7 +66,11 @@ export const action: ActionFunction = async ({
   }
 };
 
-export const loader: LoaderFunction = async ({ params }) => {
+export const loader = async ({
+  params,
+}: {
+  params: Record<string, string>;
+}) => {
   const rows = await client().from('cards').select();
 
   if (rows.data !== null) {

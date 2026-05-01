@@ -1,4 +1,4 @@
-import { useNavigate } from '@remix-run/react';
+import { useNavigate } from '@tanstack/react-router';
 import { useEffect, useState } from 'react';
 import { useRecoilState } from 'recoil';
 
@@ -40,7 +40,7 @@ export function SignIn() {
       if (result.user.role === 'authenticated') {
         setSignedIn(true);
         setToken(result.session);
-        navigate('/boards');
+        navigate({ to: '/boards' });
       }
     } catch (_e) {
       setError(true);
@@ -51,11 +51,11 @@ export function SignIn() {
     if (token?.access_token && !isSignedIn) {
       setSignedIn(true);
       setToken(token);
-      navigate('/boards');
+      navigate({ to: '/boards' });
     }
 
     if (isSignedIn) {
-      navigate('/boards');
+      navigate({ to: '/boards' });
     }
   }, [token, setSignedIn, setToken, isSignedIn, navigate]);
 

@@ -1,5 +1,5 @@
 import * as Popover from '@radix-ui/react-popover';
-import { useParams } from '@remix-run/react';
+import { useParams } from '@tanstack/react-router';
 import { useRecoilState } from 'recoil';
 
 import { tokenState, useDeleteListMutation } from '~/store';
@@ -15,7 +15,7 @@ import {
 
 export function DeleteListPopover(props: { id: string; listTitle: string }) {
   const [token] = useRecoilState(tokenState);
-  const params = useParams();
+  const params = useParams({ strict: false });
   const [deleteList] = useDeleteListMutation();
   return (
     <Popover.Root>

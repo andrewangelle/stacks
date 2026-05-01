@@ -1,4 +1,3 @@
-import type { LoaderFunction } from '@remix-run/react';
 import client from '~/modules/supabase';
 
 const responseOptions = {
@@ -8,7 +7,11 @@ const responseOptions = {
   },
 };
 
-export const loader: LoaderFunction = async ({ params }) => {
+export const loader = async ({
+  params,
+}: {
+  params: Record<string, string>;
+}) => {
   const rows = await client().from('stacks').select();
 
   if (rows.data !== null) {

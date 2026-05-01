@@ -1,4 +1,4 @@
-import { useParams } from '@remix-run/react';
+import { useParams } from '@tanstack/react-router';
 import { type PropsWithChildren, useRef } from 'react';
 import { useDrag, useDrop } from 'react-dnd';
 import { useDispatch } from 'react-redux';
@@ -13,7 +13,7 @@ export function DragDropList({
   id: string;
   listTitle: string;
 }>) {
-  const params = useParams();
+  const params = useParams({ strict: false });
   const dispatch = useDispatch();
   const [{ isDragging }, dragRef] = useDrag({
     type: 'list',

@@ -1,4 +1,4 @@
-import { useNavigate } from '@remix-run/react';
+import { useNavigate } from '@tanstack/react-router';
 import { useEffect } from 'react';
 import { useRecoilState } from 'recoil';
 
@@ -17,7 +17,7 @@ export default function BoardsPage() {
   useEffect(() => {
     if (!isSignedIn || !token?.access_token) {
       setSignedIn(false);
-      navigate('/');
+      navigate({ to: '/' });
     }
   }, [isSignedIn, navigate, token, setSignedIn]);
 
@@ -34,7 +34,7 @@ export default function BoardsPage() {
             <BoardCardContainer
               key={board.id}
               background={board.boardColor}
-              onClick={() => navigate(`/board/${board.id}`)}
+              onClick={() => navigate({ to: `/board/${board.id}` })}
             >
               {board.boardTitle}
             </BoardCardContainer>

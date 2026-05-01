@@ -1,5 +1,5 @@
 import * as Popover from '@radix-ui/react-popover';
-import { useParams } from '@remix-run/react';
+import { useParams } from '@tanstack/react-router';
 import { type CSSProperties, useState } from 'react';
 import { AiOutlineCheck, AiOutlineEllipsis } from 'react-icons/ai';
 import { useRecoilState } from 'recoil';
@@ -30,7 +30,7 @@ import {
 } from '~/styles';
 
 export function ChecklistCheckbox(props: ChecklistItemType) {
-  const params = useParams();
+  const params = useParams({ strict: false });
   const [token] = useRecoilState(tokenState);
   const [updateItem] = useUpdateChecklistItemMutation();
   const [deleteChecklistItem] = useDeleteChecklistItemMutation();

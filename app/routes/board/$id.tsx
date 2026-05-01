@@ -1,4 +1,4 @@
-import { useNavigate, useParams } from '@remix-run/react';
+import { useNavigate, useParams } from '@tanstack/react-router';
 import { useEffect } from 'react';
 import { useRecoilState } from 'recoil';
 
@@ -12,7 +12,7 @@ import {
 import { BoardPageBackground, Flex, Padding } from '~/styles';
 
 export default function BoardPage() {
-  const params = useParams();
+  const params = useParams({ strict: false });
   const { data: board } = useGetBoardQuery(params.id);
   const navigate = useNavigate();
   const [isSignedIn, setSignedIn] = useRecoilState(signedInState);
@@ -25,7 +25,7 @@ export default function BoardPage() {
   useEffect(() => {
     if (!isSignedIn || !token?.access_token) {
       setSignedIn(false);
-      navigate('/');
+      navigate({ to: '/' });
     }
   }, [isSignedIn, navigate, token, setSignedIn]);
   return (

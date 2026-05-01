@@ -1,4 +1,4 @@
-import { useNavigate } from '@remix-run/react';
+import { useNavigate } from '@tanstack/react-router';
 import { useEffect, useState } from 'react';
 import { useRecoilState } from 'recoil';
 
@@ -46,7 +46,7 @@ export function RegisterModal() {
     if (result.user.role === 'authenticated') {
       setSignedIn(true);
       setToken(result.session);
-      navigate('/boards');
+      navigate({ to: '/boards' });
     }
   }
 

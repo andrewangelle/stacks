@@ -1,4 +1,4 @@
-import { useNavigate, useParams } from '@remix-run/react';
+import { useNavigate, useParams } from '@tanstack/react-router';
 import { type CSSProperties, useState } from 'react';
 import { IoIosArrowBack, IoIosArrowDropright } from 'react-icons/io';
 import { RiTrelloFill } from 'react-icons/ri';
@@ -24,7 +24,7 @@ export const sharedDrawerArrowStyles: CSSProperties = {
 };
 
 export function Drawer() {
-  const params = useParams();
+  const params = useParams({ strict: false });
   const { data: board } = useGetBoardQuery(params.id);
   const [token] = useRecoilState(tokenState);
   const [isDrawerOpen, setDrawerOpen] = useState(false);
@@ -69,7 +69,7 @@ export function Drawer() {
                 size={18}
                 style={{ color: 'white', padding: '8px' }}
               />
-              <YourBoardsTitle onClick={() => navigate('/boards')}>
+              <YourBoardsTitle onClick={() => navigate({ to: '/boards' })}>
                 Boards
               </YourBoardsTitle>
             </BoardsLinkContainer>
@@ -82,7 +82,7 @@ export function Drawer() {
                   <DrawerBoardEntry
                     key={boardEntry.id}
                     isSelected={boardEntry.id === board?.id}
-                    onClick={() => navigate(`/board/${boardEntry.id}`)}
+                    onClick={() => navigate({ to: `/board/${boardEntry.id}` })}
                   >
                     <CreateBoardBackgroundChoice
                       background={boardEntry.boardColor}

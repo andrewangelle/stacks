@@ -1,5 +1,5 @@
 import { combineReducers, configureStore } from '@reduxjs/toolkit';
-import { setupListeners } from '@reduxjs/toolkit/dist/query';
+import { setupListeners } from '@reduxjs/toolkit/query';
 import { createLogger } from 'redux-logger';
 import { resourcesMiddleware } from '~/store';
 import { type ResourcesApiState, resourcesReducer } from './resourcesApi';
@@ -16,17 +16,17 @@ export const createStore = () => {
   const store = configureStore({
     reducer: rootReducer,
     middleware: (getDefaultMiddleware) =>
-      [
-        ...getDefaultMiddleware({
-          thunk: true,
-          immutableCheck: false,
-          serializableCheck: false,
-        }),
-        createLogger({
-          collapsed: true,
-        }),
-        resourcesMiddleware,
-      ].filter(Boolean),
+      getDefaultMiddleware({
+        thunk: true,
+        immutableCheck: false,
+        serializableCheck: false,
+      })
+        .concat(
+          createLogger({
+            collapsed: true,
+          }),
+        )
+        .concat(resourcesMiddleware),
     preloadedState,
   });
 

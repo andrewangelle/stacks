@@ -1,4 +1,4 @@
-import { useParams } from '@remix-run/react';
+import { useParams } from '@tanstack/react-router';
 import {
   type MouseEvent,
   useCallback,
@@ -35,9 +35,9 @@ export function useOutsideClick<ElementType = HTMLDivElement>(
   const [node, setNode] = useState<Element | null>(null);
 
   const memoizedCallback = useCallback(
-    (e) => {
+    (e: globalThis.MouseEvent) => {
       if (node && !node.contains(e.target as Element)) {
-        savedHandler.current(e);
+        savedHandler.current(e as unknown as MouseEvent<ElementType>);
       }
     },
     [node],
@@ -64,7 +64,7 @@ export function useOutsideClick<ElementType = HTMLDivElement>(
 }
 
 export function ListCard({ id, listTitle }: List) {
-  const params = useParams();
+  const params = useParams({ strict: false });
   const [token] = useRecoilState(tokenState);
   const [isEditing, setEditing] = useState(false);
   const [isEditingName, setIsEditingName] = useState(false);

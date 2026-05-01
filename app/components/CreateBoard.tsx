@@ -33,11 +33,15 @@ export function CreateBoard() {
   const [createBoard] = useCreateBoardMutation();
 
   function onBoardCreate() {
+    if (!token?.access_token || !token?.user?.id) {
+      return;
+    }
+
     createBoard({
       boardColor: selectedColor,
       boardTitle,
-      token: token?.access_token,
-      userId: token?.user.id as string,
+      token: token.access_token,
+      userId: token.user.id,
     });
   }
 
