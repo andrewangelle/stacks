@@ -6,17 +6,16 @@ import { BsCheck2Square } from 'react-icons/bs';
 import { useCreateActivityMutation } from '~/store/activityApi';
 import { tokenState } from '~/store/atoms';
 import { useCreateChecklistMutation } from '~/store/checklistsApi';
+import { CreateBoardCloseBorder, PopoverClose } from '~/styles/Boards';
 import {
   CardModalSiderButton,
   CardModalSiderButtonText,
   ChecklistPopoverContent,
   ChecklistPopoverHeader,
-  CreateBoardCloseBorder,
   CreateChecklistAddButton,
   CreateChecklistInput,
   CreateChecklistPopoverTrigger,
   CreateChecklistTitle,
-  PopoverClose,
 } from '~/styles/CardModal';
 
 export function CreateChecklist({

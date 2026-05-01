@@ -19,11 +19,10 @@ import {
   AddCardInput,
   AddCardText,
   CloseAddCardButton,
-  Flex,
   ListContainer,
   ListName,
 } from '~/styles/List';
-
+import { Flex } from '~/styles/Page';
 export function useOutsideClick<ElementType = HTMLDivElement>(
   handler: (e: MouseEvent<ElementType>) => void,
   when = true,

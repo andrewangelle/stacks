@@ -4,15 +4,14 @@ import { useAtom } from 'jotai';
 
 import { tokenState } from '~/store/atoms';
 import { useDeleteListMutation } from '~/store/listsApi';
+import { CreateBoardCloseBorder, PopoverClose } from '~/styles/Boards';
 import {
   ChecklistPopoverHeader,
-  CreateBoardCloseBorder,
   DeleteCardPopoverTrigger,
   DeleteChecklistPopoverButton,
   DeleteChecklistPopoverContent,
-  DeleteListIcon,
-  PopoverClose,
 } from '~/styles/CardModal';
+import { DeleteListIcon } from '~/styles/List';
 
 export function DeleteListPopover(props: { id: string; listTitle: string }) {
   const [token] = useAtom(tokenState);

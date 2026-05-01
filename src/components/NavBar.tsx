@@ -1,12 +1,12 @@
+import { styled } from '@pigment-css/react';
 import { useLocation } from '@tanstack/react-router';
 import { useAtom } from 'jotai';
 import type { ComponentType, HTMLAttributes } from 'react';
 import { RiTrelloFill } from 'react-icons/ri';
 import { signedInState, tokenState } from '~/store/atoms';
 import { blue, fontFamily } from '~/styles/Boards';
-import { styled } from '~/styles/styled';
 
-const NavBarContainer = styled('div')`
+const NavBarContainer = styled.div`
   font-family: ${fontFamily};
   width: 100vw;
   position: fixed;
@@ -21,7 +21,7 @@ const NavBarContainer = styled('div')`
   HTMLAttributes<HTMLDivElement> & { background: string }
 >;
 
-const LogOutText = styled('div')` 
+const LogOutText = styled.div` 
   position: absolute;
   right: 15px;
   top: 25%;

@@ -14,6 +14,7 @@ import {
   useDeleteChecklistItemMutation,
   useUpdateChecklistItemMutation,
 } from '~/store/checklistItemsApi';
+import { CreateBoardCloseBorder, PopoverClose } from '~/styles/Boards';
 import {
   AddChecklistButton,
   AddChecklistItemInput,
@@ -23,13 +24,11 @@ import {
   ChecklistCheckboxContainer,
   ChecklistPopoverHeader,
   CloseDescriptionButton,
-  CreateBoardCloseBorder,
   DeleteChecklistPopoverButton,
   DeleteChecklistPopoverContent,
   DeleteChecklistPopoverTrigger,
-  Flex,
-  PopoverClose,
 } from '~/styles/CardModal';
+import { Flex } from '~/styles/Page';
 
 export function ChecklistCheckbox(props: ChecklistItemType) {
   const params = useParams({ strict: false });

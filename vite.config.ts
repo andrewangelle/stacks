@@ -31,9 +31,9 @@ export default defineConfig({
     tsConfigPaths({
       projects: ['./tsconfig.json'],
     }),
-    pigment({}),
     tanstackStart(),
     netlify(),
+    pigment({}),
     viteReact(),
   ],
 });

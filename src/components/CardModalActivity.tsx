@@ -17,11 +17,11 @@ import {
   ActivityContainer,
   ActivityHeader,
   AddActivityInput,
-  CardModalTitle,
-  Flex,
   HideActivityButton,
   SaveCommentButton,
 } from '~/styles/Activity';
+import { CardModalTitle } from '~/styles/CardModal';
+import { Flex } from '~/styles/Page';
 
 export function CardModalActivity({
   listId,

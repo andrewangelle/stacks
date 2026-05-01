@@ -8,14 +8,14 @@ import { useGetBoardQuery, useGetBoardsQuery } from '~/store/boardsApi';
 import {
   BoardsLinkContainer,
   BoardTitle,
-  CreateBoardBackgroundChoice,
   DrawerBoardEntry,
   DrawerContainer,
   DrawerHeader,
   DrawerHeaderTitle,
-  FlexColumn,
   YourBoardsTitle,
 } from '~/styles/Board';
+import { CreateBoardBackgroundChoice } from '~/styles/Boards';
+import { FlexColumn } from '~/styles/Page';
 
 export const sharedDrawerArrowStyles: CSSProperties = {
   cursor: 'pointer',

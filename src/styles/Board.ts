@@ -1,11 +1,11 @@
+import { styled } from '@pigment-css/react';
 import type { ComponentType, HTMLAttributes } from 'react';
 import { fontFamily } from '~/styles/Boards';
 import { Button } from '~/styles/Page';
-import { styled } from '~/styles/styled';
 
 export const AddListContainer: ComponentType<
   HTMLAttributes<HTMLDivElement> & { isEditing: boolean }
-> = styled('div')`
+> = styled.div`
   position: relative;
   font-family: ${fontFamily};
   background-color: rgba(255, 255, 255, .3);
@@ -22,7 +22,7 @@ export const AddListContainer: ComponentType<
   }
 `;
 
-export const AddListInput = styled('input')` 
+export const AddListInput = styled.input` 
   border-radius: 5px;
   border: none;
   padding: 6px 8px;
@@ -42,7 +42,7 @@ export const CloseAddListButton = styled(Button)`
 
 export const DrawerContainer: ComponentType<
   HTMLAttributes<HTMLDivElement> & { background?: string; isOpen: boolean }
-> = styled('div')`
+> = styled.div`
   min-height: 100vh;
   width: ${(props: { isOpen: boolean }) => (props.isOpen ? '24vw' : '0.7vw')};
   border-right: 1px solid white;
@@ -62,13 +62,13 @@ export const DrawerContainer: ComponentType<
   }}
 `;
 
-export const DrawerHeader = styled('div')`
+export const DrawerHeader = styled.div`
   position: relative;
   height: 12%;
   border-bottom: 1px solid white;
 `;
 
-export const DrawerHeaderTitle = styled('div')` 
+export const DrawerHeaderTitle = styled.div` 
   font-family: ${fontFamily};
   font-size: 16px;
   width: 60%;
@@ -79,7 +79,7 @@ export const DrawerHeaderTitle = styled('div')`
   word-break: break-word;
 `;
 
-export const YourBoardsTitle = styled('div')` 
+export const YourBoardsTitle = styled.div` 
   font-family: ${fontFamily};
   font-size: 14px;
   color: white;
@@ -91,7 +91,7 @@ export const BoardTitle = styled(YourBoardsTitle)`
   font-weight: 300;
 `;
 
-export const BoardsLinkContainer = styled('div')` 
+export const BoardsLinkContainer = styled.div` 
   display: flex;
   cursor: pointer;
   &:hover {
@@ -101,7 +101,7 @@ export const BoardsLinkContainer = styled('div')`
 
 export const DrawerBoardEntry: ComponentType<
   HTMLAttributes<HTMLDivElement> & { isSelected: boolean }
-> = styled('div')`
+> = styled.div`
   display: flex;
   cursor: pointer;
   ${(props: { isSelected: boolean }) => {

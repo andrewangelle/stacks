@@ -2,15 +2,14 @@ import * as Popover from '@radix-ui/react-popover';
 import { useAtom } from 'jotai';
 import { tokenState } from '~/store/atoms';
 import { type ListCardType, useDeleteCardMutation } from '~/store/cardsApi';
+import { CreateBoardCloseBorder, PopoverClose } from '~/styles/Boards';
 import {
   CardModalSiderButton,
   CardModalSiderButtonText,
   ChecklistPopoverHeader,
-  CreateBoardCloseBorder,
   DeleteCardPopoverTrigger,
   DeleteChecklistPopoverButton,
   DeleteChecklistPopoverContent,
-  PopoverClose,
 } from '~/styles/CardModal';
 
 export function DeleteCardPopover(

@@ -5,14 +5,13 @@ import {
   type ChecklistType,
   useDeleteChecklistMutation,
 } from '~/store/checklistsApi';
+import { CreateBoardCloseBorder, PopoverClose } from '~/styles/Boards';
 import {
   ChecklistPopoverHeader,
-  CreateBoardCloseBorder,
   DeleteChecklistButton,
   DeleteChecklistPopoverButton,
   DeleteChecklistPopoverContent,
   DeleteChecklistPopoverTrigger,
-  PopoverClose,
 } from '~/styles/CardModal';
 
 export function DeleteChecklistPopover(props: ChecklistType) {

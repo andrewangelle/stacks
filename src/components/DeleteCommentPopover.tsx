@@ -5,13 +5,12 @@ import {
   useDeleteActivityMutation,
 } from '~/store/activityApi';
 import { tokenState } from '~/store/atoms';
+import { CreateBoardCloseBorder, PopoverClose } from '~/styles/Boards';
 import {
   ChecklistPopoverHeader,
-  CreateBoardCloseBorder,
   DeleteChecklistPopoverButton,
   DeleteChecklistPopoverContent,
   DeleteChecklistPopoverTrigger,
-  PopoverClose,
 } from '~/styles/CardModal';
 
 export function DeleteCommentPopover(props: ActivityType) {

@@ -22,10 +22,9 @@ import {
   EditCardTitleCancelButton,
   EditCardTitleInput,
   EditCardTitleSaveButton,
-  Flex,
-  ListCardContainer,
-  Padding,
 } from '~/styles/CardModal';
+import { ListCardContainer } from '~/styles/List';
+import { Flex, Padding } from '~/styles/Page';
 
 export function CardModal(
   props: ListCardType & {

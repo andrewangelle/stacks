@@ -15,10 +15,10 @@ import {
   ActivityCommentContent,
   ActivityContainer,
   AddActivityInput,
-  CloseAddCardButton,
-  Flex,
   SaveCommentButton,
 } from '~/styles/Activity';
+import { CloseAddCardButton } from '~/styles/List';
+import { Flex } from '~/styles/Page';
 
 export function ActivityComment(props: ActivityType) {
   const [token] = useAtom(tokenState);

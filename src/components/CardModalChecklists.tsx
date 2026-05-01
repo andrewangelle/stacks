@@ -25,8 +25,8 @@ import {
   ChecklistProgressPercentage,
   ChecklistProgressRoot,
   CloseDescriptionButton,
-  Flex,
 } from '~/styles/CardModal';
+import { Flex } from '~/styles/Page';
 
 function Checklist(props: ChecklistType) {
   const { data } = useGetChecklistItemsQuery({ checklistId: props.id });

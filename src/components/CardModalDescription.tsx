@@ -11,9 +11,9 @@ import {
   DescriptionInput,
   DescriptionPlaceholder,
   EditDescriptionButton,
-  Flex,
   SaveDescriptionButton,
 } from '~/styles/CardModal';
+import { Flex } from '~/styles/Page';
 
 export function CardModalDescription({
   listId,

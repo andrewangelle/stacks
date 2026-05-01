@@ -1,6 +1,6 @@
+import { styled } from '@pigment-css/react';
 import * as Dialog from '@radix-ui/react-dialog';
 import { blue, fontFamily } from '~/styles/Boards';
-import { styled } from '~/styles/styled';
 
 export const RegisterModalRoot = styled(Dialog.Root)`
   width: inherit;

@@ -1,7 +1,7 @@
+import { styled } from '@pigment-css/react';
 import { TiDelete } from 'react-icons/ti';
 import { blue, fontFamily, red } from '~/styles/Boards';
 import { Button } from '~/styles/Page';
-import { styled } from '~/styles/styled';
 
 export const SignInButton = styled(Button)` 
   margin: 12px;
@@ -17,12 +17,12 @@ export const RegisterButton = styled(Button)`
   border: 1px solid ${blue};
 `;
 
-export const InputLabel = styled('label')` 
+export const InputLabel = styled.label` 
   font-family: ${fontFamily};
   width: 250px;
 `;
 
-export const ErrorMessageContainer = styled('div')` 
+export const ErrorMessageContainer = styled.div` 
   position: relative;
   width: 100%;
   background: ${red};

@@ -7,8 +7,8 @@ import {
   AddListContainer,
   AddListInput,
   CloseAddListButton,
-  Flex,
 } from '~/styles/Board';
+import { Flex } from '~/styles/Page';
 
 export function AddLists({ boardId }: { boardId: string }) {
   const [token] = useAtom(tokenState);
