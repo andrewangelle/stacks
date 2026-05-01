@@ -4,7 +4,7 @@ import {
   useNavigate,
 } from '@tanstack/react-router';
 import { useAtom } from 'jotai';
-import { useEffect } from 'react';
+import { useEffect, useMemo } from 'react';
 import { signedInState, type TokenType, tokenState } from '~/store/atoms';
 
 function Index() {
@@ -13,31 +13,37 @@ function Index() {
   const navigate = useNavigate();
   const { hash } = useLocation();
 
-  const token = hash
-    .split('&')
-    .reduce((acc: Record<string, string>, string: string) => {
-      const pairs = string.split('=');
-      if (pairs[0] === '#access_token') {
-        pairs[0] = pairs[0].split('#')[1];
-      }
-      acc[pairs[0]] = pairs[1];
-      return acc;
-    }, {}) as unknown as TokenType;
+  const token = useMemo(() => {
+    if (!hash) {
+      return null;
+    }
+
+    return hash
+      .split('&')
+      .reduce((acc: Record<string, string>, string: string) => {
+        const pairs = string.split('=');
+        if (pairs[0] === '#access_token') {
+          pairs[0] = pairs[0].split('#')[1];
+        }
+        acc[pairs[0]] = pairs[1];
+        return acc;
+      }, {}) as unknown as TokenType;
+  }, [hash]);
 
   useEffect(() => {
-    if (token !== null && (token as TokenType).access_token && !isSignedIn) {
+    if (token?.access_token && !isSignedIn) {
       setSignedIn(true);
       setToken(token);
       navigate({ to: '/boards' });
+      return;
     }
 
     if (isSignedIn) {
       navigate({ to: '/boards' });
+      return;
     }
 
-    if (!isSignedIn) {
-      navigate({ to: '/signin' });
-    }
+    navigate({ to: '/signin' });
   }, [token, setSignedIn, setToken, isSignedIn, navigate]);
 
   return null;

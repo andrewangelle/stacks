@@ -4,6 +4,9 @@ settings:
   autoInstallPeers: true
   excludeLinksFromLockfile: false
 
+overrides:
+  react-is: 18.3.1
+
 importers:
 
   .:
@@ -32,6 +35,12 @@ importers:
       '@supabase/supabase-js':
         specifier: ^1.31.1
         version: 1.35.7
+      '@tanstack/db':
+        specifier: ^0.6.5
+        version: 0.6.5(typescript@5.9.3)
+      '@tanstack/db-collections':
+        specifier: ^0.0.24
+        version: 0.0.24(@electric-sql/client@1.5.16)(typescript@5.9.3)
       '@tanstack/react-query':
         specifier: ^5.90.3
         version: 5.100.7(react@19.2.5)
@@ -373,6 +382,13 @@ packages:
   '@dependents/detective-less@5.0.3':
     resolution: {integrity: sha512-v6oD9Ukp+N7V4n6p5I/+mM5fIohSfkrDSGlFm5w/pYmchvbk+sMIHsLxrFJ5Lnujewj1BzWL0K84d88lwZAMQA==}
     engines: {node: '>=18'}
+
+  '@electric-sql/client@1.5.16':
+    resolution: {integrity: sha512-HvdlSCfCLPG1ohNHA9F/BHSKcZwxTRXO4CgevnocTGU2UMmy6ttosuyTwXFQV4D0n5j6NcxvlGt1wmv7FrwzIg==}
+    hasBin: true
+
+  '@electric-sql/d2mini@0.1.8':
+    resolution: {integrity: sha512-ovLncfKvj6fTHA7qqaHt/cOzU/2JvhOw9lySYdZtmnecGv/1IiCH9HFrj6gAie07QLq3mqiNLdjZoDcO4w6Rzg==}
 
   '@electric-sql/pglite@0.3.16':
     resolution: {integrity: sha512-mZkZfOd9OqTMHsK+1cje8OSzfAQcpD7JmILXTl5ahdempjUDdmg4euf1biDex5/LfQIDJ3gvCu6qDgdnDxfJmA==}
@@ -1462,6 +1478,9 @@ packages:
     resolution: {integrity: sha512-uwPAhccfFJlsfCxMYTwOdVfOz3xqyj8xYL3zJj8f0pb30tLohnnFPhLuqp4/qoEz8sNxe4SESZedcBojRefIzg==}
     engines: {node: '>=18'}
     hasBin: true
+
+  '@microsoft/fetch-event-source@2.0.1':
+    resolution: {integrity: sha512-W6CLUJ2eBMw3Rec70qrsEW0jOm/3twwJv21mrmj2yORiaVmVYGS4sSS5yUwvQc1ZlDLYGPnClVWmUUMagKNsfA==}
 
   '@mui/private-theming@6.4.9':
     resolution: {integrity: sha512-LktcVmI5X17/Q5SkwjCcdOLBzt1hXuc14jYa7NPShog0GBDCDvKtcnP0V7a2s6EiVRlv7BzbWEJzH6+l/zaCxw==}
@@ -2561,6 +2580,9 @@ packages:
   '@so-ric/colorspace@1.1.6':
     resolution: {integrity: sha512-/KiKkpHNOBgkFJwu9sh48LkHSMYGyuTcSFK/qMBdnOAlrRJzRSXAOFB5qwzaVQuDl8wAvHVMkaASQDReTahxuw==}
 
+  '@standard-schema/spec@1.1.0':
+    resolution: {integrity: sha512-l2aFy5jALhniG5HgqrD6jXLi/rUWrKvqN/qJx6yoJsgKhblVd+iqqU4RCXavm/jPityDo5TCvKMnpjKnOriy0w==}
+
   '@supabase/functions-js@1.3.4':
     resolution: {integrity: sha512-yYVgkECjv7IZEBKBI3EB5Q7R1p0FJ10g8Q9N7SWKIHUU6i6DnbEGHIMFLyQRm1hmiNWD8fL7bRVEYacmTRJhHw==}
 
@@ -2588,9 +2610,34 @@ packages:
     resolution: {integrity: sha512-+PmQX0PiAYPMeVYe237LJAYvOMYW1j2rH5YROyS3b4CTVJum34HfRvKvAzozHAQG0TnHNdUfY9nCeUyRAs//cw==}
     engines: {node: '>=14.16'}
 
+  '@tanstack/db-collections@0.0.24':
+    resolution: {integrity: sha512-/Fmyw/KW8uvRpQ+b9YS3/CNASLCmBKgCleDcvs/YrLuEFupCb8a5XSpPhs2evESr228OOHTxO5L77yY15TanmQ==}
+    peerDependencies:
+      '@electric-sql/client': '>=1.0.0'
+      typescript: '>=4.7'
+
+  '@tanstack/db-ivm@0.1.18':
+    resolution: {integrity: sha512-+pZJiRKdoKRM5Epq9T7otD9ZJl82pRFauo7LKuJGrarjVKQ7r+QQlPe3kGdN9LEKSnuNGIWjX9OOY4M8kH4eLw==}
+    peerDependencies:
+      typescript: '>=4.7'
+
+  '@tanstack/db@0.0.20':
+    resolution: {integrity: sha512-bh/VggsuV/N5LmNgQiTFuVOATs+c1DRC3D36vRPNWw79V3O4HHptod8hKQdgEQtAbgjXvXrIFJOnlOpc5VOiEQ==}
+    peerDependencies:
+      typescript: '>=4.7'
+
+  '@tanstack/db@0.6.5':
+    resolution: {integrity: sha512-gtCuAo4UtC9SR/kTMu5fVEff6qZ2R1FZi9X7MybtHKA6wve7RePifGG6qBI4OmMB+7juT5/+glNbnqZOrG0/pg==}
+    peerDependencies:
+      typescript: '>=4.7'
+
   '@tanstack/history@1.161.6':
     resolution: {integrity: sha512-NaOGLRrddszbQj9upGat6HG/4TKvXLvu+osAIgfxPYA+eIvYKv8GKDJOrY2D3/U9MRnKfMWD7bU4jeD4xmqyIg==}
     engines: {node: '>=20.19'}
+
+  '@tanstack/pacer-lite@0.2.1':
+    resolution: {integrity: sha512-3PouiFjR4B6x1c969/Pl4ZIJleof1M0n6fNX8NRiC9Sqv1g06CVDlEaXUR4212ycGFyfq4q+t8Gi37Xy+z34iQ==}
+    engines: {node: '>=18'}
 
   '@tanstack/query-core@5.100.7':
     resolution: {integrity: sha512-5R7i6ENJLhVeeJrrUz7jKBXUXv/BJrxf9FQJSkR13bPrb3zOcE8A0Z0PxYCcsKPOsiIlTibrBL/zZbtUO1TFyQ==}
@@ -2726,6 +2773,9 @@ packages:
   '@tanstack/start-storage-context@1.166.34':
     resolution: {integrity: sha512-mIre+HDvahOnUmP3vQx+x4kvUzam/uVYpCphudR/Czzi0Crfm0JyyLMNv7hHxkfqMg9aTrxYtDTZHR3isrUKhg==}
     engines: {node: '>=22.12.0'}
+
+  '@tanstack/store@0.7.7':
+    resolution: {integrity: sha512-xa6pTan1bcaqYDS9BDpSiS63qa6EoDkPN9RsRaxHuDdVDNntzq3xNwR5YKTU/V3SkSyC9T4YVOPh2zRQN0nhIQ==}
 
   '@tanstack/store@0.9.3':
     resolution: {integrity: sha512-8reSzl/qGWGGVKhBoxXPMWzATSbZLZFWhwBAFO9NAyp0TxzfBP0mIrGb8CP8KrQTmvzXlR/vFPPUrHTLBGyFyw==}
@@ -4627,6 +4677,10 @@ packages:
     resolution: {integrity: sha512-buRG0fpBtRHSTCOASe6hD258tEubFoRLb4ZNA6NxMVHNw2gOcwHo9wyablzMzOA5z9xA9L1KNjk/Nt6MT9aYow==}
     engines: {node: '>= 0.6'}
 
+  fractional-indexing@3.2.0:
+    resolution: {integrity: sha512-PcOxmqwYCW7O2ovKRU8OoQQj2yqTfEB/yeTYk4gPid6dN5ODRfU1hXd9tTVZzax/0NkO7AxpHykvZnT1aYp/BQ==}
+    engines: {node: ^14.13.1 || >=16.0.0}
+
   fresh@0.5.2:
     resolution: {integrity: sha512-zJ2mQYM18rEFOudeV4GShTGIQ7RbzA7ozbU9I/XBpm7kqgMywgmylMwXHxZJmkVoYkna9d2pVXVXPdYTP9ej8Q==}
     engines: {node: '>= 0.6'}
@@ -5899,6 +5953,9 @@ packages:
     resolution: {integrity: sha512-Ak6EUJZuhGS8hJ3c2fY6UW5MbkGUPMBEGd13djUzoY/BHqV/gTuFWtC6IuVA7A2+v3yjBS6c4or50xhzTQZImQ==}
     engines: {node: '>= 0.10'}
 
+  murmurhash-js@1.0.0:
+    resolution: {integrity: sha512-TvmkNhkv8yct0SVBSy+o8wYzXjE4Zz3PCesbfs8HiCXXdcTuocApFv11UWlNFWKYsP2okqrhb7JNlSm9InBhIw==}
+
   mute-stream@0.0.7:
     resolution: {integrity: sha512-r65nCZhrbXXb6dXOACihYApHw2Q6pV0M3V0PSxd74N0+D8nzAdEAITq2oAjA1jVnKI+tGvEBUpqiMh0+rW6zDQ==}
 
@@ -6566,14 +6623,8 @@ packages:
     peerDependencies:
       react: '*'
 
-  react-is@16.13.1:
-    resolution: {integrity: sha512-24e6ynE2H+OKt4kqsOvNd8kBpV65zoxbA4BVsEOB3ARVWQki/DHzaUoC5KuON/BiccDaCCTZBuOcfZs70kR8bQ==}
-
-  react-is@17.0.2:
-    resolution: {integrity: sha512-w2GsyukL62IJnlaff/nRegPQR94C/XXamvMWmSHRJ4y7Ts/4ocGRmTHvOs8PSE6pB3dWOrD/nueuU5sduBsQ4w==}
-
-  react-is@19.2.5:
-    resolution: {integrity: sha512-Dn0t8IQhCmeIT3wu+Apm1/YVsJXsGWi6k4sPdnBIdqMVtHtv0IGi6dcpNpNkNac0zB2uUAqNX3MHzN8c+z2rwQ==}
+  react-is@18.3.1:
+    resolution: {integrity: sha512-/LLMVyas0ljjAtoYiPqYiL8VWXzUUdThrmU5+n20DZv+a+ClRoevUzw5JxU+Ieh5/c87ytoTBV9G1FiKfNJdmg==}
 
   react-redux@7.2.9:
     resolution: {integrity: sha512-Gx4L3uM182jEEayZfRbI/G11ZpYdNAnBs70lFVMNdHJI76XYtR+7m0MN+eAs7UHBPhWXcnFPaS+9owSCJQHNpQ==}
@@ -6970,6 +7021,9 @@ packages:
   sort-keys@1.1.2:
     resolution: {integrity: sha512-vzn8aSqKgytVik0iwdBEi+zevbTYZogewTUM6dtpmGwEcdzbub/TX4bCzRhebDCRC3QzXgJsLRKB2V/Oof7HXg==}
     engines: {node: '>=0.10.0'}
+
+  sorted-btree@1.8.1:
+    resolution: {integrity: sha512-395+XIP+wqNn3USkFSrNz7G3Ss/MXlZEqesxvzCRFwL14h6e8LukDHdLBePn5pwbm5OQ9vGu8mDyz2lLDIqamQ==}
 
   source-map-js@1.2.1:
     resolution: {integrity: sha512-UXWMKhLOwVKb728IUtQPXxfYU+usdybtUrK/8uGE8CQMvrhOpwvzDBwj0QhSL7MQc7vIsISBG8VQ8+IDQxpfQA==}
@@ -8221,6 +8275,18 @@ snapshots:
       gonzales-pe: 4.3.0
       node-source-walk: 7.0.2
 
+  '@electric-sql/client@1.5.16':
+    dependencies:
+      '@microsoft/fetch-event-source': 2.0.1
+    optionalDependencies:
+      '@rollup/rollup-darwin-arm64': 4.60.2
+
+  '@electric-sql/d2mini@0.1.8':
+    dependencies:
+      fractional-indexing: 3.2.0
+      murmurhash-js: 1.0.0
+      sorted-btree: 1.8.1
+
   '@electric-sql/pglite@0.3.16': {}
 
   '@emnapi/runtime@1.10.0':
@@ -8965,6 +9031,8 @@ snapshots:
       - encoding
       - supports-color
 
+  '@microsoft/fetch-event-source@2.0.1': {}
+
   '@mui/private-theming@6.4.9(@types/react@19.2.14)(react@19.2.5)':
     dependencies:
       '@babel/runtime': 7.29.2
@@ -9015,7 +9083,7 @@ snapshots:
       clsx: 2.1.1
       prop-types: 15.8.1
       react: 19.2.5
-      react-is: 19.2.5
+      react-is: 18.3.1
     optionalDependencies:
       '@types/react': 19.2.14
 
@@ -10409,6 +10477,8 @@ snapshots:
       color: 5.0.3
       text-hex: 1.0.0
 
+  '@standard-schema/spec@1.1.0': {}
+
   '@supabase/functions-js@1.3.4':
     dependencies:
       cross-fetch: 3.2.0
@@ -10459,7 +10529,40 @@ snapshots:
     dependencies:
       defer-to-connect: 2.0.1
 
+  '@tanstack/db-collections@0.0.24(@electric-sql/client@1.5.16)(typescript@5.9.3)':
+    dependencies:
+      '@electric-sql/client': 1.5.16
+      '@standard-schema/spec': 1.1.0
+      '@tanstack/db': 0.0.20(typescript@5.9.3)
+      '@tanstack/query-core': 5.100.7
+      '@tanstack/store': 0.7.7
+      debug: 4.4.3(supports-color@9.4.0)
+      typescript: 5.9.3
+    transitivePeerDependencies:
+      - supports-color
+
+  '@tanstack/db-ivm@0.1.18(typescript@5.9.3)':
+    dependencies:
+      fractional-indexing: 3.2.0
+      sorted-btree: 1.8.1
+      typescript: 5.9.3
+
+  '@tanstack/db@0.0.20(typescript@5.9.3)':
+    dependencies:
+      '@electric-sql/d2mini': 0.1.8
+      '@standard-schema/spec': 1.1.0
+      typescript: 5.9.3
+
+  '@tanstack/db@0.6.5(typescript@5.9.3)':
+    dependencies:
+      '@standard-schema/spec': 1.1.0
+      '@tanstack/db-ivm': 0.1.18(typescript@5.9.3)
+      '@tanstack/pacer-lite': 0.2.1
+      typescript: 5.9.3
+
   '@tanstack/history@1.161.6': {}
+
+  '@tanstack/pacer-lite@0.2.1': {}
 
   '@tanstack/query-core@5.100.7': {}
 
@@ -10661,6 +10764,8 @@ snapshots:
   '@tanstack/start-storage-context@1.166.34':
     dependencies:
       '@tanstack/router-core': 1.169.1
+
+  '@tanstack/store@0.7.7': {}
 
   '@tanstack/store@0.9.3': {}
 
@@ -13012,6 +13117,8 @@ snapshots:
 
   forwarded@0.2.0: {}
 
+  fractional-indexing@3.2.0: {}
+
   fresh@0.5.2: {}
 
   from2-array@0.0.4:
@@ -13302,7 +13409,7 @@ snapshots:
 
   hoist-non-react-statics@3.3.2:
     dependencies:
-      react-is: 16.13.1
+      react-is: 18.3.1
 
   hosted-git-info@4.1.0:
     dependencies:
@@ -14306,6 +14413,8 @@ snapshots:
       safe-buffer: 5.2.1
       uid-safe: 2.1.5
 
+  murmurhash-js@1.0.0: {}
+
   mute-stream@0.0.7: {}
 
   nan@2.26.2:
@@ -14996,7 +15105,7 @@ snapshots:
     dependencies:
       ansi-regex: 5.0.1
       ansi-styles: 5.2.0
-      react-is: 17.0.2
+      react-is: 18.3.1
 
   pretty-ms@8.0.0:
     dependencies:
@@ -15019,7 +15128,7 @@ snapshots:
     dependencies:
       loose-envify: 1.4.0
       object-assign: 4.1.1
-      react-is: 16.13.1
+      react-is: 18.3.1
 
   proto-list@1.2.4: {}
 
@@ -15131,11 +15240,7 @@ snapshots:
     dependencies:
       react: 19.2.5
 
-  react-is@16.13.1: {}
-
-  react-is@17.0.2: {}
-
-  react-is@19.2.5: {}
+  react-is@18.3.1: {}
 
   react-redux@7.2.9(react-dom@19.2.5(react@19.2.5))(react@19.2.5):
     dependencies:
@@ -15145,7 +15250,7 @@ snapshots:
       loose-envify: 1.4.0
       prop-types: 15.8.1
       react: 19.2.5
-      react-is: 17.0.2
+      react-is: 18.3.1
     optionalDependencies:
       react-dom: 19.2.5(react@19.2.5)
 
@@ -15630,6 +15735,8 @@ snapshots:
   sort-keys@1.1.2:
     dependencies:
       is-plain-obj: 1.1.0
+
+  sorted-btree@1.8.1: {}
 
   source-map-js@1.2.1: {}
 

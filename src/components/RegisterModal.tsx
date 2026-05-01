@@ -123,9 +123,7 @@ export function RegisterModal() {
   ]);
   return (
     <RegisterModalRoot>
-      <RegisterModalTrigger
-        style={{ border: 'none', background: 'transparent' }}
-      >
+      <RegisterModalTrigger asChild>
         <Button secondary style={{ padding: '8px 10px' }}>
           Register
         </Button>

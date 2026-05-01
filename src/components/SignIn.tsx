@@ -1,4 +1,4 @@
-import { useNavigate } from '@tanstack/react-router';
+import { useLocation, useNavigate } from '@tanstack/react-router';
 import { useAtom } from 'jotai';
 import { useEffect, useState } from 'react';
 import { NavBar } from '~/components/NavBar';
@@ -19,6 +19,7 @@ export function SignIn() {
   const [token, setToken] = useAtom(tokenState);
   const [hasError, setError] = useState(false);
   const navigate = useNavigate();
+  const { pathname } = useLocation();
 
   async function signIn() {
     try {
@@ -45,14 +46,13 @@ export function SignIn() {
   useEffect(() => {
     if (token?.access_token && !isSignedIn) {
       setSignedIn(true);
-      setToken(token);
-      navigate({ to: '/boards' });
+      return;
     }
 
-    if (isSignedIn) {
+    if (isSignedIn && pathname !== '/boards') {
       navigate({ to: '/boards' });
     }
-  }, [token, setSignedIn, setToken, isSignedIn, navigate]);
+  }, [token, setSignedIn, isSignedIn, navigate, pathname]);
 
   return (
     <>

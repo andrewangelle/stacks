@@ -10,18 +10,32 @@ import { Padding } from '~/styles/Page';
 
 function BoardsPage() {
   const [isSignedIn, setSignedIn] = useAtom(signedInState);
-  const [token] = useAtom(tokenState);
+  const [token, setToken] = useAtom(tokenState);
   const navigate = useNavigate();
   const userId = token?.user?.id;
 
   const { data: boards = [] } = useGetBoardsQuery(userId, { skip: !userId });
 
   useEffect(() => {
-    if (!isSignedIn || !token?.access_token) {
+    if (token?.access_token && !userId) {
       setSignedIn(false);
-      navigate({ to: '/' });
+      setToken(null);
+      navigate({ to: '/signin' });
+      return;
     }
-  }, [isSignedIn, navigate, token, setSignedIn]);
+
+    if (!token?.access_token) {
+      if (isSignedIn) {
+        setSignedIn(false);
+      }
+      navigate({ to: '/' });
+      return;
+    }
+
+    if (!isSignedIn) {
+      setSignedIn(true);
+    }
+  }, [isSignedIn, navigate, token, setSignedIn, setToken, userId]);
 
   if (!userId) {
     return null;

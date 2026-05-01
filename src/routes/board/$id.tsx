@@ -20,18 +20,32 @@ function BoardPage() {
   const { data: board } = useGetBoardQuery(params.id);
   const navigate = useNavigate();
   const [isSignedIn, setSignedIn] = useAtom(signedInState);
-  const [token] = useAtom(tokenState);
+  const [token, setToken] = useAtom(tokenState);
   const { data: lists = [] } = useGetListsQuery(
     { boardId: params.id },
     { skip: !params.id },
   );
 
   useEffect(() => {
-    if (!isSignedIn || !token?.access_token) {
+    if (token?.access_token && !token?.user?.id) {
       setSignedIn(false);
-      navigate({ to: '/' });
+      setToken(null);
+      navigate({ to: '/signin' });
+      return;
     }
-  }, [isSignedIn, navigate, token, setSignedIn]);
+
+    if (!token?.access_token) {
+      if (isSignedIn) {
+        setSignedIn(false);
+      }
+      navigate({ to: '/' });
+      return;
+    }
+
+    if (!isSignedIn) {
+      setSignedIn(true);
+    }
+  }, [isSignedIn, navigate, token, setSignedIn, setToken]);
   return (
     <>
       <NavBar />

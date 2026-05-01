@@ -6,7 +6,7 @@ export const Route = createFileRoute('/resources/cards/get')({
   server: {
     handlers: {
       async GET({ request }) {
-        const table = await client().from('cards');
+        const table = await client().from('cards').select();
         const { listId } = await request.json();
         const lists = table.data?.filter(
           (value) => `${value.listId}` === `${listId}`,

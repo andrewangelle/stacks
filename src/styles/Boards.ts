@@ -7,6 +7,10 @@ import type {
 } from 'react';
 import { TiDelete } from 'react-icons/ti';
 
+export type StyledComponent<Props> = ComponentType<
+  HTMLAttributes<HTMLDivElement> & Props
+>;
+
 export const green = 'rgb(81, 152, 57)';
 export const lightGreen = 'rgb(75, 191, 107)';
 export const blue = 'rgb(0, 121, 191)';
@@ -16,7 +20,8 @@ export const fontFamily =
   '-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Noto Sans,Ubuntu,Droid Sans,Helvetica Neue,sans-serif;';
 export const darkGray = '#5e6c84';
 
-export const BoardsContainer = styled.div` 
+export const BoardsContainer: StyledComponent<{ background?: string }> =
+  styled.div` 
   display: flex;
   flex-wrap: wrap;
   justify-content: flex-start;
