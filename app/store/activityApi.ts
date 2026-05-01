@@ -1,4 +1,7 @@
-import { resourcesApi } from '~/store';
+import { useMutation, useQuery } from '@tanstack/react-query';
+import { queryClient } from '~/store/queryClient';
+import { queryKeys } from '~/store/queryKeys';
+import { resourceRequest } from '~/store/resourceClient';
 
 export type ActivityType = {
   id: string;
@@ -10,137 +13,108 @@ export type ActivityType = {
   type: string;
 };
 
-const activityApi = resourcesApi.injectEndpoints({
-  endpoints: (builder) => ({
-    getActivity: builder.query<
-      ActivityType[],
-      {
-        cardId: string;
-      }
-    >({
-      query: ({ cardId }) => ({
-        url: 'activity/get',
-        method: 'post',
-        body: { cardId },
+type ActivityArgs = { cardId: string };
+
+type CreateActivityArgs = {
+  token: string;
+  userId: string;
+  cardId: string;
+  listId: string;
+  boardId: string;
+  content: string;
+  type: string;
+};
+
+type UpdateActivityArgs = {
+  id: string;
+  token: string;
+  cardId: string;
+  content: string;
+};
+
+type DeleteActivityArgs = {
+  id: string;
+  token: string;
+  cardId: string;
+};
+
+export function useGetActivityQuery(args: ActivityArgs) {
+  return useQuery({
+    queryKey: queryKeys.activity(args.cardId),
+    queryFn: () =>
+      resourceRequest<ActivityType[]>('activity/get', 'POST', {
+        cardId: args.cardId,
       }),
-    }),
+  });
+}
 
-    createActivity: builder.mutation<
-      { data: ActivityType[] },
-      {
-        token: string;
-        userId: string;
-        cardId: string;
-        listId: string;
-        boardId: string;
-        content: string;
-        type: string;
-      }
-    >({
-      query: ({ cardId, listId, boardId, content, token, type, userId }) => ({
-        url: 'activity/create',
-        method: 'post',
-        body: {
-          cardId,
-          listId,
-          boardId,
-          content,
-          token,
-          userId,
-          type,
-        },
+export function useCreateActivityMutation() {
+  const mutation = useMutation({
+    mutationFn: ({
+      cardId,
+      listId,
+      boardId,
+      content,
+      token,
+      type,
+      userId,
+    }: CreateActivityArgs) =>
+      resourceRequest<{ data: ActivityType[] }>('activity/create', 'POST', {
+        cardId,
+        listId,
+        boardId,
+        content,
+        token,
+        userId,
+        type,
       }),
-      async onQueryStarted(arg, { dispatch, queryFulfilled }) {
-        try {
-          await queryFulfilled;
+    onSuccess: (result, variables) => {
+      queryClient.setQueryData<ActivityType[]>(
+        queryKeys.activity(variables.cardId),
+        (cache = []) => [...cache, result.data[0]],
+      );
+    },
+  });
 
-          const { data } = await queryFulfilled;
-          dispatch(
-            activityApi.util.updateQueryData(
-              'getActivity',
-              { cardId: Number.parseInt(arg.cardId, 10) as unknown as string },
-              (cache) => [...cache, data.data[0]],
-            ),
-          );
-        } catch {}
-      },
-    }),
+  return [mutation.mutate] as const;
+}
 
-    updateActivity: builder.mutation<
-      { data: ActivityType[] },
-      {
-        id: string;
-        token: string;
-        cardId: string;
-        content: string;
-      }
-    >({
-      query: ({ content, token, id }) => ({
-        url: `activity/${id}`,
-        method: 'put',
-        body: {
-          content,
-          token,
-        },
+export function useUpdateActivityMutation() {
+  const mutation = useMutation({
+    mutationFn: ({ content, token, id }: UpdateActivityArgs) =>
+      resourceRequest<{ data: ActivityType[] }>(`activity/${id}`, 'PUT', {
+        content,
+        token,
       }),
-      async onQueryStarted(arg, { dispatch, queryFulfilled }) {
-        try {
-          await queryFulfilled;
-          dispatch(
-            activityApi.util.updateQueryData(
-              'getActivity',
-              { cardId: Number.parseInt(arg.cardId, 10) as unknown as string },
-              (cache) =>
-                cache.map((item) => {
-                  if (item.id === arg.id) {
-                    return {
-                      ...item,
-                      content: arg.content,
-                    };
-                  }
-                  return item;
-                }),
-            ),
-          );
-        } catch {}
-      },
-    }),
+    onSuccess: (_result, variables) => {
+      queryClient.setQueryData<ActivityType[]>(
+        queryKeys.activity(variables.cardId),
+        (cache = []) =>
+          cache.map((item) =>
+            item.id === variables.id
+              ? { ...item, content: variables.content }
+              : item,
+          ),
+      );
+    },
+  });
 
-    deleteActivity: builder.mutation<
-      { data: ActivityType[] },
-      {
-        id: string;
-        token: string;
-        cardId: string;
-      }
-    >({
-      query: ({ token, id }) => ({
-        url: `activity/${id}`,
-        method: 'delete',
-        body: {
-          token,
-        },
+  return [mutation.mutate] as const;
+}
+
+export function useDeleteActivityMutation() {
+  const mutation = useMutation({
+    mutationFn: ({ token, id }: DeleteActivityArgs) =>
+      resourceRequest<{ data: ActivityType[] }>(`activity/${id}`, 'DELETE', {
+        token,
       }),
-      async onQueryStarted(arg, { dispatch, queryFulfilled }) {
-        try {
-          await queryFulfilled;
-          dispatch(
-            activityApi.util.updateQueryData(
-              'getActivity',
-              { cardId: Number.parseInt(arg.cardId, 10) as unknown as string },
-              (cache) => cache.filter((item) => item.id !== arg.id),
-            ),
-          );
-        } catch {}
-      },
-    }),
-  }),
-});
+    onSuccess: (_result, variables) => {
+      queryClient.setQueryData<ActivityType[]>(
+        queryKeys.activity(variables.cardId),
+        (cache = []) => cache.filter((item) => item.id !== variables.id),
+      );
+    },
+  });
 
-export const {
-  useGetActivityQuery,
-  useCreateActivityMutation,
-  useUpdateActivityMutation,
-  useDeleteActivityMutation,
-  util: { updateQueryData: updateActivityCache },
-} = activityApi;
+  return [mutation.mutate] as const;
+}

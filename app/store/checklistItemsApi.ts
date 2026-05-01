@@ -1,4 +1,8 @@
-import { type ChecklistType, resourcesApi } from '~/store';
+import { useMutation, useQuery } from '@tanstack/react-query';
+import type { ChecklistType } from '~/store/checklistsApi';
+import { queryClient } from '~/store/queryClient';
+import { queryKeys } from '~/store/queryKeys';
+import { resourceRequest } from '~/store/resourceClient';
 
 export type ChecklistItemType = {
   id: string;
@@ -11,36 +15,57 @@ export type ChecklistItemType = {
   userId: string;
 };
 
-const checklistItemsApi = resourcesApi.injectEndpoints({
-  endpoints: (builder) => ({
-    getChecklistItems: builder.query<
-      ChecklistItemType[],
-      { checklistId: string }
-    >({
-      query: ({ checklistId }) => ({
-        url: 'checklist-items/get',
-        method: 'POST',
-        body: {
-          checklistId,
-        },
-      }),
-    }),
+type ChecklistItemsArgs = { checklistId: string };
 
-    createChecklistItem: builder.mutation<
-      { data: ChecklistItemType[] },
-      {
-        label: string;
-        cardId: string;
-        checklistId: string;
-        listId: string;
-        token: string;
-        userId: string;
-      }
-    >({
-      query: ({ label, cardId, checklistId, listId, token, userId }) => ({
-        url: 'checklist-items/create',
-        method: 'post',
-        body: {
+type CreateChecklistItemArgs = {
+  label: string;
+  cardId: string;
+  checklistId: string;
+  listId: string;
+  token: string;
+  userId: string;
+};
+
+type UpdateChecklistItemArgs = {
+  isCompleted: boolean;
+  id: string;
+  cardId: string;
+  checklistId: string;
+  label: string;
+  token: string;
+  userId: string;
+};
+
+type DeleteChecklistItemArgs = {
+  id: string;
+  checklistId: string;
+  token: string;
+};
+
+export function useGetChecklistItemsQuery(args: ChecklistItemsArgs) {
+  return useQuery({
+    queryKey: queryKeys.checklistItems(args.checklistId),
+    queryFn: () =>
+      resourceRequest<ChecklistItemType[]>('checklist-items/get', 'POST', {
+        checklistId: args.checklistId,
+      }),
+  });
+}
+
+export function useCreateChecklistItemMutation() {
+  const mutation = useMutation({
+    mutationFn: ({
+      label,
+      cardId,
+      checklistId,
+      listId,
+      token,
+      userId,
+    }: CreateChecklistItemArgs) =>
+      resourceRequest<{ data: ChecklistItemType[] }>(
+        'checklist-items/create',
+        'POST',
+        {
           label,
           cardId,
           checklistId,
@@ -48,133 +73,97 @@ const checklistItemsApi = resourcesApi.injectEndpoints({
           token,
           userId,
         },
-      }),
-      async onQueryStarted(arg, { dispatch, queryFulfilled }) {
-        try {
-          await queryFulfilled;
-          const { data } = await queryFulfilled;
-          dispatch(
-            checklistItemsApi.util.updateQueryData(
-              'getChecklistItems',
-              { checklistId: arg.checklistId },
-              (cache) => [...cache, data.data[0]],
-            ),
-          );
-        } catch {}
-      },
-    }),
+      ),
+    onSuccess: (result, variables) => {
+      queryClient.setQueryData<ChecklistItemType[]>(
+        queryKeys.checklistItems(variables.checklistId),
+        (cache = []) => [...cache, result.data[0]],
+      );
+    },
+  });
 
-    updateChecklistItem: builder.mutation<
-      { data: ChecklistItemType[] },
-      {
-        isCompleted: boolean;
-        id: string;
-        cardId: string;
-        checklistId: string;
-        label: string;
-        token: string;
-        userId: string;
-      }
-    >({
-      query: ({ id, isCompleted, label, token, userId }) => ({
-        url: `checklist-items/${id}`,
-        method: 'put',
-        body: {
+  return [mutation.mutate] as const;
+}
+
+export function useUpdateChecklistItemMutation() {
+  const mutation = useMutation({
+    mutationFn: ({
+      id,
+      isCompleted,
+      label,
+      token,
+      userId,
+    }: UpdateChecklistItemArgs) =>
+      resourceRequest<{ data: ChecklistItemType[] }>(
+        `checklist-items/${id}`,
+        'PUT',
+        {
           isCompleted,
           token,
           userId,
           label,
         },
-      }),
-      async onQueryStarted(arg, { dispatch, queryFulfilled }) {
-        try {
-          await queryFulfilled;
-          dispatch(
-            checklistItemsApi.util.updateQueryData(
-              'getChecklistItems',
-              {
-                checklistId: Number.parseInt(
-                  arg.checklistId as string,
-                  10,
-                ) as unknown as string,
-              },
-              (cache) =>
-                cache.map((item) => {
-                  if (item.id === arg.id) {
-                    return {
-                      ...item,
-                      isCompleted: arg.isCompleted,
-                      label: arg.label,
-                    };
-                  }
-                  return item;
-                }),
-            ),
-          );
-        } catch {}
-      },
-    }),
+      ),
+    onSuccess: (_result, variables) => {
+      queryClient.setQueryData<ChecklistItemType[]>(
+        queryKeys.checklistItems(variables.checklistId),
+        (cache = []) =>
+          cache.map((item) =>
+            item.id === variables.id
+              ? {
+                  ...item,
+                  isCompleted: variables.isCompleted,
+                  label: variables.label,
+                }
+              : item,
+          ),
+      );
+    },
+  });
 
-    deleteChecklistItem: builder.mutation<
-      { data: ChecklistType[] },
-      {
-        id: string;
-        checklistId: string;
-        token: string;
-      }
-    >({
-      query: ({ token, id }) => ({
-        url: `checklist-items/${id}`,
-        method: 'delete',
-        body: {
+  return [mutation.mutate] as const;
+}
+
+export function useDeleteChecklistItemMutation() {
+  const mutation = useMutation({
+    mutationFn: ({ token, id }: DeleteChecklistItemArgs) =>
+      resourceRequest<{ data: ChecklistType[] }>(
+        `checklist-items/${id}`,
+        'DELETE',
+        {
           id,
           token,
         },
-      }),
-      async onQueryStarted(arg, { dispatch, queryFulfilled }) {
-        try {
-          await queryFulfilled;
-          dispatch(
-            checklistItemsApi.util.updateQueryData(
-              'getChecklistItems',
-              {
-                checklistId: Number.parseInt(
-                  arg.checklistId as string,
-                  10,
-                ) as unknown as string,
-              },
-              (cache) => cache.filter((item) => item.id !== arg.id),
-            ),
-          );
-        } catch {}
-      },
-    }),
-  }),
-});
+      ),
+    onSuccess: (_result, variables) => {
+      queryClient.setQueryData<ChecklistItemType[]>(
+        queryKeys.checklistItems(variables.checklistId),
+        (cache = []) => cache.filter((item) => item.id !== variables.id),
+      );
+    },
+  });
 
-export const {
-  useGetChecklistItemsQuery,
-  useCreateChecklistItemMutation,
-  useUpdateChecklistItemMutation,
-  useDeleteChecklistItemMutation,
-  util: { updateQueryData: updateChecklistItemsCache },
-} = checklistItemsApi;
+  return [mutation.mutate] as const;
+}
 
 export const reorderChecklistItems = (
   item: ChecklistItemType,
   checklistId: string,
   droppedId: string,
 ) =>
-  updateChecklistItemsCache('getChecklistItems', { checklistId }, (cache) => {
-    const cacheArray = [...cache];
-    const draggedIndex = cacheArray.findIndex(
-      (cacheItem) => cacheItem.id === item.id,
-    );
-    const droppedIndex = cacheArray.findIndex(
-      (cacheItem) => cacheItem.id === droppedId,
-    );
+  queryClient.setQueryData<ChecklistItemType[]>(
+    queryKeys.checklistItems(checklistId),
+    (cache = []) => {
+      const cacheArray = [...cache];
+      const draggedIndex = cacheArray.findIndex(
+        (cacheItem) => cacheItem.id === item.id,
+      );
+      const droppedIndex = cacheArray.findIndex(
+        (cacheItem) => cacheItem.id === droppedId,
+      );
 
-    cacheArray.splice(droppedIndex, 0, cacheArray.splice(draggedIndex, 1)[0]);
+      cacheArray.splice(droppedIndex, 0, cacheArray.splice(draggedIndex, 1)[0]);
 
-    return cacheArray;
-  });
+      return cacheArray;
+    },
+  );

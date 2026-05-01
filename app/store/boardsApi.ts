@@ -1,4 +1,6 @@
-import { resourcesApi } from '~/store';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { queryKeys } from '~/store/queryKeys';
+import { resourceRequest } from '~/store/resourceClient';
 
 export type Board = {
   id: string;
@@ -7,56 +9,57 @@ export type Board = {
   userId: string;
 };
 
-const boardsApi = resourcesApi.injectEndpoints({
-  endpoints: (builder) => ({
-    getBoards: builder.query<Board[], string | undefined>({
-      query: (userId) => `boards/get?userId=${userId}`,
-    }),
+type CreateBoardArgs = {
+  boardTitle: string;
+  boardColor: string;
+  token: string;
+  userId: string;
+};
 
-    getBoard: builder.query<Board, string | undefined>({
-      query: (boardId) => `boards/${boardId}`,
-    }),
+export function useGetBoardsQuery(
+  userId: string | undefined,
+  options?: { skip?: boolean },
+) {
+  const normalizedUserId = userId ?? '';
 
-    createBoard: builder.mutation<
-      { data: Board[] },
-      {
-        boardTitle: string;
-        boardColor: string;
-        token: string;
-        userId: string;
-      }
-    >({
-      query: ({ boardTitle, boardColor, token, userId }) => ({
-        url: 'boards/create',
-        method: 'post',
-        body: {
-          boardColor,
-          boardTitle,
-          token,
-          userId,
-        },
+  return useQuery({
+    queryKey: queryKeys.boards(normalizedUserId),
+    enabled: !options?.skip && !!userId,
+    queryFn: () =>
+      resourceRequest<Board[]>(
+        `boards/get?userId=${encodeURIComponent(normalizedUserId)}`,
+      ),
+  });
+}
+
+export function useGetBoardQuery(boardId: string | undefined) {
+  const normalizedBoardId = boardId ?? '';
+
+  return useQuery({
+    queryKey: queryKeys.board(normalizedBoardId),
+    enabled: !!boardId,
+    queryFn: () => resourceRequest<Board>(`boards/${normalizedBoardId}`),
+  });
+}
+
+export function useCreateBoardMutation() {
+  const queryClient = useQueryClient();
+
+  const mutation = useMutation({
+    mutationFn: ({ boardTitle, boardColor, token, userId }: CreateBoardArgs) =>
+      resourceRequest<{ data: Board[] }>('boards/create', 'POST', {
+        boardColor,
+        boardTitle,
+        token,
+        userId,
       }),
+    onSuccess: (result, variables) => {
+      queryClient.setQueryData<Board[]>(
+        queryKeys.boards(variables.userId),
+        (cache = []) => [...cache, result.data[0]],
+      );
+    },
+  });
 
-      async onQueryStarted(arg, { dispatch, queryFulfilled }) {
-        try {
-          await queryFulfilled;
-
-          const { data } = await queryFulfilled;
-          dispatch(
-            boardsApi.util.updateQueryData('getBoards', arg.userId, (cache) => [
-              ...cache,
-              data.data[0],
-            ]),
-          );
-        } catch {}
-      },
-    }),
-  }),
-});
-
-export const {
-  useGetBoardQuery,
-  useGetBoardsQuery,
-  useCreateBoardMutation,
-  util: { updateQueryData: updateBoardsCache },
-} = boardsApi;
+  return [mutation.mutate] as const;
+}

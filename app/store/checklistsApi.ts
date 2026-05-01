@@ -1,4 +1,7 @@
-import { resourcesApi } from '~/store';
+import { useMutation, useQuery } from '@tanstack/react-query';
+import { queryClient } from '~/store/queryClient';
+import { queryKeys } from '~/store/queryKeys';
+import { resourceRequest } from '~/store/resourceClient';
 
 export type ChecklistType = {
   id: string;
@@ -9,94 +12,77 @@ export type ChecklistType = {
   listId: string;
 };
 
-const checklistApi = resourcesApi.injectEndpoints({
-  endpoints: (builder) => ({
-    getChecklists: builder.query<ChecklistType[], { cardId: string }>({
-      query: ({ cardId }) => ({
-        url: 'checklists/get',
-        method: 'POST',
-        body: {
-          cardId,
-        },
-      }),
-    }),
+type ChecklistArgs = { cardId: string };
 
-    createChecklist: builder.mutation<
-      { data: ChecklistType[] },
-      {
-        checklistTitle: string;
-        cardId: string;
-        listId: string;
-        token: string;
-        userId: string;
-      }
-    >({
-      query: ({ listId, checklistTitle, cardId, token, userId }) => ({
-        url: 'checklists/create',
-        method: 'post',
-        body: {
-          checklistTitle,
-          cardId,
-          listId,
-          token,
-          userId,
-        },
-      }),
-      async onQueryStarted(arg, { dispatch, queryFulfilled }) {
-        try {
-          await queryFulfilled;
-          const { data } = await queryFulfilled;
-          dispatch(
-            checklistApi.util.updateQueryData(
-              'getChecklists',
-              { cardId: arg.cardId },
-              (cache) => [...cache, data.data[0]],
-            ),
-          );
-        } catch {}
-      },
-    }),
+type CreateChecklistArgs = {
+  checklistTitle: string;
+  cardId: string;
+  listId: string;
+  token: string;
+  userId: string;
+};
 
-    deleteChecklist: builder.mutation<
-      { data: ChecklistType[] },
-      {
-        id: string;
-        cardId: string;
-        token: string;
-      }
-    >({
-      query: ({ token, id }) => ({
-        url: 'checklists/delete',
-        method: 'delete',
-        body: {
+type DeleteChecklistArgs = {
+  id: string;
+  cardId: string;
+  token: string;
+};
+
+export function useGetChecklistsQuery(args: ChecklistArgs) {
+  return useQuery({
+    queryKey: queryKeys.checklists(args.cardId),
+    queryFn: () =>
+      resourceRequest<ChecklistType[]>('checklists/get', 'POST', {
+        cardId: args.cardId,
+      }),
+  });
+}
+
+export function useCreateChecklistMutation() {
+  const mutation = useMutation({
+    mutationFn: ({
+      checklistTitle,
+      cardId,
+      listId,
+      token,
+      userId,
+    }: CreateChecklistArgs) =>
+      resourceRequest<{ data: ChecklistType[] }>('checklists/create', 'POST', {
+        checklistTitle,
+        cardId,
+        listId,
+        token,
+        userId,
+      }),
+    onSuccess: (result, variables) => {
+      queryClient.setQueryData<ChecklistType[]>(
+        queryKeys.checklists(variables.cardId),
+        (cache = []) => [...cache, result.data[0]],
+      );
+    },
+  });
+
+  return [mutation.mutate] as const;
+}
+
+export function useDeleteChecklistMutation() {
+  const mutation = useMutation({
+    mutationFn: ({ token, id }: DeleteChecklistArgs) =>
+      resourceRequest<{ data: ChecklistType[] }>(
+        'checklists/delete',
+        'DELETE',
+        {
           id,
           token,
         },
-      }),
-      async onQueryStarted(arg, { dispatch, queryFulfilled }) {
-        try {
-          await queryFulfilled;
-          dispatch(
-            checklistApi.util.updateQueryData(
-              'getChecklists',
-              {
-                cardId: Number.parseInt(
-                  arg.cardId as string,
-                  10,
-                ) as unknown as string,
-              },
-              (cache) => cache.filter((item) => item.id !== arg.id),
-            ),
-          );
-        } catch {}
-      },
-    }),
-  }),
-});
+      ),
+    onSuccess: (_result, variables) => {
+      queryClient.setQueryData<ChecklistType[]>(
+        queryKeys.checklists(variables.cardId),
+        (cache = []) => cache.filter((item) => item.id !== variables.id),
+      );
+    },
+  });
 
-export const {
-  useGetChecklistsQuery,
-  useCreateChecklistMutation,
-  useDeleteChecklistMutation,
-  util: { updateQueryData: updateChecklistsCache },
-} = checklistApi;
+  return [mutation.mutate] as const;
+}

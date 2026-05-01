@@ -1,6 +1,5 @@
-import { type PropsWithChildren, useRef } from 'react';
+import { type ReactNode, useRef } from 'react';
 import { useDrag, useDrop } from 'react-dnd';
-import { useDispatch } from 'react-redux';
 
 import { type ListCardType, reorderCards } from '~/store';
 
@@ -9,12 +8,12 @@ export function DragDropCard({
   listId,
   cardTitle,
   children,
-}: PropsWithChildren<{
+}: {
   id: string;
   listId: string;
   cardTitle: string;
-}>) {
-  const dispatch = useDispatch();
+  children: ReactNode;
+}) {
   const [{ isDragging }, dragRef] = useDrag({
     type: 'listCard',
     item: { id, name: cardTitle },
@@ -25,7 +24,7 @@ export function DragDropCard({
 
   const [, dropRef] = useDrop({
     accept: 'listCard',
-    drop: (item) => dispatch(reorderCards(item as ListCardType, listId, id)),
+    drop: (item) => reorderCards(item as ListCardType, listId, id),
     collect: (monitor) => ({
       isOver: monitor.isOver(),
     }),

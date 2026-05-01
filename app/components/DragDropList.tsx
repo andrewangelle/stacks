@@ -1,7 +1,6 @@
 import { useParams } from '@tanstack/react-router';
-import { type PropsWithChildren, useRef } from 'react';
+import { type ReactNode, useRef } from 'react';
 import { useDrag, useDrop } from 'react-dnd';
-import { useDispatch } from 'react-redux';
 
 import { type List, reorderLists } from '~/store';
 
@@ -9,12 +8,12 @@ export function DragDropList({
   id,
   listTitle,
   children,
-}: PropsWithChildren<{
+}: {
   id: string;
   listTitle: string;
-}>) {
+  children: ReactNode;
+}) {
   const params = useParams({ strict: false });
-  const dispatch = useDispatch();
   const [{ isDragging }, dragRef] = useDrag({
     type: 'list',
     item: { id, name: listTitle },
@@ -25,8 +24,7 @@ export function DragDropList({
 
   const [, dropRef] = useDrop({
     accept: 'list',
-    drop: (item, ..._args) =>
-      dispatch(reorderLists(item as List, params.id ?? '', id)),
+    drop: (item, ..._args) => reorderLists(item as List, params.id ?? '', id),
     collect: (monitor) => ({
       isOver: monitor.isOver(),
     }),

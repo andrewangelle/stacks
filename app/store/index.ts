@@ -6,5 +6,4 @@ export * from './checklistItemsApi';
 export * from './checklistsApi';
 export * from './listsApi';
 export * from './profileApi';
-export * from './resourcesApi';
-export * from './store';
+export * from './queryClient';

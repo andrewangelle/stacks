@@ -1,4 +1,7 @@
-import { resourcesApi } from '~/store';
+import { useMutation, useQuery } from '@tanstack/react-query';
+import { queryClient } from '~/store/queryClient';
+import { queryKeys } from '~/store/queryKeys';
+import { resourceRequest } from '~/store/resourceClient';
 
 export type List = {
   boardId: string;
@@ -7,138 +10,104 @@ export type List = {
   userId: string;
 };
 
-const listsApi = resourcesApi.injectEndpoints({
-  endpoints: (builder) => ({
-    getLists: builder.query<List[], { boardId?: string }>({
-      query: ({ boardId }) => {
-        return {
-          url: 'lists/get',
-          method: 'post',
-          body: { boardId },
-        };
-      },
-    }),
+type ListsArgs = { boardId?: string };
 
-    updateList: builder.mutation<
-      void,
-      {
-        boardId: string;
-        listId: string;
-        listTitle: string;
-        token: string;
-        userId: string;
-      }
-    >({
-      query: ({ listId, listTitle, token, userId }) => ({
-        url: `lists/${listId}`,
-        method: 'put',
-        body: {
-          listTitle,
-          token,
-          userId,
-        },
+type UpdateListArgs = {
+  boardId: string;
+  listId: string;
+  listTitle: string;
+  token: string;
+  userId: string;
+};
+
+type CreateListArgs = {
+  listTitle: string;
+  boardId: string;
+  token: string;
+  userId: string;
+};
+
+type DeleteListArgs = {
+  id: string;
+  userId: string;
+  boardId: string;
+  token: string;
+};
+
+export function useGetListsQuery(
+  args: ListsArgs,
+  options?: { skip?: boolean },
+) {
+  const boardId = args.boardId ?? '';
+
+  return useQuery({
+    queryKey: queryKeys.lists(boardId),
+    enabled: !options?.skip && !!args.boardId,
+    queryFn: () => resourceRequest<List[]>('lists/get', 'POST', { boardId }),
+  });
+}
+
+export function useUpdateListMutation() {
+  const mutation = useMutation({
+    mutationFn: ({ listId, listTitle, token, userId }: UpdateListArgs) =>
+      resourceRequest<void>(`lists/${listId}`, 'PUT', {
+        listTitle,
+        token,
+        userId,
       }),
-      async onQueryStarted(arg, { dispatch, queryFulfilled }) {
-        try {
-          await queryFulfilled;
+    onSuccess: (_result, variables) => {
+      queryClient.setQueryData<List[]>(
+        queryKeys.lists(variables.boardId),
+        (cache = []) =>
+          cache.map((item) =>
+            item.id === variables.listId
+              ? { ...item, listTitle: variables.listTitle }
+              : item,
+          ),
+      );
+    },
+  });
 
-          dispatch(
-            listsApi.util.updateQueryData(
-              'getLists',
-              { boardId: `${arg.boardId}` },
-              (cache) => {
-                return cache.map((item) => {
-                  if (item.id === arg.listId) {
-                    return {
-                      ...item,
-                      listTitle: arg.listTitle,
-                    };
-                  }
-                  return item;
-                });
-              },
-            ),
-          );
-        } catch {}
-      },
-    }),
+  return [mutation.mutate] as const;
+}
 
-    createList: builder.mutation<
-      { data: List[] },
-      {
-        listTitle: string;
-        boardId: string;
-        token: string;
-        userId: string;
-      }
-    >({
-      query: (args) => ({
-        url: 'lists/create',
-        method: 'post',
-        body: args,
+export function useCreateListMutation() {
+  const mutation = useMutation({
+    mutationFn: (args: CreateListArgs) =>
+      resourceRequest<{ data: List[] }>('lists/create', 'POST', args),
+    onSuccess: (result, variables) => {
+      queryClient.setQueryData<List[]>(
+        queryKeys.lists(variables.boardId),
+        (cache = []) => [...cache, result.data[0]],
+      );
+    },
+  });
+
+  return [mutation.mutate] as const;
+}
+
+export function useDeleteListMutation() {
+  const mutation = useMutation({
+    mutationFn: ({ token, id, boardId, userId }: DeleteListArgs) =>
+      resourceRequest<{ data: List[] }>(`lists/${id}`, 'DELETE', {
+        id,
+        boardId,
+        token,
+        userId,
       }),
-      async onQueryStarted(arg, { dispatch, queryFulfilled }) {
-        try {
-          await queryFulfilled;
+    onSuccess: (_result, variables) => {
+      queryClient.setQueryData<List[]>(
+        queryKeys.lists(variables.boardId),
+        (cache = []) => cache.filter((item) => item.id !== variables.id),
+      );
+    },
+  });
 
-          const { data } = await queryFulfilled;
-
-          dispatch(
-            listsApi.util.updateQueryData(
-              'getLists',
-              { boardId: `${arg.boardId}` },
-              (cache) => [...cache, data.data[0]],
-            ),
-          );
-        } catch {}
-      },
-    }),
-
-    deleteList: builder.mutation<
-      { data: List[] },
-      {
-        id: string;
-        userId: string;
-        boardId: string;
-        token: string;
-      }
-    >({
-      query: ({ token, id, boardId, userId }) => ({
-        url: `lists/${id}`,
-        method: 'delete',
-        body: {
-          id,
-          boardId,
-          token,
-          userId,
-        },
-      }),
-      async onQueryStarted(args, { dispatch, queryFulfilled }) {
-        try {
-          await queryFulfilled;
-          dispatch(
-            listsApi.util.updateQueryData(
-              'getLists',
-              { boardId: args.boardId },
-              (cache) => cache.filter((item) => item.id !== args.id),
-            ),
-          );
-        } catch {}
-      },
-    }),
-  }),
-});
-
-export const {
-  useGetListsQuery,
-  useCreateListMutation,
-  useUpdateListMutation,
-  useDeleteListMutation,
-  util: { updateQueryData: updateListsCache },
-} = listsApi;
+  return [mutation.mutate] as const;
+}
 
 export const reorderLists = (item: List, boardId: string, droppedId: string) =>
-  updateListsCache('getLists', { boardId: `${boardId}` }, (cache) => {
+  queryClient.setQueryData<List[]>(queryKeys.lists(boardId), (cache = []) => {
     const cacheArray = [...cache];
     const draggedIndex = cacheArray.findIndex(
       (cacheItem) => cacheItem.id === item.id,

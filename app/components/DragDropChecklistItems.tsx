@@ -1,6 +1,5 @@
-import { type PropsWithChildren, useRef } from 'react';
+import { type ReactNode, useRef } from 'react';
 import { useDrag, useDrop } from 'react-dnd';
-import { useDispatch } from 'react-redux';
 
 import { type ChecklistItemType, reorderChecklistItems } from '~/store';
 
@@ -9,12 +8,12 @@ export function DragDropChecklistItem({
   label,
   checklistId,
   children,
-}: PropsWithChildren<{
+}: {
   id: string;
-  checklistId: string;
   label: string;
-}>) {
-  const dispatch = useDispatch();
+  checklistId: string;
+  children: ReactNode;
+}) {
   const [{ isDragging }, dragRef] = useDrag({
     type: 'checklistItem',
     item: { id, name: label },
@@ -26,9 +25,7 @@ export function DragDropChecklistItem({
   const [, dropRef] = useDrop({
     accept: 'checklistItem',
     drop: (item, ..._args) =>
-      dispatch(
-        reorderChecklistItems(item as ChecklistItemType, checklistId, id),
-      ),
+      reorderChecklistItems(item as ChecklistItemType, checklistId, id),
     collect: (monitor) => ({
       isOver: monitor.isOver(),
     }),
