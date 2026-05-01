@@ -3,10 +3,10 @@ import * as Dialog from '@radix-ui/react-dialog';
 import * as Popover from '@radix-ui/react-popover';
 import * as Progress from '@radix-ui/react-progress';
 import type { ComponentType, HTMLAttributes, LabelHTMLAttributes } from 'react';
+import { darkGray, fontFamily, red } from '~/styles/Boards';
+import { AddCardInput } from '~/styles/List';
+import { Button } from '~/styles/Page';
 import { styled } from '~/styles/styled';
-import { darkGray, fontFamily, red } from './Boards';
-import { AddCardInput } from './List';
-import { Button } from './Page';
 
 export const CardModalSiderContainer = styled('div')` 
   position: absolute;

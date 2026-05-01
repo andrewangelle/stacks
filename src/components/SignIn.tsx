@@ -1,7 +1,7 @@
 import { useNavigate } from '@tanstack/react-router';
 import { useAtom } from 'jotai';
 import { useEffect, useState } from 'react';
-
+import { NavBar } from '~/components/NavBar';
 import { RegisterModal } from '~/components/RegisterModal';
 import { signedInState, tokenState } from '~/store/atoms';
 import { Center, Flex, FlexColumn, Padding } from '~/styles/Page';
@@ -11,7 +11,6 @@ import {
   InputLabel,
   SignInButton,
 } from '~/styles/SignIn';
-import { NavBar } from './NavBar';
 
 export function SignIn() {
   const [username, setUsername] = useState('');
@@ -21,7 +20,6 @@ export function SignIn() {
   const [hasError, setError] = useState(false);
   const navigate = useNavigate();
 
-  console.log(hasError);
   async function signIn() {
     try {
       const res = await fetch('/resources/signin', {

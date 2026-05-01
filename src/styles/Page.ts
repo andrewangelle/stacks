@@ -3,8 +3,8 @@ import type {
   ComponentType,
   HTMLAttributes,
 } from 'react';
+import { blue } from '~/styles/Boards';
 import { styled } from '~/styles/styled';
-import { blue } from './Boards';
 
 export const Padding: ComponentType<
   HTMLAttributes<HTMLDivElement> & { padding: string }

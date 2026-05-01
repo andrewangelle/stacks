@@ -1,7 +1,7 @@
 import type { ComponentType, HTMLAttributes } from 'react';
+import { fontFamily } from '~/styles/Boards';
+import { Button } from '~/styles/Page';
 import { styled } from '~/styles/styled';
-import { fontFamily } from './Boards';
-import { Button } from './Page';
 
 export const AddListContainer: ComponentType<
   HTMLAttributes<HTMLDivElement> & { isEditing: boolean }

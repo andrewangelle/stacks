@@ -1,7 +1,7 @@
 import { useAtom } from 'jotai';
 import { useState } from 'react';
 import { BsCardHeading } from 'react-icons/bs';
-
+import { CardModalActivity } from '~/components/CardModalActivity';
 import { CardModalChecklists } from '~/components/CardModalChecklists';
 import { CardModalDescription } from '~/components/CardModalDescription';
 import { CreateChecklist } from '~/components/CreateChecklist';
@@ -26,7 +26,6 @@ import {
   ListCardContainer,
   Padding,
 } from '~/styles/CardModal';
-import { CardModalActivity } from './CardModalActivity';
 
 export function CardModal(
   props: ListCardType & {

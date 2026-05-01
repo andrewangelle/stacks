@@ -4,6 +4,7 @@ import { BsCheck2Square } from 'react-icons/bs';
 
 import { ChecklistCheckbox } from '~/components/ChecklistCheckbox';
 import { DeleteChecklistPopover } from '~/components/DeleteChecklistPopover';
+import { DragDropChecklistItem } from '~/components/DragDropChecklistItems';
 import { tokenState } from '~/store/atoms';
 import {
   type ChecklistItemType,
@@ -26,7 +27,6 @@ import {
   CloseDescriptionButton,
   Flex,
 } from '~/styles/CardModal';
-import { DragDropChecklistItem } from './DragDropChecklistItems';
 
 function Checklist(props: ChecklistType) {
   const { data } = useGetChecklistItemsQuery({ checklistId: props.id });

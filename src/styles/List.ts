@@ -1,7 +1,7 @@
 import { TiDelete } from 'react-icons/ti';
+import { fontFamily } from '~/styles/Boards';
+import { Button } from '~/styles/Page';
 import { styled } from '~/styles/styled';
-import { fontFamily } from './Boards';
-import { Button } from './Page';
 
 export const ListGridContainer = styled('div')` 
   display: grid;

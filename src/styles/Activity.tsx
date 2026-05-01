@@ -1,6 +1,6 @@
+import { fontFamily } from '~/styles/Boards';
+import { Button } from '~/styles/Page';
 import { styled } from '~/styles/styled';
-import { fontFamily } from './Boards';
-import { Button } from './Page';
 
 export const ActivityHeader = styled('div')` 
   display: flex;
