@@ -1,15 +1,22 @@
-// @ts-nocheck
 import { createFileRoute } from '@tanstack/react-router';
-import { action } from '~/routes/resources/lists/get';
+import { jsonResponse } from '~/modules/response';
+import client from '~/modules/supabase';
+
+export const action = async ({ request }: { request: Request }) => {
+  const table = await client().from('lists');
+  const { boardId } = await request.json();
+  const lists = table.data?.filter((value) => value.boardId === boardId);
+  return jsonResponse(lists);
+};
 
 export const Route = createFileRoute('/resources/lists/get')({
   server: {
     handlers: {
-      GET: ({ request, params }: { request: Request; params: Record<string, string> }) => action({ request, params }),
-      POST: ({ request, params }: { request: Request; params: Record<string, string> }) => action({ request, params }),
-      PUT: ({ request, params }: { request: Request; params: Record<string, string> }) => action({ request, params }),
-      PATCH: ({ request, params }: { request: Request; params: Record<string, string> }) => action({ request, params }),
-      DELETE: ({ request, params }: { request: Request; params: Record<string, string> }) => action({ request, params }),
+      GET: ({ request }) => action({ request }),
+      POST: ({ request }) => action({ request }),
+      PUT: ({ request }) => action({ request }),
+      PATCH: ({ request }) => action({ request }),
+      DELETE: ({ request }) => action({ request }),
     },
   },
   component: () => null,

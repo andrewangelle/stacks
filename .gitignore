@@ -5,3 +5,4 @@ node_modules
 /.netlify
 .env
 dist
+.tanstack

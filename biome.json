@@ -10,7 +10,7 @@
     "includes": [
       "**/*.json",
       "**/server/**",
-      "**/app/**",
+      "**/src/**",
       "**/.vscode/**",
       "!**/.react-router",
       "!**/build",

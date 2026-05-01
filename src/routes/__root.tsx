@@ -1,14 +1,14 @@
+import { QueryClientProvider } from '@tanstack/react-query';
 import {
+  createRootRoute,
   HeadContent,
   Outlet,
   Scripts,
-  createRootRoute,
 } from '@tanstack/react-router';
-import { QueryClientProvider } from '@tanstack/react-query';
+import { Provider as JotaiProvider } from 'jotai';
+import type { ReactNode } from 'react';
 import { DndProvider } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
-import { RecoilRoot } from 'recoil';
-import type { ReactNode } from 'react';
 import { queryClient } from '~/store/queryClient';
 import GlobalFonts from '~/styles/GlobalFonts';
 
@@ -39,13 +39,13 @@ function RootDocument({ children }: { children: ReactNode }) {
       </head>
       <body>
         <QueryClientProvider client={queryClient}>
-          <RecoilRoot>
+          <JotaiProvider>
             <DndProvider backend={HTML5Backend}>
               {children}
               <Scripts />
               <GlobalFonts />
             </DndProvider>
-          </RecoilRoot>
+          </JotaiProvider>
         </QueryClientProvider>
       </body>
     </html>
