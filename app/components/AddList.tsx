@@ -1,45 +1,49 @@
-import { useState } from "react";
-import { useRecoilState } from "recoil";
+import { useState } from 'react';
+import { useRecoilState } from 'recoil';
+import { tokenState, useCreateListMutation } from '~/store';
+import {
+  AddListButton,
+  AddListContainer,
+  AddListInput,
+  CloseAddListButton,
+  Flex,
+} from '~/styles';
 
-import { AddListContainer, AddListInput, Flex, AddListButton, CloseAddListButton } from "~/styles";
-
-import { tokenState, useCreateListMutation } from "~/store";
-
-export function AddLists({boardId}: {boardId: string}){
-  const [token] = useRecoilState(tokenState)
+export function AddLists({ boardId }: { boardId: string }) {
+  const [token] = useRecoilState(tokenState);
   const [isEditing, setEditing] = useState(false);
   const [listName, setListName] = useState('');
   const [createList] = useCreateListMutation();
 
-  function onListCreate(){
+  function onListCreate() {
     createList({
       listTitle: listName,
       boardId,
-      token: token?.access_token!,
-      userId: (token as any).user.id
+      token: token?.access_token ?? '',
+      userId: token?.user.id ?? '',
     });
-    setEditing(false)
+    setEditing(false);
   }
 
   return (
     <AddListContainer isEditing={isEditing}>
       {!isEditing && (
-        <div onClick={() => setEditing(true)}>
+        <button
+          type="button"
+          style={{ border: 'none', background: 'none', cursor: 'pointer' }}
+          onClick={() => setEditing(true)}
+        >
           + Add a list
-        </div>
+        </button>
       )}
       {isEditing && (
         <>
           <AddListInput
-            value={listName} 
-            onChange={(event) => setListName(event.target.value)} 
+            value={listName}
+            onChange={(event) => setListName(event.target.value)}
           />
-          <Flex style={{margin: "0"}}>
-            <AddListButton
-              onClick={onListCreate}
-            >
-              Add list
-            </AddListButton>
+          <Flex style={{ margin: '0' }}>
+            <AddListButton onClick={onListCreate}>Add list</AddListButton>
             <CloseAddListButton secondary onClick={() => setEditing(false)}>
               X
             </CloseAddListButton>
@@ -47,5 +51,5 @@ export function AddLists({boardId}: {boardId: string}){
         </>
       )}
     </AddListContainer>
-  )
+  );
 }

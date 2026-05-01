@@ -1,27 +1,26 @@
 import supabase from '~/modules/supabase';
 
-export const action = async ({ request }: {request: Request}) => {
-  const { email, password } = await request.json() 
- 
+export const action = async ({ request }: { request: Request }) => {
+  const { email, password } = await request.json();
 
-  let { user, session, error } = await supabase().auth.signIn({
+  const { user, session, error } = await supabase().auth.signIn({
     email: email,
     password: password,
   });
 
-  if(error){
+  if (error) {
     return new Response(error.message, {
       status: 401,
       headers: {
         'Content-Type': 'application/json',
-      }
-    })
+      },
+    });
   }
 
-  return new Response(JSON.stringify({user, session}), {
+  return new Response(JSON.stringify({ user, session }), {
     status: 200,
     headers: {
-      'Content-Type': 'application/json'
-    }
-  })
-}
+      'Content-Type': 'application/json',
+    },
+  });
+};

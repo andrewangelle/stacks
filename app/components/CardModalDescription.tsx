@@ -1,8 +1,8 @@
-import { useState } from "react";
-import { IoMdList } from "react-icons/io";
-import { useRecoilState } from "recoil";
-
-import { 
+import { useState } from 'react';
+import { IoMdList } from 'react-icons/io';
+import { useRecoilState } from 'recoil';
+import { tokenState, useUpdateCardMutation } from '~/store';
+import {
   CardDescriptionText,
   CardModalTitle,
   CloseDescriptionButton,
@@ -10,10 +10,9 @@ import {
   DescriptionInput,
   DescriptionPlaceholder,
   EditDescriptionButton,
-  Flex, SaveDescriptionButton, 
-} from "~/styles";
-
-import { tokenState, useUpdateCardMutation } from "~/store";
+  Flex,
+  SaveDescriptionButton,
+} from '~/styles';
 
 export function CardModalDescription({
   listId,
@@ -25,12 +24,12 @@ export function CardModalDescription({
   cardId: string;
   cardTitle: string;
   cardDescription: string;
-}){
-  const [token] = useRecoilState(tokenState)
+}) {
+  const [token] = useRecoilState(tokenState);
   const [isEditing, setEditing] = useState(false);
   const [description, setDescription] = useState(cardDescription);
   const [updateCard] = useUpdateCardMutation();
-  
+
   const placeHolderText = 'Add a more detailed description...';
   return (
     <DescriptionContainer>
@@ -38,7 +37,7 @@ export function CardModalDescription({
         <IoMdList size={24} />
 
         <CardModalTitle>Description</CardModalTitle>
-        
+
         {cardDescription && !isEditing && (
           <EditDescriptionButton secondary onClick={() => setEditing(true)}>
             Edit
@@ -47,9 +46,7 @@ export function CardModalDescription({
       </Flex>
 
       {cardDescription && !isEditing && (
-        <CardDescriptionText>
-          {cardDescription}
-        </CardDescriptionText>
+        <CardDescriptionText>{cardDescription}</CardDescriptionText>
       )}
 
       {!isEditing && !cardDescription && (
@@ -59,10 +56,10 @@ export function CardModalDescription({
       )}
 
       {isEditing && (
-        <>  
-          <DescriptionInput 
-            value={description} 
-            onChange={event => setDescription(event.target.value)}
+        <>
+          <DescriptionInput
+            value={description}
+            onChange={(event) => setDescription(event.target.value)}
             placeholder={placeHolderText}
           />
 
@@ -70,12 +67,12 @@ export function CardModalDescription({
             <SaveDescriptionButton
               onClick={() => {
                 updateCard({
-                  token: token?.access_token!,
-                  userId: (token as any).user.id,
+                  token: token?.access_token ?? '',
+                  userId: token?.user.id ?? '',
                   cardId,
                   cardTitle,
                   cardDescription: description,
-                  listId
+                  listId,
                 });
                 setEditing(false);
               }}
@@ -83,15 +80,12 @@ export function CardModalDescription({
               Save
             </SaveDescriptionButton>
 
-            <CloseDescriptionButton 
-              secondary 
-              onClick={() => setEditing(false)}
-            >
+            <CloseDescriptionButton secondary onClick={() => setEditing(false)}>
               X
             </CloseDescriptionButton>
           </Flex>
         </>
       )}
     </DescriptionContainer>
-  )
+  );
 }

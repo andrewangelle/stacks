@@ -1,27 +1,35 @@
-import { useState } from 'react';
 import * as Popover from '@radix-ui/react-popover';
+import { useParams } from '@remix-run/react';
+import { useState } from 'react';
 import { BsCheck2Square } from 'react-icons/bs';
 import { useRecoilState } from 'recoil';
-import { useParams } from 'remix';
-
-import { 
-  CreateChecklistPopoverTrigger, 
-  CardModalSiderButton, 
-  CardModalSiderButtonText, 
-  ChecklistPopoverContent, 
-  ChecklistPopoverHeader, 
-  PopoverClose, 
-  CreateBoardCloseBorder, 
-  CreateChecklistTitle, 
-  CreateChecklistInput, 
-  CreateChecklistAddButton
+import {
+  tokenState,
+  useCreateActivityMutation,
+  useCreateChecklistMutation,
+} from '~/store';
+import {
+  CardModalSiderButton,
+  CardModalSiderButtonText,
+  ChecklistPopoverContent,
+  ChecklistPopoverHeader,
+  CreateBoardCloseBorder,
+  CreateChecklistAddButton,
+  CreateChecklistInput,
+  CreateChecklistPopoverTrigger,
+  CreateChecklistTitle,
+  PopoverClose,
 } from '~/styles';
 
-import { useCreateChecklistMutation, tokenState, useCreateActivityMutation } from '~/store';
-
-export function CreateChecklist({ listId, cardId }: { listId: string; cardId: string }){
+export function CreateChecklist({
+  listId,
+  cardId,
+}: {
+  listId: string;
+  cardId: string;
+}) {
   const params = useParams();
-  const [token] = useRecoilState(tokenState)
+  const [token] = useRecoilState(tokenState);
   const [checklistTitle, setChecklistTitle] = useState('');
   const [createChecklist] = useCreateChecklistMutation();
   const [createActivity] = useCreateActivityMutation();
@@ -29,26 +37,22 @@ export function CreateChecklist({ listId, cardId }: { listId: string; cardId: st
     <Popover.Root>
       <CreateChecklistPopoverTrigger>
         <CardModalSiderButton>
-          <BsCheck2Square style={{marginRight: '4px'}} />
-          <CardModalSiderButtonText>
-            Checklist
-          </CardModalSiderButtonText>
+          <BsCheck2Square style={{ marginRight: '4px' }} />
+          <CardModalSiderButtonText>Checklist</CardModalSiderButtonText>
         </CardModalSiderButton>
       </CreateChecklistPopoverTrigger>
 
       <ChecklistPopoverContent>
         <ChecklistPopoverHeader>
           Add checklist
-          <PopoverClose>
-            X
-          </PopoverClose>
+          <PopoverClose>X</PopoverClose>
         </ChecklistPopoverHeader>
 
         <CreateBoardCloseBorder />
 
         <CreateChecklistTitle>Title</CreateChecklistTitle>
 
-        <CreateChecklistInput 
+        <CreateChecklistInput
           value={checklistTitle}
           onChange={(event) => setChecklistTitle(event.target.value)}
         />
@@ -59,23 +63,23 @@ export function CreateChecklist({ listId, cardId }: { listId: string; cardId: st
               checklistTitle,
               cardId,
               listId,
-              token: token?.access_token!,
-              userId: token?.user.id!
-            })
+              token: token?.access_token ?? '',
+              userId: token?.user.id ?? '',
+            });
             createActivity({
               cardId,
               listId,
-              boardId: params.id!,
-              token: token?.access_token!,
-              userId: token?.user.id!,
+              boardId: params.id ?? '',
+              token: token?.access_token ?? '',
+              userId: token?.user.id ?? '',
               type: 'feed',
-              content: `added ${checklistTitle} to this card`
-            })
-          }}  
+              content: `added ${checklistTitle} to this card`,
+            });
+          }}
         >
           Add
         </CreateChecklistAddButton>
       </ChecklistPopoverContent>
     </Popover.Root>
-  )
+  );
 }

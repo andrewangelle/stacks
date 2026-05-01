@@ -1,4 +1,4 @@
-import { resourcesApi } from "~/store";
+import { resourcesApi } from '~/store';
 
 export type ChecklistType = {
   id: string;
@@ -7,94 +7,96 @@ export type ChecklistType = {
   cardId: string;
   userId: string;
   listId: string;
-}
+};
 
 const checklistApi = resourcesApi.injectEndpoints({
-  endpoints: builder => ({
-    getChecklists: builder.query<ChecklistType[], {cardId: string;}>({
-      query: ({cardId}) => ({
-        url: `checklists/get`,
+  endpoints: (builder) => ({
+    getChecklists: builder.query<ChecklistType[], { cardId: string }>({
+      query: ({ cardId }) => ({
+        url: 'checklists/get',
         method: 'POST',
         body: {
-          cardId
-        }
-      })
+          cardId,
+        },
+      }),
     }),
 
-    createChecklist: builder.mutation<{data: ChecklistType[]}, {
-      checklistTitle: string;
-      cardId: string;
-      listId: string;
-      token: string;
-      userId: string;
-    }>({
+    createChecklist: builder.mutation<
+      { data: ChecklistType[] },
+      {
+        checklistTitle: string;
+        cardId: string;
+        listId: string;
+        token: string;
+        userId: string;
+      }
+    >({
       query: ({ listId, checklistTitle, cardId, token, userId }) => ({
         url: 'checklists/create',
         method: 'post',
         body: {
-          checklistTitle, 
+          checklistTitle,
           cardId,
           listId,
           token,
-          userId
-        }
+          userId,
+        },
       }),
-      async onQueryStarted(arg, {dispatch, queryFulfilled}){
+      async onQueryStarted(arg, { dispatch, queryFulfilled }) {
         try {
-          await queryFulfilled
+          await queryFulfilled;
           const { data } = await queryFulfilled;
           dispatch(
             checklistApi.util.updateQueryData(
-              'getChecklists', 
-              { cardId: arg.cardId }, 
-              cache => ([
-                ...cache,
-                data.data[0]
-              ]))
-          )
-        } catch {
-
-        }
-      }
+              'getChecklists',
+              { cardId: arg.cardId },
+              (cache) => [...cache, data.data[0]],
+            ),
+          );
+        } catch {}
+      },
     }),
 
-    deleteChecklist: builder.mutation<{data: ChecklistType[]}, {
-      id: string;
-      cardId: string;
-      token: string;
-    }>({
+    deleteChecklist: builder.mutation<
+      { data: ChecklistType[] },
+      {
+        id: string;
+        cardId: string;
+        token: string;
+      }
+    >({
       query: ({ token, id }) => ({
         url: 'checklists/delete',
         method: 'delete',
         body: {
           id,
           token,
-        }
+        },
       }),
-      async onQueryStarted(arg, {dispatch, queryFulfilled}){
+      async onQueryStarted(arg, { dispatch, queryFulfilled }) {
         try {
-          await queryFulfilled
+          await queryFulfilled;
           dispatch(
             checklistApi.util.updateQueryData(
-              'getChecklists', 
-              { cardId: parseInt(arg.cardId as string, 10) as any }, 
-              cache =>  cache.filter(item => item.id !== arg.id)
-              
-            )
-          )
-        } catch {
-
-        }
-      }
+              'getChecklists',
+              {
+                cardId: Number.parseInt(
+                  arg.cardId as string,
+                  10,
+                ) as unknown as string,
+              },
+              (cache) => cache.filter((item) => item.id !== arg.id),
+            ),
+          );
+        } catch {}
+      },
     }),
-  })
-})
+  }),
+});
 
 export const {
   useGetChecklistsQuery,
   useCreateChecklistMutation,
   useDeleteChecklistMutation,
-  util: {
-    updateQueryData: updateChecklistsCache
-  }
+  util: { updateQueryData: updateChecklistsCache },
 } = checklistApi;

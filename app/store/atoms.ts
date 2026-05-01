@@ -1,11 +1,11 @@
-import { atom } from "recoil";
-import { recoilPersist } from 'recoil-persist'
+import { atom } from 'recoil';
+import { recoilPersist } from 'recoil-persist';
 
-const { persistAtom } = recoilPersist()
+const { persistAtom } = recoilPersist();
 
 export const signedInState = atom({
   key: 'isSignedIn',
-  default: false
+  default: false,
 });
 
 export type TokenType = {
@@ -14,7 +14,7 @@ export type TokenType = {
   expires_in: string;
   refresh_token: string;
   token_type: string;
-  user: Record<'id', string>
+  user: Record<'id' | 'email', string>;
 };
 
 export const tokenState = atom<TokenType | null>({

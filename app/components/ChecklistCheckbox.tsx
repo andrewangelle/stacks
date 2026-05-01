@@ -1,36 +1,35 @@
-import { useState, CSSProperties } from "react";
-import { AiOutlineCheck, AiOutlineEllipsis } from "react-icons/ai";
-import { useRecoilState } from "recoil";
 import * as Popover from '@radix-ui/react-popover';
-import { useParams } from "remix";
+import { useParams } from '@remix-run/react';
+import { type CSSProperties, useState } from 'react';
+import { AiOutlineCheck, AiOutlineEllipsis } from 'react-icons/ai';
+import { useRecoilState } from 'recoil';
+import { useOutsideClick } from '~/components';
 
-import { 
-  ChecklistCheckboxContainer, 
-  CheckboxRoot, 
-  CheckboxIndicator, 
-  CheckboxLabel, 
-  AddChecklistItemInput, 
-  Flex, 
+import {
+  type ChecklistItemType,
+  tokenState,
+  useCreateActivityMutation,
+  useDeleteChecklistItemMutation,
+  useUpdateChecklistItemMutation,
+} from '~/store';
+import {
   AddChecklistButton,
+  AddChecklistItemInput,
+  CheckboxIndicator,
+  CheckboxLabel,
+  CheckboxRoot,
+  ChecklistCheckboxContainer,
   ChecklistPopoverHeader,
+  CloseDescriptionButton,
   CreateBoardCloseBorder,
   DeleteChecklistPopoverButton,
   DeleteChecklistPopoverContent,
   DeleteChecklistPopoverTrigger,
+  Flex,
   PopoverClose,
-  CloseDescriptionButton
-} from "~/styles";
+} from '~/styles';
 
-import { 
-  ChecklistItemType, 
-  tokenState, 
-  useCreateActivityMutation, 
-  useDeleteChecklistItemMutation, 
-  useUpdateChecklistItemMutation 
-} from "~/store";
-import { useOutsideClick } from "~/components";
-
-export function ChecklistCheckbox(props: ChecklistItemType){
+export function ChecklistCheckbox(props: ChecklistItemType) {
   const params = useParams();
   const [token] = useRecoilState(tokenState);
   const [updateItem] = useUpdateChecklistItemMutation();
@@ -41,47 +40,50 @@ export function ChecklistCheckbox(props: ChecklistItemType){
   const [isDeleteOpen, setDeleteOpen] = useState(false);
   const [createActivity] = useCreateActivityMutation();
 
-  const outsideClickRef = useOutsideClick(() => setDeleteOpen(false), isDeleteOpen);
+  const outsideClickRef = useOutsideClick(
+    () => setDeleteOpen(false),
+    isDeleteOpen,
+  );
 
-  const checkIconStyles: CSSProperties = { 
-    position: 'absolute', 
-    top: '-1px', 
-    left: '0px'
-  }
+  const checkIconStyles: CSSProperties = {
+    position: 'absolute',
+    top: '-1px',
+    left: '0px',
+  };
 
   return (
-    <ChecklistCheckboxContainer 
+    <ChecklistCheckboxContainer
       isHovering={isHovering}
-      onMouseOver={() => setHovering(true)} 
+      onMouseOver={() => setHovering(true)}
       onMouseOut={() => setHovering(false)}
     >
-      <CheckboxRoot 
-        checked={props.isCompleted} 
+      <CheckboxRoot
+        checked={props.isCompleted}
         style={{
-          height: 16, 
-          width: 16, 
+          height: 16,
+          width: 16,
           borderColor: 'rgb(223 225, padding: 25 230)',
-          verticalAlign: 'top'
+          verticalAlign: 'top',
         }}
         onClick={() => {
           updateItem({
             id: props.id,
-            token: token?.access_token!,
-            userId: token?.user.id!,
+            token: token?.access_token ?? '',
+            userId: token?.user.id ?? '',
             cardId: props.cardId,
             label: editedLabel,
             checklistId: props.checklistId,
-            isCompleted: !props.isCompleted
-          })
+            isCompleted: !props.isCompleted,
+          });
           createActivity({
-            token: token?.access_token!,
-            userId: token?.user.id!,
+            token: token?.access_token ?? '',
+            userId: token?.user.id ?? '',
             cardId: props.cardId,
             listId: props.listId,
-            boardId: params.id!,
+            boardId: params.id ?? '',
             type: 'feed',
-            content: `marked ${editedLabel} ${props.isCompleted ? 'incomplete' : 'complete'} on this card`
-          })
+            content: `marked ${editedLabel} ${props.isCompleted ? 'incomplete' : 'complete'} on this card`,
+          });
         }}
       >
         <CheckboxIndicator>
@@ -90,7 +92,7 @@ export function ChecklistCheckbox(props: ChecklistItemType){
       </CheckboxRoot>
 
       {!isEditingLabel && (
-        <CheckboxLabel 
+        <CheckboxLabel
           checked={props.isCompleted}
           onClick={() => setIsEditingLabel(true)}
         >
@@ -99,65 +101,65 @@ export function ChecklistCheckbox(props: ChecklistItemType){
       )}
 
       {isEditingLabel && (
-        <>  
-          <AddChecklistItemInput 
-            value={editedLabel} 
-            onChange={event => setEditedLabel(event.target.value)}
+        <>
+          <AddChecklistItemInput
+            value={editedLabel}
+            onChange={(event) => setEditedLabel(event.target.value)}
             placeholder={editedLabel}
           />
-          <Flex style={{marginLeft: '20px'}}>
+          <Flex style={{ marginLeft: '20px' }}>
             <AddChecklistButton
               onClick={() => {
                 updateItem({
                   id: props.id,
-                  token: token?.access_token!,
-                  userId: token?.user.id!,
+                  token: token?.access_token ?? '',
+                  userId: token?.user.id ?? '',
                   cardId: props.cardId,
                   label: editedLabel,
                   checklistId: props.checklistId,
-                  isCompleted: props.isCompleted
+                  isCompleted: props.isCompleted,
                 });
                 setIsEditingLabel(false);
-                setEditedLabel('')
+                setEditedLabel('');
               }}
             >
-              Save 
+              Save
             </AddChecklistButton>
-            <CloseDescriptionButton 
-              secondary 
+            <CloseDescriptionButton
+              secondary
               onClick={() => setIsEditingLabel(false)}
             >
               X
             </CloseDescriptionButton>
           </Flex>
-        </>        
+        </>
       )}
 
       <span ref={outsideClickRef}>
-        <Popover.Root open={isDeleteOpen} >
+        <Popover.Root open={isDeleteOpen}>
           <DeleteChecklistPopoverTrigger>
             <AiOutlineEllipsis
               onClick={() => setDeleteOpen(true)}
-              style={{position: 'absolute', right: 5, top: 15}}
+              style={{ position: 'absolute', right: 5, top: 15 }}
             />
           </DeleteChecklistPopoverTrigger>
-    
+
           <DeleteChecklistPopoverContent side="right">
             <ChecklistPopoverHeader>
-                Item actions
+              Item actions
               <PopoverClose onClick={() => setDeleteOpen(false)}>
                 X
               </PopoverClose>
             </ChecklistPopoverHeader>
-    
+
             <CreateBoardCloseBorder />
-    
+
             <DeleteChecklistPopoverButton
-              onClick={() => 
+              onClick={() =>
                 deleteChecklistItem({
-                  token: token?.access_token!,
+                  token: token?.access_token ?? '',
                   id: props.id,
-                  checklistId: props.checklistId
+                  checklistId: props.checklistId,
                 })
               }
             >
@@ -166,8 +168,6 @@ export function ChecklistCheckbox(props: ChecklistItemType){
           </DeleteChecklistPopoverContent>
         </Popover.Root>
       </span>
-
-
-    </ChecklistCheckboxContainer> 
-  )
+    </ChecklistCheckboxContainer>
+  );
 }

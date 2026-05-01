@@ -1,67 +1,63 @@
-import { Params } from "react-router";
-import type { ActionFunction } from "remix";
+import type { ActionFunction } from '@remix-run/react';
+import type { Params } from 'react-router';
 import client from '~/modules/supabase';
 
 const responseOptions = {
   status: 200,
   headers: {
-    'Content-Type': 'application/json'
-  }
+    'Content-Type': 'application/json',
+  },
 };
 
 export const action: ActionFunction = async ({
   request,
   params,
 }: {
-  request: Request,
-  params: Params<string>
+  request: Request;
+  params: Params<string>;
 }) => {
-  switch(request.method){
+  switch (request.method) {
     case 'PUT': {
       const userData = await request.json();
 
       const { data } = await client(userData.token)
         .from('lists')
-        .update([{
-          listTitle: userData.listTitle,
-        }])
-        .match({ id: params.listId })
+        .update([
+          {
+            listTitle: userData.listTitle,
+          },
+        ])
+        .match({ id: params.listId });
 
-      return data
+      return data;
     }
 
     case 'DELETE': {
       const userData = await request.json();
       const id = { id: userData.id };
-      const listId = { listId: userData.id }
+      const listId = { listId: userData.id };
 
       const { data } = await client(userData.token)
         .from('lists')
         .delete()
         .match(id);
 
-      await client(userData.token)
-        .from('cards')
-        .delete()
-        .match(listId)
+      await client(userData.token).from('cards').delete().match(listId);
 
-      await client(userData.token)
-        .from('checklists')
-        .delete()
-        .match(listId);
+      await client(userData.token).from('checklists').delete().match(listId);
 
       await client(userData.token)
         .from('checklist-items')
         .delete()
-        .match(listId);     
-       
+        .match(listId);
+
       const responseData = {
-        code: 'lists:delete:success', 
-        message: 'success', 
-        data
+        code: 'lists:delete:success',
+        message: 'success',
+        data,
       };
 
-      return new Response(JSON.stringify(responseData), responseOptions)
+      return new Response(JSON.stringify(responseData), responseOptions);
     }
   }
-}
+};

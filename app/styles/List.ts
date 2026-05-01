@@ -40,7 +40,7 @@ export const AddCardText = styled.div`
   &:hover {
     background-color: rgba(0, 0, 0, .3);
   }
-`
+`;
 
 export const AddCardInput = styled.input` 
   border-radius: 5px;
@@ -53,7 +53,7 @@ export const AddCardInput = styled.input`
 export const AddCardButton = styled(Button)` 
   margin: 0;
   padding: 8px;
-`
+`;
 
 export const CloseAddCardButton = styled(Button)` 
   border: none;
@@ -78,4 +78,4 @@ export const DeleteListIcon = styled(TiDelete)`
   right: 0;
   padding: 15px 10px 12px;
   cursor: pointer;
-`
+`;

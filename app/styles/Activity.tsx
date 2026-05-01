@@ -19,7 +19,7 @@ export const HideActivityButton = styled(Button)`
 export const ActivityContainer = styled.div` 
   margin: 10px 0px;
   width: 70%;
-`
+`;
 
 export const ActivityCommentContainer = styled.div` 
   display: flex;
@@ -60,4 +60,4 @@ export const ActivityCommentContent = styled.div`
 export const SaveCommentButton = styled(Button)` 
   padding: 8px 10px;
   margin: 5px 0 0 30px;
-`
+`;

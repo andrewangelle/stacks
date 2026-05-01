@@ -1,17 +1,17 @@
-import styled from 'styled-components';
-import * as Popover from '@radix-ui/react-popover';
-import * as Progress from '@radix-ui/react-progress';
 import * as Checkbox from '@radix-ui/react-checkbox';
 import * as Dialog from '@radix-ui/react-dialog';
+import * as Popover from '@radix-ui/react-popover';
+import * as Progress from '@radix-ui/react-progress';
+import styled from 'styled-components';
 
-import { fontFamily, darkGray, Button, AddCardInput, red } from '~/styles';
+import { AddCardInput, Button, darkGray, fontFamily, red } from '~/styles';
 
 export const CardModalSiderContainer = styled.div` 
   position: absolute;
   right: 15px;
   width: 200px;
   top: 80px;
-`
+`;
 
 export const CardModalSiderTitle = styled.div` 
   font-family: ${fontFamily};
@@ -19,7 +19,7 @@ export const CardModalSiderTitle = styled.div`
   color: ${darkGray};
   padding: 8px 10px;
   font-weight: 600;
-`
+`;
 
 export const CardModalSiderButton = styled.div` 
   font-family: ${fontFamily};
@@ -70,7 +70,7 @@ export const ChecklistPopoverContent = styled(Popover.Content)`
 export const DeleteChecklistPopoverContent = styled(ChecklistPopoverContent)` 
   height: 130px;
   padding: 10px;
-`
+`;
 export const ChecklistPopoverHeader = styled.div` 
   display: flex;
   justify-content: center;
@@ -115,7 +115,6 @@ color: black;
 margin: 0;
 `;
 
-
 export const AddChecklistItemInput = styled.textarea` 
   height: 30px;
   width: 60%;
@@ -136,7 +135,7 @@ export const DeleteChecklistPopoverButton = styled(Button)`
   width: 100%;
   margin: 15px 0px 0px;
   padding: 8px 10px;
-`
+`;
 
 export const ChecklistHeader = styled.div` 
   display: flex;
@@ -166,20 +165,20 @@ export const ChecklistProgressIndicator = styled(Progress.Indicator)`
   transition: width 660ms cubic-bezier(0.65, 0, 0.35, 1);
 `;
 
-export const ChecklistCheckboxContainer = styled.div<{isHovering: boolean;}>` 
+export const ChecklistCheckboxContainer = styled.div<{ isHovering: boolean }>` 
   padding: 10px 0px;
   width: 70%;
   position: relative;
   cursor: pointer;
-  ${props => {
-    if(props.isHovering){
-      return `background: rgb(223 225 230);`
+  ${(props) => {
+    if (props.isHovering) {
+      return 'background: rgb(223 225 230);';
     }
   }}
 `;
 
-export const CheckboxRoot = styled(Checkbox.Root)<{checked: boolean}>` 
-  background-color: ${props => props.checked ? '#5ba4cf' : 'white'};
+export const CheckboxRoot = styled(Checkbox.Root)<{ checked: boolean }>` 
+  background-color: ${(props) => (props.checked ? '#5ba4cf' : 'white')};
   width: 16;
   height: 16;
   position: relative;
@@ -189,19 +188,18 @@ export const CheckboxIndicator = styled(Checkbox.Indicator)`
   color: white;
   width: 16;
   height: 16;
-`
+`;
 
-export const CheckboxLabel = styled.label<{checked: boolean}>` 
+export const CheckboxLabel = styled.label<{ checked: boolean }>` 
   margin: 0 0 0 8px;
   font-family: ${fontFamily};
   font-size: 14px;
-  ${props => {
-    if(props.checked){
-      return `text-decoration: line-through;`
+  ${(props) => {
+    if (props.checked) {
+      return 'text-decoration: line-through;';
     }
   }}
 `;
-
 
 // Card Modal Styles
 
@@ -246,7 +244,7 @@ export const CardModalClose = styled(Dialog.Close)`
   right: 0;
   padding: 16px;
   cursor: pointer;
-`
+`;
 
 export const CardModalTitle = styled(Dialog.Title)` 
   margin: 0 16px;
@@ -261,7 +259,6 @@ export const CardModalListName = styled.div`
 export const DescriptionContainer = styled.div` 
   margin-top: 30px;
 `;
-
 
 export const DescriptionPlaceholder = styled.div` 
   background: rgba(0,0,0, 0.03);
@@ -287,7 +284,7 @@ export const DescriptionInput = styled.textarea`
   border-radius: 5px;
   border: none;
   font-family: ${fontFamily};
-`
+`;
 
 export const SaveDescriptionButton = styled(Button)` 
   padding: 8px 10px;
@@ -327,4 +324,4 @@ export const EditCardTitleSaveButton = styled(Button)`
 export const EditCardTitleCancelButton = styled(EditCardTitleSaveButton)` 
   border-color: ${red};
   color: ${red};
-`
+`;

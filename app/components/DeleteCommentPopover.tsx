@@ -1,30 +1,30 @@
-import { useRecoilState } from "recoil";
 import * as Popover from '@radix-ui/react-popover';
+import { useRecoilState } from 'recoil';
+import {
+  type ActivityType,
+  tokenState,
+  useDeleteActivityMutation,
+} from '~/store';
+import {
+  ChecklistPopoverHeader,
+  CreateBoardCloseBorder,
+  DeleteChecklistPopoverButton,
+  DeleteChecklistPopoverContent,
+  DeleteChecklistPopoverTrigger,
+  PopoverClose,
+} from '~/styles';
 
-import { 
-  DeleteChecklistPopoverTrigger, 
-  DeleteChecklistPopoverContent, 
-  ChecklistPopoverHeader, 
-  CreateBoardCloseBorder, 
-  DeleteChecklistPopoverButton, 
-  PopoverClose
-} from "~/styles";
-
-import { ActivityType, tokenState, useDeleteActivityMutation } from "~/store";
-
-export function DeleteCommentPopover(
-  props: ActivityType
-){
+export function DeleteCommentPopover(props: ActivityType) {
   const [token] = useRecoilState(tokenState);
   const [deleteActivity] = useDeleteActivityMutation();
   return (
     <Popover.Root>
       <DeleteChecklistPopoverTrigger>
-        <div 
+        <div
           style={{
-            textDecoration: 'underline', 
+            textDecoration: 'underline',
             marginLeft: '4px',
-            cursor: 'pointer'
+            cursor: 'pointer',
           }}
         >
           Delete
@@ -33,22 +33,17 @@ export function DeleteCommentPopover(
 
       <DeleteChecklistPopoverContent>
         <ChecklistPopoverHeader>
-          {`Delete comment`}
-          <PopoverClose>
-            X
-          </PopoverClose>
+          {'Delete comment'}
+          <PopoverClose>X</PopoverClose>
         </ChecklistPopoverHeader>
-
         <CreateBoardCloseBorder />
-
         Deleting a comment is permanent and there is no way to get it back.
-
-        <DeleteChecklistPopoverButton 
-          onClick={() => 
+        <DeleteChecklistPopoverButton
+          onClick={() =>
             deleteActivity({
-              token: token?.access_token!,
+              token: token?.access_token ?? '',
               id: props.id,
-              cardId: props.cardId
+              cardId: props.cardId,
             })
           }
         >
@@ -56,5 +51,5 @@ export function DeleteCommentPopover(
         </DeleteChecklistPopoverButton>
       </DeleteChecklistPopoverContent>
     </Popover.Root>
-  )
+  );
 }

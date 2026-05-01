@@ -1,4 +1,4 @@
-import { resourcesApi } from "~/store";
+import { resourcesApi } from '~/store';
 
 export type ListCardType = {
   id: string;
@@ -7,144 +7,134 @@ export type ListCardType = {
   userId: string;
   cardTitle: string;
   cardDescription: string;
-}
+};
 
 const cardsApi = resourcesApi.injectEndpoints({
-  endpoints: builder => ({
-    getCards: builder.query<ListCardType[], {listId: string;}>({
-      query: ({listId}) => ({
+  endpoints: (builder) => ({
+    getCards: builder.query<ListCardType[], { listId: string }>({
+      query: ({ listId }) => ({
         url: 'cards/get',
         method: 'post',
-        body: {listId}
+        body: { listId },
       }),
     }),
 
-    createCard: builder.mutation<{data: ListCardType[]}, {
-      cardTitle: string;
-      listId: string;
-      token: string;
-      userId: string;
-    }>({
+    createCard: builder.mutation<
+      { data: ListCardType[] },
+      {
+        cardTitle: string;
+        listId: string;
+        token: string;
+        userId: string;
+      }
+    >({
       query: ({ cardTitle, listId, token, userId }) => ({
         url: 'cards/create',
         method: 'post',
         body: {
-          cardTitle, 
+          cardTitle,
           listId,
           token,
-          userId
-        }
+          userId,
+        },
       }),
-      async onQueryStarted(arg, {dispatch, queryFulfilled}){
+      async onQueryStarted(arg, { dispatch, queryFulfilled }) {
         try {
-          await queryFulfilled
+          await queryFulfilled;
 
           const { data } = await queryFulfilled;
           dispatch(
             cardsApi.util.updateQueryData(
-              'getCards', 
-              { listId: arg.listId }, 
-              cache => ([
-                ...cache,
-                 data.data[0]
-              ]))
-          )
-        } catch {
-
-        }
-      }
+              'getCards',
+              { listId: arg.listId },
+              (cache) => [...cache, data.data[0]],
+            ),
+          );
+        } catch {}
+      },
     }),
 
-    updateCard: builder.mutation<void, {
-      listId: string,
-      cardId: string,
-      cardDescription: string, 
-      cardTitle: string,
-      token: string,
-      userId: string
-    }>({
-      query: ({ 
-        cardId, 
-        cardDescription, 
-        cardTitle, 
-        token, 
-        userId 
-      }) => ({
+    updateCard: builder.mutation<
+      void,
+      {
+        listId: string;
+        cardId: string;
+        cardDescription: string;
+        cardTitle: string;
+        token: string;
+        userId: string;
+      }
+    >({
+      query: ({ cardId, cardDescription, cardTitle, token, userId }) => ({
         url: `cards/${cardId}`,
         method: 'put',
         body: {
           cardDescription,
           cardTitle,
           token,
-          userId
-        }
+          userId,
+        },
       }),
 
-      async onQueryStarted(arg, {dispatch, queryFulfilled}){
+      async onQueryStarted(arg, { dispatch, queryFulfilled }) {
         try {
-          await queryFulfilled
+          await queryFulfilled;
 
           dispatch(
             cardsApi.util.updateQueryData(
-              'getCards', 
-              { listId: arg.listId }, 
-              cache => cache.map(item => {
-                if(item.id === arg.cardId){
-                  return {
-                    ...item,
-                    cardDescription: arg.cardDescription,
-                    cardTitle: arg.cardTitle
+              'getCards',
+              { listId: arg.listId },
+              (cache) =>
+                cache.map((item) => {
+                  if (item.id === arg.cardId) {
+                    return {
+                      ...item,
+                      cardDescription: arg.cardDescription,
+                      cardTitle: arg.cardTitle,
+                    };
                   }
-                }
-                return item
-              })
-            )
-          )
-        } catch {
-
-        }
-      }
+                  return item;
+                }),
+            ),
+          );
+        } catch {}
+      },
     }),
 
-    deleteCard: builder.mutation<void, {
-      id: string,
-      listId: string,
-      token: string,
-      userId: string
-    }>({
-      query: ({ 
-        id, 
-        listId,
-        token, 
-        userId 
-      }) => ({
+    deleteCard: builder.mutation<
+      void,
+      {
+        id: string;
+        listId: string;
+        token: string;
+        userId: string;
+      }
+    >({
+      query: ({ id, token, userId }) => ({
         url: `cards/${id}`,
         method: 'delete',
         body: {
           id,
           token,
-          userId
-        }
+          userId,
+        },
       }),
 
-      async onQueryStarted(arg, {dispatch, queryFulfilled}){
+      async onQueryStarted(arg, { dispatch, queryFulfilled }) {
         try {
-          await queryFulfilled
+          await queryFulfilled;
 
           dispatch(
             cardsApi.util.updateQueryData(
-              'getCards', 
-              { listId: arg.listId }, 
-              cache => cache.filter(item => item.id !== arg.id)
-            )
-          )
-        } catch {
-
-        }
-      }
+              'getCards',
+              { listId: arg.listId },
+              (cache) => cache.filter((item) => item.id !== arg.id),
+            ),
+          );
+        } catch {}
+      },
     }),
-
-  })
+  }),
 });
 
 export const {
@@ -152,27 +142,24 @@ export const {
   useCreateCardMutation,
   useUpdateCardMutation,
   useDeleteCardMutation,
-  util: {
-    updateQueryData: updateCardsCache
-  }
+  util: { updateQueryData: updateCardsCache },
 } = cardsApi;
 
-export const reorderCards = (item: ListCardType, listId: string, droppedId: string) => 
-  updateCardsCache(
-    'getCards', 
-    {listId}, 
-    cache => {
-      const cacheArray = [...cache]
-      const draggedIndex = cacheArray.findIndex(cacheItem => cacheItem.id === item.id);
-      const droppedIndex = cacheArray.findIndex(cacheItem => cacheItem.id === droppedId)
-      
-      cacheArray.splice(
-        droppedIndex,
-        0,
-        cacheArray.splice(draggedIndex, 1)[0]
-      )
+export const reorderCards = (
+  item: ListCardType,
+  listId: string,
+  droppedId: string,
+) =>
+  updateCardsCache('getCards', { listId }, (cache) => {
+    const cacheArray = [...cache];
+    const draggedIndex = cacheArray.findIndex(
+      (cacheItem) => cacheItem.id === item.id,
+    );
+    const droppedIndex = cacheArray.findIndex(
+      (cacheItem) => cacheItem.id === droppedId,
+    );
 
-      return cacheArray
-    }
-  )
-;
+    cacheArray.splice(droppedIndex, 0, cacheArray.splice(draggedIndex, 1)[0]);
+
+    return cacheArray;
+  });

@@ -1,5 +1,5 @@
-import { SignIn } from "~/components";
+import { SignIn } from '~/components';
 
-export default function SignInPage(){
-  return <SignIn />
+export default function SignInPage() {
+  return <SignIn />;
 }

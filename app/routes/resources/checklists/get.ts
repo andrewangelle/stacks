@@ -3,24 +3,21 @@ import client from '~/modules/supabase';
 const responseOptions = {
   status: 200,
   headers: {
-    'Content-Type': 'application/json'
-  }
+    'Content-Type': 'application/json',
+  },
 };
 
-export const action = async ({
-  request,
-}:{
-  request: Request
-}) => {
-  switch(request.method){
-    case 'POST':
-      const userData = await request.json()
-      const {data} = await client()
+export const action = async ({ request }: { request: Request }) => {
+  switch (request.method) {
+    case 'POST': {
+      const userData = await request.json();
+      const { data } = await client()
         .from('checklists')
         .select()
-        .match({cardId: userData.cardId})
+        .match({ cardId: userData.cardId });
 
-      console.log({cardId: userData.cardId, data})
-      return new Response(JSON.stringify(data), responseOptions)
+      console.log({ cardId: userData.cardId, data });
+      return new Response(JSON.stringify(data), responseOptions);
+    }
   }
-}
+};

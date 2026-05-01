@@ -1,25 +1,19 @@
-import { useRecoilState } from "recoil";
 import * as Popover from '@radix-ui/react-popover';
+import { useParams } from '@remix-run/react';
+import { useRecoilState } from 'recoil';
 
-import { 
-  DeleteChecklistPopoverContent, 
-  ChecklistPopoverHeader, 
-  CreateBoardCloseBorder, 
-  DeleteChecklistPopoverButton, 
-  PopoverClose,
+import { tokenState, useDeleteListMutation } from '~/store';
+import {
+  ChecklistPopoverHeader,
+  CreateBoardCloseBorder,
   DeleteCardPopoverTrigger,
-  DeleteListIcon
-} from "~/styles";
+  DeleteChecklistPopoverButton,
+  DeleteChecklistPopoverContent,
+  DeleteListIcon,
+  PopoverClose,
+} from '~/styles';
 
-import { tokenState, useDeleteListMutation } from "~/store";
-import { useParams } from "remix";
-
-export function DeleteListPopover(
-  props: {
-    id: string;
-    listTitle: string;
-  }
-){
+export function DeleteListPopover(props: { id: string; listTitle: string }) {
   const [token] = useRecoilState(tokenState);
   const params = useParams();
   const [deleteList] = useDeleteListMutation();
@@ -32,28 +26,23 @@ export function DeleteListPopover(
       <DeleteChecklistPopoverContent>
         <ChecklistPopoverHeader>
           {`Delete ${props.listTitle}`}
-          <PopoverClose>
-            X
-          </PopoverClose>
+          <PopoverClose>X</PopoverClose>
         </ChecklistPopoverHeader>
-
         <CreateBoardCloseBorder />
-
         Deleting a list is permanent and there is no way to get it back.
-
-        <DeleteChecklistPopoverButton 
+        <DeleteChecklistPopoverButton
           onClick={() => {
             deleteList({
               id: props.id,
-              token: token?.access_token!,
-              userId: token?.user.id!,
-              boardId: params.id!
-            })
+              token: token?.access_token ?? '',
+              userId: token?.user.id ?? '',
+              boardId: params.id ?? '',
+            });
           }}
         >
           Delete list
         </DeleteChecklistPopoverButton>
       </DeleteChecklistPopoverContent>
     </Popover.Root>
-  )
+  );
 }

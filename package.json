@@ -8,7 +8,12 @@
     "build": "remix build",
     "dev": "cross-env NODE_ENV=development netlify dev",
     "postinstall": "remix setup node",
-    "start": "cross-env NODE_ENV=production netlify dev"
+    "start": "cross-env NODE_ENV=production netlify dev",
+    "lint:fix": "pnpm exec biome check . --write --unsafe",
+    "lint:check": "pnpm exec biome check .",
+    "format": "pnpm exec biome format . --write",
+    "pre-commit": "lint-staged",
+    "prepare": "husky"
   },
   "dependencies": {
     "@netlify/functions": "^0.10.0",
@@ -37,6 +42,7 @@
     "styled-components": "^5.3.3"
   },
   "devDependencies": {
+    "@biomejs/biome": "^2.4.13",
     "@remix-run/dev": "^1.2.3",
     "@remix-run/eslint-config": "^1.2.3",
     "@types/node-uuid": "^0.0.29",
@@ -47,10 +53,18 @@
     "@types/styled-components": "^5.1.24",
     "cross-env": "^7.0.3",
     "eslint": "^8.9.0",
+    "husky": "^9.1.7",
+    "lint-staged": "^16.4.0",
     "redux-logger": "^3.0.6",
     "typescript": "^4.5.5"
   },
   "engines": {
-    "node": ">=14"
+    "node": ">=24"
+  },
+  "lint-staged": {
+    "*.{ts,tsx,js,jsx}": [
+      "pnpm lint:fix",
+      "pnpm format"
+    ]
   }
 }

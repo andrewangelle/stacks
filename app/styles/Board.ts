@@ -1,12 +1,12 @@
 import styled from 'styled-components';
 import { Button, fontFamily } from '~/styles';
 
-export const AddListContainer = styled.div<{isEditing: boolean}>`
+export const AddListContainer = styled.div<{ isEditing: boolean }>`
   position: relative;
   font-family: ${fontFamily};
   background-color: rgba(255, 255, 255, .3);
   padding: 12px 16px;
-  height: ${props => props.isEditing ? 'max-content' : '25px'};
+  height: ${(props) => (props.isEditing ? 'max-content' : '25px')};
   width: 225px;
   border-radius: 5px;
   color: #fff;
@@ -22,11 +22,11 @@ export const AddListInput = styled.input`
   border: none;
   padding: 6px 8px;
   margin: auto auto 10px;
-`
+`;
 
 export const AddListButton = styled(Button)` 
   margin: 0;
-`
+`;
 
 export const CloseAddListButton = styled(Button)` 
   position: absolute;
@@ -35,23 +35,26 @@ export const CloseAddListButton = styled(Button)`
   color: black;
 `;
 
-export const DrawerContainer = styled.div<{background?: string; isOpen: boolean}>`
+export const DrawerContainer = styled.div<{
+  background?: string;
+  isOpen: boolean;
+}>`
   min-height: 100vh;
-  width: ${props => props.isOpen ? '24vw' : '0.7vw'};
+  width: ${(props) => (props.isOpen ? '24vw' : '0.7vw')};
   border-right: 1px solid white;
   transition: width 0.25s ease-in-out;
   z-index: 2;
   
-  ${props => {
-    if(!props.isOpen && props.background){
+  ${(props) => {
+    if (!props.isOpen && props.background) {
       return `
         background: rgba(255, 255, 255, 0.16);
-      `
+      `;
     }
 
     return `
       background: ${props.background};
-    `
+    `;
   }}
 `;
 
@@ -59,7 +62,7 @@ export const DrawerHeader = styled.div`
   position: relative;
   height: 12%;
   border-bottom: 1px solid white;
-`
+`;
 
 export const DrawerHeaderTitle = styled.div` 
   font-family: ${fontFamily};
@@ -70,7 +73,7 @@ export const DrawerHeaderTitle = styled.div`
   font-weight: 600;
   overflow: auto;
   word-break: break-word;
-`
+`;
 
 export const YourBoardsTitle = styled.div` 
   font-family: ${fontFamily};
@@ -90,20 +93,20 @@ export const BoardsLinkContainer = styled.div`
   &:hover {
     background: rgba(255, 255, 255, 0.4)
   }
-`
+`;
 
-export const DrawerBoardEntry = styled.div<{isSelected: boolean}>` 
+export const DrawerBoardEntry = styled.div<{ isSelected: boolean }>` 
   display: flex;
   cursor: pointer;
-  ${props => {
-    if(props.isSelected){
+  ${(props) => {
+    if (props.isSelected) {
       return `
         background: rgba(255, 255, 255, 0.4);
-      `
+      `;
     }
   }}
 
   &:hover {
     background: rgba(255, 255, 255, 0.4)
   }
-`
+`;

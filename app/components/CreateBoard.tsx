@@ -1,57 +1,52 @@
-import { useState } from 'react';
 import * as Popover from '@radix-ui/react-popover';
-import { FaCheck } from 'react-icons/fa'
+import { useState } from 'react';
+import { FaCheck } from 'react-icons/fa';
 import { useRecoilState } from 'recoil';
-
-import { 
-  CreateBoardCard, 
-  CreateBoardPopoverTrigger, 
-  CreateBoardPopoverContent, 
-  PopoverClose, 
-  CreateBoardCloseBorder, 
-  CreateBoardPopoverHeader, 
-  CreateBoardBackgroundText,
-  lightGreen,
+import { tokenState, useCreateBoardMutation } from '~/store';
+import {
   blue,
-  green,
-  orange,
-  red,
+  Center,
   CreateBoardBackgroundChoice,
   CreateBoardBackgroundChoices,
-  Center,
+  CreateBoardBackgroundText,
+  CreateBoardButton,
+  CreateBoardCard,
+  CreateBoardCloseBorder,
+  CreateBoardPopoverContent,
+  CreateBoardPopoverHeader,
+  CreateBoardPopoverTrigger,
   CreateBoardTitleInput,
-  CreateBoardButton
-} from '~/styles';
-import { tokenState, useCreateBoardMutation } from '~/store';
-
-const backgroundChoices = [
   green,
   lightGreen,
-  blue,
-  orange, 
+  orange,
+  PopoverClose,
   red,
-];
+} from '~/styles';
 
-export function CreateBoard(){
+const backgroundChoices = [green, lightGreen, blue, orange, red];
+
+export function CreateBoard() {
   const [isCreateOpen, setCreateOpen] = useState(false);
   const [selectedColor, setSelectedColor] = useState(blue);
   const [boardTitle, setBoardTitle] = useState('');
   const [token] = useRecoilState(tokenState);
   const [createBoard] = useCreateBoardMutation();
 
-  function onBoardCreate(){
+  function onBoardCreate() {
     createBoard({
-      boardColor: selectedColor, 
+      boardColor: selectedColor,
       boardTitle,
-      token: token!.access_token,
-      userId: token!.user.id as string
-    })
+      token: token?.access_token,
+      userId: token?.user.id as string,
+    });
   }
-  
+
   return (
     <Popover.Root open={isCreateOpen}>
       <CreateBoardPopoverTrigger>
-        <CreateBoardCard onClick={() => setCreateOpen(prevState => !prevState)}>
+        <CreateBoardCard
+          onClick={() => setCreateOpen((prevState) => !prevState)}
+        >
           Create new board
         </CreateBoardCard>
       </CreateBoardPopoverTrigger>
@@ -59,18 +54,16 @@ export function CreateBoard(){
       <CreateBoardPopoverContent side="bottom" sideOffset={-100}>
         <CreateBoardPopoverHeader>
           Create Board
-          <PopoverClose onClick={() => setCreateOpen(false)}>
-            X
-          </PopoverClose>
+          <PopoverClose onClick={() => setCreateOpen(false)}>X</PopoverClose>
         </CreateBoardPopoverHeader>
 
         <CreateBoardCloseBorder />
 
         <CreateBoardBackgroundText>Background</CreateBoardBackgroundText>
         <CreateBoardBackgroundChoices>
-          {backgroundChoices.map(color => 
-            <CreateBoardBackgroundChoice 
-              key={color} 
+          {backgroundChoices.map((color) => (
+            <CreateBoardBackgroundChoice
+              key={color}
               background={color}
               onClick={() => setSelectedColor(color)}
             >
@@ -80,23 +73,20 @@ export function CreateBoard(){
                 </Center>
               )}
             </CreateBoardBackgroundChoice>
-          )}
+          ))}
         </CreateBoardBackgroundChoices>
 
         <CreateBoardBackgroundText>Board Title</CreateBoardBackgroundText>
 
-        <CreateBoardTitleInput 
+        <CreateBoardTitleInput
           onChange={(event) => setBoardTitle(event.target.value)}
           value={boardTitle}
         />
- 
-        <CreateBoardButton 
-          isDisabled={!boardTitle}
-          onClick={onBoardCreate}
-        >
+
+        <CreateBoardButton isDisabled={!boardTitle} onClick={onBoardCreate}>
           Create
         </CreateBoardButton>
       </CreateBoardPopoverContent>
     </Popover.Root>
-  )
+  );
 }

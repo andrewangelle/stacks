@@ -1,29 +1,20 @@
-import type { LoaderFunction } from "remix";
+import type { LoaderFunction } from '@remix-run/react';
 import client from '~/modules/supabase';
 
 const responseOptions = {
   status: 200,
   headers: {
-    'Content-Type': 'application/json'
-  }
+    'Content-Type': 'application/json',
+  },
 };
 
-export const loader: LoaderFunction = async ({
-  params,
-}) => {
+export const loader: LoaderFunction = async ({ params }) => {
+  const rows = await client().from('stacks').select();
 
-  const rows = await client().from('stacks').select()
-
-  if(rows.data !== null){
-    const board = rows.data.find(value => `${value.id}` === params.boardId );
-    return new Response(
-      JSON.stringify(board),
-      responseOptions
-    )
+  if (rows.data !== null) {
+    const board = rows.data.find((value) => `${value.id}` === params.boardId);
+    return new Response(JSON.stringify(board), responseOptions);
   }
 
-  return new Response(
-    JSON.stringify({}),
-    responseOptions
-  )
+  return new Response(JSON.stringify({}), responseOptions);
 };

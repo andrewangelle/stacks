@@ -1,11 +1,19 @@
+import { useNavigate } from '@remix-run/react';
 import { useEffect, useState } from 'react';
 import { useRecoilState } from 'recoil';
-import { useNavigate } from 'remix';
 
-import {RegisterModal} from '~/components'
-import { Center, Padding, FlexColumn, Flex, SignInButton, InputLabel, ErrorMessageContainer, CloseError } from '~/styles';
-
+import { RegisterModal } from '~/components';
 import { signedInState, tokenState } from '~/store';
+import {
+  Center,
+  CloseError,
+  ErrorMessageContainer,
+  Flex,
+  FlexColumn,
+  InputLabel,
+  Padding,
+  SignInButton,
+} from '~/styles';
 import { NavBar } from './NavBar';
 
 export function SignIn() {
@@ -14,75 +22,72 @@ export function SignIn() {
   const [isSignedIn, setSignedIn] = useRecoilState(signedInState);
   const [token, setToken] = useRecoilState(tokenState);
   const [hasError, setError] = useState(false);
-  const navigate = useNavigate();  
+  const navigate = useNavigate();
 
-  console.log(hasError)
-  async function signIn(){
+  console.log(hasError);
+  async function signIn() {
     try {
       const res = await fetch('/resources/signin', {
         body: JSON.stringify({
           email: username,
-          password: password
+          password: password,
         }),
         method: 'POST',
-      })
-  
-      const result = await res.json()
-  
-      if(result.user.role === 'authenticated'){
-        setSignedIn(true)
-        setToken(result.session)
-        navigate('/boards')
+      });
+
+      const result = await res.json();
+
+      if (result.user.role === 'authenticated') {
+        setSignedIn(true);
+        setToken(result.session);
+        navigate('/boards');
       }
-    } catch(e){
-      setError(true)
+    } catch (_e) {
+      setError(true);
     }
   }
 
   useEffect(() => {
-    if(token && token.access_token && !isSignedIn){
+    if (token?.access_token && !isSignedIn) {
       setSignedIn(true);
-      setToken(token)
-      navigate('/boards')
+      setToken(token);
+      navigate('/boards');
     }
 
-    if(isSignedIn) {
-      navigate('/boards')
+    if (isSignedIn) {
+      navigate('/boards');
     }
-  }, [token, setSignedIn, setToken, isSignedIn, navigate])
-
+  }, [token, setSignedIn, setToken, isSignedIn, navigate]);
 
   return (
     <>
       <NavBar />
-      <Padding padding='30px'>
+      <Padding padding="30px">
         <Center>
           <FlexColumn>
-            <InputLabel htmlFor='username'>Email</InputLabel>
-            <input 
-              name='username' 
-              value={username}  
-              onChange={event => setUsername(event.target.value)}
+            <InputLabel htmlFor="username">Email</InputLabel>
+            <input
+              name="username"
+              value={username}
+              onChange={(event) => setUsername(event.target.value)}
             />
           </FlexColumn>
-          
+
           <FlexColumn>
-            <InputLabel htmlFor='username'>Password</InputLabel>
+            <InputLabel htmlFor="username">Password</InputLabel>
             <input
-              type='password' 
-              name='password' 
-              value={password}  
-              onChange={event => setPassword(event.target.value)}
+              type="password"
+              name="password"
+              value={password}
+              onChange={(event) => setPassword(event.target.value)}
             />
           </FlexColumn>
 
           {hasError && (
             <FlexColumn>
               <ErrorMessageContainer>
-                <Center>
-                  Check your login info.
-                </Center>
-                <CloseError onClick={() => setError(false)}/>
+                <Center>Check your login info.</Center>
+                <CloseError onClick={() => setError(false)} />
               </ErrorMessageContainer>
             </FlexColumn>
           )}
@@ -94,6 +99,5 @@ export function SignIn() {
         </Center>
       </Padding>
     </>
-  )
-
+  );
 }

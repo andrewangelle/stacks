@@ -1,63 +1,80 @@
+import { formatRelative } from 'date-fns';
 import { useState } from 'react';
 import { useRecoilState } from 'recoil';
-import { formatRelative } from 'date-fns'
 
 import { ActivityLogo, DeleteCommentPopover } from '~/components';
-import { ActivityContainer, Flex, ActivityCommentContainer, ActivityCommentContent, AddActivityInput, SaveCommentButton, CloseAddCardButton } from "~/styles";
+import {
+  type ActivityType,
+  tokenState,
+  useGetProfileQuery,
+  useUpdateActivityMutation,
+} from '~/store';
+import {
+  ActivityCommentContainer,
+  ActivityCommentContent,
+  ActivityContainer,
+  AddActivityInput,
+  CloseAddCardButton,
+  Flex,
+  SaveCommentButton,
+} from '~/styles';
 
-import { ActivityType, tokenState, useGetProfileQuery, useUpdateActivityMutation } from "~/store";
-
-export function ActivityComment(props: ActivityType){
+export function ActivityComment(props: ActivityType) {
   const [token] = useRecoilState(tokenState);
   const profile = useGetProfileQuery(
-    {userId: token?.user.id!},
-    {skip: !token?.user.id}
+    { userId: token?.user.id ?? '' },
+    { skip: !token?.user.id },
   );
   const [isEditing, setIsEditing] = useState(false);
   const [editedComment, setEditedComment] = useState(props.content);
   const [updateActivity] = useUpdateActivityMutation();
-  const commentTime = formatRelative(new Date(props.created_at), new Date(props.created_at));
+  const commentTime = formatRelative(
+    new Date(props.created_at),
+    new Date(props.created_at),
+  );
   return (
     <ActivityContainer key={props.id}>
       <Flex>
         <ActivityLogo />
 
         <ActivityCommentContainer>
-          <div style={{marginLeft: '8px'}}>
-            <strong>{profile.data?.firstName}{' '}{profile.data?.lastName}</strong>
-            <span style={{marginLeft: '4px'}}>{commentTime}</span>
+          <div style={{ marginLeft: '8px' }}>
+            <strong>
+              {profile.data?.firstName} {profile.data?.lastName}
+            </strong>
+            <span style={{ marginLeft: '4px' }}>{commentTime}</span>
           </div>
 
           {isEditing && (
             <>
-              <AddActivityInput 
+              <AddActivityInput
                 value={editedComment}
                 onChange={(event) => setEditedComment(event.target.value)}
                 placeholder={props.content}
               />
 
               <Flex>
-                <SaveCommentButton 
-                  style={{margin: 0}}
+                <SaveCommentButton
+                  style={{ margin: 0 }}
                   onClick={() => {
                     updateActivity({
                       id: props.id,
                       cardId: props.cardId,
                       content: editedComment,
-                      token: token?.access_token!
-                    })
-                    setIsEditing(false)
+                      token: token?.access_token ?? '',
+                    });
+                    setIsEditing(false);
                   }}
                 >
                   Save
                 </SaveCommentButton>
 
-                <CloseAddCardButton 
-                  secondary 
-                  style={{margin: '0 0 0 4px'}} 
+                <CloseAddCardButton
+                  secondary
+                  style={{ margin: '0 0 0 4px' }}
                   onClick={() => setIsEditing(false)}
                 >
-                    X
+                  X
                 </CloseAddCardButton>
               </Flex>
             </>
@@ -67,17 +84,25 @@ export function ActivityComment(props: ActivityType){
             <>
               <ActivityCommentContent>{props.content}</ActivityCommentContent>
 
-              <div style={{marginLeft: '8px'}}>
+              <div style={{ marginLeft: '8px' }}>
                 <Flex>
-                  <div 
+                  <button
+                    type="button"
+                    onKeyDown={(event) => {
+                      if (event.key === 'Enter' || event.key === ' ') {
+                        setIsEditing(true);
+                      }
+                    }}
                     style={{
+                      border: 'none',
+                      background: 'none',
                       textDecoration: 'underline',
-                      cursor: 'pointer'
+                      cursor: 'pointer',
                     }}
                     onClick={() => setIsEditing(true)}
                   >
                     Edit
-                  </div> 
+                  </button>
                   <DeleteCommentPopover {...props} />
                 </Flex>
               </div>
@@ -86,5 +111,5 @@ export function ActivityComment(props: ActivityType){
         </ActivityCommentContainer>
       </Flex>
     </ActivityContainer>
-  )
+  );
 }
