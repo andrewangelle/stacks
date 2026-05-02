@@ -1,4 +1,4 @@
-import { collectionByTable } from './collections';
+import { collectionByTable } from '~/db/collections';
 
 export type LocalEntity = { id: string | number } & Record<string, unknown>;
 

@@ -1,6 +1,6 @@
 import { createCollection, localOnlyCollectionOptions } from '@tanstack/db';
 
-import type { LocalEntity, LocalTableName } from './LocalQueryBuilder';
+import type { LocalEntity, LocalTableName } from '~/db/LocalQueryBuilder';
 
 const stacksCollection = createCollection(
   localOnlyCollectionOptions<LocalEntity>({
