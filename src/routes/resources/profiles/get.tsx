@@ -5,7 +5,7 @@ import { jsonResponse } from '~/utils/response';
 export const Route = createFileRoute('/resources/profiles/get')({
   server: {
     handlers: {
-      async GET({ request }) {
+      async POST({ request }) {
         const { userId } = await request.json();
         const { data } = await client()
           .from('profiles')

@@ -2,17 +2,17 @@ import { createFileRoute } from '@tanstack/react-router';
 import client from '~/db/client';
 import { jsonResponse } from '~/utils/response';
 
-export const loader = async ({ request }: { request: Request }) => {
-  const userId = request.url.split('get?userId=')[1];
-  const { data } = await client().from('stacks').select().match({ userId });
-  return jsonResponse(data);
-};
-
 export const Route = createFileRoute('/resources/boards/get')({
   server: {
     handlers: {
-      GET: ({ request }) => loader({ request }),
+      async GET({ request }) {
+        const userId = request.url.split('get?userId=')[1];
+        const { data } = await client()
+          .from('stacks')
+          .select()
+          .match({ userId });
+        return jsonResponse(data);
+      },
     },
   },
-  component: () => null,
 });

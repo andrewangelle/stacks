@@ -109,9 +109,11 @@ export function useDeleteListMutation() {
 export const reorderLists = (item: List, boardId: string, droppedId: string) =>
   queryClient.setQueryData<List[]>(queryKeys.lists(boardId), (cache = []) => {
     const cacheArray = [...cache];
+
     const draggedIndex = cacheArray.findIndex(
       (cacheItem) => cacheItem.id === item.id,
     );
+
     const droppedIndex = cacheArray.findIndex(
       (cacheItem) => cacheItem.id === droppedId,
     );

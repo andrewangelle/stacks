@@ -5,7 +5,7 @@ import { jsonResponse } from '~/utils/response';
 export const Route = createFileRoute('/resources/boards/create')({
   server: {
     handlers: {
-      POST: async ({ request }) => {
+      async POST({ request }) {
         const userData = await request.json();
         const { data } = await client(userData.token)
           .from('stacks')

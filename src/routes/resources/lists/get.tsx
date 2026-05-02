@@ -5,7 +5,7 @@ import { jsonResponse } from '~/utils/response';
 export const Route = createFileRoute('/resources/lists/get')({
   server: {
     handlers: {
-      async GET({ request }) {
+      async POST({ request }) {
         const table = await client().from('lists').select();
         const { boardId } = await request.json();
         const lists = table.data?.filter((value) => value.boardId === boardId);
