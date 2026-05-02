@@ -1,6 +1,5 @@
-import { type ReactNode, useRef } from 'react';
+import { type ReactNode, type RefObject, useRef } from 'react';
 import { useDrag, useDrop } from 'react-dnd';
-
 import { type ListCardType, reorderCards } from '~/store/cardsApi';
 
 type DragDropCardProps = {
@@ -33,12 +32,16 @@ export function DragDropCard({
   });
 
   const ref = useRef<HTMLDivElement | null>(null);
+
   const dragDropRef = dragRef(
     dropRef(ref),
-  ) as unknown as React.MutableRefObject<HTMLDivElement | null>;
+  ) as unknown as RefObject<HTMLDivElement | null>;
+
   const firstChild = (Boolean(dragDropRef.current?.firstChild) &&
     dragDropRef.current?.firstChild) as HTMLElement;
+
   const rect = firstChild && (firstChild.getBoundingClientRect() as DOMRect);
+
   return (
     <div ref={dragDropRef}>
       {!isDragging && children}

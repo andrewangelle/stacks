@@ -50,24 +50,13 @@ export function useGetActivityQuery(args: ActivityArgs) {
 
 export function useCreateActivityMutation() {
   const mutation = useMutation({
-    mutationFn: ({
-      cardId,
-      listId,
-      boardId,
-      content,
-      token,
-      type,
-      userId,
-    }: CreateActivityArgs) =>
-      resourceRequest<{ data: ActivityType[] }>('activity/create', 'POST', {
-        cardId,
-        listId,
-        boardId,
-        content,
-        token,
-        userId,
-        type,
-      }),
+    mutationFn: (args: CreateActivityArgs) =>
+      resourceRequest<{ data: ActivityType[] }>(
+        'activity/create',
+        'POST',
+        args,
+      ),
+
     onSuccess: (result, variables) => {
       queryClient.setQueryData<ActivityType[]>(
         queryKeys.activity(variables.cardId),
@@ -81,11 +70,13 @@ export function useCreateActivityMutation() {
 
 export function useUpdateActivityMutation() {
   const mutation = useMutation({
-    mutationFn: ({ content, token, id }: UpdateActivityArgs) =>
-      resourceRequest<{ data: ActivityType[] }>(`activity/${id}`, 'PUT', {
-        content,
-        token,
-      }),
+    mutationFn: (args: UpdateActivityArgs) =>
+      resourceRequest<{ data: ActivityType[] }>(
+        `activity/${args.id}`,
+        'PUT',
+        args,
+      ),
+
     onSuccess: (_result, variables) => {
       queryClient.setQueryData<ActivityType[]>(
         queryKeys.activity(variables.cardId),

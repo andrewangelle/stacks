@@ -57,6 +57,8 @@ export class LocalQueryBuilder {
         typeof row.id === 'string' || typeof row.id === 'number'
           ? row.id
           : createId(),
+      created_at: new Date().toISOString(),
+      updated_at: new Date().toISOString(),
     }));
     collectionByTable[this.table].insert(preparedRows);
     return Promise.resolve({ data: preparedRows, error: null });
