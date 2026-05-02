@@ -1,22 +1,26 @@
-import { useLocation } from '@tanstack/react-router';
+import { useLocation, useParams } from '@tanstack/react-router';
 import { useAtom } from 'jotai';
 import { RiTrelloFill } from 'react-icons/ri';
 import { signedInState, tokenState } from '~/store/atoms';
+import { useGetBoardQuery } from '~/store/boardsApi';
+import type { BoardBackground } from '~/styles/Boards';
 import { LogOutText, NavBarContainer } from '~/styles/Page';
 
 export function NavBar() {
   const [, setSignedIn] = useAtom(signedInState);
   const [, setToken] = useAtom(tokenState);
   const location = useLocation();
+  const params = useParams({ strict: false });
+  const board = useGetBoardQuery(params.id);
 
-  // Not sure why this was here
-  // const background =
-  //   location.pathname === '/boards' || location.pathname === '/signin'
-  //     ? 'blue'
-  //     : 'default';
+  const boardBackground = board.data?.boardColor ?? 'blue';
+  const background =
+    location.pathname === '/boards' || location.pathname === '/signin'
+      ? 'blue'
+      : boardBackground;
 
   return (
-    <NavBarContainer background={'blue'}>
+    <NavBarContainer background={background as BoardBackground}>
       <div>
         <RiTrelloFill
           size={18}

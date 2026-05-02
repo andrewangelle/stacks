@@ -1,5 +1,6 @@
 import { styled } from '@pigment-css/react';
 import type { ReactNode } from 'react';
+import type { BackgroundProps } from '~/styles/Boards';
 import { blue } from '~/styles/tokens';
 
 type PaddingProps = {
@@ -94,22 +95,32 @@ export const BoardPageBackground = styled('div')<BoardPageBackgroundProps>({
   width: 'max-content',
   minWidth: '100vw',
   display: 'flex',
+  background: 'transparent',
   variants: [
     {
       props: { background: 'blue' },
       style: { background: '#0079bf' },
     },
     {
-      props: { background: 'default' },
-      style: { background: 'rgba(0,0,0,0.1)' },
+      props: { background: 'green' },
+      style: { background: '#519839' },
+    },
+    {
+      props: { background: 'lightGreen' },
+      style: { background: '#4bbf6b' },
+    },
+    {
+      props: { background: 'orange' },
+      style: { background: '#d29034' },
+    },
+    {
+      props: { background: 'red' },
+      style: { background: '#b04632' },
     },
   ],
-  background: 'transparent',
 });
 
-export const NavBarContainer = styled('div')<{
-  background: 'blue' | 'default';
-}>({
+export const NavBarContainer = styled('div')<BackgroundProps>({
   fontFamily:
     '-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Noto Sans,Ubuntu,Droid Sans,Helvetica Neue,sans-serif;',
   width: '100vw',
@@ -125,8 +136,23 @@ export const NavBarContainer = styled('div')<{
       },
     },
     {
-      props: { background: 'default' },
-      style: { background: 'rgba(0,0,0,0.1)' },
+      props: { background: 'green' },
+      style: {
+        background: '#519839',
+        borderBottom: '1px solid white',
+      },
+    },
+    {
+      props: { background: 'lightGreen' },
+      style: { background: '#4bbf6b', borderBottom: '1px solid white' },
+    },
+    {
+      props: { background: 'orange' },
+      style: { background: '#d29034', borderBottom: '1px solid white' },
+    },
+    {
+      props: { background: 'red' },
+      style: { background: '#b04632', borderBottom: '1px solid white' },
     },
   ],
   display: 'flex',
