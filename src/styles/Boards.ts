@@ -63,20 +63,6 @@ export const BoardCardContainer = styled('div')<BackgroundProps>({
     },
   ],
 });
-// `
-//   position: relative;
-//   font-family: ${fontFamily};
-//   text-align: center;
-//   width: -webkit-fill-available;
-//   max-width: 15%;
-//   height: 80px;
-//   padding: 20px;
-//   border-radius: 5px;
-//   font-size: 14px;
-//   cursor: pointer;
-//   background: ${(props: { background?: string }) => props.background};
-//   margin: 10px;
-// `;
 
 export const CreateBoardCard = styled(BoardCardContainer)` 
   background: rgba(9, 30, 66, 0.04);
