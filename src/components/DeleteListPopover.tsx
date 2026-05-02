@@ -13,7 +13,12 @@ import {
 } from '~/styles/CardModal';
 import { DeleteListIcon } from '~/styles/List';
 
-export function DeleteListPopover(props: { id: string; listTitle: string }) {
+type DeleteListPopoverProps = {
+  id: string;
+  listTitle: string;
+};
+
+export function DeleteListPopover({ id, listTitle }: DeleteListPopoverProps) {
   const [token] = useAtom(tokenState);
   const params = useParams({ strict: false });
   const [deleteList] = useDeleteListMutation();
@@ -25,7 +30,7 @@ export function DeleteListPopover(props: { id: string; listTitle: string }) {
 
       <DeleteChecklistPopoverContent>
         <ChecklistPopoverHeader>
-          {`Delete ${props.listTitle}`}
+          {`Delete ${listTitle}`}
           <PopoverClose>X</PopoverClose>
         </ChecklistPopoverHeader>
         <CreateBoardCloseBorder />
@@ -33,7 +38,7 @@ export function DeleteListPopover(props: { id: string; listTitle: string }) {
         <DeleteChecklistPopoverButton
           onClick={() => {
             deleteList({
-              id: props.id,
+              id,
               token: token?.access_token ?? '',
               userId: token?.user.id ?? '',
               boardId: params.id ?? '',

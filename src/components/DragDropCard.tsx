@@ -3,17 +3,19 @@ import { useDrag, useDrop } from 'react-dnd';
 
 import { type ListCardType, reorderCards } from '~/store/cardsApi';
 
+type DragDropCardProps = {
+  id: string;
+  listId: string;
+  cardTitle: string;
+  children: ReactNode;
+};
+
 export function DragDropCard({
   id,
   listId,
   cardTitle,
   children,
-}: {
-  id: string;
-  listId: string;
-  cardTitle: string;
-  children: ReactNode;
-}) {
+}: DragDropCardProps) {
   const [{ isDragging }, dragRef] = useDrag({
     type: 'listCard',
     item: { id, name: cardTitle },

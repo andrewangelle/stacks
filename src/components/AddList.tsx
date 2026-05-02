@@ -10,7 +10,11 @@ import {
 } from '~/styles/Board';
 import { Flex } from '~/styles/Page';
 
-export function AddLists({ boardId }: { boardId: string }) {
+type AddListsProps = {
+  boardId: string;
+};
+
+export function AddLists({ boardId }: AddListsProps) {
   const [token] = useAtom(tokenState);
   const [isEditing, setEditing] = useState(false);
   const [listName, setListName] = useState('');

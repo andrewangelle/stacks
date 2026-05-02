@@ -18,13 +18,12 @@ import {
   CreateChecklistTitle,
 } from '~/styles/CardModal';
 
-export function CreateChecklist({
-  listId,
-  cardId,
-}: {
+type CreateChecklistProps = {
   listId: string;
   cardId: string;
-}) {
+};
+
+export function CreateChecklist({ listId, cardId }: CreateChecklistProps) {
   const params = useParams({ strict: false });
   const [token] = useAtom(tokenState);
   const [checklistTitle, setChecklistTitle] = useState('');

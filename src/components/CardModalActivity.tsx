@@ -23,13 +23,12 @@ import {
 import { CardModalTitle } from '~/styles/CardModal';
 import { Flex } from '~/styles/Page';
 
-export function CardModalActivity({
-  listId,
-  cardId,
-}: {
-  cardId: string;
+type CardModalActivityProps = {
   listId: string;
-}) {
+  cardId: string;
+};
+
+export function CardModalActivity({ listId, cardId }: CardModalActivityProps) {
   const [showActivity, setShowActivity] = useState(false);
   const params = useParams({ strict: false });
   const [token] = useAtom(tokenState);

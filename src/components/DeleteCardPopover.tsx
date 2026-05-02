@@ -12,12 +12,15 @@ import {
   DeleteChecklistPopoverContent,
 } from '~/styles/CardModal';
 
-export function DeleteCardPopover(
-  props: ListCardType & {
-    listId: string;
-    listName: string;
-  },
-) {
+type DeleteCardPopoverProps = ListCardType & {
+  listId: string;
+  listName: string;
+};
+export function DeleteCardPopover({
+  id,
+  listId,
+  cardTitle,
+}: DeleteCardPopoverProps) {
   const [token] = useAtom(tokenState);
   const [deleteCard] = useDeleteCardMutation();
   return (
@@ -30,7 +33,7 @@ export function DeleteCardPopover(
 
       <DeleteChecklistPopoverContent>
         <ChecklistPopoverHeader>
-          {`Delete ${props.cardTitle}`}
+          {`Delete ${cardTitle}`}
           <PopoverClose>X</PopoverClose>
         </ChecklistPopoverHeader>
         <CreateBoardCloseBorder />
@@ -38,8 +41,8 @@ export function DeleteCardPopover(
         <DeleteChecklistPopoverButton
           onClick={() => {
             deleteCard({
-              id: props.id,
-              listId: props.listId,
+              id,
+              listId,
               token: token?.access_token ?? '',
               userId: token?.user.id ?? '',
             });

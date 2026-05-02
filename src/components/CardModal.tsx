@@ -26,23 +26,31 @@ import {
 import { ListCardContainer } from '~/styles/List';
 import { Flex, Padding } from '~/styles/Page';
 
-export function CardModal(
-  props: ListCardType & {
-    listId: string;
-    listName: string;
-  },
-) {
+type CardModalProps = ListCardType & {
+  listId: string;
+  listName: string;
+};
+
+export function CardModal({
+  id,
+  listId,
+  listName,
+  cardTitle,
+  cardDescription,
+  created_at,
+  userId,
+}: CardModalProps) {
   const [token] = useAtom(tokenState);
   const [isEditingTitle, setEditingTitle] = useState(false);
-  const [editedTitle, setEditedTitle] = useState(props.cardTitle);
+  const [editedTitle, setEditedTitle] = useState(cardTitle);
   const [updateCard] = useUpdateCardMutation();
 
   function onSave() {
     updateCard({
-      cardDescription: props.cardDescription,
+      cardDescription: cardDescription,
       cardTitle: editedTitle,
-      cardId: props.id,
-      listId: props.listId,
+      cardId: id,
+      listId: listId,
       token: token?.access_token ?? '',
       userId: token?.user.id ?? '',
     });
@@ -51,7 +59,7 @@ export function CardModal(
   return (
     <CardModalRoot>
       <CardModalTrigger>
-        <ListCardContainer>{props.cardTitle}</ListCardContainer>
+        <ListCardContainer>{cardTitle}</ListCardContainer>
       </CardModalTrigger>
 
       <CardModalPortal>
@@ -69,7 +77,7 @@ export function CardModal(
                       setEditingTitle(true);
                     }}
                   >
-                    {props.cardTitle}
+                    {cardTitle}
                   </CardModalTitle>
                 )}
 
@@ -96,27 +104,35 @@ export function CardModal(
                 )}
               </Flex>
 
-              <CardModalListName>{`in list ${props.listName}`}</CardModalListName>
+              <CardModalListName>{`in list ${listName}`}</CardModalListName>
 
               <CardModalDescription
-                listId={props.listId}
-                cardId={props.id}
-                cardTitle={props.cardTitle}
-                cardDescription={props.cardDescription}
+                listId={listId}
+                cardId={id}
+                cardTitle={cardTitle}
+                cardDescription={cardDescription}
               />
 
-              <CardModalChecklists cardId={props.id} />
+              <CardModalChecklists cardId={id} />
 
-              <CardModalActivity listId={props.listId} cardId={props.id} />
+              <CardModalActivity listId={listId} cardId={id} />
 
               <CardModalSiderContainer>
                 <CardModalSiderTitle>Add to card</CardModalSiderTitle>
 
-                <CreateChecklist listId={props.listId} cardId={props.id} />
+                <CreateChecklist listId={listId} cardId={id} />
 
                 <CardModalSiderTitle>Actions</CardModalSiderTitle>
 
-                <DeleteCardPopover {...props} />
+                <DeleteCardPopover
+                  id={id}
+                  listId={listId}
+                  cardTitle={cardTitle}
+                  cardDescription={cardDescription}
+                  created_at={created_at}
+                  userId={userId}
+                  listName={listName}
+                />
               </CardModalSiderContainer>
             </Padding>
           </CardModalContent>

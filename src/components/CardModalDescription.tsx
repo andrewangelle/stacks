@@ -15,17 +15,19 @@ import {
 } from '~/styles/CardModal';
 import { Flex } from '~/styles/Page';
 
+type CardModalDescriptionProps = {
+  listId: string;
+  cardId: string;
+  cardTitle: string;
+  cardDescription: string;
+};
+
 export function CardModalDescription({
   listId,
   cardId,
   cardTitle,
   cardDescription,
-}: {
-  listId: string;
-  cardId: string;
-  cardTitle: string;
-  cardDescription: string;
-}) {
+}: CardModalDescriptionProps) {
   const [token] = useAtom(tokenState);
   const [isEditing, setEditing] = useState(false);
   const [description, setDescription] = useState(cardDescription);

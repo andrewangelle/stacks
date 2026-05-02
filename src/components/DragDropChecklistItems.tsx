@@ -1,22 +1,23 @@
 import { type ReactNode, useRef } from 'react';
 import { useDrag, useDrop } from 'react-dnd';
-
 import {
   type ChecklistItemType,
   reorderChecklistItems,
 } from '~/store/checklistItemsApi';
+
+type DragDropChecklistItemProps = {
+  id: string;
+  label: string;
+  checklistId: string;
+  children: ReactNode;
+};
 
 export function DragDropChecklistItem({
   id,
   label,
   checklistId,
   children,
-}: {
-  id: string;
-  label: string;
-  checklistId: string;
-  children: ReactNode;
-}) {
+}: DragDropChecklistItemProps) {
   const [{ isDragging }, dragRef] = useDrag({
     type: 'checklistItem',
     item: { id, name: label },
