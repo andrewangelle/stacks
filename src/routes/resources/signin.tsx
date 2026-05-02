@@ -1,5 +1,5 @@
 import { createFileRoute } from '@tanstack/react-router';
-import supabase from '~/modules/supabase';
+import supabase from '~/db/client';
 
 export const Route = createFileRoute('/resources/signin')({
   server: {
