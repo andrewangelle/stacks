@@ -14,7 +14,10 @@ import {
   DrawerHeaderTitle,
   YourBoardsTitle,
 } from '~/styles/Board';
-import { CreateBoardBackgroundChoice } from '~/styles/Boards';
+import {
+  type BoardBackground,
+  CreateBoardBackgroundChoice,
+} from '~/styles/Boards';
 import { FlexColumn } from '~/styles/Page';
 
 export const sharedDrawerArrowStyles: CSSProperties = {
@@ -86,7 +89,7 @@ export function Drawer() {
                     onClick={() => navigate({ to: `/board/${boardEntry.id}` })}
                   >
                     <CreateBoardBackgroundChoice
-                      background={boardEntry.boardColor}
+                      background={boardEntry.boardColor as BoardBackground}
                     />
                     <BoardTitle>{boardEntry.boardTitle}</BoardTitle>
                   </DrawerBoardEntry>

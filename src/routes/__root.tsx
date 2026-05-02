@@ -1,4 +1,5 @@
 import { QueryClientProvider } from '@tanstack/react-query';
+// @ts-expect-error no types
 import '@pigment-css/react/styles.css';
 import {
   createRootRoute,

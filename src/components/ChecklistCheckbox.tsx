@@ -5,11 +5,9 @@ import { type CSSProperties, useState } from 'react';
 import { AiOutlineCheck, AiOutlineEllipsis } from 'react-icons/ai';
 import { useOutsideClick } from '~/components/ListCard';
 
-import {
-  type ChecklistItemType,
-  useCreateActivityMutation,
-} from '~/store/activityApi';
+import { useCreateActivityMutation } from '~/store/activityApi';
 import { tokenState } from '~/store/atoms';
+import type { ChecklistItemType } from '~/store/checklistItemsApi';
 import {
   useDeleteChecklistItemMutation,
   useUpdateChecklistItemMutation,

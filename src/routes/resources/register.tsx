@@ -1,5 +1,5 @@
 import { createFileRoute } from '@tanstack/react-router';
-import supabase from '~/db/client';
+import client from '~/db/client';
 
 export const Route = createFileRoute('/resources/register')({
   server: {
@@ -7,12 +7,12 @@ export const Route = createFileRoute('/resources/register')({
       async POST({ request }) {
         const { email, password, firstName, lastName } = await request.json();
 
-        const { user, error } = await supabase().auth.signUp({
+        const { user, error } = await client().auth.signUp({
           email: email,
           password: password,
         });
 
-        await supabase()
+        await client()
           .from('profiles')
           .insert([
             {
@@ -24,7 +24,8 @@ export const Route = createFileRoute('/resources/register')({
           ]);
 
         if (error) {
-          return new Response(JSON.stringify({ message: error.message }), {
+          const err = error as Error;
+          return new Response(JSON.stringify({ message: err.message }), {
             status: 401,
             headers: {
               'Content-Type': 'application/json',

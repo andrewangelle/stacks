@@ -5,7 +5,11 @@ import { CreateBoard } from '~/components/CreateBoard';
 import { NavBar } from '~/components/NavBar';
 import { signedInState, tokenState } from '~/store/atoms';
 import { useGetBoardsQuery } from '~/store/boardsApi';
-import { BoardCardContainer, BoardsContainer } from '~/styles/Boards';
+import {
+  type BoardBackground,
+  BoardCardContainer,
+  BoardsContainer,
+} from '~/styles/Boards';
 import { Padding } from '~/styles/Page';
 
 function BoardsPage() {
@@ -49,7 +53,7 @@ function BoardsPage() {
           {boards.map((board) => (
             <BoardCardContainer
               key={board.id}
-              background={board.boardColor}
+              background={board.boardColor as BoardBackground}
               onClick={() => navigate({ to: `/board/${board.id}` })}
             >
               {board.boardTitle}
