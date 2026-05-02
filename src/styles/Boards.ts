@@ -66,7 +66,7 @@ export const BoardCardContainer = styled('div')<BackgroundProps>({
 
 export const CreateBoardCard = styled(BoardCardContainer)` 
   background: rgba(9, 30, 66, 0.04);
-  width: 100%;
+  min-width: 165px;
 
   &:hover {
     background: rgba(9, 30, 66, 0.08); 
@@ -82,7 +82,8 @@ export const CreateBoardPopoverTrigger = styled(Popover.Trigger)`
   background: transparent;
   border: none;
   color: inherit;
-  width: 100%; 
+  width: max-content; 
+  min-width: 125px;
 `;
 
 export const PopoverClose = styled(Popover.Close)` 
@@ -96,13 +97,14 @@ export const PopoverClose = styled(Popover.Close)`
 `;
 
 export const CreateBoardPopoverContent = styled(Popover.Content)` 
-  height: 80vh;
+  height: auto;
   width: 225px;
   border: 2px solid rgba(9, 30, 66, 0.08);
   border-radius: 5px; 
   font-family: ${fontFamily};
   font-size: 14px;
   background: #fff;
+  padding: 10px 25px 25px 25px;
 `;
 
 export const CreateBoardPopoverHeader = styled.div` 

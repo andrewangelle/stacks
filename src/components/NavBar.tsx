@@ -1,45 +1,22 @@
-import { styled } from '@pigment-css/react';
 import { useLocation } from '@tanstack/react-router';
 import { useAtom } from 'jotai';
-import type { ComponentType, HTMLAttributes } from 'react';
 import { RiTrelloFill } from 'react-icons/ri';
 import { signedInState, tokenState } from '~/store/atoms';
-import { blue, fontFamily } from '~/styles/Boards';
-
-const NavBarContainer = styled.div`
-  font-family: ${fontFamily};
-  width: 100vw;
-  position: fixed;
-  height: 40px;
-  z-index: 1;
-  background: ${(props: { background: string }) => props.background};
-  display: flex;
-  justify-content: space-around;
-  color: white;
-  position: fixed;
-` as unknown as ComponentType<
-  HTMLAttributes<HTMLDivElement> & { background: string }
->;
-
-const LogOutText = styled.div` 
-  position: absolute;
-  right: 15px;
-  top: 25%;
-  cursor: pointer;
-`;
+import { LogOutText, NavBarContainer } from '~/styles/Page';
 
 export function NavBar() {
   const [, setSignedIn] = useAtom(signedInState);
   const [, setToken] = useAtom(tokenState);
   const location = useLocation();
 
-  const background =
-    location.pathname === '/boards' || location.pathname === '/signin'
-      ? blue
-      : 'rgba(0,0,0,0.1)';
+  // Not sure why this was here
+  // const background =
+  //   location.pathname === '/boards' || location.pathname === '/signin'
+  //     ? 'blue'
+  //     : 'default';
 
   return (
-    <NavBarContainer background={background}>
+    <NavBarContainer background={'blue'}>
       <div>
         <RiTrelloFill
           size={18}

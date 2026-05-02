@@ -78,3 +78,34 @@ export const BoardPageBackground: ComponentType<
   background: ${(props: { background?: string }) => props.background};
   display: flex;
 `;
+
+export const NavBarContainer = styled('div')<{
+  background: 'blue' | 'default';
+}>({
+  fontFamily:
+    '-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Noto Sans,Ubuntu,Droid Sans,Helvetica Neue,sans-serif;',
+  width: '100vw',
+  position: 'sticky',
+  height: '40px',
+  zIndex: 1,
+  variants: [
+    {
+      props: { background: 'blue' },
+      style: { background: '#0079bf' },
+    },
+    {
+      props: { background: 'default' },
+      style: { background: 'rgba(0,0,0,0.1)' },
+    },
+  ],
+  display: 'flex',
+  justifyContent: 'space-around',
+  color: 'white',
+});
+
+export const LogOutText = styled.div` 
+  position: absolute;
+  right: 15px;
+  top: 25%;
+  cursor: pointer;
+`;

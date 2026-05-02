@@ -59,7 +59,7 @@ export function CreateBoard() {
         </CreateBoardCard>
       </CreateBoardPopoverTrigger>
 
-      <CreateBoardPopoverContent side="bottom" sideOffset={-100}>
+      <CreateBoardPopoverContent side="bottom">
         <CreateBoardPopoverHeader>
           Create Board
           <PopoverClose onClick={() => setCreateOpen(false)}>X</PopoverClose>
