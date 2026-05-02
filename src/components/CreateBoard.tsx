@@ -5,7 +5,7 @@ import { FaCheck } from 'react-icons/fa';
 import { tokenState } from '~/store/atoms';
 import { useCreateBoardMutation } from '~/store/boardsApi';
 import {
-  blue,
+  type BoardBackground,
   CreateBoardBackgroundChoice,
   CreateBoardBackgroundChoices,
   CreateBoardBackgroundText,
@@ -16,20 +16,22 @@ import {
   CreateBoardPopoverHeader,
   CreateBoardPopoverTrigger,
   CreateBoardTitleInput,
-  green,
-  lightGreen,
-  orange,
   PopoverClose,
-  red,
 } from '~/styles/Boards';
 
 import { Center } from '~/styles/Page';
 
-const backgroundChoices = [green, lightGreen, blue, orange, red];
+const backgroundChoices: BoardBackground[] = [
+  'green',
+  'lightGreen',
+  'blue',
+  'orange',
+  'red',
+];
 
 export function CreateBoard() {
   const [isCreateOpen, setCreateOpen] = useState(false);
-  const [selectedColor, setSelectedColor] = useState(blue);
+  const [selectedColor, setSelectedColor] = useState('blue');
   const [boardTitle, setBoardTitle] = useState('');
   const [token] = useAtom(tokenState);
   const [createBoard] = useCreateBoardMutation();
