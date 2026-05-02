@@ -23,7 +23,7 @@ import { FlexColumn } from '~/styles/Page';
 export const sharedDrawerArrowStyles: CSSProperties = {
   cursor: 'pointer',
   position: 'absolute',
-  top: '24px',
+  top: '8px',
   color: 'white',
 };
 

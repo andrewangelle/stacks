@@ -3,7 +3,6 @@ import * as Checkbox from '@radix-ui/react-checkbox';
 import * as Dialog from '@radix-ui/react-dialog';
 import * as Popover from '@radix-ui/react-popover';
 import * as Progress from '@radix-ui/react-progress';
-import type { ComponentType, HTMLAttributes, LabelHTMLAttributes } from 'react';
 import { darkGray, fontFamily, red } from '~/styles/Boards';
 import { AddCardInput } from '~/styles/List';
 import { Button } from '~/styles/Page';
@@ -167,26 +166,26 @@ export const ChecklistProgressIndicator = styled(Progress.Indicator)`
   transition: width 660ms cubic-bezier(0.65, 0, 0.35, 1);
 `;
 
-export const ChecklistCheckboxContainer: ComponentType<
-  HTMLAttributes<HTMLDivElement> & { isHovering: boolean }
-> = styled.div` 
-  padding: 10px 0px;
-  width: 70%;
-  position: relative;
-  cursor: pointer;
-  ${(props: { isHovering: boolean }) => {
-    if (props.isHovering) {
-      return 'background: rgb(223 225 230);';
-    }
-  }}
-`;
+type ChecklistCheckboxContainerProps = {
+  isHovering: boolean;
+};
 
-export const CheckboxRoot = styled(Checkbox.Root)` 
-  background-color: ${(props: { checked: boolean }) => (props.checked ? '#5ba4cf' : 'white')};
-  width: 16;
-  height: 16;
-  position: relative;
-`;
+export const ChecklistCheckboxContainer = styled(
+  'div',
+)<ChecklistCheckboxContainerProps>({
+  padding: '10px 0px',
+  width: '70%',
+  position: 'relative',
+  cursor: 'pointer',
+  background: (props) => (props.isHovering ? 'rgb(223 225 230)' : undefined),
+});
+
+export const CheckboxRoot = styled(Checkbox.Root)({
+  backgroundColor: (props) => (props.checked === true ? '#5ba4cf' : 'white'),
+  width: 16,
+  height: 16,
+  position: 'relative',
+});
 
 export const CheckboxIndicator = styled(Checkbox.Indicator)` 
   color: white;
@@ -194,18 +193,16 @@ export const CheckboxIndicator = styled(Checkbox.Indicator)`
   height: 16;
 `;
 
-export const CheckboxLabel: ComponentType<
-  LabelHTMLAttributes<HTMLLabelElement> & { checked: boolean }
-> = styled.label` 
-  margin: 0 0 0 8px;
-  font-family: ${fontFamily};
-  font-size: 14px;
-  ${(props: { checked: boolean }) => {
-    if (props.checked) {
-      return 'text-decoration: line-through;';
-    }
-  }}
-`;
+type CheckboxLabelProps = {
+  checked: boolean;
+};
+
+export const CheckboxLabel = styled('label')<CheckboxLabelProps>({
+  margin: '0 0 0 8px',
+  fontFamily: fontFamily,
+  fontSize: '14px',
+  textDecoration: (props) => (props.checked ? 'line-through' : 'none'),
+});
 
 // Card Modal Styles
 

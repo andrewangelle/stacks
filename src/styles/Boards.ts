@@ -2,14 +2,17 @@ import { styled } from '@pigment-css/react';
 import * as Popover from '@radix-ui/react-popover';
 import { TiDelete } from 'react-icons/ti';
 
-export const darkGray = '#5e6c84';
-export const green = '#519839';
-export const lightGreen = '#4bbf6b';
-export const blue = '#0079bf';
-export const orange = '#d29034';
-export const red = '#b04632';
-export const fontFamily =
-  '-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Noto Sans,Ubuntu,Droid Sans,Helvetica Neue,sans-serif;';
+import {
+  blue,
+  darkGray,
+  fontFamily,
+  green,
+  lightGreen,
+  orange,
+  red,
+} from './tokens';
+
+export { blue, darkGray, fontFamily, green, lightGreen, orange, red };
 
 export type BoardBackground =
   | 'green'
