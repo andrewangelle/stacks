@@ -1,0 +1,56 @@
+{
+  "version": "5",
+  "remote": {
+    "https://edge.netlify.com/": "fd941d61d88673d5f28aab283fb86fcc50f08a3bc80ee5470498fcfa88c65cfb",
+    "https://edge.netlify.com/bootstrap/config.ts": "6a2ce0e544e15e8f8883a5c18da5948e37fd0f2619f68cb31f3af53c51817025",
+    "https://edge.netlify.com/bootstrap/context.ts": "e97240232121e2f369f6546ce961490f34d961ea1ea54be3ff09633e3f08373f",
+    "https://edge.netlify.com/bootstrap/cookie.ts": "8b0baae708989ca183c6f3b4ab3d029e6abcbc2e43f93edeb0ff447b3bbc3a05",
+    "https://edge.netlify.com/bootstrap/edge_function.ts": "b8253e86aa83c67341f5cfedeba5049d77fbf84dcab7eceff7566b7728ae9b39",
+    "https://edge.netlify.com/bootstrap/globals/types.ts": "eaa6148ded3121d8dee62dd91c86e7fe76601df0f3ca8d7962243a30f4c8935f"
+  },
+  "workspace": {
+    "packageJson": {
+      "dependencies": [
+        "npm:@biomejs/biome@^2.4.13",
+        "npm:@netlify/functions@0.10",
+        "npm:@radix-ui/react-checkbox@~0.1.5",
+        "npm:@radix-ui/react-dialog@~0.1.7",
+        "npm:@radix-ui/react-popover@~0.1.6",
+        "npm:@radix-ui/react-progress@~0.1.4",
+        "npm:@reduxjs/toolkit@^1.8.0",
+        "npm:@remix-run/dev@^1.2.3",
+        "npm:@remix-run/eslint-config@^1.2.3",
+        "npm:@remix-run/netlify@^1.2.3",
+        "npm:@remix-run/react@^1.2.3",
+        "npm:@supabase/supabase-js@^1.31.1",
+        "npm:@types/node-uuid@^0.0.29",
+        "npm:@types/react-beautiful-dnd@^13.1.2",
+        "npm:@types/react-dom@^17.0.9",
+        "npm:@types/react@^17.0.24",
+        "npm:@types/redux-logger@^3.0.9",
+        "npm:@types/styled-components@^5.1.24",
+        "npm:cross-env@^7.0.3",
+        "npm:date-fns@^2.28.0",
+        "npm:dotenv@16",
+        "npm:eslint@^8.9.0",
+        "npm:formik@^2.2.9",
+        "npm:husky@^9.1.7",
+        "npm:lint-staged@^16.4.0",
+        "npm:node-uuid@^1.4.8",
+        "npm:react-beautiful-dnd@^13.1.0",
+        "npm:react-dnd-html5-backend@^15.1.2",
+        "npm:react-dnd@^15.1.1",
+        "npm:react-dom@^17.0.2",
+        "npm:react-icons@^4.3.1",
+        "npm:react-redux@^7.2.6",
+        "npm:react@^17.0.2",
+        "npm:recoil-persist@4",
+        "npm:recoil@~0.6.1",
+        "npm:redux-logger@^3.0.6",
+        "npm:remix@^1.2.3",
+        "npm:styled-components@^5.3.3",
+        "npm:typescript@^4.5.5"
+      ]
+    }
+  }
+}

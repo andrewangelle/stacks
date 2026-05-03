@@ -1,0 +1,6 @@
+---
+alwaysApply: true
+---
+
+# TypeScript
+- Use `pnpm test:types` when checking for type errors or typescript compilation results
