@@ -15,9 +15,16 @@ export default defineConfig({
     include: ['react-is', '@mui/utils/deepmerge', '@pigment-css/react'],
   },
   ssr: {
-    noExternal: ['react-is', '@mui/utils', '@pigment-css/react'],
+    // Bundle react-icons for SSR — Node otherwise loads .esm.js as CJS and throws
+    // "Cannot use import statement outside a module" on Netlify.
+    noExternal: ['react-is', '@mui/utils', '@pigment-css/react', 'react-icons'],
     optimizeDeps: {
-      include: ['react-is', '@mui/utils/deepmerge', '@pigment-css/react'],
+      include: [
+        'react-is',
+        '@mui/utils/deepmerge',
+        '@pigment-css/react',
+        'react-icons',
+      ],
     },
   },
   resolve: {

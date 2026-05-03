@@ -2,8 +2,11 @@ import * as Popover from '@radix-ui/react-popover';
 import { useParams } from '@tanstack/react-router';
 import { useAtom } from 'jotai';
 import { type CSSProperties, useState } from 'react';
-import * as Ai from 'react-icons/ai';
+import * as AiIcons from 'react-icons/ai';
 import { useOutsideClick } from '~/components/ListCard';
+
+const AiOutlineCheck = AiIcons.AiOutlineCheck;
+const AiOutlineEllipsis = AiIcons.AiOutlineEllipsis;
 
 import { useCreateActivityMutation } from '~/store/activityApi';
 import { tokenState } from '~/store/atoms';
@@ -86,7 +89,7 @@ export function ChecklistCheckbox(props: ChecklistItemType) {
         }}
       >
         <CheckboxIndicator>
-          <Ai.AiOutlineCheck style={checkIconStyles} />
+          <AiOutlineCheck style={checkIconStyles} />
         </CheckboxIndicator>
       </CheckboxRoot>
 
@@ -137,7 +140,7 @@ export function ChecklistCheckbox(props: ChecklistItemType) {
       <span ref={outsideClickRef}>
         <Popover.Root open={isDeleteOpen}>
           <DeleteChecklistPopoverTrigger>
-            <Ai.AiOutlineEllipsis
+            <AiOutlineEllipsis
               onClick={() => setDeleteOpen(true)}
               style={{ position: 'absolute', right: 5, top: 15 }}
             />
