@@ -1,113 +1,44 @@
-import {
-  createFileRoute,
-  useLocation,
-  useNavigate,
-} from '@tanstack/react-router';
+import { createFileRoute, useNavigate } from '@tanstack/react-router';
 import { useAtom } from 'jotai';
-import { useEffect, useMemo } from 'react';
-import { signedInState, type TokenType, tokenState } from '~/store/atoms';
-import { createGuestToken } from '~/store/guestSession';
+import { useEffect } from 'react';
+import { signedInState, tokenState } from '~/store/atoms';
+import { createGuestToken, useTokenFromHash } from '~/utils/session';
 
 export const Route = createFileRoute('/')({
   component() {
     const [isSignedIn, setSignedIn] = useAtom(signedInState);
     const [storedToken, setToken] = useAtom(tokenState);
     const navigate = useNavigate();
-    const { hash } = useLocation();
+    const hashToken = useTokenFromHash();
 
-    const hashToken = useMemo(() => {
-      if (!hash) {
-        return null;
+    // Not signed in
+    useEffect(() => {
+      if (!isSignedIn) {
+        setSignedIn(true);
+        setToken(createGuestToken());
+        navigate({ to: '/boards' });
       }
+    }, [isSignedIn, setSignedIn, setToken, navigate]);
 
-      return hash
-        .split('&')
-        .reduce((acc: Record<string, string>, string: string) => {
-          const pairs = string.split('=');
-          if (pairs[0] === '#access_token') {
-            pairs[0] = pairs[0].split('#')[1];
-          }
-          acc[pairs[0]] = pairs[1];
-          return acc;
-        }, {}) as unknown as TokenType;
-    }, [hash]);
-
+    // Is redirected from auth provider
     useEffect(() => {
       if (hashToken?.access_token) {
         setSignedIn(true);
         setToken(hashToken);
         navigate({ to: '/boards' });
-        return;
       }
+    }, [hashToken, setSignedIn, setToken, navigate]);
 
+    // Is signed in
+    useEffect(() => {
       if (storedToken?.access_token) {
         if (!isSignedIn) {
           setSignedIn(true);
         }
         navigate({ to: '/boards' });
-        return;
       }
-
-      setSignedIn(true);
-      setToken(createGuestToken());
-      navigate({ to: '/boards' });
-    }, [hashToken, storedToken, isSignedIn, setSignedIn, setToken, navigate]);
+    }, [storedToken, isSignedIn, setSignedIn, navigate]);
 
     return null;
   },
 });
-
-// Old implementation that worked with supabase auth.signIn
-
-// import {
-//   createFileRoute,
-//   useLocation,
-//   useNavigate,
-// } from '@tanstack/react-router';
-// import { useAtom } from 'jotai';
-// import { useEffect, useMemo } from 'react';
-// import { signedInState, type TokenType, tokenState } from '~/store/atoms';
-
-// export const Route = createFileRoute('/')({
-//   component() {
-//     const [isSignedIn, setSignedIn] = useAtom(signedInState);
-//     const [, setToken] = useAtom(tokenState);
-//     const navigate = useNavigate();
-//     const { hash } = useLocation();
-
-//     const token = useMemo(() => {
-//       if (!hash) {
-//         return null;
-//       }
-
-//       return hash
-//         .split('&')
-//         .reduce((acc: Record<string, string>, string: string) => {
-//           const pairs = string.split('=');
-//           if (pairs[0] === '#access_token') {
-//             pairs[0] = pairs[0].split('#')[1];
-//           }
-//           acc[pairs[0]] = pairs[1];
-//           return acc;
-//         }, {}) as unknown as TokenType;
-//     }, [hash]);
-
-//     useEffect(() => {
-//       if (token?.access_token && !isSignedIn) {
-//         setSignedIn(true);
-//         setToken(token);
-//         navigate({ to: '/boards' });
-//         return;
-//       }
-
-//       if (isSignedIn) {
-//         navigate({ to: '/boards' });
-//         return;
-//       }
-
-//       navigate({ to: '/signin' });
-//     }, [token, setSignedIn, setToken, isSignedIn, navigate]);
-
-//     return null;
-//   },
-// });
