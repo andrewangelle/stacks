@@ -1,7 +1,7 @@
 import * as Popover from '@radix-ui/react-popover';
 import { useAtom } from 'jotai';
 import { useState } from 'react';
-import { FaCheck } from 'react-icons/fa';
+import * as Fa from 'react-icons/fa';
 import { tokenState } from '~/store/atoms';
 import { useCreateBoardMutation } from '~/store/boardsApi';
 import {
@@ -77,7 +77,7 @@ export function CreateBoard() {
             >
               {color === selectedColor && (
                 <Center>
-                  <FaCheck />
+                  <Fa.FaCheck />
                 </Center>
               )}
             </CreateBoardBackgroundChoice>

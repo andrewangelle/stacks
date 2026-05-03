@@ -1,6 +1,6 @@
 import { useAtom } from 'jotai';
 import { useState } from 'react';
-import { IoMdList } from 'react-icons/io';
+import * as Io from 'react-icons/io';
 import { tokenState } from '~/store/atoms';
 import { useUpdateCardMutation } from '~/store/cardsApi';
 import {
@@ -37,7 +37,7 @@ export function CardModalDescription({
   return (
     <DescriptionContainer>
       <Flex>
-        <IoMdList size={24} />
+        <Io.IoMdList size={24} />
 
         <CardModalTitle>Description</CardModalTitle>
 

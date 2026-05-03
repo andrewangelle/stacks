@@ -1,6 +1,6 @@
 import { useLocation, useParams } from '@tanstack/react-router';
 import { useAtom } from 'jotai';
-import { RiTrelloFill } from 'react-icons/ri';
+import * as Ri from 'react-icons/ri';
 import { signedInState, tokenState } from '~/store/atoms';
 import { useGetBoardQuery } from '~/store/boardsApi';
 import type { BoardBackground } from '~/styles/Boards';
@@ -22,7 +22,7 @@ export function NavBar() {
   return (
     <NavBarContainer background={background as BoardBackground}>
       <div>
-        <RiTrelloFill
+        <Ri.RiTrelloFill
           size={18}
           style={{ color: 'white', verticalAlign: '-webkit-baseline-middle' }}
         />

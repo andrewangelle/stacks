@@ -2,7 +2,7 @@ import { useParams } from '@tanstack/react-router';
 import { formatRelative } from 'date-fns';
 import { useAtom } from 'jotai';
 import { useState } from 'react';
-import { MdOutlineFormatListBulleted } from 'react-icons/md';
+import * as Md from 'react-icons/md';
 
 import { ActivityComment } from '~/components/ActivityComment';
 import { ActivityLogo } from '~/components/ActivityLogo';
@@ -57,7 +57,7 @@ export function CardModalActivity({ listId, cardId }: CardModalActivityProps) {
     <div>
       <ActivityHeader>
         <Flex>
-          <MdOutlineFormatListBulleted size={24} />
+          <Md.MdOutlineFormatListBulleted size={24} />
           <CardModalTitle>Activity</CardModalTitle>
         </Flex>
         <HideActivityButton

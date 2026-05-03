@@ -1,6 +1,6 @@
 import { useAtom } from 'jotai';
 import { useState } from 'react';
-import { BsCardHeading } from 'react-icons/bs';
+import * as Bs from 'react-icons/bs';
 import { CardModalActivity } from '~/components/CardModalActivity';
 import { CardModalChecklists } from '~/components/CardModalChecklists';
 import { CardModalDescription } from '~/components/CardModalDescription';
@@ -69,7 +69,7 @@ export function CardModal({
 
             <Padding padding="15px">
               <Flex>
-                <BsCardHeading size={24} />
+                <Bs.BsCardHeading size={24} />
 
                 {!isEditingTitle && (
                   <CardModalTitle

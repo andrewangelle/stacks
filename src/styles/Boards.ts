@@ -1,6 +1,6 @@
 import { styled } from '@pigment-css/react';
 import * as Popover from '@radix-ui/react-popover';
-import { TiDelete } from 'react-icons/ti';
+import * as Ti from 'react-icons/ti';
 
 import {
   blue,
@@ -219,7 +219,7 @@ export const CreateBoardButton = styled('button')<IsDisabledProps>({
   ],
 });
 
-export const DeleteBoardIcon = styled(TiDelete)` 
+export const DeleteBoardIcon = styled(Ti.TiDelete)` 
   position: absolute;
   bottom: 0;
   right: 0;

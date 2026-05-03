@@ -1,6 +1,6 @@
 import { useAtom } from 'jotai';
 import { useState } from 'react';
-import { BsCheck2Square } from 'react-icons/bs';
+import * as Bs from 'react-icons/bs';
 
 import { ChecklistCheckbox } from '~/components/ChecklistCheckbox';
 import { DeleteChecklistPopover } from '~/components/DeleteChecklistPopover';
@@ -45,7 +45,7 @@ function Checklist(props: ChecklistType) {
     <div style={{ margin: '30px 0px' }}>
       <ChecklistHeader key={props.id}>
         <Flex>
-          <BsCheck2Square style={{ marginRight: '4px' }} />
+          <Bs.BsCheck2Square style={{ marginRight: '4px' }} />
           <CardModalTitle>{props.checklistTitle}</CardModalTitle>
         </Flex>
         <DeleteChecklistPopover {...props} />

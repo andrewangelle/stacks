@@ -1,5 +1,5 @@
 import { styled } from '@pigment-css/react';
-import { TiDelete } from 'react-icons/ti';
+import * as Ti from 'react-icons/ti';
 import { fontFamily } from '~/styles/Boards';
 import { Button } from '~/styles/Page';
 
@@ -73,7 +73,7 @@ export const ListCardContainer = styled.div`
   box-shadow: 0 1px 0 #091e4240;
 `;
 
-export const DeleteListIcon = styled(TiDelete)` 
+export const DeleteListIcon = styled(Ti.TiDelete)` 
   position: absolute;
   top: 0;
   right: 0;

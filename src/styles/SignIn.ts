@@ -1,5 +1,5 @@
 import { styled } from '@pigment-css/react';
-import { TiDelete } from 'react-icons/ti';
+import * as Ti from 'react-icons/ti';
 import { blue, fontFamily, red } from '~/styles/Boards';
 import { Button } from '~/styles/Page';
 
@@ -34,7 +34,7 @@ export const ErrorMessageContainer = styled.div`
   white-space: nowrap;
 `;
 
-export const CloseError = styled(TiDelete)` 
+export const CloseError = styled(Ti.TiDelete)` 
   position: absolute;
   right: 5px;
   top: 25%;

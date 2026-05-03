@@ -2,7 +2,7 @@ import * as Popover from '@radix-ui/react-popover';
 import { useParams } from '@tanstack/react-router';
 import { useAtom } from 'jotai';
 import { useState } from 'react';
-import { BsCheck2Square } from 'react-icons/bs';
+import * as Bs from 'react-icons/bs';
 import { useCreateActivityMutation } from '~/store/activityApi';
 import { tokenState } from '~/store/atoms';
 import { useCreateChecklistMutation } from '~/store/checklistsApi';
@@ -33,7 +33,7 @@ export function CreateChecklist({ listId, cardId }: CreateChecklistProps) {
     <Popover.Root>
       <CreateChecklistPopoverTrigger>
         <CardModalSiderButton>
-          <BsCheck2Square style={{ marginRight: '4px' }} />
+          <Bs.BsCheck2Square style={{ marginRight: '4px' }} />
           <CardModalSiderButtonText>Checklist</CardModalSiderButtonText>
         </CardModalSiderButton>
       </CreateChecklistPopoverTrigger>

@@ -1,8 +1,8 @@
 import { useNavigate, useParams } from '@tanstack/react-router';
 import { useAtom } from 'jotai';
 import { type CSSProperties, useState } from 'react';
-import { IoIosArrowBack, IoIosArrowDropright } from 'react-icons/io';
-import { RiTrelloFill } from 'react-icons/ri';
+import * as Io from 'react-icons/io';
+import * as Ri from 'react-icons/ri';
 import { tokenState } from '~/store/atoms';
 import { useGetBoardQuery, useGetBoardsQuery } from '~/store/boardsApi';
 import {
@@ -39,7 +39,7 @@ export function Drawer() {
   return (
     <>
       {!isDrawerOpen && (
-        <IoIosArrowDropright
+        <Io.IoIosArrowDropright
           style={{
             ...sharedDrawerArrowStyles,
             background: 'rgba(255, 255, 255, 0.16)',
@@ -58,7 +58,7 @@ export function Drawer() {
                   <div>{token?.user?.email}'s workspace</div>
                 </DrawerHeaderTitle>
               )}
-              <IoIosArrowBack
+              <Io.IoIosArrowBack
                 style={{
                   ...sharedDrawerArrowStyles,
                   right: 0,
@@ -69,7 +69,7 @@ export function Drawer() {
             </DrawerHeader>
 
             <BoardsLinkContainer>
-              <RiTrelloFill
+              <Ri.RiTrelloFill
                 size={18}
                 style={{ color: 'white', padding: '8px' }}
               />
