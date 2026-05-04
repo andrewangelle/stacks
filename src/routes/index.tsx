@@ -1,13 +1,18 @@
 import { createFileRoute, useNavigate } from '@tanstack/react-router';
 import { useAtom } from 'jotai';
 import { useEffect } from 'react';
-import { signedInState, tokenState } from '~/store/atoms';
-import { createGuestToken, useTokenFromHash } from '~/utils/session';
+import { guestUserIdState, signedInState, tokenState } from '~/store/atoms';
+import {
+  createGuestToken,
+  createGuestUserId,
+  useTokenFromHash,
+} from '~/utils/session';
 
 export const Route = createFileRoute('/')({
   component() {
     const [isSignedIn, setSignedIn] = useAtom(signedInState);
     const [storedToken, setToken] = useAtom(tokenState);
+    const [guestUserId, setGuestUserId] = useAtom(guestUserIdState);
     const navigate = useNavigate();
     const hashToken = useTokenFromHash();
 
@@ -15,10 +20,12 @@ export const Route = createFileRoute('/')({
     useEffect(() => {
       if (!isSignedIn) {
         setSignedIn(true);
-        setToken(createGuestToken());
+        const userId = guestUserId ?? createGuestUserId();
+        setGuestUserId(userId);
+        setToken(createGuestToken(userId));
         navigate({ to: '/boards' });
       }
-    }, [isSignedIn, setSignedIn, setToken, navigate]);
+    }, [isSignedIn, setSignedIn, setToken, navigate, guestUserId]);
 
     // Is redirected from auth provider
     useEffect(() => {
