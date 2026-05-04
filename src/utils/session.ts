@@ -22,19 +22,23 @@ export function useTokenFromHash() {
   }, [hash]);
 }
 
-/** Stable id for the auto-created guest session (first visit to `/`). */
-export const GUEST_USER_ID = '00000000-0000-4000-8000-000000000001';
-
-export function createGuestToken(): TokenType {
+export function createGuestToken(userId: string): TokenType {
   return {
-    access_token: `local-${GUEST_USER_ID}`,
+    access_token: `local-${userId}`,
     expires_at: `${Date.now() + 60 * 60 * 1000}`,
     expires_in: '3600',
-    refresh_token: `refresh-local-${GUEST_USER_ID}`,
+    refresh_token: `refresh-local-${userId}`,
     token_type: 'bearer',
     user: {
-      id: GUEST_USER_ID,
+      id: userId,
       email: 'guest@local',
     },
   };
+}
+
+export function createGuestUserId() {
+  return (
+    globalThis.crypto?.randomUUID?.() ??
+    `guest-${Date.now()}-${Math.random().toString(36).slice(2)}`
+  );
 }
