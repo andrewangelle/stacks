@@ -1,7 +1,6 @@
 import { useNavigate } from '@tanstack/react-router';
 import { useAtom } from 'jotai';
 import { useEffect, useState } from 'react';
-
 import { signedInState, tokenState } from '~/store/atoms';
 import { Button, Center, FlexColumn } from '~/styles/Page';
 import {
