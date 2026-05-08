@@ -1,27 +1,23 @@
-import { createCollection, localStorageCollectionOptions } from '@tanstack/db';
+import { createCollection, localOnlyCollectionOptions } from '@tanstack/db';
 import type { LocalEntity, LocalTableName } from '~/db/LocalQueryBuilder';
-import { safeStorage, safeStorageEventApi } from '~/db/storage';
 
-function createLocalStorageCollection(table: LocalTableName) {
+function createLocalCollection(table: LocalTableName) {
   return createCollection(
-    localStorageCollectionOptions<LocalEntity>({
+    localOnlyCollectionOptions<LocalEntity>({
       id: table,
-      storageKey: `stacks:db:${table}`,
-      storage: safeStorage,
-      storageEventApi: safeStorageEventApi,
       getKey: (item) => item.id,
+      initialData: [],
     }),
   );
 }
 
-const stacksCollection = createLocalStorageCollection('stacks');
-const listsCollection = createLocalStorageCollection('lists');
-const cardsCollection = createLocalStorageCollection('cards');
-const checklistsCollection = createLocalStorageCollection('checklists');
-const checklistItemsCollection =
-  createLocalStorageCollection('checklist-items');
-const activityCollection = createLocalStorageCollection('activity');
-const profilesCollection = createLocalStorageCollection('profiles');
+const stacksCollection = createLocalCollection('stacks');
+const listsCollection = createLocalCollection('lists');
+const cardsCollection = createLocalCollection('cards');
+const checklistsCollection = createLocalCollection('checklists');
+const checklistItemsCollection = createLocalCollection('checklist-items');
+const activityCollection = createLocalCollection('activity');
+const profilesCollection = createLocalCollection('profiles');
 
 export const collectionByTable: Record<
   LocalTableName,
