@@ -7,6 +7,7 @@ export const Route = createFileRoute('/resources/activity/$activityId')({
     handlers: {
       async PUT({ request, params }) {
         const userData = await request.json();
+
         const { data, error } = await client(userData.token)
           .from('activity')
           .update([
@@ -17,10 +18,12 @@ export const Route = createFileRoute('/resources/activity/$activityId')({
           .match({ id: params.activityId });
 
         console.log({ data, error });
+
         return jsonResponse(data ?? []);
       },
       async DELETE({ request, params }) {
         const userData = await request.json();
+
         const { data, ...rest } = await client(userData.token)
           .from('activity')
           .delete()
@@ -30,6 +33,7 @@ export const Route = createFileRoute('/resources/activity/$activityId')({
           data,
           rest,
         });
+
         const responseData = {
           code: 'activity:delete:success',
           message: 'success',
