@@ -1,5 +1,8 @@
+import { Prisma } from '@prisma/client';
 import { createFileRoute } from '@tanstack/react-router';
-import client from '~/db/client';
+import bcrypt from 'bcryptjs';
+import { prisma } from '~/db/prisma';
+import { buildSession } from '~/server/auth';
 
 export const Route = createFileRoute('/resources/register')({
   server: {
@@ -7,38 +10,64 @@ export const Route = createFileRoute('/resources/register')({
       async POST({ request }) {
         const { email, password, firstName, lastName } = await request.json();
 
-        const { user, error } = await client().auth.signUp({
-          email: email,
-          password: password,
-        });
+        try {
+          const passwordHash = await bcrypt.hash(password, 10);
 
-        await client()
-          .from('profiles')
-          .insert([
-            {
-              userId: user?.id,
-              email: user?.email,
-              firstName,
-              lastName,
-            },
-          ]);
+          const user = await prisma.$transaction(async (tx) => {
+            const created = await tx.user.create({
+              data: {
+                email,
+                password: passwordHash,
+              },
+            });
 
-        if (error) {
-          const err = error as Error;
-          return new Response(JSON.stringify({ message: err.message }), {
-            status: 401,
-            headers: {
-              'Content-Type': 'application/json',
-            },
+            await tx.profile.create({
+              data: {
+                userId: created.id,
+                email: created.email,
+                firstName,
+                lastName,
+              },
+            });
+
+            return created;
           });
-        }
 
-        return new Response(JSON.stringify({ user }), {
-          status: 200,
-          headers: {
-            'Content-Type': 'application/json',
-          },
-        });
+          return new Response(
+            JSON.stringify({
+              user: {
+                id: user.id,
+                email: user.email,
+                role: 'authenticated',
+              },
+              session: buildSession(user),
+              error: null,
+            }),
+            {
+              status: 200,
+              headers: {
+                'Content-Type': 'application/json',
+              },
+            },
+          );
+        } catch (error: unknown) {
+          if (
+            error instanceof Prisma.PrismaClientKnownRequestError &&
+            error.code === 'P2002'
+          ) {
+            return new Response(
+              JSON.stringify({ message: 'Email already registered' }),
+              {
+                status: 409,
+                headers: {
+                  'Content-Type': 'application/json',
+                },
+              },
+            );
+          }
+
+          throw error;
+        }
       },
     },
   },

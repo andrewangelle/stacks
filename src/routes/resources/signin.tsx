@@ -1,5 +1,7 @@
 import { createFileRoute } from '@tanstack/react-router';
-import supabase from '~/db/client';
+import bcrypt from 'bcryptjs';
+import { prisma } from '~/db/prisma';
+import { buildSession } from '~/server/auth';
 
 export const Route = createFileRoute('/resources/signin')({
   server: {
@@ -7,26 +9,37 @@ export const Route = createFileRoute('/resources/signin')({
       async POST({ request }) {
         const { email, password } = await request.json();
 
-        const { user, session, error } = await supabase().auth.signIn({
-          email: email,
-          password: password,
-        });
+        const user = await prisma.user.findUnique({ where: { email } });
 
-        if (error) {
-          return new Response(error.message, {
-            status: 401,
+        if (!user || !(await bcrypt.compare(password, user.password))) {
+          return new Response(
+            JSON.stringify({ message: 'Invalid email or password' }),
+            {
+              status: 401,
+              headers: {
+                'Content-Type': 'application/json',
+              },
+            },
+          );
+        }
+
+        return new Response(
+          JSON.stringify({
+            user: {
+              id: user.id,
+              email: user.email,
+              role: 'authenticated',
+            },
+            session: buildSession(user),
+            error: null,
+          }),
+          {
+            status: 200,
             headers: {
               'Content-Type': 'application/json',
             },
-          });
-        }
-
-        return new Response(JSON.stringify({ user, session }), {
-          status: 200,
-          headers: {
-            'Content-Type': 'application/json',
           },
-        });
+        );
       },
     },
   },
