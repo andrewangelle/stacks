@@ -3,17 +3,9 @@ import { prisma } from '~/db/prisma';
 import { requireMutationUser } from '~/server/ensurePersistedUser';
 import { jsonResponse } from '~/utils/response';
 
-export const Route = createFileRoute('/resources/cards/$cardId')({
+export const Route = createFileRoute('/resources/lists/$listId')({
   server: {
     handlers: {
-      async GET({ params }) {
-        const card = await prisma.card.findUnique({
-          where: { id: params.cardId },
-        });
-
-        return jsonResponse(card ?? {});
-      },
-
       async PUT({ request, params }) {
         const userData = await request.json();
         const auth = await requireMutationUser(userData.token, userData.userId);
@@ -22,24 +14,19 @@ export const Route = createFileRoute('/resources/cards/$cardId')({
           return auth;
         }
 
-        const patch: { cardDescription?: string; cardTitle?: string } = {};
-        if (typeof userData.cardDescription === 'string') {
-          patch.cardDescription = userData.cardDescription;
-        }
-        if (typeof userData.cardTitle === 'string') {
-          patch.cardTitle = userData.cardTitle;
-        }
-
-        await prisma.card.updateMany({
-          where: {
-            id: params.cardId,
-            userId: auth.uid,
+        const updated = await prisma.list.updateMany({
+          where: { id: params.listId, userId: auth.uid },
+          data: {
+            listTitle: userData.listTitle,
           },
-          data: patch,
         });
 
-        const rows = await prisma.card.findMany({
-          where: { id: params.cardId },
+        if (updated.count === 0) {
+          return jsonResponse([]);
+        }
+
+        const rows = await prisma.list.findMany({
+          where: { id: params.listId },
         });
 
         return jsonResponse(rows);
@@ -53,7 +40,7 @@ export const Route = createFileRoute('/resources/cards/$cardId')({
           return auth;
         }
 
-        const row = await prisma.card.findFirst({
+        const row = await prisma.list.findFirst({
           where: {
             id: userData.id,
             userId: auth.uid,
@@ -64,14 +51,14 @@ export const Route = createFileRoute('/resources/cards/$cardId')({
           return jsonResponse({ message: 'Not found' }, 404);
         }
 
-        await prisma.card.delete({
+        await prisma.list.delete({
           where: { id: row.id },
         });
 
         return jsonResponse({
-          code: 'cards:delete:success',
+          code: 'lists:delete:success',
           message: 'success',
-          cardData: [row],
+          data: [row],
         });
       },
     },

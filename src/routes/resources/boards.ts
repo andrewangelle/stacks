@@ -3,21 +3,21 @@ import { prisma } from '~/db/prisma';
 import { requireMutationUser } from '~/server/ensurePersistedUser';
 import { jsonResponse } from '~/utils/response';
 
-export const Route = createFileRoute('/resources/cards')({
+export const Route = createFileRoute('/resources/boards')({
   server: {
     handlers: {
       async GET({ request }) {
-        const listId = new URL(request.url).searchParams.get('listId');
-        if (!listId) {
+        const userId = new URL(request.url).searchParams.get('userId');
+        if (!userId) {
           return jsonResponse([]);
         }
 
-        const rows = await prisma.card.findMany({
-          where: { listId },
+        const data = await prisma.stack.findMany({
+          where: { userId },
           orderBy: { createdAt: 'asc' },
         });
 
-        return jsonResponse(rows);
+        return jsonResponse(data);
       },
 
       async POST({ request }) {
@@ -28,16 +28,16 @@ export const Route = createFileRoute('/resources/cards')({
           return auth;
         }
 
-        const row = await prisma.card.create({
+        const row = await prisma.stack.create({
           data: {
-            cardTitle: userData.cardTitle,
-            listId: userData.listId,
+            boardTitle: userData.boardTitle,
+            boardColor: userData.boardColor,
             userId: auth.uid,
           },
         });
 
         return jsonResponse({
-          code: 'cards:create:success',
+          code: 'stacks:create:success',
           message: 'success',
           data: [row],
         });

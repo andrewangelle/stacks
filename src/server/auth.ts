@@ -7,6 +7,15 @@ export type SessionPayload = {
   user: { id: string; email: string };
 };
 
+/** Parses `local-<userId>` bearer tokens produced by sign-in / register. */
+export function parseLocalAccessToken(token: unknown): string | null {
+  if (typeof token !== 'string' || !token.startsWith('local-')) {
+    return null;
+  }
+  const id = token.slice('local-'.length);
+  return id.length > 0 ? id : null;
+}
+
 /** Matches the prior local-auth session shape (`local-<userId>` tokens). */
 export function buildSession(user: {
   id: string;

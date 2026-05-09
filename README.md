@@ -12,12 +12,19 @@
 ## Development
 
 The Netlify CLI starts your app in development mode, rebuilding assets on file changes.
-You'll need a copy of .env with environment variables.
+You'll need a copy of `.env` with environment variables (see `.env.example`).
 
 ```sh
-npm run dev
+pnpm dev
 ```
 
 Open up [http://localhost:3000](http://localhost:3000), and you should be ready to go!
+
+
+- Generate client after schema changes: `pnpm db:generate`
+- Apply migrations locally: `pnpm db:migrate`
+- Deploy migrations (e.g. CI / production): `pnpm db:deploy`
+
+Configure the same `DATABASE_URL` in Netlify environment settings for deployed builds.
 
 ```

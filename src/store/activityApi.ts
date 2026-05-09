@@ -42,13 +42,10 @@ export function useGetActivityQuery(args: ActivityArgs) {
   return useQuery({
     queryKey: queryKeys.activity(args.cardId),
     queryFn: () =>
-      resourceRequest<ActivityType[]>(
-        'activity/get',
-        { method: 'POST' },
-        {
-          cardId: args.cardId,
-        },
-      ),
+      resourceRequest<ActivityType[]>('activity', {
+        method: 'GET',
+        searchParams: { cardId: args.cardId },
+      }),
   });
 }
 
@@ -56,7 +53,7 @@ export function useCreateActivityMutation() {
   const mutation = useMutation({
     mutationFn: (args: CreateActivityArgs) =>
       resourceRequest<{ data: ActivityType[] }>(
-        'activity/create',
+        'activity',
         { method: 'POST' },
         args,
       ),

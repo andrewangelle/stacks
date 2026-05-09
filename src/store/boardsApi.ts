@@ -26,9 +26,10 @@ export function useGetBoardsQuery(
     queryKey: queryKeys.boards(normalizedUserId),
     enabled: !options?.skip && !!userId,
     queryFn: () =>
-      resourceRequest<Board[]>(
-        `boards/get?userId=${encodeURIComponent(normalizedUserId)}`,
-      ),
+      resourceRequest<Board[]>('boards', {
+        method: 'GET',
+        searchParams: { userId: normalizedUserId },
+      }),
   });
 }
 
@@ -48,7 +49,7 @@ export function useCreateBoardMutation() {
   const mutation = useMutation({
     mutationFn: ({ boardTitle, boardColor, token, userId }: CreateBoardArgs) =>
       resourceRequest<{ data: Board[] }>(
-        'boards/create',
+        'boards',
         { method: 'POST' },
         {
           boardColor,

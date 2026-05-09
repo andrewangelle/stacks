@@ -44,7 +44,10 @@ export function useGetListsQuery(
     queryKey: queryKeys.lists(boardId),
     enabled: !options?.skip && !!args.boardId,
     queryFn: () =>
-      resourceRequest<List[]>('lists/get', { method: 'POST' }, { boardId }),
+      resourceRequest<List[]>('lists', {
+        method: 'GET',
+        searchParams: { boardId },
+      }),
   });
 }
 
@@ -79,11 +82,7 @@ export function useUpdateListMutation() {
 export function useCreateListMutation() {
   const mutation = useMutation({
     mutationFn: (args: CreateListArgs) =>
-      resourceRequest<{ data: List[] }>(
-        'lists/create',
-        { method: 'POST' },
-        args,
-      ),
+      resourceRequest<{ data: List[] }>('lists', { method: 'POST' }, args),
     onSuccess: (result, variables) => {
       queryClient.setQueryData<List[]>(
         queryKeys.lists(variables.boardId),

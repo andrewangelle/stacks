@@ -3,21 +3,23 @@ import { prisma } from '~/db/prisma';
 import { requireMutationUser } from '~/server/ensurePersistedUser';
 import { jsonResponse } from '~/utils/response';
 
-export const Route = createFileRoute('/resources/cards')({
+export const Route = createFileRoute('/resources/checklist-items')({
   server: {
     handlers: {
       async GET({ request }) {
-        const listId = new URL(request.url).searchParams.get('listId');
-        if (!listId) {
+        const checklistId = new URL(request.url).searchParams.get(
+          'checklistId',
+        );
+        if (!checklistId) {
           return jsonResponse([]);
         }
 
-        const rows = await prisma.card.findMany({
-          where: { listId },
+        const data = await prisma.checklistItem.findMany({
+          where: { checklistId },
           orderBy: { createdAt: 'asc' },
         });
 
-        return jsonResponse(rows);
+        return jsonResponse(data);
       },
 
       async POST({ request }) {
@@ -28,16 +30,19 @@ export const Route = createFileRoute('/resources/cards')({
           return auth;
         }
 
-        const row = await prisma.card.create({
+        const row = await prisma.checklistItem.create({
           data: {
-            cardTitle: userData.cardTitle,
+            label: userData.label,
+            cardId: userData.cardId,
+            checklistId: userData.checklistId,
             listId: userData.listId,
             userId: auth.uid,
+            isCompleted: false,
           },
         });
 
         return jsonResponse({
-          code: 'cards:create:success',
+          code: 'checklist-item:create:success',
           message: 'success',
           data: [row],
         });

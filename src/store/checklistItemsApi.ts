@@ -46,13 +46,10 @@ export function useGetChecklistItemsQuery(args: ChecklistItemsArgs) {
   return useQuery({
     queryKey: queryKeys.checklistItems(args.checklistId),
     queryFn: () =>
-      resourceRequest<ChecklistItemType[]>(
-        'checklist-items/get',
-        { method: 'POST' },
-        {
-          checklistId: args.checklistId,
-        },
-      ),
+      resourceRequest<ChecklistItemType[]>('checklist-items', {
+        method: 'GET',
+        searchParams: { checklistId: args.checklistId },
+      }),
   });
 }
 
@@ -67,7 +64,7 @@ export function useCreateChecklistItemMutation() {
       userId,
     }: CreateChecklistItemArgs) =>
       resourceRequest<{ data: ChecklistItemType[] }>(
-        'checklist-items/create',
+        'checklist-items',
         { method: 'POST' },
         {
           label,
