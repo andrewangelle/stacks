@@ -32,9 +32,13 @@ export function useGetChecklistsQuery(args: ChecklistArgs) {
   return useQuery({
     queryKey: queryKeys.checklists(args.cardId),
     queryFn: () =>
-      resourceRequest<ChecklistType[]>('checklists/get', 'POST', {
-        cardId: args.cardId,
-      }),
+      resourceRequest<ChecklistType[]>(
+        'checklists/get',
+        { method: 'POST' },
+        {
+          cardId: args.cardId,
+        },
+      ),
   });
 }
 
@@ -47,13 +51,17 @@ export function useCreateChecklistMutation() {
       token,
       userId,
     }: CreateChecklistArgs) =>
-      resourceRequest<{ data: ChecklistType[] }>('checklists/create', 'POST', {
-        checklistTitle,
-        cardId,
-        listId,
-        token,
-        userId,
-      }),
+      resourceRequest<{ data: ChecklistType[] }>(
+        'checklists/create',
+        { method: 'POST' },
+        {
+          checklistTitle,
+          cardId,
+          listId,
+          token,
+          userId,
+        },
+      ),
     onSuccess: (result, variables) => {
       queryClient.setQueryData<ChecklistType[]>(
         queryKeys.checklists(variables.cardId),
@@ -70,7 +78,7 @@ export function useDeleteChecklistMutation() {
     mutationFn: ({ token, id }: DeleteChecklistArgs) =>
       resourceRequest<{ data: ChecklistType[] }>(
         'checklists/delete',
-        'DELETE',
+        { method: 'DELETE' },
         {
           id,
           token,

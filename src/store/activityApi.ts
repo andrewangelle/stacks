@@ -42,9 +42,13 @@ export function useGetActivityQuery(args: ActivityArgs) {
   return useQuery({
     queryKey: queryKeys.activity(args.cardId),
     queryFn: () =>
-      resourceRequest<ActivityType[]>('activity/get', 'POST', {
-        cardId: args.cardId,
-      }),
+      resourceRequest<ActivityType[]>(
+        'activity/get',
+        { method: 'POST' },
+        {
+          cardId: args.cardId,
+        },
+      ),
   });
 }
 
@@ -53,7 +57,7 @@ export function useCreateActivityMutation() {
     mutationFn: (args: CreateActivityArgs) =>
       resourceRequest<{ data: ActivityType[] }>(
         'activity/create',
-        'POST',
+        { method: 'POST' },
         args,
       ),
 
@@ -73,7 +77,7 @@ export function useUpdateActivityMutation() {
     mutationFn: (args: UpdateActivityArgs) =>
       resourceRequest<{ data: ActivityType[] }>(
         `activity/${args.id}`,
-        'PUT',
+        { method: 'PUT' },
         args,
       ),
 
@@ -96,9 +100,13 @@ export function useUpdateActivityMutation() {
 export function useDeleteActivityMutation() {
   const mutation = useMutation({
     mutationFn: ({ token, id }: DeleteActivityArgs) =>
-      resourceRequest<{ data: ActivityType[] }>(`activity/${id}`, 'DELETE', {
-        token,
-      }),
+      resourceRequest<{ data: ActivityType[] }>(
+        `activity/${id}`,
+        { method: 'DELETE' },
+        {
+          token,
+        },
+      ),
     onSuccess: (_result, variables) => {
       queryClient.setQueryData<ActivityType[]>(
         queryKeys.activity(variables.cardId),

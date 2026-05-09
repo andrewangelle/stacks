@@ -41,8 +41,9 @@ export function useGetCardsQuery(args: CardArgs) {
   return useQuery({
     queryKey: queryKeys.cards(args.listId),
     queryFn: () =>
-      resourceRequest<ListCardType[]>('cards/get', 'POST', {
-        listId: args.listId,
+      resourceRequest<ListCardType[]>('cards', {
+        method: 'GET',
+        searchParams: { listId: args.listId },
       }),
   });
 }
@@ -50,12 +51,16 @@ export function useGetCardsQuery(args: CardArgs) {
 export function useCreateCardMutation() {
   const mutation = useMutation({
     mutationFn: ({ cardTitle, listId, token, userId }: CreateCardArgs) =>
-      resourceRequest<{ data: ListCardType[] }>('cards/create', 'POST', {
-        cardTitle,
-        listId,
-        token,
-        userId,
-      }),
+      resourceRequest<{ data: ListCardType[] }>(
+        'cards',
+        { method: 'POST' },
+        {
+          cardTitle,
+          listId,
+          token,
+          userId,
+        },
+      ),
     onSuccess: (result, variables) => {
       queryClient.setQueryData<ListCardType[]>(
         queryKeys.cards(variables.listId),
@@ -76,12 +81,16 @@ export function useUpdateCardMutation() {
       token,
       userId,
     }: UpdateCardArgs) =>
-      resourceRequest<void>(`cards/${cardId}`, 'PUT', {
-        cardDescription,
-        cardTitle,
-        token,
-        userId,
-      }),
+      resourceRequest<void>(
+        `cards/${cardId}`,
+        { method: 'PUT' },
+        {
+          cardDescription,
+          cardTitle,
+          token,
+          userId,
+        },
+      ),
     onSuccess: (_result, variables) => {
       queryClient.setQueryData<ListCardType[]>(
         queryKeys.cards(variables.listId),
@@ -105,11 +114,15 @@ export function useUpdateCardMutation() {
 export function useDeleteCardMutation() {
   const mutation = useMutation({
     mutationFn: ({ id, token, userId }: DeleteCardArgs) =>
-      resourceRequest<void>(`cards/${id}`, 'DELETE', {
-        id,
-        token,
-        userId,
-      }),
+      resourceRequest<void>(
+        `cards/${id}`,
+        { method: 'DELETE' },
+        {
+          id,
+          token,
+          userId,
+        },
+      ),
     onSuccess: (_result, variables) => {
       queryClient.setQueryData<ListCardType[]>(
         queryKeys.cards(variables.listId),

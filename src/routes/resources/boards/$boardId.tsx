@@ -6,7 +6,7 @@ export const Route = createFileRoute('/resources/boards/$boardId')({
   server: {
     handlers: {
       GET: async ({ params }) => {
-        const rows = await client().from('stacks').select();
+        const rows = client().from('stacks').select();
 
         if (rows.data !== null) {
           const board = rows.data.find(

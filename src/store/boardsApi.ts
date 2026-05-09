@@ -47,12 +47,16 @@ export function useCreateBoardMutation() {
 
   const mutation = useMutation({
     mutationFn: ({ boardTitle, boardColor, token, userId }: CreateBoardArgs) =>
-      resourceRequest<{ data: Board[] }>('boards/create', 'POST', {
-        boardColor,
-        boardTitle,
-        token,
-        userId,
-      }),
+      resourceRequest<{ data: Board[] }>(
+        'boards/create',
+        { method: 'POST' },
+        {
+          boardColor,
+          boardTitle,
+          token,
+          userId,
+        },
+      ),
     onSuccess: (result, variables) => {
       queryClient.setQueryData<Board[]>(
         queryKeys.boards(variables.userId),
