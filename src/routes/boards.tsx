@@ -22,18 +22,14 @@ export const Route = createFileRoute('/boards')({
     const { data: boards = [] } = useGetBoardsQuery(userId, { skip: !userId });
 
     useEffect(() => {
-      if (token?.access_token && !userId) {
-        setSignedIn(false);
-        setToken(null);
-        navigate({ to: '/signin' });
-        return;
-      }
-
-      if (!token?.access_token) {
+      if (!token?.access_token || !userId) {
+        if (token) {
+          setToken(null);
+        }
         if (isSignedIn) {
           setSignedIn(false);
         }
-        navigate({ to: '/' });
+        navigate({ to: '/signin' });
         return;
       }
 

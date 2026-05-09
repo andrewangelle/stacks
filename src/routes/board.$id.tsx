@@ -28,18 +28,14 @@ export const Route = createFileRoute('/board/$id')({
     );
 
     useEffect(() => {
-      if (token?.access_token && !token?.user?.id) {
-        setSignedIn(false);
-        setToken(null);
-        navigate({ to: '/signin' });
-        return;
-      }
-
-      if (!token?.access_token) {
+      if (!token?.access_token || !token?.user?.id) {
+        if (token) {
+          setToken(null);
+        }
         if (isSignedIn) {
           setSignedIn(false);
         }
-        navigate({ to: '/' });
+        navigate({ to: '/signin' });
         return;
       }
 

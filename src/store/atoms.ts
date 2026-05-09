@@ -13,9 +13,3 @@ export type TokenType = {
 };
 
 export const tokenState = atomWithStorage<TokenType | null>('token', null);
-
-/** Persists anonymous guest identity so API `userId` is stable per browser. */
-export const guestUserIdState = atomWithStorage<string | null>(
-  'guestUserId',
-  null,
-);
