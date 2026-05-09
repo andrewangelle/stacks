@@ -1,0 +1,131 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model User {
+  id               String          @id @default(uuid())
+  email            String          @unique
+  password         String
+  createdAt        DateTime        @default(now()) @map("created_at")
+  updatedAt        DateTime        @updatedAt @map("updated_at")
+  profile          Profile?
+  stacks           Stack[]
+  lists            List[]
+  cards            Card[]
+  checklists       Checklist[]
+  checklistItems   ChecklistItem[]
+  activities       Activity[]
+
+  @@map("users")
+}
+
+model Profile {
+  id        String   @id @default(uuid())
+  userId    String   @unique @map("user_id")
+  email     String?
+  firstName String?  @map("first_name")
+  lastName  String?  @map("last_name")
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("profiles")
+}
+
+model Stack {
+  id          String     @id @default(uuid())
+  boardTitle  String     @map("board_title")
+  boardColor  String     @map("board_color")
+  userId      String     @map("user_id")
+  createdAt   DateTime   @default(now()) @map("created_at")
+  updatedAt   DateTime   @updatedAt @map("updated_at")
+  user        User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  lists       List[]
+  activities  Activity[]
+
+  @@map("stacks")
+}
+
+model List {
+  id        String   @id @default(uuid())
+  listTitle String   @map("list_title")
+  boardId   String   @map("board_id")
+  userId    String   @map("user_id")
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+  board     Stack    @relation(fields: [boardId], references: [id], onDelete: Cascade)
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  cards     Card[]
+
+  @@map("lists")
+}
+
+model Card {
+  id               String          @id @default(uuid())
+  cardTitle        String          @map("card_title")
+  cardDescription  String          @default("") @map("card_description")
+  listId           String          @map("list_id")
+  userId           String          @map("user_id")
+  createdAt        DateTime        @default(now()) @map("created_at")
+  updatedAt        DateTime        @updatedAt @map("updated_at")
+  list             List            @relation(fields: [listId], references: [id], onDelete: Cascade)
+  user             User            @relation(fields: [userId], references: [id], onDelete: Cascade)
+  checklists       Checklist[]
+  checklistItems   ChecklistItem[]
+  activities       Activity[]
+
+  @@map("cards")
+}
+
+model Checklist {
+  id             String          @id @default(uuid())
+  checklistTitle String          @map("checklist_title")
+  cardId         String          @map("card_id")
+  listId         String          @map("list_id")
+  userId         String          @map("user_id")
+  createdAt      DateTime        @default(now()) @map("created_at")
+  updatedAt      DateTime        @updatedAt @map("updated_at")
+  card           Card            @relation(fields: [cardId], references: [id], onDelete: Cascade)
+  user           User            @relation(fields: [userId], references: [id], onDelete: Cascade)
+  items          ChecklistItem[]
+
+  @@map("checklists")
+}
+
+model ChecklistItem {
+  id          String    @id @default(uuid())
+  label       String
+  isCompleted Boolean   @default(false) @map("is_completed")
+  cardId      String    @map("card_id")
+  checklistId String    @map("checklist_id")
+  listId      String    @map("list_id")
+  userId      String    @map("user_id")
+  createdAt   DateTime  @default(now()) @map("created_at")
+  updatedAt   DateTime  @updatedAt @map("updated_at")
+  card        Card      @relation(fields: [cardId], references: [id], onDelete: Cascade)
+  checklist   Checklist @relation(fields: [checklistId], references: [id], onDelete: Cascade)
+  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("checklist_items")
+}
+
+model Activity {
+  id        String   @id @default(uuid())
+  content   String
+  type      String
+  listId    String   @map("list_id")
+  cardId    String   @map("card_id")
+  boardId   String   @map("board_id")
+  userId    String   @map("user_id")
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+  card      Card     @relation(fields: [cardId], references: [id], onDelete: Cascade)
+  board     Stack    @relation(fields: [boardId], references: [id], onDelete: Cascade)
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("activities")
+}
