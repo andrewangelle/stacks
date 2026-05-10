@@ -1,3 +1,4 @@
+import { createMiddleware } from '@tanstack/react-start';
 import { ensureAppUser } from '~/auth/ensureAppUser';
 import { verifyNeonAuthJwt } from '~/auth/verifyJwt';
 import { jsonResponse } from '~/utils/response';
@@ -23,8 +24,23 @@ export async function requireAuthenticatedUser(
   try {
     const claims = await verifyNeonAuthJwt(token);
     await ensureAppUser(claims);
-    return { uid: claims.userId };
+    return { uid: claims.id };
   } catch {
     return jsonResponse({ message: 'Unauthorized' }, 401);
   }
 }
+
+export const authMiddleware = createMiddleware().server(
+  async ({ next, request }) => {
+    const auth = await requireAuthenticatedUser(request);
+    if (auth instanceof Response) {
+      return next();
+    }
+
+    return next({
+      context: {
+        uid: auth.uid,
+      },
+    });
+  },
+);

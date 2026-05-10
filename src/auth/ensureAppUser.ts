@@ -3,7 +3,7 @@ import { prisma } from '~/db/prisma';
 
 /** Upserts `User` + `Profile` rows keyed by Neon Auth user id (greenfield). */
 export async function ensureAppUser(claims: VerifiedNeonUser): Promise<void> {
-  const { userId, email: tokenEmail, name } = claims;
+  const { id: userId, email: tokenEmail, name } = claims;
   const email =
     tokenEmail && tokenEmail.length > 0
       ? tokenEmail

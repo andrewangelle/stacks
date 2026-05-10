@@ -15,10 +15,7 @@ export const Route = createFileRoute('/boards')({
     const { data: session, isPending } = authClient.useSession();
     const navigate = useNavigate();
     const userId = session?.user.id;
-
-    const { data: boards = [] } = useGetBoardsQuery(userId, {
-      skip: !userId,
-    });
+    const { data: boards = [] } = useGetBoardsQuery();
 
     if (isPending) {
       return null;

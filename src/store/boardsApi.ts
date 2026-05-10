@@ -1,4 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { authClient } from '~/auth/client';
 import { queryKeys } from '~/store/queryKeys';
 import { resourceRequest } from '~/store/resourceClient';
 
@@ -15,15 +16,11 @@ type CreateBoardArgs = {
   userId: string;
 };
 
-export function useGetBoardsQuery(
-  userId: string | undefined,
-  options?: { skip?: boolean },
-) {
-  const normalizedUserId = userId ?? '';
-
+export function useGetBoardsQuery() {
+  const { data } = authClient.useSession();
   return useQuery({
-    queryKey: queryKeys.boards(normalizedUserId),
-    enabled: !options?.skip && !!userId,
+    queryKey: queryKeys.boards(data?.user?.id ?? ''),
+    enabled: !!data?.user?.id,
     queryFn: () =>
       resourceRequest<Board[]>('boards', {
         method: 'GET',

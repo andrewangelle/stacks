@@ -1,34 +1,28 @@
 import { createFileRoute } from '@tanstack/react-router';
-import { requireAuthenticatedUser } from '~/auth/requireUser';
+import { authMiddleware } from '~/auth/requireUser';
 import { prisma } from '~/db/prisma';
 import { jsonResponse, safeParse } from '~/utils/response';
 
 export const Route = createFileRoute('/resources/boards')({
   server: {
-    handlers: {
-      async GET({ request }) {
-        const auth = await requireAuthenticatedUser(request);
-        if (auth instanceof Response) {
-          return auth;
-        }
+    middleware: [authMiddleware],
 
+    handlers: {
+      async GET({ context }) {
         const data = await prisma.stack.findMany({
-          where: { userId: auth.uid },
+          where: { userId: context?.uid ?? '' },
           orderBy: { createdAt: 'asc' },
         });
 
         return jsonResponse(data);
       },
 
-      async POST({ request }) {
-        const auth = await requireAuthenticatedUser(request);
-        if (auth instanceof Response) {
-          return auth;
-        }
-
+      async POST({ request, context }) {
         const userData = await safeParse(request);
+
         const boardTitle =
           typeof userData.boardTitle === 'string' ? userData.boardTitle : '';
+
         const boardColor =
           typeof userData.boardColor === 'string' ? userData.boardColor : '';
 
@@ -36,7 +30,7 @@ export const Route = createFileRoute('/resources/boards')({
           data: {
             boardTitle,
             boardColor,
-            userId: auth.uid,
+            userId: context?.uid ?? '',
           },
         });
 

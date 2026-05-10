@@ -3,7 +3,6 @@ import { type CSSProperties, useState } from 'react';
 import * as Io from 'react-icons/io';
 import * as Ri from 'react-icons/ri';
 import { authClient } from '~/auth/client';
-import { useSessionUserId } from '~/auth/useSessionUserId';
 import { useGetBoardQuery, useGetBoardsQuery } from '~/store/boardsApi';
 import {
   BoardsLinkContainer,
@@ -30,13 +29,10 @@ export const sharedDrawerArrowStyles: CSSProperties = {
 export function Drawer() {
   const params = useParams({ strict: false });
   const { data: board } = useGetBoardQuery(params.id);
-  const userId = useSessionUserId();
   const session = authClient.useSession();
   const [isDrawerOpen, setDrawerOpen] = useState(false);
   const navigate = useNavigate();
-  const { data: boards } = useGetBoardsQuery(userId, {
-    skip: !userId,
-  });
+  const { data: boards } = useGetBoardsQuery();
   return (
     <>
       {!isDrawerOpen && (
