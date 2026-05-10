@@ -1,7 +1,7 @@
 import { createFileRoute } from '@tanstack/react-router';
 import bcrypt from 'bcryptjs';
 import { prisma } from '~/db/prisma';
-import { buildSession } from '~/server/auth';
+import { buildSession } from '~/utils/auth';
 
 export const Route = createFileRoute('/resources/signin')({
   server: {

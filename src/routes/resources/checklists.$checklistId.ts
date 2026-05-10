@@ -1,6 +1,6 @@
 import { createFileRoute } from '@tanstack/react-router';
 import { prisma } from '~/db/prisma';
-import { requireMutationUserFromTokenOnly } from '~/server/requireUser';
+import { requireMutationUserFromTokenOnly } from '~/utils/requireUser';
 import { jsonResponse } from '~/utils/response';
 
 export const Route = createFileRoute('/resources/checklists/$checklistId')({

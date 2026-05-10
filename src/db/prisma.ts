@@ -9,6 +9,7 @@ declare global {
 
 function createPrismaClient(): PrismaClient {
   const databaseUrl = process.env.DATABASE_URL;
+
   if (typeof databaseUrl !== 'string' || databaseUrl.length === 0) {
     throw new Error(
       'DATABASE_URL must be set to use Prisma (copy .env.example to .env for local dev).',

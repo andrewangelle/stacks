@@ -1,5 +1,5 @@
 import { prisma } from '~/db/prisma';
-import { parseLocalAccessToken } from '~/server/auth';
+import { parseLocalAccessToken } from '~/utils/auth';
 import { jsonResponse } from '~/utils/response';
 
 async function resolveTokenUser(token: unknown): Promise<string | null> {

@@ -1,6 +1,6 @@
 import { createFileRoute } from '@tanstack/react-router';
 import { prisma } from '~/db/prisma';
-import { requireMutationUser } from '~/server/requireUser';
+import { requireMutationUser } from '~/utils/requireUser';
 import { jsonResponse } from '~/utils/response';
 
 export const Route = createFileRoute('/resources/activity')({

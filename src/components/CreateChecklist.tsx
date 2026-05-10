@@ -29,6 +29,27 @@ export function CreateChecklist({ listId, cardId }: CreateChecklistProps) {
   const [checklistTitle, setChecklistTitle] = useState('');
   const [createChecklist] = useCreateChecklistMutation();
   const [createActivity] = useCreateActivityMutation();
+
+  function addChecklist() {
+    createChecklist({
+      checklistTitle,
+      cardId,
+      listId,
+      token: token?.access_token ?? '',
+      userId: token?.user.id ?? '',
+    });
+
+    createActivity({
+      cardId,
+      listId,
+      boardId: params.id ?? '',
+      token: token?.access_token ?? '',
+      userId: token?.user.id ?? '',
+      type: 'feed',
+      content: `added ${checklistTitle} to this card`,
+    });
+  }
+
   return (
     <Popover.Root>
       <CreateChecklistPopoverTrigger>
@@ -53,26 +74,7 @@ export function CreateChecklist({ listId, cardId }: CreateChecklistProps) {
           onChange={(event) => setChecklistTitle(event.target.value)}
         />
 
-        <CreateChecklistAddButton
-          onClick={() => {
-            createChecklist({
-              checklistTitle,
-              cardId,
-              listId,
-              token: token?.access_token ?? '',
-              userId: token?.user.id ?? '',
-            });
-            createActivity({
-              cardId,
-              listId,
-              boardId: params.id ?? '',
-              token: token?.access_token ?? '',
-              userId: token?.user.id ?? '',
-              type: 'feed',
-              content: `added ${checklistTitle} to this card`,
-            });
-          }}
-        >
+        <CreateChecklistAddButton onClick={addChecklist}>
           Add
         </CreateChecklistAddButton>
       </ChecklistPopoverContent>

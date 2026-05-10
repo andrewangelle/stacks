@@ -68,6 +68,7 @@ export function CreateBoard() {
         <CreateBoardCloseBorder />
 
         <CreateBoardBackgroundText>Background</CreateBoardBackgroundText>
+
         <CreateBoardBackgroundChoices>
           {backgroundChoices.map((color) => (
             <CreateBoardBackgroundChoice
