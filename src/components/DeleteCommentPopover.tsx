@@ -1,10 +1,8 @@
 import * as Popover from '@radix-ui/react-popover';
-import { useAtom } from 'jotai';
 import {
   type ActivityType,
   useDeleteActivityMutation,
 } from '~/store/activityApi';
-import { tokenState } from '~/store/atoms';
 import { CreateBoardCloseBorder, PopoverClose } from '~/styles/Boards';
 import {
   ChecklistPopoverHeader,
@@ -14,7 +12,6 @@ import {
 } from '~/styles/CardModal';
 
 export function DeleteCommentPopover(props: ActivityType) {
-  const [token] = useAtom(tokenState);
   const [deleteActivity] = useDeleteActivityMutation();
   return (
     <Popover.Root>
@@ -40,7 +37,6 @@ export function DeleteCommentPopover(props: ActivityType) {
         <DeleteChecklistPopoverButton
           onClick={() =>
             deleteActivity({
-              token: token?.access_token ?? '',
               id: props.id,
               cardId: props.cardId,
             })

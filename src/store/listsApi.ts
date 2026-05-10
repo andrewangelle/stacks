@@ -16,22 +16,16 @@ type UpdateListArgs = {
   boardId: string;
   listId: string;
   listTitle: string;
-  token: string;
-  userId: string;
 };
 
 type CreateListArgs = {
   listTitle: string;
   boardId: string;
-  token: string;
-  userId: string;
 };
 
 type DeleteListArgs = {
   id: string;
-  userId: string;
   boardId: string;
-  token: string;
 };
 
 export function useGetListsQuery(
@@ -53,14 +47,12 @@ export function useGetListsQuery(
 
 export function useUpdateListMutation() {
   const mutation = useMutation({
-    mutationFn: ({ listId, listTitle, token, userId }: UpdateListArgs) =>
+    mutationFn: ({ listId, listTitle }: UpdateListArgs) =>
       resourceRequest<void>(
         `lists/${listId}`,
         { method: 'PUT' },
         {
           listTitle,
-          token,
-          userId,
         },
       ),
     onSuccess: (_result, variables) => {
@@ -96,15 +88,13 @@ export function useCreateListMutation() {
 
 export function useDeleteListMutation() {
   const mutation = useMutation({
-    mutationFn: ({ token, id, boardId, userId }: DeleteListArgs) =>
+    mutationFn: ({ id, boardId }: DeleteListArgs) =>
       resourceRequest<{ data: List[] }>(
         `lists/${id}`,
         { method: 'DELETE' },
         {
           id,
           boardId,
-          token,
-          userId,
         },
       ),
     onSuccess: (_result, variables) => {

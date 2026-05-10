@@ -1,6 +1,7 @@
 import { createFileRoute } from '@tanstack/react-router';
 import { prisma } from '~/db/prisma';
-import { requireMutationUser } from '~/utils/requireUser';
+import { readJsonBody } from '~/utils/readJsonBody';
+import { requireAuthenticatedUser } from '~/utils/requireUser';
 import { jsonResponse } from '~/utils/response';
 
 export const Route = createFileRoute('/resources/cards')({
@@ -12,8 +13,16 @@ export const Route = createFileRoute('/resources/cards')({
           return jsonResponse([]);
         }
 
+        const auth = await requireAuthenticatedUser(request);
+        if (auth instanceof Response) {
+          return auth;
+        }
+
         const rows = await prisma.card.findMany({
-          where: { listId },
+          where: {
+            listId,
+            list: { board: { userId: auth.uid } },
+          },
           orderBy: { createdAt: 'asc' },
         });
 
@@ -21,17 +30,28 @@ export const Route = createFileRoute('/resources/cards')({
       },
 
       async POST({ request }) {
-        const userData = await request.json();
-        const auth = await requireMutationUser(userData.token, userData.userId);
-
+        const auth = await requireAuthenticatedUser(request);
         if (auth instanceof Response) {
           return auth;
         }
 
+        const userData = await readJsonBody(request);
+        const listId =
+          typeof userData.listId === 'string' ? userData.listId : '';
+        const cardTitle =
+          typeof userData.cardTitle === 'string' ? userData.cardTitle : '';
+
+        const list = await prisma.list.findFirst({
+          where: { id: listId, board: { userId: auth.uid } },
+        });
+        if (!list) {
+          return jsonResponse({ message: 'Forbidden' }, 403);
+        }
+
         const row = await prisma.card.create({
           data: {
-            cardTitle: userData.cardTitle,
-            listId: userData.listId,
+            cardTitle,
+            listId,
             userId: auth.uid,
           },
         });

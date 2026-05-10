@@ -1,6 +1,5 @@
 import * as Popover from '@radix-ui/react-popover';
 import { useParams } from '@tanstack/react-router';
-import { useAtom } from 'jotai';
 import { type CSSProperties, useState } from 'react';
 import * as AiIcons from 'react-icons/ai';
 import { useOutsideClick } from '~/components/ListCard';
@@ -9,7 +8,6 @@ const AiOutlineCheck = AiIcons.AiOutlineCheck;
 const AiOutlineEllipsis = AiIcons.AiOutlineEllipsis;
 
 import { useCreateActivityMutation } from '~/store/activityApi';
-import { tokenState } from '~/store/atoms';
 import type { ChecklistItemType } from '~/store/checklistItemsApi';
 import {
   useDeleteChecklistItemMutation,
@@ -33,7 +31,6 @@ import { Flex } from '~/styles/Page';
 
 export function ChecklistCheckbox(props: ChecklistItemType) {
   const params = useParams({ strict: false });
-  const [token] = useAtom(tokenState);
   const [updateItem] = useUpdateChecklistItemMutation();
   const [deleteChecklistItem] = useDeleteChecklistItemMutation();
   const [editedLabel, setEditedLabel] = useState(props.label);
@@ -70,16 +67,12 @@ export function ChecklistCheckbox(props: ChecklistItemType) {
         onClick={() => {
           updateItem({
             id: props.id,
-            token: token?.access_token ?? '',
-            userId: token?.user.id ?? '',
             cardId: props.cardId,
             label: editedLabel,
             checklistId: props.checklistId,
             isCompleted: !props.isCompleted,
           });
           createActivity({
-            token: token?.access_token ?? '',
-            userId: token?.user.id ?? '',
             cardId: props.cardId,
             listId: props.listId,
             boardId: params.id ?? '',
@@ -114,8 +107,6 @@ export function ChecklistCheckbox(props: ChecklistItemType) {
               onClick={() => {
                 updateItem({
                   id: props.id,
-                  token: token?.access_token ?? '',
-                  userId: token?.user.id ?? '',
                   cardId: props.cardId,
                   label: editedLabel,
                   checklistId: props.checklistId,
@@ -159,7 +150,6 @@ export function ChecklistCheckbox(props: ChecklistItemType) {
             <DeleteChecklistPopoverButton
               onClick={() =>
                 deleteChecklistItem({
-                  token: token?.access_token ?? '',
                   id: props.id,
                   checklistId: props.checklistId,
                 })

@@ -1,17 +1,26 @@
 import { createFileRoute } from '@tanstack/react-router';
 import { prisma } from '~/db/prisma';
-import { requireMutationUserFromTokenOnly } from '~/utils/requireUser';
+import { readJsonBody } from '~/utils/readJsonBody';
+import { requireAuthenticatedUser } from '~/utils/requireUser';
 import { jsonResponse } from '~/utils/response';
 
 export const Route = createFileRoute('/resources/checklist-items/$itemId')({
   server: {
     handlers: {
       async PUT({ request, params }) {
-        const userData = await request.json();
-        const auth = await requireMutationUserFromTokenOnly(userData.token);
-
+        const auth = await requireAuthenticatedUser(request);
         if (auth instanceof Response) {
           return auth;
+        }
+
+        const userData = await readJsonBody(request);
+
+        const patch: { label?: string; isCompleted?: boolean } = {};
+        if (typeof userData.label === 'string') {
+          patch.label = userData.label;
+        }
+        if (typeof userData.isCompleted === 'boolean') {
+          patch.isCompleted = userData.isCompleted;
         }
 
         await prisma.checklistItem.updateMany({
@@ -19,10 +28,7 @@ export const Route = createFileRoute('/resources/checklist-items/$itemId')({
             id: params.itemId,
             userId: auth.uid,
           },
-          data: {
-            label: userData.label,
-            isCompleted: userData.isCompleted,
-          },
+          data: patch,
         });
 
         const rows = await prisma.checklistItem.findMany({
@@ -33,9 +39,7 @@ export const Route = createFileRoute('/resources/checklist-items/$itemId')({
       },
 
       async DELETE({ request, params }) {
-        const userData = await request.json();
-        const auth = await requireMutationUserFromTokenOnly(userData.token);
-
+        const auth = await requireAuthenticatedUser(request);
         if (auth instanceof Response) {
           return auth;
         }

@@ -24,7 +24,6 @@ export function useGetProfileQuery(
     queryFn: () =>
       resourceRequest<ProfileType>('profiles', {
         method: 'GET',
-        searchParams: { userId: args.userId },
       }),
   });
 }

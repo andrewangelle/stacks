@@ -1,27 +1,35 @@
 import { createFileRoute } from '@tanstack/react-router';
 import { prisma } from '~/db/prisma';
-import { requireMutationUser } from '~/utils/requireUser';
+import { readJsonBody } from '~/utils/readJsonBody';
+import { requireAuthenticatedUser } from '~/utils/requireUser';
 import { jsonResponse } from '~/utils/response';
 
 export const Route = createFileRoute('/resources/cards/$cardId')({
   server: {
     handlers: {
-      async GET({ params }) {
-        const card = await prisma.card.findUnique({
-          where: { id: params.cardId },
+      async GET({ request, params }) {
+        const auth = await requireAuthenticatedUser(request);
+        if (auth instanceof Response) {
+          return auth;
+        }
+
+        const card = await prisma.card.findFirst({
+          where: {
+            id: params.cardId,
+            list: { board: { userId: auth.uid } },
+          },
         });
 
         return jsonResponse(card ?? {});
       },
 
       async PUT({ request, params }) {
-        const userData = await request.json();
-        const auth = await requireMutationUser(userData.token, userData.userId);
-
+        const auth = await requireAuthenticatedUser(request);
         if (auth instanceof Response) {
           return auth;
         }
 
+        const userData = await readJsonBody(request);
         const patch: { cardDescription?: string; cardTitle?: string } = {};
         if (typeof userData.cardDescription === 'string') {
           patch.cardDescription = userData.cardDescription;
@@ -46,16 +54,17 @@ export const Route = createFileRoute('/resources/cards/$cardId')({
       },
 
       async DELETE({ request }) {
-        const userData = await request.json();
-        const auth = await requireMutationUser(userData.token, userData.userId);
-
+        const auth = await requireAuthenticatedUser(request);
         if (auth instanceof Response) {
           return auth;
         }
 
+        const userData = await readJsonBody(request);
+        const id = typeof userData.id === 'string' ? userData.id : '';
+
         const row = await prisma.card.findFirst({
           where: {
-            id: userData.id,
+            id,
             userId: auth.uid,
           },
         });

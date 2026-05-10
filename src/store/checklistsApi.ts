@@ -18,14 +18,11 @@ type CreateChecklistArgs = {
   checklistTitle: string;
   cardId: string;
   listId: string;
-  token: string;
-  userId: string;
 };
 
 type DeleteChecklistArgs = {
   id: string;
   cardId: string;
-  token: string;
 };
 
 export function useGetChecklistsQuery(args: ChecklistArgs) {
@@ -41,13 +38,7 @@ export function useGetChecklistsQuery(args: ChecklistArgs) {
 
 export function useCreateChecklistMutation() {
   const mutation = useMutation({
-    mutationFn: ({
-      checklistTitle,
-      cardId,
-      listId,
-      token,
-      userId,
-    }: CreateChecklistArgs) =>
+    mutationFn: ({ checklistTitle, cardId, listId }: CreateChecklistArgs) =>
       resourceRequest<{ data: ChecklistType[] }>(
         'checklists',
         { method: 'POST' },
@@ -55,8 +46,6 @@ export function useCreateChecklistMutation() {
           checklistTitle,
           cardId,
           listId,
-          token,
-          userId,
         },
       ),
     onSuccess: (result, variables) => {
@@ -72,14 +61,10 @@ export function useCreateChecklistMutation() {
 
 export function useDeleteChecklistMutation() {
   const mutation = useMutation({
-    mutationFn: ({ token, id }: DeleteChecklistArgs) =>
-      resourceRequest<{ data: ChecklistType[] }>(
-        `checklists/${id}`,
-        { method: 'DELETE' },
-        {
-          token,
-        },
-      ),
+    mutationFn: ({ id }: DeleteChecklistArgs) =>
+      resourceRequest<{ data: ChecklistType[] }>(`checklists/${id}`, {
+        method: 'DELETE',
+      }),
     onSuccess: (_result, variables) => {
       queryClient.setQueryData<ChecklistType[]>(
         queryKeys.checklists(variables.cardId),

@@ -1,19 +1,20 @@
 import { createFileRoute } from '@tanstack/react-router';
 import { prisma } from '~/db/prisma';
-import { requireMutationUser } from '~/utils/requireUser';
+import { readJsonBody } from '~/utils/readJsonBody';
+import { requireAuthenticatedUser } from '~/utils/requireUser';
 import { jsonResponse } from '~/utils/response';
 
 export const Route = createFileRoute('/resources/boards')({
   server: {
     handlers: {
       async GET({ request }) {
-        const userId = new URL(request.url).searchParams.get('userId');
-        if (!userId) {
-          return jsonResponse([]);
+        const auth = await requireAuthenticatedUser(request);
+        if (auth instanceof Response) {
+          return auth;
         }
 
         const data = await prisma.stack.findMany({
-          where: { userId },
+          where: { userId: auth.uid },
           orderBy: { createdAt: 'asc' },
         });
 
@@ -21,17 +22,21 @@ export const Route = createFileRoute('/resources/boards')({
       },
 
       async POST({ request }) {
-        const userData = await request.json();
-        const auth = await requireMutationUser(userData.token, userData.userId);
-
+        const auth = await requireAuthenticatedUser(request);
         if (auth instanceof Response) {
           return auth;
         }
 
+        const userData = await readJsonBody(request);
+        const boardTitle =
+          typeof userData.boardTitle === 'string' ? userData.boardTitle : '';
+        const boardColor =
+          typeof userData.boardColor === 'string' ? userData.boardColor : '';
+
         const row = await prisma.stack.create({
           data: {
-            boardTitle: userData.boardTitle,
-            boardColor: userData.boardColor,
+            boardTitle,
+            boardColor,
             userId: auth.uid,
           },
         });

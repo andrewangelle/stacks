@@ -1,16 +1,10 @@
-import {
-  createFileRoute,
-  useNavigate,
-  useParams,
-} from '@tanstack/react-router';
-import { useAtom } from 'jotai';
-import { useEffect } from 'react';
+import { createFileRoute, Navigate, useParams } from '@tanstack/react-router';
+import { authClient } from '~/auth/client';
 import { AddLists } from '~/components/AddList';
 import { DragDropList } from '~/components/DragDropList';
 import { Drawer } from '~/components/Drawer';
 import { ListCard } from '~/components/ListCard';
 import { NavBar } from '~/components/NavBar';
-import { signedInState, tokenState } from '~/store/atoms';
 import { useGetBoardQuery } from '~/store/boardsApi';
 import { useGetListsQuery } from '~/store/listsApi';
 import { BoardPageBackground, Flex, Padding } from '~/styles/Page';
@@ -19,30 +13,19 @@ export const Route = createFileRoute('/board/$id')({
   component() {
     const params = useParams({ strict: false });
     const { data: board } = useGetBoardQuery(params.id);
-    const navigate = useNavigate();
-    const [isSignedIn, setSignedIn] = useAtom(signedInState);
-    const [token, setToken] = useAtom(tokenState);
+    const { data: session, isPending } = authClient.useSession();
     const { data: lists = [] } = useGetListsQuery(
       { boardId: params.id },
       { skip: !params.id },
     );
 
-    useEffect(() => {
-      if (!token?.access_token || !token?.user?.id) {
-        if (token) {
-          setToken(null);
-        }
-        if (isSignedIn) {
-          setSignedIn(false);
-        }
-        navigate({ to: '/signin' });
-        return;
-      }
+    if (isPending) {
+      return null;
+    }
 
-      if (!isSignedIn) {
-        setSignedIn(true);
-      }
-    }, [isSignedIn, navigate, token, setSignedIn, setToken]);
+    if (!session?.user) {
+      return <Navigate to="/auth/$pathname" params={{ pathname: 'sign-in' }} />;
+    }
 
     return (
       <>

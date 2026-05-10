@@ -1,3 +1,5 @@
+import { getJWTToken } from '~/auth/client';
+
 type RequestMethod = 'GET' | 'POST' | 'PUT' | 'DELETE' | 'PATCH';
 
 type RequestOptions = {
@@ -27,11 +29,23 @@ export async function resourceRequest<ResponseType>(
     });
   }
 
+  const headers: Record<string, string> = {
+    'Content-Type': 'application/json',
+  };
+
+  try {
+    const token = await getJWTToken();
+    if (token) {
+      headers.Authorization = `Bearer ${token}`;
+    }
+  } catch {
+    /* SSR / no session */
+  }
+
   const response = await fetch(endpoint.toString(), {
     method: requestOptions.method,
-    headers: {
-      'Content-Type': 'application/json',
-    },
+    headers,
+    credentials: 'include',
     body: body === undefined ? undefined : JSON.stringify(body),
   });
 

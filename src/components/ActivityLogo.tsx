@@ -1,5 +1,4 @@
-import { useAtom } from 'jotai';
-import { tokenState } from '~/store/atoms';
+import { useSessionUserId } from '~/hooks/useSessionUserId';
 import { useGetProfileQuery } from '~/store/profileApi';
 import { ActivityNameCircle } from '~/styles/Activity';
 import { Center } from '~/styles/Page';
@@ -19,10 +18,10 @@ export function getInitials(
 }
 
 export function ActivityLogo() {
-  const [token] = useAtom(tokenState);
+  const userId = useSessionUserId();
   const profile = useGetProfileQuery(
-    { userId: token?.user.id ?? '' },
-    { skip: !token?.user.id },
+    { userId: userId ?? '' },
+    { skip: !userId },
   );
   const initials = getInitials(profile.data ?? null);
   return (

@@ -1,4 +1,3 @@
-import { useAtom } from 'jotai';
 import { useState } from 'react';
 import * as Bs from 'react-icons/bs';
 import { CardModalActivity } from '~/components/CardModalActivity';
@@ -6,7 +5,6 @@ import { CardModalChecklists } from '~/components/CardModalChecklists';
 import { CardModalDescription } from '~/components/CardModalDescription';
 import { CreateChecklist } from '~/components/CreateChecklist';
 import { DeleteCardPopover } from '~/components/DeleteCardPopover';
-import { tokenState } from '~/store/atoms';
 import { type ListCardType, useUpdateCardMutation } from '~/store/cardsApi';
 import {
   CardModalClose,
@@ -40,7 +38,6 @@ export function CardModal({
   created_at,
   userId,
 }: CardModalProps) {
-  const [token] = useAtom(tokenState);
   const [isEditingTitle, setEditingTitle] = useState(false);
   const [editedTitle, setEditedTitle] = useState(cardTitle);
   const [updateCard] = useUpdateCardMutation();
@@ -51,8 +48,6 @@ export function CardModal({
       cardTitle: editedTitle,
       cardId: id,
       listId: listId,
-      token: token?.access_token ?? '',
-      userId: token?.user.id ?? '',
     });
     setEditingTitle(false);
   }

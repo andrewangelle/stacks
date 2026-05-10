@@ -1,46 +1,30 @@
-import { prisma } from '~/db/prisma';
-import { parseLocalAccessToken } from '~/utils/auth';
+import { ensureAppUser } from '~/auth/ensureAppUser';
+import { verifyNeonAuthJwt } from '~/auth/verifyJwt';
 import { jsonResponse } from '~/utils/response';
 
-async function resolveTokenUser(token: unknown): Promise<string | null> {
-  const uid = parseLocalAccessToken(token);
-  if (!uid) {
+function bearerToken(request: Request): string | null {
+  const authHeader = request.headers.get('authorization');
+  if (!authHeader?.startsWith('Bearer ')) {
     return null;
   }
-
-  const exists = await prisma.user.findUnique({
-    where: { id: uid },
-    select: { id: true },
-  });
-
-  return exists ? uid : null;
+  const token = authHeader.slice('Bearer '.length).trim();
+  return token.length > 0 ? token : null;
 }
 
-export async function requireMutationUser(
-  token: unknown,
-  bodyUserId: unknown,
+/** Validates Bearer JWT, syncs app user row, returns Neon user id. */
+export async function requireAuthenticatedUser(
+  request: Request,
 ): Promise<{ uid: string } | Response> {
-  if (typeof bodyUserId !== 'string') {
+  const token = bearerToken(request);
+  if (!token) {
     return jsonResponse({ message: 'Unauthorized' }, 401);
   }
 
-  const uid = await resolveTokenUser(token);
-
-  if (!uid || uid !== bodyUserId) {
+  try {
+    const claims = await verifyNeonAuthJwt(token);
+    await ensureAppUser(claims);
+    return { uid: claims.userId };
+  } catch {
     return jsonResponse({ message: 'Unauthorized' }, 401);
   }
-
-  return { uid };
-}
-
-export async function requireMutationUserFromTokenOnly(
-  token: unknown,
-): Promise<{ uid: string } | Response> {
-  const uid = await resolveTokenUser(token);
-
-  if (!uid) {
-    return jsonResponse({ message: 'Unauthorized' }, 401);
-  }
-
-  return { uid };
 }

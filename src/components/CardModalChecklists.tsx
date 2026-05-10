@@ -1,11 +1,9 @@
-import { useAtom } from 'jotai';
 import { useState } from 'react';
 import * as Bs from 'react-icons/bs';
 
 import { ChecklistCheckbox } from '~/components/ChecklistCheckbox';
 import { DeleteChecklistPopover } from '~/components/DeleteChecklistPopover';
 import { DragDropChecklistItem } from '~/components/DragDropChecklistItems';
-import { tokenState } from '~/store/atoms';
 import {
   type ChecklistItemType,
   useCreateChecklistItemMutation,
@@ -30,7 +28,6 @@ import { Flex } from '~/styles/Page';
 
 function Checklist(props: ChecklistType) {
   const { data } = useGetChecklistItemsQuery({ checklistId: props.id });
-  const [token] = useAtom(tokenState);
   const [isEditing, setIsEditing] = useState(false);
   const [label, setLabel] = useState('');
   const [createChecklistItem] = useCreateChecklistItemMutation();
@@ -95,8 +92,6 @@ function Checklist(props: ChecklistType) {
                   cardId: props.cardId,
                   checklistId: props.id,
                   listId: props.listId,
-                  token: token?.access_token ?? '',
-                  userId: token?.user.id ?? '',
                 });
                 setIsEditing(false);
               }}

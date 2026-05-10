@@ -16,8 +16,6 @@ export type ActivityType = {
 type ActivityArgs = { cardId: string };
 
 type CreateActivityArgs = {
-  token: string;
-  userId: string;
   cardId: string;
   listId: string;
   boardId: string;
@@ -27,14 +25,12 @@ type CreateActivityArgs = {
 
 type UpdateActivityArgs = {
   id: string;
-  token: string;
   cardId: string;
   content: string;
 };
 
 type DeleteActivityArgs = {
   id: string;
-  token: string;
   cardId: string;
 };
 
@@ -75,7 +71,9 @@ export function useUpdateActivityMutation() {
       resourceRequest<{ data: ActivityType[] }>(
         `activity/${args.id}`,
         { method: 'PUT' },
-        args,
+        {
+          content: args.content,
+        },
       ),
 
     onSuccess: (_result, variables) => {
@@ -96,14 +94,10 @@ export function useUpdateActivityMutation() {
 
 export function useDeleteActivityMutation() {
   const mutation = useMutation({
-    mutationFn: ({ token, id }: DeleteActivityArgs) =>
-      resourceRequest<{ data: ActivityType[] }>(
-        `activity/${id}`,
-        { method: 'DELETE' },
-        {
-          token,
-        },
-      ),
+    mutationFn: ({ id }: DeleteActivityArgs) =>
+      resourceRequest<{ data: ActivityType[] }>(`activity/${id}`, {
+        method: 'DELETE',
+      }),
     onSuccess: (_result, variables) => {
       queryClient.setQueryData<ActivityType[]>(
         queryKeys.activity(variables.cardId),

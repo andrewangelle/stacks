@@ -12,7 +12,6 @@ export type Board = {
 type CreateBoardArgs = {
   boardTitle: string;
   boardColor: string;
-  token: string;
   userId: string;
 };
 
@@ -28,7 +27,6 @@ export function useGetBoardsQuery(
     queryFn: () =>
       resourceRequest<Board[]>('boards', {
         method: 'GET',
-        searchParams: { userId: normalizedUserId },
       }),
   });
 }
@@ -47,15 +45,13 @@ export function useCreateBoardMutation() {
   const queryClient = useQueryClient();
 
   const mutation = useMutation({
-    mutationFn: ({ boardTitle, boardColor, token, userId }: CreateBoardArgs) =>
+    mutationFn: ({ boardTitle, boardColor }: CreateBoardArgs) =>
       resourceRequest<{ data: Board[] }>(
         'boards',
         { method: 'POST' },
         {
           boardColor,
           boardTitle,
-          token,
-          userId,
         },
       ),
     onSuccess: (result, variables) => {

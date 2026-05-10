@@ -1,18 +1,21 @@
 import { createFileRoute } from '@tanstack/react-router';
 import { prisma } from '~/db/prisma';
-import { requireMutationUserFromTokenOnly } from '~/utils/requireUser';
+import { readJsonBody } from '~/utils/readJsonBody';
+import { requireAuthenticatedUser } from '~/utils/requireUser';
 import { jsonResponse } from '~/utils/response';
 
 export const Route = createFileRoute('/resources/activity/$activityId')({
   server: {
     handlers: {
       async PUT({ request, params }) {
-        const userData = await request.json();
-        const auth = await requireMutationUserFromTokenOnly(userData.token);
-
+        const auth = await requireAuthenticatedUser(request);
         if (auth instanceof Response) {
           return auth;
         }
+
+        const userData = await readJsonBody(request);
+        const content =
+          typeof userData.content === 'string' ? userData.content : '';
 
         await prisma.activity.updateMany({
           where: {
@@ -20,7 +23,7 @@ export const Route = createFileRoute('/resources/activity/$activityId')({
             userId: auth.uid,
           },
           data: {
-            content: userData.content,
+            content,
           },
         });
 
@@ -32,9 +35,7 @@ export const Route = createFileRoute('/resources/activity/$activityId')({
       },
 
       async DELETE({ request, params }) {
-        const userData = await request.json();
-        const auth = await requireMutationUserFromTokenOnly(userData.token);
-
+        const auth = await requireAuthenticatedUser(request);
         if (auth instanceof Response) {
           return auth;
         }

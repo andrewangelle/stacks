@@ -1,15 +1,13 @@
 import { createFileRoute } from '@tanstack/react-router';
 import { prisma } from '~/db/prisma';
-import { requireMutationUserFromTokenOnly } from '~/utils/requireUser';
+import { requireAuthenticatedUser } from '~/utils/requireUser';
 import { jsonResponse } from '~/utils/response';
 
 export const Route = createFileRoute('/resources/checklists/$checklistId')({
   server: {
     handlers: {
       async DELETE({ request, params }) {
-        const userData = await request.json();
-        const auth = await requireMutationUserFromTokenOnly(userData.token);
-
+        const auth = await requireAuthenticatedUser(request);
         if (auth instanceof Response) {
           return auth;
         }

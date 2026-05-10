@@ -1,9 +1,9 @@
 import { useNavigate, useParams } from '@tanstack/react-router';
-import { useAtom } from 'jotai';
 import { type CSSProperties, useState } from 'react';
 import * as Io from 'react-icons/io';
 import * as Ri from 'react-icons/ri';
-import { tokenState } from '~/store/atoms';
+import { authClient } from '~/auth/client';
+import { useSessionUserId } from '~/hooks/useSessionUserId';
 import { useGetBoardQuery, useGetBoardsQuery } from '~/store/boardsApi';
 import {
   BoardsLinkContainer,
@@ -30,11 +30,12 @@ export const sharedDrawerArrowStyles: CSSProperties = {
 export function Drawer() {
   const params = useParams({ strict: false });
   const { data: board } = useGetBoardQuery(params.id);
-  const [token] = useAtom(tokenState);
+  const userId = useSessionUserId();
+  const session = authClient.useSession();
   const [isDrawerOpen, setDrawerOpen] = useState(false);
   const navigate = useNavigate();
-  const { data: boards } = useGetBoardsQuery(token?.user.id, {
-    skip: !token?.user.id,
+  const { data: boards } = useGetBoardsQuery(userId, {
+    skip: !userId,
   });
   return (
     <>
@@ -53,9 +54,9 @@ export function Drawer() {
         {isDrawerOpen && (
           <>
             <DrawerHeader>
-              {token && (
+              {session.data?.user && (
                 <DrawerHeaderTitle>
-                  <div>{token?.user?.email}'s workspace</div>
+                  <div>{session.data.user.email}&apos;s workspace</div>
                 </DrawerHeaderTitle>
               )}
               <Io.IoIosArrowBack

@@ -1,6 +1,7 @@
 import { createFileRoute } from '@tanstack/react-router';
 import { prisma } from '~/db/prisma';
-import { requireMutationUser } from '~/utils/requireUser';
+import { readJsonBody } from '~/utils/readJsonBody';
+import { requireAuthenticatedUser } from '~/utils/requireUser';
 import { jsonResponse } from '~/utils/response';
 
 export const Route = createFileRoute('/resources/lists')({
@@ -12,8 +13,16 @@ export const Route = createFileRoute('/resources/lists')({
           return jsonResponse([]);
         }
 
+        const auth = await requireAuthenticatedUser(request);
+        if (auth instanceof Response) {
+          return auth;
+        }
+
         const lists = await prisma.list.findMany({
-          where: { boardId },
+          where: {
+            boardId,
+            board: { userId: auth.uid },
+          },
           orderBy: { createdAt: 'asc' },
         });
 
@@ -21,17 +30,28 @@ export const Route = createFileRoute('/resources/lists')({
       },
 
       async POST({ request }) {
-        const userData = await request.json();
-        const auth = await requireMutationUser(userData.token, userData.userId);
-
+        const auth = await requireAuthenticatedUser(request);
         if (auth instanceof Response) {
           return auth;
         }
 
+        const userData = await readJsonBody(request);
+        const boardId =
+          typeof userData.boardId === 'string' ? userData.boardId : '';
+        const listTitle =
+          typeof userData.listTitle === 'string' ? userData.listTitle : '';
+
+        const board = await prisma.stack.findFirst({
+          where: { id: boardId, userId: auth.uid },
+        });
+        if (!board) {
+          return jsonResponse({ message: 'Forbidden' }, 403);
+        }
+
         const row = await prisma.list.create({
           data: {
-            listTitle: userData.listTitle,
-            boardId: userData.boardId,
+            listTitle,
+            boardId,
             userId: auth.uid,
           },
         });

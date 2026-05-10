@@ -17,8 +17,6 @@ type CardArgs = { listId: string };
 type CreateCardArgs = {
   cardTitle: string;
   listId: string;
-  token: string;
-  userId: string;
 };
 
 type UpdateCardArgs = {
@@ -26,15 +24,11 @@ type UpdateCardArgs = {
   cardId: string;
   cardDescription: string;
   cardTitle: string;
-  token: string;
-  userId: string;
 };
 
 type DeleteCardArgs = {
   id: string;
   listId: string;
-  token: string;
-  userId: string;
 };
 
 export function useGetCardsQuery(args: CardArgs) {
@@ -50,15 +44,13 @@ export function useGetCardsQuery(args: CardArgs) {
 
 export function useCreateCardMutation() {
   const mutation = useMutation({
-    mutationFn: ({ cardTitle, listId, token, userId }: CreateCardArgs) =>
+    mutationFn: ({ cardTitle, listId }: CreateCardArgs) =>
       resourceRequest<{ data: ListCardType[] }>(
         'cards',
         { method: 'POST' },
         {
           cardTitle,
           listId,
-          token,
-          userId,
         },
       ),
     onSuccess: (result, variables) => {
@@ -74,21 +66,13 @@ export function useCreateCardMutation() {
 
 export function useUpdateCardMutation() {
   const mutation = useMutation({
-    mutationFn: ({
-      cardId,
-      cardDescription,
-      cardTitle,
-      token,
-      userId,
-    }: UpdateCardArgs) =>
+    mutationFn: ({ cardId, cardDescription, cardTitle }: UpdateCardArgs) =>
       resourceRequest<void>(
         `cards/${cardId}`,
         { method: 'PUT' },
         {
           cardDescription,
           cardTitle,
-          token,
-          userId,
         },
       ),
     onSuccess: (_result, variables) => {
@@ -113,14 +97,12 @@ export function useUpdateCardMutation() {
 
 export function useDeleteCardMutation() {
   const mutation = useMutation({
-    mutationFn: ({ id, token, userId }: DeleteCardArgs) =>
+    mutationFn: ({ id }: DeleteCardArgs) =>
       resourceRequest<void>(
         `cards/${id}`,
         { method: 'DELETE' },
         {
           id,
-          token,
-          userId,
         },
       ),
     onSuccess: (_result, variables) => {

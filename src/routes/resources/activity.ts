@@ -1,6 +1,7 @@
 import { createFileRoute } from '@tanstack/react-router';
 import { prisma } from '~/db/prisma';
-import { requireMutationUser } from '~/utils/requireUser';
+import { readJsonBody } from '~/utils/readJsonBody';
+import { requireAuthenticatedUser } from '~/utils/requireUser';
 import { jsonResponse } from '~/utils/response';
 
 export const Route = createFileRoute('/resources/activity')({
@@ -12,8 +13,16 @@ export const Route = createFileRoute('/resources/activity')({
           return jsonResponse([]);
         }
 
+        const auth = await requireAuthenticatedUser(request);
+        if (auth instanceof Response) {
+          return auth;
+        }
+
         const data = await prisma.activity.findMany({
-          where: { cardId },
+          where: {
+            cardId,
+            card: { list: { board: { userId: auth.uid } } },
+          },
           orderBy: { createdAt: 'asc' },
         });
 
@@ -21,21 +30,37 @@ export const Route = createFileRoute('/resources/activity')({
       },
 
       async POST({ request }) {
-        const userData = await request.json();
-        const auth = await requireMutationUser(userData.token, userData.userId);
-
+        const auth = await requireAuthenticatedUser(request);
         if (auth instanceof Response) {
           return auth;
         }
 
+        const userData = await readJsonBody(request);
+        const listId =
+          typeof userData.listId === 'string' ? userData.listId : '';
+        const cardId =
+          typeof userData.cardId === 'string' ? userData.cardId : '';
+        const boardId =
+          typeof userData.boardId === 'string' ? userData.boardId : '';
+        const content =
+          typeof userData.content === 'string' ? userData.content : '';
+        const type = typeof userData.type === 'string' ? userData.type : '';
+
+        const board = await prisma.stack.findFirst({
+          where: { id: boardId, userId: auth.uid },
+        });
+        if (!board) {
+          return jsonResponse({ message: 'Forbidden' }, 403);
+        }
+
         const row = await prisma.activity.create({
           data: {
-            listId: userData.listId,
-            cardId: userData.cardId,
-            boardId: userData.boardId,
+            listId,
+            cardId,
+            boardId,
             userId: auth.uid,
-            content: userData.content,
-            type: userData.type,
+            content,
+            type,
           },
         });
 

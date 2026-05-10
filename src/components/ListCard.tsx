@@ -1,5 +1,4 @@
 import { useParams } from '@tanstack/react-router';
-import { useAtom } from 'jotai';
 import {
   type MouseEvent,
   useCallback,
@@ -11,7 +10,6 @@ import {
 import { CardModal } from '~/components/CardModal';
 import { DeleteListPopover } from '~/components/DeleteListPopover';
 import { DragDropCard } from '~/components/DragDropCard';
-import { tokenState } from '~/store/atoms';
 import { useCreateCardMutation, useGetCardsQuery } from '~/store/cardsApi';
 import { type List, useUpdateListMutation } from '~/store/listsApi';
 import {
@@ -62,7 +60,6 @@ export function useOutsideClick<ElementType = HTMLDivElement>(
 
 export function ListCard({ id, listTitle }: List) {
   const params = useParams({ strict: false });
-  const [token] = useAtom(tokenState);
   const [isEditing, setEditing] = useState(false);
   const [isEditingName, setIsEditingName] = useState(false);
   const [cardTitle, setCardTitle] = useState('');
@@ -83,8 +80,6 @@ export function ListCard({ id, listTitle }: List) {
         boardId: params.id ?? '',
         listId: id,
         listTitle: editedListTitle,
-        token: token?.access_token ?? '',
-        userId: token?.user.id ?? '',
       });
     }
   }
@@ -93,8 +88,6 @@ export function ListCard({ id, listTitle }: List) {
     createCard({
       cardTitle,
       listId: id,
-      token: token?.access_token ?? '',
-      userId: token?.user.id ?? '',
     });
     setEditing(false);
   }

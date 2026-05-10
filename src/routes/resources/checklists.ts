@@ -1,6 +1,7 @@
 import { createFileRoute } from '@tanstack/react-router';
 import { prisma } from '~/db/prisma';
-import { requireMutationUser } from '~/utils/requireUser';
+import { readJsonBody } from '~/utils/readJsonBody';
+import { requireAuthenticatedUser } from '~/utils/requireUser';
 import { jsonResponse } from '~/utils/response';
 
 export const Route = createFileRoute('/resources/checklists')({
@@ -12,8 +13,16 @@ export const Route = createFileRoute('/resources/checklists')({
           return jsonResponse([]);
         }
 
+        const auth = await requireAuthenticatedUser(request);
+        if (auth instanceof Response) {
+          return auth;
+        }
+
         const data = await prisma.checklist.findMany({
-          where: { cardId },
+          where: {
+            cardId,
+            card: { list: { board: { userId: auth.uid } } },
+          },
           orderBy: { createdAt: 'asc' },
         });
 
@@ -21,19 +30,38 @@ export const Route = createFileRoute('/resources/checklists')({
       },
 
       async POST({ request }) {
-        const userData = await request.json();
-        const auth = await requireMutationUser(userData.token, userData.userId);
-
+        const auth = await requireAuthenticatedUser(request);
         if (auth instanceof Response) {
           return auth;
         }
 
+        const userData = await readJsonBody(request);
+        const cardId =
+          typeof userData.cardId === 'string' ? userData.cardId : '';
+        const listId =
+          typeof userData.listId === 'string' ? userData.listId : '';
+        const checklistTitle =
+          typeof userData.checklistTitle === 'string'
+            ? userData.checklistTitle
+            : '';
+
+        const card = await prisma.card.findFirst({
+          where: {
+            id: cardId,
+            listId,
+            list: { board: { userId: auth.uid } },
+          },
+        });
+        if (!card) {
+          return jsonResponse({ message: 'Forbidden' }, 403);
+        }
+
         const row = await prisma.checklist.create({
           data: {
-            checklistTitle: userData.checklistTitle,
-            cardId: userData.cardId,
+            checklistTitle,
+            cardId,
             userId: auth.uid,
-            listId: userData.listId,
+            listId,
           },
         });
 

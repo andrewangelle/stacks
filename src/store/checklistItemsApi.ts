@@ -22,8 +22,6 @@ type CreateChecklistItemArgs = {
   cardId: string;
   checklistId: string;
   listId: string;
-  token: string;
-  userId: string;
 };
 
 type UpdateChecklistItemArgs = {
@@ -32,14 +30,11 @@ type UpdateChecklistItemArgs = {
   cardId: string;
   checklistId: string;
   label: string;
-  token: string;
-  userId: string;
 };
 
 type DeleteChecklistItemArgs = {
   id: string;
   checklistId: string;
-  token: string;
 };
 
 export function useGetChecklistItemsQuery(args: ChecklistItemsArgs) {
@@ -60,8 +55,6 @@ export function useCreateChecklistItemMutation() {
       cardId,
       checklistId,
       listId,
-      token,
-      userId,
     }: CreateChecklistItemArgs) =>
       resourceRequest<{ data: ChecklistItemType[] }>(
         'checklist-items',
@@ -71,8 +64,6 @@ export function useCreateChecklistItemMutation() {
           cardId,
           checklistId,
           listId,
-          token,
-          userId,
         },
       ),
     onSuccess: (result, variables) => {
@@ -92,16 +83,13 @@ export function useUpdateChecklistItemMutation() {
       id,
       isCompleted,
       label,
-      token,
-      userId,
+      checklistId,
     }: UpdateChecklistItemArgs) =>
       resourceRequest<{ data: ChecklistItemType[] }>(
         `checklist-items/${id}`,
         { method: 'PUT' },
         {
           isCompleted,
-          token,
-          userId,
           label,
         },
       ),
@@ -127,15 +115,10 @@ export function useUpdateChecklistItemMutation() {
 
 export function useDeleteChecklistItemMutation() {
   const mutation = useMutation({
-    mutationFn: ({ token, id }: DeleteChecklistItemArgs) =>
-      resourceRequest<{ data: ChecklistType[] }>(
-        `checklist-items/${id}`,
-        { method: 'DELETE' },
-        {
-          id,
-          token,
-        },
-      ),
+    mutationFn: ({ id }: DeleteChecklistItemArgs) =>
+      resourceRequest<{ data: ChecklistType[] }>(`checklist-items/${id}`, {
+        method: 'DELETE',
+      }),
     onSuccess: (_result, variables) => {
       queryClient.setQueryData<ChecklistItemType[]>(
         queryKeys.checklistItems(variables.checklistId),

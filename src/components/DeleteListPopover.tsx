@@ -1,8 +1,5 @@
 import * as Popover from '@radix-ui/react-popover';
 import { useParams } from '@tanstack/react-router';
-import { useAtom } from 'jotai';
-
-import { tokenState } from '~/store/atoms';
 import { useDeleteListMutation } from '~/store/listsApi';
 import { CreateBoardCloseBorder, PopoverClose } from '~/styles/Boards';
 import {
@@ -19,7 +16,6 @@ type DeleteListPopoverProps = {
 };
 
 export function DeleteListPopover({ id, listTitle }: DeleteListPopoverProps) {
-  const [token] = useAtom(tokenState);
   const params = useParams({ strict: false });
   const [deleteList] = useDeleteListMutation();
   return (
@@ -39,8 +35,6 @@ export function DeleteListPopover({ id, listTitle }: DeleteListPopoverProps) {
           onClick={() => {
             deleteList({
               id,
-              token: token?.access_token ?? '',
-              userId: token?.user.id ?? '',
               boardId: params.id ?? '',
             });
           }}

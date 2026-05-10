@@ -1,40 +1,18 @@
-import { createFileRoute, useNavigate } from '@tanstack/react-router';
-import { useAtom } from 'jotai';
-import { useEffect } from 'react';
-import { signedInState, tokenState } from '~/store/atoms';
-import { useTokenFromHash } from '~/utils/session';
+import { createFileRoute, Navigate } from '@tanstack/react-router';
+import { authClient } from '~/auth/client';
 
 export const Route = createFileRoute('/')({
   component() {
-    const [isSignedIn, setSignedIn] = useAtom(signedInState);
-    const [storedToken, setToken] = useAtom(tokenState);
-    const navigate = useNavigate();
-    const hashToken = useTokenFromHash();
+    const { data, isPending } = authClient.useSession();
 
-    // Returning from an external auth provider redirect (#access_token=...)
-    useEffect(() => {
-      if (hashToken?.access_token) {
-        setSignedIn(true);
-        setToken(hashToken);
-        navigate({ to: '/boards' });
-      }
-    }, [hashToken, setSignedIn, setToken, navigate]);
+    if (isPending) {
+      return null;
+    }
 
-    useEffect(() => {
-      if (storedToken?.access_token && storedToken.user?.id) {
-        if (!isSignedIn) {
-          setSignedIn(true);
-        }
-        navigate({ to: '/boards' });
-        return;
-      }
+    if (data?.user) {
+      return <Navigate to="/boards" />;
+    }
 
-      if (isSignedIn) {
-        setSignedIn(false);
-      }
-      navigate({ to: '/signin' });
-    }, [storedToken, isSignedIn, setSignedIn, navigate]);
-
-    return null;
+    return <Navigate to="/auth/$pathname" params={{ pathname: 'sign-in' }} />;
   },
 });

@@ -9,11 +9,8 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as SigninRouteImport } from './routes/signin'
 import { Route as BoardsRouteImport } from './routes/boards'
 import { Route as IndexRouteImport } from './routes/index'
-import { Route as ResourcesSigninRouteImport } from './routes/resources/signin'
-import { Route as ResourcesRegisterRouteImport } from './routes/resources/register'
 import { Route as ResourcesProfilesRouteImport } from './routes/resources/profiles'
 import { Route as ResourcesListsRouteImport } from './routes/resources/lists'
 import { Route as ResourcesChecklistsRouteImport } from './routes/resources/checklists'
@@ -22,6 +19,7 @@ import { Route as ResourcesCardsRouteImport } from './routes/resources/cards'
 import { Route as ResourcesBoardsRouteImport } from './routes/resources/boards'
 import { Route as ResourcesActivityRouteImport } from './routes/resources/activity'
 import { Route as BoardIdRouteImport } from './routes/board.$id'
+import { Route as AuthPathnameRouteImport } from './routes/auth.$pathname'
 import { Route as ResourcesListsListIdRouteImport } from './routes/resources/lists.$listId'
 import { Route as ResourcesChecklistsChecklistIdRouteImport } from './routes/resources/checklists.$checklistId'
 import { Route as ResourcesChecklistItemsItemIdRouteImport } from './routes/resources/checklist-items.$itemId'
@@ -29,11 +27,6 @@ import { Route as ResourcesCardsCardIdRouteImport } from './routes/resources/car
 import { Route as ResourcesBoardsBoardIdRouteImport } from './routes/resources/boards.$boardId'
 import { Route as ResourcesActivityActivityIdRouteImport } from './routes/resources/activity.$activityId'
 
-const SigninRoute = SigninRouteImport.update({
-  id: '/signin',
-  path: '/signin',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const BoardsRoute = BoardsRouteImport.update({
   id: '/boards',
   path: '/boards',
@@ -42,16 +35,6 @@ const BoardsRoute = BoardsRouteImport.update({
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ResourcesSigninRoute = ResourcesSigninRouteImport.update({
-  id: '/resources/signin',
-  path: '/resources/signin',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ResourcesRegisterRoute = ResourcesRegisterRouteImport.update({
-  id: '/resources/register',
-  path: '/resources/register',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ResourcesProfilesRoute = ResourcesProfilesRouteImport.update({
@@ -94,6 +77,11 @@ const BoardIdRoute = BoardIdRouteImport.update({
   path: '/board/$id',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AuthPathnameRoute = AuthPathnameRouteImport.update({
+  id: '/auth/$pathname',
+  path: '/auth/$pathname',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ResourcesListsListIdRoute = ResourcesListsListIdRouteImport.update({
   id: '/$listId',
   path: '/$listId',
@@ -131,7 +119,7 @@ const ResourcesActivityActivityIdRoute =
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/boards': typeof BoardsRoute
-  '/signin': typeof SigninRoute
+  '/auth/$pathname': typeof AuthPathnameRoute
   '/board/$id': typeof BoardIdRoute
   '/resources/activity': typeof ResourcesActivityRouteWithChildren
   '/resources/boards': typeof ResourcesBoardsRouteWithChildren
@@ -140,8 +128,6 @@ export interface FileRoutesByFullPath {
   '/resources/checklists': typeof ResourcesChecklistsRouteWithChildren
   '/resources/lists': typeof ResourcesListsRouteWithChildren
   '/resources/profiles': typeof ResourcesProfilesRoute
-  '/resources/register': typeof ResourcesRegisterRoute
-  '/resources/signin': typeof ResourcesSigninRoute
   '/resources/activity/$activityId': typeof ResourcesActivityActivityIdRoute
   '/resources/boards/$boardId': typeof ResourcesBoardsBoardIdRoute
   '/resources/cards/$cardId': typeof ResourcesCardsCardIdRoute
@@ -152,7 +138,7 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/boards': typeof BoardsRoute
-  '/signin': typeof SigninRoute
+  '/auth/$pathname': typeof AuthPathnameRoute
   '/board/$id': typeof BoardIdRoute
   '/resources/activity': typeof ResourcesActivityRouteWithChildren
   '/resources/boards': typeof ResourcesBoardsRouteWithChildren
@@ -161,8 +147,6 @@ export interface FileRoutesByTo {
   '/resources/checklists': typeof ResourcesChecklistsRouteWithChildren
   '/resources/lists': typeof ResourcesListsRouteWithChildren
   '/resources/profiles': typeof ResourcesProfilesRoute
-  '/resources/register': typeof ResourcesRegisterRoute
-  '/resources/signin': typeof ResourcesSigninRoute
   '/resources/activity/$activityId': typeof ResourcesActivityActivityIdRoute
   '/resources/boards/$boardId': typeof ResourcesBoardsBoardIdRoute
   '/resources/cards/$cardId': typeof ResourcesCardsCardIdRoute
@@ -174,7 +158,7 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/boards': typeof BoardsRoute
-  '/signin': typeof SigninRoute
+  '/auth/$pathname': typeof AuthPathnameRoute
   '/board/$id': typeof BoardIdRoute
   '/resources/activity': typeof ResourcesActivityRouteWithChildren
   '/resources/boards': typeof ResourcesBoardsRouteWithChildren
@@ -183,8 +167,6 @@ export interface FileRoutesById {
   '/resources/checklists': typeof ResourcesChecklistsRouteWithChildren
   '/resources/lists': typeof ResourcesListsRouteWithChildren
   '/resources/profiles': typeof ResourcesProfilesRoute
-  '/resources/register': typeof ResourcesRegisterRoute
-  '/resources/signin': typeof ResourcesSigninRoute
   '/resources/activity/$activityId': typeof ResourcesActivityActivityIdRoute
   '/resources/boards/$boardId': typeof ResourcesBoardsBoardIdRoute
   '/resources/cards/$cardId': typeof ResourcesCardsCardIdRoute
@@ -197,7 +179,7 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/boards'
-    | '/signin'
+    | '/auth/$pathname'
     | '/board/$id'
     | '/resources/activity'
     | '/resources/boards'
@@ -206,8 +188,6 @@ export interface FileRouteTypes {
     | '/resources/checklists'
     | '/resources/lists'
     | '/resources/profiles'
-    | '/resources/register'
-    | '/resources/signin'
     | '/resources/activity/$activityId'
     | '/resources/boards/$boardId'
     | '/resources/cards/$cardId'
@@ -218,7 +198,7 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/boards'
-    | '/signin'
+    | '/auth/$pathname'
     | '/board/$id'
     | '/resources/activity'
     | '/resources/boards'
@@ -227,8 +207,6 @@ export interface FileRouteTypes {
     | '/resources/checklists'
     | '/resources/lists'
     | '/resources/profiles'
-    | '/resources/register'
-    | '/resources/signin'
     | '/resources/activity/$activityId'
     | '/resources/boards/$boardId'
     | '/resources/cards/$cardId'
@@ -239,7 +217,7 @@ export interface FileRouteTypes {
     | '__root__'
     | '/'
     | '/boards'
-    | '/signin'
+    | '/auth/$pathname'
     | '/board/$id'
     | '/resources/activity'
     | '/resources/boards'
@@ -248,8 +226,6 @@ export interface FileRouteTypes {
     | '/resources/checklists'
     | '/resources/lists'
     | '/resources/profiles'
-    | '/resources/register'
-    | '/resources/signin'
     | '/resources/activity/$activityId'
     | '/resources/boards/$boardId'
     | '/resources/cards/$cardId'
@@ -261,7 +237,7 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   BoardsRoute: typeof BoardsRoute
-  SigninRoute: typeof SigninRoute
+  AuthPathnameRoute: typeof AuthPathnameRoute
   BoardIdRoute: typeof BoardIdRoute
   ResourcesActivityRoute: typeof ResourcesActivityRouteWithChildren
   ResourcesBoardsRoute: typeof ResourcesBoardsRouteWithChildren
@@ -270,19 +246,10 @@ export interface RootRouteChildren {
   ResourcesChecklistsRoute: typeof ResourcesChecklistsRouteWithChildren
   ResourcesListsRoute: typeof ResourcesListsRouteWithChildren
   ResourcesProfilesRoute: typeof ResourcesProfilesRoute
-  ResourcesRegisterRoute: typeof ResourcesRegisterRoute
-  ResourcesSigninRoute: typeof ResourcesSigninRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/signin': {
-      id: '/signin'
-      path: '/signin'
-      fullPath: '/signin'
-      preLoaderRoute: typeof SigninRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/boards': {
       id: '/boards'
       path: '/boards'
@@ -295,20 +262,6 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/resources/signin': {
-      id: '/resources/signin'
-      path: '/resources/signin'
-      fullPath: '/resources/signin'
-      preLoaderRoute: typeof ResourcesSigninRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/resources/register': {
-      id: '/resources/register'
-      path: '/resources/register'
-      fullPath: '/resources/register'
-      preLoaderRoute: typeof ResourcesRegisterRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/resources/profiles': {
@@ -365,6 +318,13 @@ declare module '@tanstack/react-router' {
       path: '/board/$id'
       fullPath: '/board/$id'
       preLoaderRoute: typeof BoardIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/auth/$pathname': {
+      id: '/auth/$pathname'
+      path: '/auth/$pathname'
+      fullPath: '/auth/$pathname'
+      preLoaderRoute: typeof AuthPathnameRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/resources/lists/$listId': {
@@ -487,7 +447,7 @@ const ResourcesListsRouteWithChildren = ResourcesListsRoute._addFileChildren(
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   BoardsRoute: BoardsRoute,
-  SigninRoute: SigninRoute,
+  AuthPathnameRoute: AuthPathnameRoute,
   BoardIdRoute: BoardIdRoute,
   ResourcesActivityRoute: ResourcesActivityRouteWithChildren,
   ResourcesBoardsRoute: ResourcesBoardsRouteWithChildren,
@@ -496,8 +456,6 @@ const rootRouteChildren: RootRouteChildren = {
   ResourcesChecklistsRoute: ResourcesChecklistsRouteWithChildren,
   ResourcesListsRoute: ResourcesListsRouteWithChildren,
   ResourcesProfilesRoute: ResourcesProfilesRoute,
-  ResourcesRegisterRoute: ResourcesRegisterRoute,
-  ResourcesSigninRoute: ResourcesSigninRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

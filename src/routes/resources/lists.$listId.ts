@@ -1,23 +1,26 @@
 import { createFileRoute } from '@tanstack/react-router';
 import { prisma } from '~/db/prisma';
-import { requireMutationUser } from '~/utils/requireUser';
+import { readJsonBody } from '~/utils/readJsonBody';
+import { requireAuthenticatedUser } from '~/utils/requireUser';
 import { jsonResponse } from '~/utils/response';
 
 export const Route = createFileRoute('/resources/lists/$listId')({
   server: {
     handlers: {
       async PUT({ request, params }) {
-        const userData = await request.json();
-        const auth = await requireMutationUser(userData.token, userData.userId);
-
+        const auth = await requireAuthenticatedUser(request);
         if (auth instanceof Response) {
           return auth;
         }
 
+        const userData = await readJsonBody(request);
+        const listTitle =
+          typeof userData.listTitle === 'string' ? userData.listTitle : '';
+
         const updated = await prisma.list.updateMany({
           where: { id: params.listId, userId: auth.uid },
           data: {
-            listTitle: userData.listTitle,
+            listTitle,
           },
         });
 
@@ -33,16 +36,17 @@ export const Route = createFileRoute('/resources/lists/$listId')({
       },
 
       async DELETE({ request }) {
-        const userData = await request.json();
-        const auth = await requireMutationUser(userData.token, userData.userId);
-
+        const auth = await requireAuthenticatedUser(request);
         if (auth instanceof Response) {
           return auth;
         }
 
+        const userData = await readJsonBody(request);
+        const id = typeof userData.id === 'string' ? userData.id : '';
+
         const row = await prisma.list.findFirst({
           where: {
-            id: userData.id,
+            id,
             userId: auth.uid,
           },
         });
