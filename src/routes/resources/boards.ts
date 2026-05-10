@@ -9,8 +9,12 @@ export const Route = createFileRoute('/resources/boards')({
 
     handlers: {
       async GET({ context }) {
+        if (!context?.uid) {
+          return jsonResponse({ message: 'Unauthorized' }, 401);
+        }
+
         const data = await prisma.stack.findMany({
-          where: { userId: context?.uid ?? '' },
+          where: { userId: context.uid },
           orderBy: { createdAt: 'asc' },
         });
 
@@ -18,6 +22,10 @@ export const Route = createFileRoute('/resources/boards')({
       },
 
       async POST({ request, context }) {
+        if (!context?.uid) {
+          return jsonResponse({ message: 'Unauthorized' }, 401);
+        }
+
         const userData = await safeParse(request);
 
         const boardTitle =
@@ -30,7 +38,7 @@ export const Route = createFileRoute('/resources/boards')({
           data: {
             boardTitle,
             boardColor,
-            userId: context?.uid ?? '',
+            userId: context.uid,
           },
         });
 
