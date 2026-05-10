@@ -1,6 +1,6 @@
 import { createFileRoute } from '@tanstack/react-router';
+import { requireAuthenticatedUser } from '~/auth/requireUser';
 import { prisma } from '~/db/prisma';
-import { requireAuthenticatedUser } from '~/utils/requireUser';
 import { jsonResponse, safeParse } from '~/utils/response';
 
 export const Route = createFileRoute('/resources/activity/$activityId')({
