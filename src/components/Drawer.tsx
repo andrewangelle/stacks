@@ -3,7 +3,7 @@ import { type CSSProperties, useState } from 'react';
 import * as Io from 'react-icons/io';
 import * as Ri from 'react-icons/ri';
 import { authClient } from '~/auth/client';
-import { useSessionUserId } from '~/hooks/useSessionUserId';
+import { useSessionUserId } from '~/auth/useSessionUserId';
 import { useGetBoardQuery, useGetBoardsQuery } from '~/store/boardsApi';
 import {
   BoardsLinkContainer,

@@ -2,10 +2,9 @@ import { useParams } from '@tanstack/react-router';
 import { formatRelative } from 'date-fns';
 import { useState } from 'react';
 import * as Md from 'react-icons/md';
-
+import { useSessionUserId } from '~/auth/useSessionUserId';
 import { ActivityComment } from '~/components/ActivityComment';
 import { ActivityLogo } from '~/components/ActivityLogo';
-import { useSessionUserId } from '~/hooks/useSessionUserId';
 import {
   useCreateActivityMutation,
   useGetActivityQuery,

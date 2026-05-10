@@ -1,4 +1,4 @@
-import { useSessionUserId } from '~/hooks/useSessionUserId';
+import { useSessionUserId } from '~/auth/useSessionUserId';
 import { useGetProfileQuery } from '~/store/profileApi';
 import { ActivityNameCircle } from '~/styles/Activity';
 import { Center } from '~/styles/Page';

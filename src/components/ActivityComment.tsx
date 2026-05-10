@@ -1,9 +1,8 @@
 import { formatRelative } from 'date-fns';
 import { useState } from 'react';
-
+import { useSessionUserId } from '~/auth/useSessionUserId';
 import { ActivityLogo } from '~/components/ActivityLogo';
 import { DeleteCommentPopover } from '~/components/DeleteCommentPopover';
-import { useSessionUserId } from '~/hooks/useSessionUserId';
 import {
   type ActivityType,
   useUpdateActivityMutation,
