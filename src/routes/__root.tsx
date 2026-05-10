@@ -1,6 +1,6 @@
 import { QueryClientProvider } from '@tanstack/react-query';
-// @ts-expect-error no types
 import '@pigment-css/react/styles.css';
+import { NeonAuthUIProvider } from '@neondatabase/neon-js/auth/react';
 import {
   createRootRoute,
   HeadContent,
@@ -11,6 +11,7 @@ import { Provider as JotaiProvider } from 'jotai';
 import type { ReactNode } from 'react';
 import { DndProvider } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
+import { authClient } from '~/auth/client';
 import { queryClient } from '~/store/queryClient';
 import GlobalFonts from '~/styles/GlobalFonts';
 
@@ -40,15 +41,21 @@ function RootDocument({ children }: { children: ReactNode }) {
         <HeadContent />
       </head>
       <body>
-        <QueryClientProvider client={queryClient}>
-          <JotaiProvider>
-            <DndProvider backend={HTML5Backend}>
-              {children}
-              <Scripts />
-              <GlobalFonts />
-            </DndProvider>
-          </JotaiProvider>
-        </QueryClientProvider>
+        <NeonAuthUIProvider
+          authClient={authClient}
+          social={{ providers: ['google'] }}
+          credentials={{ forgotPassword: true }}
+        >
+          <QueryClientProvider client={queryClient}>
+            <JotaiProvider>
+              <DndProvider backend={HTML5Backend}>
+                {children}
+                <Scripts />
+                <GlobalFonts />
+              </DndProvider>
+            </JotaiProvider>
+          </QueryClientProvider>
+        </NeonAuthUIProvider>
       </body>
     </html>
   );
