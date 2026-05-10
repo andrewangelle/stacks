@@ -1,8 +1,7 @@
 import { createFileRoute } from '@tanstack/react-router';
 import { prisma } from '~/db/prisma';
-import { readJsonBody } from '~/utils/readJsonBody';
 import { requireAuthenticatedUser } from '~/utils/requireUser';
-import { jsonResponse } from '~/utils/response';
+import { jsonResponse, safeParse } from '~/utils/response';
 
 export const Route = createFileRoute('/resources/lists/$listId')({
   server: {
@@ -13,7 +12,7 @@ export const Route = createFileRoute('/resources/lists/$listId')({
           return auth;
         }
 
-        const userData = await readJsonBody(request);
+        const userData = await safeParse(request);
         const listTitle =
           typeof userData.listTitle === 'string' ? userData.listTitle : '';
 
@@ -41,7 +40,7 @@ export const Route = createFileRoute('/resources/lists/$listId')({
           return auth;
         }
 
-        const userData = await readJsonBody(request);
+        const userData = await safeParse(request);
         const id = typeof userData.id === 'string' ? userData.id : '';
 
         const row = await prisma.list.findFirst({
