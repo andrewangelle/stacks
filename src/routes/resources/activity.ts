@@ -1,7 +1,7 @@
 import { createFileRoute } from '@tanstack/react-router';
 import { authMiddleware } from '~/auth/requireUser';
 import { prisma } from '~/db/prisma';
-import { jsonResponse, safeParse } from '~/utils/response';
+import { jsonResponse } from '~/utils/response';
 
 export const Route = createFileRoute('/resources/activity')({
   server: {
@@ -34,20 +34,17 @@ export const Route = createFileRoute('/resources/activity')({
           return jsonResponse({ message: 'Unauthorized' }, 401);
         }
 
-        const userData = await safeParse(request);
-        const listId =
-          typeof userData.listId === 'string' ? userData.listId : '';
-        const cardId =
-          typeof userData.cardId === 'string' ? userData.cardId : '';
-        const boardId =
-          typeof userData.boardId === 'string' ? userData.boardId : '';
-        const content =
-          typeof userData.content === 'string' ? userData.content : '';
-        const type = typeof userData.type === 'string' ? userData.type : '';
+        const userData = await request.json();
+        const listId = userData.listId ?? '';
+        const cardId = userData.cardId ?? '';
+        const boardId = userData.boardId ?? '';
+        const content = userData.content ?? '';
+        const type = userData.type ?? '';
 
         const board = await prisma.stack.findFirst({
           where: { id: boardId, userId: context.uid },
         });
+
         if (!board) {
           return jsonResponse({ message: 'Forbidden' }, 403);
         }

@@ -1,7 +1,7 @@
 import { createFileRoute } from '@tanstack/react-router';
 import { authMiddleware } from '~/auth/requireUser';
 import { prisma } from '~/db/prisma';
-import { jsonResponse, safeParse } from '~/utils/response';
+import { jsonResponse } from '~/utils/response';
 
 export const Route = createFileRoute('/resources/cards/$cardId')({
   server: {
@@ -28,12 +28,12 @@ export const Route = createFileRoute('/resources/cards/$cardId')({
           return jsonResponse({ message: 'Unauthorized' }, 401);
         }
 
-        const userData = await safeParse(request);
+        const userData = await request.json();
         const patch: { cardDescription?: string; cardTitle?: string } = {};
-        if (typeof userData.cardDescription === 'string') {
+        if (userData.cardDescription) {
           patch.cardDescription = userData.cardDescription;
         }
-        if (typeof userData.cardTitle === 'string') {
+        if (userData.cardTitle) {
           patch.cardTitle = userData.cardTitle;
         }
 
@@ -57,8 +57,8 @@ export const Route = createFileRoute('/resources/cards/$cardId')({
           return jsonResponse({ message: 'Unauthorized' }, 401);
         }
 
-        const userData = await safeParse(request);
-        const id = typeof userData.id === 'string' ? userData.id : '';
+        const userData = await request.json();
+        const id = userData.id ?? '';
 
         const row = await prisma.card.findFirst({
           where: {

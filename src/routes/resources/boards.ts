@@ -1,7 +1,7 @@
 import { createFileRoute } from '@tanstack/react-router';
 import { authMiddleware } from '~/auth/requireUser';
 import { prisma } from '~/db/prisma';
-import { jsonResponse, safeParse } from '~/utils/response';
+import { jsonResponse } from '~/utils/response';
 
 export const Route = createFileRoute('/resources/boards')({
   server: {
@@ -26,13 +26,9 @@ export const Route = createFileRoute('/resources/boards')({
           return jsonResponse({ message: 'Unauthorized' }, 401);
         }
 
-        const userData = await safeParse(request);
-
-        const boardTitle =
-          typeof userData.boardTitle === 'string' ? userData.boardTitle : '';
-
-        const boardColor =
-          typeof userData.boardColor === 'string' ? userData.boardColor : '';
+        const userData = await request.json();
+        const boardTitle = userData.boardTitle ?? '';
+        const boardColor = userData.boardColor ?? '';
 
         const row = await prisma.stack.create({
           data: {

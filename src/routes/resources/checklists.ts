@@ -1,7 +1,7 @@
 import { createFileRoute } from '@tanstack/react-router';
 import { authMiddleware } from '~/auth/requireUser';
 import { prisma } from '~/db/prisma';
-import { jsonResponse, safeParse } from '~/utils/response';
+import { jsonResponse } from '~/utils/response';
 
 export const Route = createFileRoute('/resources/checklists')({
   server: {
@@ -9,13 +9,14 @@ export const Route = createFileRoute('/resources/checklists')({
 
     handlers: {
       async GET({ request, context }) {
-        const cardId = new URL(request.url).searchParams.get('cardId');
-        if (!cardId) {
-          return jsonResponse([]);
-        }
-
         if (!context?.uid) {
           return jsonResponse({ message: 'Unauthorized' }, 401);
+        }
+
+        const cardId = new URL(request.url).searchParams.get('cardId');
+
+        if (!cardId) {
+          return jsonResponse({ message: 'Bad Request' }, 400);
         }
 
         const data = await prisma.checklist.findMany({
@@ -34,15 +35,10 @@ export const Route = createFileRoute('/resources/checklists')({
           return jsonResponse({ message: 'Unauthorized' }, 401);
         }
 
-        const userData = await safeParse(request);
-        const cardId =
-          typeof userData.cardId === 'string' ? userData.cardId : '';
-        const listId =
-          typeof userData.listId === 'string' ? userData.listId : '';
-        const checklistTitle =
-          typeof userData.checklistTitle === 'string'
-            ? userData.checklistTitle
-            : '';
+        const userData = await request.json();
+        const cardId = userData.cardId ?? '';
+        const listId = userData.listId ?? '';
+        const checklistTitle = userData.checklistTitle ?? '';
 
         const card = await prisma.card.findFirst({
           where: {

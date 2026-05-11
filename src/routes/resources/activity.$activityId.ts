@@ -1,7 +1,7 @@
 import { createFileRoute } from '@tanstack/react-router';
 import { authMiddleware } from '~/auth/requireUser';
 import { prisma } from '~/db/prisma';
-import { jsonResponse, safeParse } from '~/utils/response';
+import { jsonResponse } from '~/utils/response';
 
 export const Route = createFileRoute('/resources/activity/$activityId')({
   server: {
@@ -13,9 +13,8 @@ export const Route = createFileRoute('/resources/activity/$activityId')({
           return jsonResponse({ message: 'Unauthorized' }, 401);
         }
 
-        const userData = await safeParse(request);
-        const content =
-          typeof userData.content === 'string' ? userData.content : '';
+        const userData = await request.json();
+        const content = userData.content ?? '';
 
         await prisma.activity.updateMany({
           where: {

@@ -1,7 +1,7 @@
 import { createFileRoute } from '@tanstack/react-router';
 import { authMiddleware } from '~/auth/requireUser';
 import { prisma } from '~/db/prisma';
-import { jsonResponse, safeParse } from '~/utils/response';
+import { jsonResponse } from '~/utils/response';
 
 export const Route = createFileRoute('/resources/checklist-items')({
   server: {
@@ -9,15 +9,16 @@ export const Route = createFileRoute('/resources/checklist-items')({
 
     handlers: {
       async GET({ request, context }) {
+        if (!context?.uid) {
+          return jsonResponse({ message: 'Unauthorized' }, 401);
+        }
+
         const checklistId = new URL(request.url).searchParams.get(
           'checklistId',
         );
-        if (!checklistId) {
-          return jsonResponse([]);
-        }
 
-        if (!context?.uid) {
-          return jsonResponse({ message: 'Unauthorized' }, 401);
+        if (!checklistId) {
+          return jsonResponse({ message: 'Bad Request' }, 400);
         }
 
         const data = await prisma.checklistItem.findMany({
@@ -38,14 +39,11 @@ export const Route = createFileRoute('/resources/checklist-items')({
           return jsonResponse({ message: 'Unauthorized' }, 401);
         }
 
-        const userData = await safeParse(request);
-        const cardId =
-          typeof userData.cardId === 'string' ? userData.cardId : '';
-        const checklistId =
-          typeof userData.checklistId === 'string' ? userData.checklistId : '';
-        const listId =
-          typeof userData.listId === 'string' ? userData.listId : '';
-        const label = typeof userData.label === 'string' ? userData.label : '';
+        const userData = await request.json();
+        const cardId = userData.cardId ?? '';
+        const checklistId = userData.checklistId ?? '';
+        const listId = userData.listId ?? '';
+        const label = userData.label ?? '';
 
         const checklist = await prisma.checklist.findFirst({
           where: {
@@ -55,6 +53,7 @@ export const Route = createFileRoute('/resources/checklist-items')({
             userId: context.uid,
           },
         });
+
         if (!checklist) {
           return jsonResponse({ message: 'Forbidden' }, 403);
         }

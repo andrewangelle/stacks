@@ -1,7 +1,7 @@
 import { createFileRoute } from '@tanstack/react-router';
 import { authMiddleware } from '~/auth/requireUser';
 import { prisma } from '~/db/prisma';
-import { jsonResponse, safeParse } from '~/utils/response';
+import { jsonResponse } from '~/utils/response';
 
 export const Route = createFileRoute('/resources/checklist-items/$itemId')({
   server: {
@@ -13,12 +13,14 @@ export const Route = createFileRoute('/resources/checklist-items/$itemId')({
           return jsonResponse({ message: 'Unauthorized' }, 401);
         }
 
-        const userData = await safeParse(request);
+        const userData = await request.json();
 
         const patch: { label?: string; isCompleted?: boolean } = {};
+
         if (typeof userData.label === 'string') {
           patch.label = userData.label;
         }
+
         if (typeof userData.isCompleted === 'boolean') {
           patch.isCompleted = userData.isCompleted;
         }
