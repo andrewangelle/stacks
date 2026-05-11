@@ -9,13 +9,14 @@ export const Route = createFileRoute('/resources/activity')({
 
     handlers: {
       async GET({ request, context }) {
-        const cardId = new URL(request.url).searchParams.get('cardId');
-        if (!cardId) {
-          return data([]);
-        }
-
         if (!context?.uid) {
           return data({ message: 'Unauthorized' }, 401);
+        }
+
+        const cardId = new URL(request.url).searchParams.get('cardId');
+
+        if (!cardId) {
+          return data({ message: 'Bad Request' }, 400);
         }
 
         const response = await prisma.activity.findMany({

@@ -12,6 +12,7 @@ import { HTML5Backend } from 'react-dnd-html5-backend';
 import { AuthProvider } from '~/components/AuthProvider';
 import { queryClient } from '~/store/queryClient';
 import GlobalFonts from '~/styles/GlobalFonts';
+
 export const Route = createRootRoute({
   head: () => ({
     meta: [

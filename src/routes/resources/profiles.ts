@@ -18,7 +18,7 @@ export const Route = createFileRoute('/resources/profiles')({
         });
 
         if (!profile) {
-          return data({});
+          return data({ message: 'Not found' }, 404);
         }
 
         return data({
