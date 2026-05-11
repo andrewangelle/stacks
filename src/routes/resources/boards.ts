@@ -1,7 +1,7 @@
 import { createFileRoute } from '@tanstack/react-router';
 import { authMiddleware } from '~/auth/requireUser';
 import { prisma } from '~/db/prisma';
-import { jsonResponse } from '~/utils/response';
+import { data } from '~/utils/response';
 
 export const Route = createFileRoute('/resources/boards')({
   server: {
@@ -10,20 +10,20 @@ export const Route = createFileRoute('/resources/boards')({
     handlers: {
       async GET({ context }) {
         if (!context?.uid) {
-          return jsonResponse({ message: 'Unauthorized' }, 401);
+          return data({ message: 'Unauthorized' }, 401);
         }
 
-        const data = await prisma.stack.findMany({
+        const response = await prisma.stack.findMany({
           where: { userId: context.uid },
           orderBy: { createdAt: 'asc' },
         });
 
-        return jsonResponse(data);
+        return data(response);
       },
 
       async POST({ request, context }) {
         if (!context?.uid) {
-          return jsonResponse({ message: 'Unauthorized' }, 401);
+          return data({ message: 'Unauthorized' }, 401);
         }
 
         const userData = await request.json();
@@ -38,7 +38,7 @@ export const Route = createFileRoute('/resources/boards')({
           },
         });
 
-        return jsonResponse({
+        return data({
           code: 'stacks:create:success',
           message: 'success',
           data: [row],

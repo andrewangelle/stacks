@@ -1,7 +1,7 @@
 import { createFileRoute } from '@tanstack/react-router';
 import { authMiddleware } from '~/auth/requireUser';
 import { prisma } from '~/db/prisma';
-import { jsonResponse } from '~/utils/response';
+import { data } from '~/utils/response';
 
 export const Route = createFileRoute('/resources/checklist-items')({
   server: {
@@ -10,7 +10,7 @@ export const Route = createFileRoute('/resources/checklist-items')({
     handlers: {
       async GET({ request, context }) {
         if (!context?.uid) {
-          return jsonResponse({ message: 'Unauthorized' }, 401);
+          return data({ message: 'Unauthorized' }, 401);
         }
 
         const checklistId = new URL(request.url).searchParams.get(
@@ -18,10 +18,10 @@ export const Route = createFileRoute('/resources/checklist-items')({
         );
 
         if (!checklistId) {
-          return jsonResponse({ message: 'Bad Request' }, 400);
+          return data({ message: 'Bad Request' }, 400);
         }
 
-        const data = await prisma.checklistItem.findMany({
+        const response = await prisma.checklistItem.findMany({
           where: {
             checklistId,
             checklist: {
@@ -31,12 +31,12 @@ export const Route = createFileRoute('/resources/checklist-items')({
           orderBy: { createdAt: 'asc' },
         });
 
-        return jsonResponse(data);
+        return data(response);
       },
 
       async POST({ request, context }) {
         if (!context?.uid) {
-          return jsonResponse({ message: 'Unauthorized' }, 401);
+          return data({ message: 'Unauthorized' }, 401);
         }
 
         const userData = await request.json();
@@ -55,7 +55,7 @@ export const Route = createFileRoute('/resources/checklist-items')({
         });
 
         if (!checklist) {
-          return jsonResponse({ message: 'Forbidden' }, 403);
+          return data({ message: 'Forbidden' }, 403);
         }
 
         const row = await prisma.checklistItem.create({
@@ -69,7 +69,7 @@ export const Route = createFileRoute('/resources/checklist-items')({
           },
         });
 
-        return jsonResponse({
+        return data({
           code: 'checklist-item:create:success',
           message: 'success',
           data: [row],

@@ -1,7 +1,7 @@
 import { createFileRoute } from '@tanstack/react-router';
 import { authMiddleware } from '~/auth/requireUser';
 import { prisma } from '~/db/prisma';
-import { jsonResponse } from '~/utils/response';
+import { data } from '~/utils/response';
 
 export const Route = createFileRoute('/resources/checklists')({
   server: {
@@ -10,16 +10,16 @@ export const Route = createFileRoute('/resources/checklists')({
     handlers: {
       async GET({ request, context }) {
         if (!context?.uid) {
-          return jsonResponse({ message: 'Unauthorized' }, 401);
+          return data({ message: 'Unauthorized' }, 401);
         }
 
         const cardId = new URL(request.url).searchParams.get('cardId');
 
         if (!cardId) {
-          return jsonResponse({ message: 'Bad Request' }, 400);
+          return data({ message: 'Bad Request' }, 400);
         }
 
-        const data = await prisma.checklist.findMany({
+        const response = await prisma.checklist.findMany({
           where: {
             cardId,
             card: { list: { board: { userId: context.uid } } },
@@ -27,12 +27,12 @@ export const Route = createFileRoute('/resources/checklists')({
           orderBy: { createdAt: 'asc' },
         });
 
-        return jsonResponse(data);
+        return data(response);
       },
 
       async POST({ request, context }) {
         if (!context?.uid) {
-          return jsonResponse({ message: 'Unauthorized' }, 401);
+          return data({ message: 'Unauthorized' }, 401);
         }
 
         const userData = await request.json();
@@ -48,7 +48,7 @@ export const Route = createFileRoute('/resources/checklists')({
           },
         });
         if (!card) {
-          return jsonResponse({ message: 'Forbidden' }, 403);
+          return data({ message: 'Forbidden' }, 403);
         }
 
         const row = await prisma.checklist.create({
@@ -60,7 +60,7 @@ export const Route = createFileRoute('/resources/checklists')({
           },
         });
 
-        return jsonResponse({
+        return data({
           code: 'checklists:create:success',
           message: 'success',
           data: [row],

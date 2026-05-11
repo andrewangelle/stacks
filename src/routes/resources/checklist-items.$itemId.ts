@@ -1,7 +1,7 @@
 import { createFileRoute } from '@tanstack/react-router';
 import { authMiddleware } from '~/auth/requireUser';
 import { prisma } from '~/db/prisma';
-import { jsonResponse } from '~/utils/response';
+import { data } from '~/utils/response';
 
 export const Route = createFileRoute('/resources/checklist-items/$itemId')({
   server: {
@@ -10,7 +10,7 @@ export const Route = createFileRoute('/resources/checklist-items/$itemId')({
     handlers: {
       async PUT({ request, params, context }) {
         if (!context?.uid) {
-          return jsonResponse({ message: 'Unauthorized' }, 401);
+          return data({ message: 'Unauthorized' }, 401);
         }
 
         const userData = await request.json();
@@ -37,12 +37,12 @@ export const Route = createFileRoute('/resources/checklist-items/$itemId')({
           where: { id: params.itemId },
         });
 
-        return jsonResponse(rows);
+        return data(rows);
       },
 
       async DELETE({ params, context }) {
         if (!context?.uid) {
-          return jsonResponse({ message: 'Unauthorized' }, 401);
+          return data({ message: 'Unauthorized' }, 401);
         }
 
         const row = await prisma.checklistItem.findFirst({
@@ -53,14 +53,14 @@ export const Route = createFileRoute('/resources/checklist-items/$itemId')({
         });
 
         if (!row) {
-          return jsonResponse({ message: 'Not found' }, 404);
+          return data({ message: 'Not found' }, 404);
         }
 
         await prisma.checklistItem.delete({
           where: { id: row.id },
         });
 
-        return jsonResponse({
+        return data({
           code: 'checklists:delete:success',
           message: 'success',
           data: [row],

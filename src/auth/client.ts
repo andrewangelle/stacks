@@ -10,8 +10,6 @@ const neon = createInternalNeonAuth(authUrl, {
   adapter: BetterAuthReactAdapter(),
 });
 
-/** Better Auth client with React hooks (`useSession`, etc.). */
 export const authClient = neon.adapter as unknown as ReactBetterAuthClient;
 
-/** JWT bearer for `/resources/*` calls (verified server-side with Neon JWKS). */
 export const getJWTToken = neon.getJWTToken;

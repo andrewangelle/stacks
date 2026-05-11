@@ -1,7 +1,7 @@
 import { createFileRoute } from '@tanstack/react-router';
 import { authMiddleware } from '~/auth/requireUser';
 import { prisma } from '~/db/prisma';
-import { jsonResponse } from '~/utils/response';
+import { data } from '~/utils/response';
 
 export const Route = createFileRoute('/resources/activity')({
   server: {
@@ -11,14 +11,14 @@ export const Route = createFileRoute('/resources/activity')({
       async GET({ request, context }) {
         const cardId = new URL(request.url).searchParams.get('cardId');
         if (!cardId) {
-          return jsonResponse([]);
+          return data([]);
         }
 
         if (!context?.uid) {
-          return jsonResponse({ message: 'Unauthorized' }, 401);
+          return data({ message: 'Unauthorized' }, 401);
         }
 
-        const data = await prisma.activity.findMany({
+        const response = await prisma.activity.findMany({
           where: {
             cardId,
             card: { list: { board: { userId: context.uid } } },
@@ -26,12 +26,12 @@ export const Route = createFileRoute('/resources/activity')({
           orderBy: { createdAt: 'asc' },
         });
 
-        return jsonResponse(data);
+        return data(response);
       },
 
       async POST({ request, context }) {
         if (!context?.uid) {
-          return jsonResponse({ message: 'Unauthorized' }, 401);
+          return data({ message: 'Unauthorized' }, 401);
         }
 
         const userData = await request.json();
@@ -46,7 +46,7 @@ export const Route = createFileRoute('/resources/activity')({
         });
 
         if (!board) {
-          return jsonResponse({ message: 'Forbidden' }, 403);
+          return data({ message: 'Forbidden' }, 403);
         }
 
         const row = await prisma.activity.create({
@@ -60,7 +60,7 @@ export const Route = createFileRoute('/resources/activity')({
           },
         });
 
-        return jsonResponse({
+        return data({
           code: 'activity:create:success',
           message: 'success',
           data: [row],

@@ -1,7 +1,7 @@
 import { createFileRoute } from '@tanstack/react-router';
 import { authMiddleware } from '~/auth/requireUser';
 import { prisma } from '~/db/prisma';
-import { jsonResponse } from '~/utils/response';
+import { data } from '~/utils/response';
 
 export const Route = createFileRoute('/resources/cards')({
   server: {
@@ -10,13 +10,13 @@ export const Route = createFileRoute('/resources/cards')({
     handlers: {
       async GET({ request, context }) {
         if (!context?.uid) {
-          return jsonResponse({ message: 'Unauthorized' }, 401);
+          return data({ message: 'Unauthorized' }, 401);
         }
 
         const listId = new URL(request.url).searchParams.get('listId');
 
         if (!listId) {
-          return jsonResponse([]);
+          return data([]);
         }
 
         const rows = await prisma.card.findMany({
@@ -27,12 +27,12 @@ export const Route = createFileRoute('/resources/cards')({
           orderBy: { createdAt: 'asc' },
         });
 
-        return jsonResponse(rows);
+        return data(rows);
       },
 
       async POST({ request, context }) {
         if (!context?.uid) {
-          return jsonResponse({ message: 'Unauthorized' }, 401);
+          return data({ message: 'Unauthorized' }, 401);
         }
 
         const userData = await request.json();
@@ -44,7 +44,7 @@ export const Route = createFileRoute('/resources/cards')({
         });
 
         if (!list) {
-          return jsonResponse({ message: 'Forbidden' }, 403);
+          return data({ message: 'Forbidden' }, 403);
         }
 
         const row = await prisma.card.create({
@@ -55,7 +55,7 @@ export const Route = createFileRoute('/resources/cards')({
           },
         });
 
-        return jsonResponse({
+        return data({
           code: 'cards:create:success',
           message: 'success',
           data: [row],

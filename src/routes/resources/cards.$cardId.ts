@@ -1,7 +1,7 @@
 import { createFileRoute } from '@tanstack/react-router';
 import { authMiddleware } from '~/auth/requireUser';
 import { prisma } from '~/db/prisma';
-import { jsonResponse } from '~/utils/response';
+import { data } from '~/utils/response';
 
 export const Route = createFileRoute('/resources/cards/$cardId')({
   server: {
@@ -10,7 +10,7 @@ export const Route = createFileRoute('/resources/cards/$cardId')({
     handlers: {
       async GET({ params, context }) {
         if (!context?.uid) {
-          return jsonResponse({ message: 'Unauthorized' }, 401);
+          return data({ message: 'Unauthorized' }, 401);
         }
 
         const card = await prisma.card.findFirst({
@@ -20,12 +20,12 @@ export const Route = createFileRoute('/resources/cards/$cardId')({
           },
         });
 
-        return jsonResponse(card ?? {});
+        return data(card ?? {});
       },
 
       async PUT({ request, params, context }) {
         if (!context?.uid) {
-          return jsonResponse({ message: 'Unauthorized' }, 401);
+          return data({ message: 'Unauthorized' }, 401);
         }
 
         const userData = await request.json();
@@ -49,12 +49,12 @@ export const Route = createFileRoute('/resources/cards/$cardId')({
           where: { id: params.cardId },
         });
 
-        return jsonResponse(rows);
+        return data(rows);
       },
 
       async DELETE({ request, context }) {
         if (!context?.uid) {
-          return jsonResponse({ message: 'Unauthorized' }, 401);
+          return data({ message: 'Unauthorized' }, 401);
         }
 
         const userData = await request.json();
@@ -68,14 +68,14 @@ export const Route = createFileRoute('/resources/cards/$cardId')({
         });
 
         if (!row) {
-          return jsonResponse({ message: 'Not found' }, 404);
+          return data({ message: 'Not found' }, 404);
         }
 
         await prisma.card.delete({
           where: { id: row.id },
         });
 
-        return jsonResponse({
+        return data({
           code: 'cards:delete:success',
           message: 'success',
           cardData: [row],

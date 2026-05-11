@@ -2,14 +2,14 @@ import { createMiddleware } from '@tanstack/react-start';
 import type { VerifiedNeonUser } from '~/auth/verifyJwt';
 import { verifyNeonAuthJwt } from '~/auth/verifyJwt';
 import { prisma } from '~/db/prisma';
-import { jsonResponse } from '~/utils/response';
+import { data } from '~/utils/response';
 
 export async function requireAuthenticatedUser(
   request: Request,
 ): Promise<{ uid: string } | Response> {
   const token = bearerToken(request);
   if (!token) {
-    return jsonResponse({ message: 'Unauthorized' }, 401);
+    return data({ message: 'Unauthorized' }, 401);
   }
 
   try {
@@ -17,7 +17,7 @@ export async function requireAuthenticatedUser(
     await upsertUserAndProfileToDB(claims);
     return { uid: claims.id };
   } catch {
-    return jsonResponse({ message: 'Unauthorized' }, 401);
+    return data({ message: 'Unauthorized' }, 401);
   }
 }
 

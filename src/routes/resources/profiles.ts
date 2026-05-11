@@ -1,7 +1,7 @@
 import { createFileRoute } from '@tanstack/react-router';
 import { authMiddleware } from '~/auth/requireUser';
 import { prisma } from '~/db/prisma';
-import { jsonResponse } from '~/utils/response';
+import { data } from '~/utils/response';
 
 export const Route = createFileRoute('/resources/profiles')({
   server: {
@@ -10,7 +10,7 @@ export const Route = createFileRoute('/resources/profiles')({
     handlers: {
       async GET({ context }) {
         if (!context?.uid) {
-          return jsonResponse({ message: 'Unauthorized' }, 401);
+          return data({ message: 'Unauthorized' }, 401);
         }
 
         const profile = await prisma.profile.findUnique({
@@ -18,10 +18,10 @@ export const Route = createFileRoute('/resources/profiles')({
         });
 
         if (!profile) {
-          return jsonResponse({});
+          return data({});
         }
 
-        return jsonResponse({
+        return data({
           id: profile.id,
           created_at: profile.createdAt.toISOString(),
           email: profile.email ?? '',
