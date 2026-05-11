@@ -1,26 +1,27 @@
 import { createFileRoute } from '@tanstack/react-router';
-import { requireAuthenticatedUser } from '~/auth/requireUser';
+import { authMiddleware } from '~/auth/requireUser';
 import { prisma } from '~/db/prisma';
 import { jsonResponse, safeParse } from '~/utils/response';
 
 export const Route = createFileRoute('/resources/activity')({
   server: {
+    middleware: [authMiddleware],
+
     handlers: {
-      async GET({ request }) {
+      async GET({ request, context }) {
         const cardId = new URL(request.url).searchParams.get('cardId');
         if (!cardId) {
           return jsonResponse([]);
         }
 
-        const auth = await requireAuthenticatedUser(request);
-        if (auth instanceof Response) {
-          return auth;
+        if (!context?.uid) {
+          return jsonResponse({ message: 'Unauthorized' }, 401);
         }
 
         const data = await prisma.activity.findMany({
           where: {
             cardId,
-            card: { list: { board: { userId: auth.uid } } },
+            card: { list: { board: { userId: context.uid } } },
           },
           orderBy: { createdAt: 'asc' },
         });
@@ -28,10 +29,9 @@ export const Route = createFileRoute('/resources/activity')({
         return jsonResponse(data);
       },
 
-      async POST({ request }) {
-        const auth = await requireAuthenticatedUser(request);
-        if (auth instanceof Response) {
-          return auth;
+      async POST({ request, context }) {
+        if (!context?.uid) {
+          return jsonResponse({ message: 'Unauthorized' }, 401);
         }
 
         const userData = await safeParse(request);
@@ -46,7 +46,7 @@ export const Route = createFileRoute('/resources/activity')({
         const type = typeof userData.type === 'string' ? userData.type : '';
 
         const board = await prisma.stack.findFirst({
-          where: { id: boardId, userId: auth.uid },
+          where: { id: boardId, userId: context.uid },
         });
         if (!board) {
           return jsonResponse({ message: 'Forbidden' }, 403);
@@ -57,7 +57,7 @@ export const Route = createFileRoute('/resources/activity')({
             listId,
             cardId,
             boardId,
-            userId: auth.uid,
+            userId: context.uid,
             content,
             type,
           },

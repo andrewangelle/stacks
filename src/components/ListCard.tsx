@@ -1,12 +1,5 @@
 import { useParams } from '@tanstack/react-router';
-import {
-  type MouseEvent,
-  useCallback,
-  useEffect,
-  useRef,
-  useState,
-} from 'react';
-
+import { useState } from 'react';
 import { CardModal } from '~/components/CardModal';
 import { DeleteListPopover } from '~/components/DeleteListPopover';
 import { DragDropCard } from '~/components/DragDropCard';
@@ -21,42 +14,7 @@ import {
   ListName,
 } from '~/styles/List';
 import { Flex } from '~/styles/Page';
-export function useOutsideClick<ElementType = HTMLDivElement>(
-  handler: (e: MouseEvent<ElementType>) => void,
-  when = true,
-) {
-  const savedHandler = useRef(handler);
-
-  const [node, setNode] = useState<Element | null>(null);
-
-  const memoizedCallback = useCallback(
-    (e: globalThis.MouseEvent) => {
-      if (node && !node.contains(e.target as Element)) {
-        savedHandler.current(e as unknown as MouseEvent<ElementType>);
-      }
-    },
-    [node],
-  );
-
-  useEffect(() => {
-    savedHandler.current = handler;
-  });
-
-  const ref = useCallback((node: HTMLElement | null) => {
-    setNode(node);
-  }, []);
-
-  useEffect(() => {
-    if (when) {
-      document.addEventListener('click', memoizedCallback);
-    }
-    return () => {
-      document.removeEventListener('click', memoizedCallback);
-    };
-  }, [when, memoizedCallback]);
-
-  return ref;
-}
+import { useOutsideClick } from '~/utils/useOutsideClick';
 
 export function ListCard({ id, listTitle }: List) {
   const params = useParams({ strict: false });

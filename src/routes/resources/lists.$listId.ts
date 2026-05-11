@@ -1,15 +1,16 @@
 import { createFileRoute } from '@tanstack/react-router';
-import { requireAuthenticatedUser } from '~/auth/requireUser';
+import { authMiddleware } from '~/auth/requireUser';
 import { prisma } from '~/db/prisma';
 import { jsonResponse, safeParse } from '~/utils/response';
 
 export const Route = createFileRoute('/resources/lists/$listId')({
   server: {
+    middleware: [authMiddleware],
+
     handlers: {
-      async PUT({ request, params }) {
-        const auth = await requireAuthenticatedUser(request);
-        if (auth instanceof Response) {
-          return auth;
+      async PUT({ request, params, context }) {
+        if (!context?.uid) {
+          return jsonResponse({ message: 'Unauthorized' }, 401);
         }
 
         const userData = await safeParse(request);
@@ -17,7 +18,7 @@ export const Route = createFileRoute('/resources/lists/$listId')({
           typeof userData.listTitle === 'string' ? userData.listTitle : '';
 
         const updated = await prisma.list.updateMany({
-          where: { id: params.listId, userId: auth.uid },
+          where: { id: params.listId, userId: context.uid },
           data: {
             listTitle,
           },
@@ -34,10 +35,9 @@ export const Route = createFileRoute('/resources/lists/$listId')({
         return jsonResponse(rows);
       },
 
-      async DELETE({ request }) {
-        const auth = await requireAuthenticatedUser(request);
-        if (auth instanceof Response) {
-          return auth;
+      async DELETE({ request, context }) {
+        if (!context?.uid) {
+          return jsonResponse({ message: 'Unauthorized' }, 401);
         }
 
         const userData = await safeParse(request);
@@ -46,7 +46,7 @@ export const Route = createFileRoute('/resources/lists/$listId')({
         const row = await prisma.list.findFirst({
           where: {
             id,
-            userId: auth.uid,
+            userId: context.uid,
           },
         });
 

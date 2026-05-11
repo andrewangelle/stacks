@@ -1,31 +1,31 @@
 import { createFileRoute } from '@tanstack/react-router';
-import { requireAuthenticatedUser } from '~/auth/requireUser';
+import { authMiddleware } from '~/auth/requireUser';
 import { prisma } from '~/db/prisma';
 import { jsonResponse, safeParse } from '~/utils/response';
 
 export const Route = createFileRoute('/resources/cards/$cardId')({
   server: {
+    middleware: [authMiddleware],
+
     handlers: {
-      async GET({ request, params }) {
-        const auth = await requireAuthenticatedUser(request);
-        if (auth instanceof Response) {
-          return auth;
+      async GET({ params, context }) {
+        if (!context?.uid) {
+          return jsonResponse({ message: 'Unauthorized' }, 401);
         }
 
         const card = await prisma.card.findFirst({
           where: {
             id: params.cardId,
-            list: { board: { userId: auth.uid } },
+            list: { board: { userId: context.uid } },
           },
         });
 
         return jsonResponse(card ?? {});
       },
 
-      async PUT({ request, params }) {
-        const auth = await requireAuthenticatedUser(request);
-        if (auth instanceof Response) {
-          return auth;
+      async PUT({ request, params, context }) {
+        if (!context?.uid) {
+          return jsonResponse({ message: 'Unauthorized' }, 401);
         }
 
         const userData = await safeParse(request);
@@ -40,7 +40,7 @@ export const Route = createFileRoute('/resources/cards/$cardId')({
         await prisma.card.updateMany({
           where: {
             id: params.cardId,
-            userId: auth.uid,
+            userId: context.uid,
           },
           data: patch,
         });
@@ -52,10 +52,9 @@ export const Route = createFileRoute('/resources/cards/$cardId')({
         return jsonResponse(rows);
       },
 
-      async DELETE({ request }) {
-        const auth = await requireAuthenticatedUser(request);
-        if (auth instanceof Response) {
-          return auth;
+      async DELETE({ request, context }) {
+        if (!context?.uid) {
+          return jsonResponse({ message: 'Unauthorized' }, 401);
         }
 
         const userData = await safeParse(request);
@@ -64,7 +63,7 @@ export const Route = createFileRoute('/resources/cards/$cardId')({
         const row = await prisma.card.findFirst({
           where: {
             id,
-            userId: auth.uid,
+            userId: context.uid,
           },
         });
 

@@ -1,12 +1,14 @@
 import { createFileRoute } from '@tanstack/react-router';
-import { requireAuthenticatedUser } from '~/auth/requireUser';
+import { authMiddleware } from '~/auth/requireUser';
 import { prisma } from '~/db/prisma';
 import { jsonResponse, safeParse } from '~/utils/response';
 
 export const Route = createFileRoute('/resources/checklist-items')({
   server: {
+    middleware: [authMiddleware],
+
     handlers: {
-      async GET({ request }) {
+      async GET({ request, context }) {
         const checklistId = new URL(request.url).searchParams.get(
           'checklistId',
         );
@@ -14,16 +16,15 @@ export const Route = createFileRoute('/resources/checklist-items')({
           return jsonResponse([]);
         }
 
-        const auth = await requireAuthenticatedUser(request);
-        if (auth instanceof Response) {
-          return auth;
+        if (!context?.uid) {
+          return jsonResponse({ message: 'Unauthorized' }, 401);
         }
 
         const data = await prisma.checklistItem.findMany({
           where: {
             checklistId,
             checklist: {
-              card: { list: { board: { userId: auth.uid } } },
+              card: { list: { board: { userId: context.uid } } },
             },
           },
           orderBy: { createdAt: 'asc' },
@@ -32,10 +33,9 @@ export const Route = createFileRoute('/resources/checklist-items')({
         return jsonResponse(data);
       },
 
-      async POST({ request }) {
-        const auth = await requireAuthenticatedUser(request);
-        if (auth instanceof Response) {
-          return auth;
+      async POST({ request, context }) {
+        if (!context?.uid) {
+          return jsonResponse({ message: 'Unauthorized' }, 401);
         }
 
         const userData = await safeParse(request);
@@ -52,7 +52,7 @@ export const Route = createFileRoute('/resources/checklist-items')({
             id: checklistId,
             cardId,
             listId,
-            userId: auth.uid,
+            userId: context.uid,
           },
         });
         if (!checklist) {
@@ -65,7 +65,7 @@ export const Route = createFileRoute('/resources/checklist-items')({
             cardId,
             checklistId,
             listId,
-            userId: auth.uid,
+            userId: context.uid,
             isCompleted: false,
           },
         });

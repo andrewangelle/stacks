@@ -1,19 +1,20 @@
 import { createFileRoute } from '@tanstack/react-router';
-import { requireAuthenticatedUser } from '~/auth/requireUser';
+import { authMiddleware } from '~/auth/requireUser';
 import { prisma } from '~/db/prisma';
 import { jsonResponse } from '~/utils/response';
 
 export const Route = createFileRoute('/resources/boards/$boardId')({
   server: {
+    middleware: [authMiddleware],
+
     handlers: {
-      GET: async ({ request, params }) => {
-        const auth = await requireAuthenticatedUser(request);
-        if (auth instanceof Response) {
-          return auth;
+      GET: async ({ params, context }) => {
+        if (!context?.uid) {
+          return jsonResponse({ message: 'Unauthorized' }, 401);
         }
 
         const board = await prisma.stack.findFirst({
-          where: { id: params.boardId, userId: auth.uid },
+          where: { id: params.boardId, userId: context.uid },
         });
 
         return jsonResponse(board ?? {});

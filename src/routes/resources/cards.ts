@@ -1,26 +1,27 @@
 import { createFileRoute } from '@tanstack/react-router';
-import { requireAuthenticatedUser } from '~/auth/requireUser';
+import { authMiddleware } from '~/auth/requireUser';
 import { prisma } from '~/db/prisma';
 import { jsonResponse, safeParse } from '~/utils/response';
 
 export const Route = createFileRoute('/resources/cards')({
   server: {
+    middleware: [authMiddleware],
+
     handlers: {
-      async GET({ request }) {
+      async GET({ request, context }) {
         const listId = new URL(request.url).searchParams.get('listId');
         if (!listId) {
           return jsonResponse([]);
         }
 
-        const auth = await requireAuthenticatedUser(request);
-        if (auth instanceof Response) {
-          return auth;
+        if (!context?.uid) {
+          return jsonResponse({ message: 'Unauthorized' }, 401);
         }
 
         const rows = await prisma.card.findMany({
           where: {
             listId,
-            list: { board: { userId: auth.uid } },
+            list: { board: { userId: context.uid } },
           },
           orderBy: { createdAt: 'asc' },
         });
@@ -28,10 +29,9 @@ export const Route = createFileRoute('/resources/cards')({
         return jsonResponse(rows);
       },
 
-      async POST({ request }) {
-        const auth = await requireAuthenticatedUser(request);
-        if (auth instanceof Response) {
-          return auth;
+      async POST({ request, context }) {
+        if (!context?.uid) {
+          return jsonResponse({ message: 'Unauthorized' }, 401);
         }
 
         const userData = await safeParse(request);
@@ -41,7 +41,7 @@ export const Route = createFileRoute('/resources/cards')({
           typeof userData.cardTitle === 'string' ? userData.cardTitle : '';
 
         const list = await prisma.list.findFirst({
-          where: { id: listId, board: { userId: auth.uid } },
+          where: { id: listId, board: { userId: context.uid } },
         });
         if (!list) {
           return jsonResponse({ message: 'Forbidden' }, 403);
@@ -51,7 +51,7 @@ export const Route = createFileRoute('/resources/cards')({
           data: {
             cardTitle,
             listId,
-            userId: auth.uid,
+            userId: context.uid,
           },
         });
 

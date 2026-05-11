@@ -1,19 +1,20 @@
 import { createFileRoute } from '@tanstack/react-router';
-import { requireAuthenticatedUser } from '~/auth/requireUser';
+import { authMiddleware } from '~/auth/requireUser';
 import { prisma } from '~/db/prisma';
 import { jsonResponse } from '~/utils/response';
 
 export const Route = createFileRoute('/resources/profiles')({
   server: {
+    middleware: [authMiddleware],
+
     handlers: {
-      async GET({ request }) {
-        const auth = await requireAuthenticatedUser(request);
-        if (auth instanceof Response) {
-          return auth;
+      async GET({ context }) {
+        if (!context?.uid) {
+          return jsonResponse({ message: 'Unauthorized' }, 401);
         }
 
         const profile = await prisma.profile.findUnique({
-          where: { userId: auth.uid },
+          where: { userId: context.uid },
         });
 
         if (!profile) {

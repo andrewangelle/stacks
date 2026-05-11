@@ -2,7 +2,7 @@ import * as Popover from '@radix-ui/react-popover';
 import { useParams } from '@tanstack/react-router';
 import { type CSSProperties, useState } from 'react';
 import * as AiIcons from 'react-icons/ai';
-import { useOutsideClick } from '~/components/ListCard';
+import { useOutsideClick } from '~/utils/useOutsideClick';
 
 const AiOutlineCheck = AiIcons.AiOutlineCheck;
 const AiOutlineEllipsis = AiIcons.AiOutlineEllipsis;

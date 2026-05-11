@@ -1,26 +1,27 @@
 import { createFileRoute } from '@tanstack/react-router';
-import { requireAuthenticatedUser } from '~/auth/requireUser';
+import { authMiddleware } from '~/auth/requireUser';
 import { prisma } from '~/db/prisma';
 import { jsonResponse, safeParse } from '~/utils/response';
 
 export const Route = createFileRoute('/resources/lists')({
   server: {
+    middleware: [authMiddleware],
+
     handlers: {
-      async GET({ request }) {
+      async GET({ request, context }) {
         const boardId = new URL(request.url).searchParams.get('boardId');
         if (!boardId) {
           return jsonResponse([]);
         }
 
-        const auth = await requireAuthenticatedUser(request);
-        if (auth instanceof Response) {
-          return auth;
+        if (!context?.uid) {
+          return jsonResponse({ message: 'Unauthorized' }, 401);
         }
 
         const lists = await prisma.list.findMany({
           where: {
             boardId,
-            board: { userId: auth.uid },
+            board: { userId: context.uid },
           },
           orderBy: { createdAt: 'asc' },
         });
@@ -28,10 +29,9 @@ export const Route = createFileRoute('/resources/lists')({
         return jsonResponse(lists);
       },
 
-      async POST({ request }) {
-        const auth = await requireAuthenticatedUser(request);
-        if (auth instanceof Response) {
-          return auth;
+      async POST({ request, context }) {
+        if (!context?.uid) {
+          return jsonResponse({ message: 'Unauthorized' }, 401);
         }
 
         const userData = await safeParse(request);
@@ -41,7 +41,7 @@ export const Route = createFileRoute('/resources/lists')({
           typeof userData.listTitle === 'string' ? userData.listTitle : '';
 
         const board = await prisma.stack.findFirst({
-          where: { id: boardId, userId: auth.uid },
+          where: { id: boardId, userId: context.uid },
         });
         if (!board) {
           return jsonResponse({ message: 'Forbidden' }, 403);
@@ -51,7 +51,7 @@ export const Route = createFileRoute('/resources/lists')({
           data: {
             listTitle,
             boardId,
-            userId: auth.uid,
+            userId: context.uid,
           },
         });
 
