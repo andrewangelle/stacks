@@ -5,18 +5,16 @@ import { FlexCenter } from '~/styles/Page';
 
 export const Route = createFileRoute('/auth/$pathname')({
   beforeLoad: () => import('@neondatabase/neon-js/ui/css'),
-  component: AuthPage,
+  component() {
+    const { pathname } = Route.useParams();
+
+    return (
+      <>
+        <NavBar />
+        <FlexCenter>
+          <AuthView pathname={pathname} />
+        </FlexCenter>
+      </>
+    );
+  },
 });
-
-function AuthPage() {
-  const { pathname } = Route.useParams();
-
-  return (
-    <>
-      <NavBar />
-      <FlexCenter>
-        <AuthView pathname={pathname} />
-      </FlexCenter>
-    </>
-  );
-}
