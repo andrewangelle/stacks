@@ -4,6 +4,7 @@ import { NavBar } from '~/components/NavBar';
 import { FlexCenter } from '~/styles/Page';
 
 export const Route = createFileRoute('/auth/$pathname')({
+  beforeLoad: () => import('@neondatabase/neon-js/ui/css'),
   component: AuthPage,
 });
 
