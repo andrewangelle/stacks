@@ -4,6 +4,7 @@ import viteReact from '@vitejs/plugin-react';
 import { tanstackStart } from '@tanstack/react-start/plugin/vite';
 import * as dotenv from 'dotenv';
 import { defineConfig } from 'vite';
+import { sentryTanstackStart } from "@sentry/tanstackstart-react/vite";
 
 dotenv.config();
 
@@ -39,5 +40,10 @@ export default defineConfig({
     netlify(),
     pigment({}),
     viteReact(),
+    sentryTanstackStart({
+      org: "andrewangelle",
+      project: "stacks",
+      authToken: process.env.SENTRY_AUTH_TOKEN,
+    }),
   ],
 });
