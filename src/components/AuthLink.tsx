@@ -1,6 +1,5 @@
 import { Link } from '@tanstack/react-router';
 import type { ReactNode } from 'react';
-import { useAuthPathname } from '~/auth/useAuthPathname';
 
 type AuthLinkProps = {
   href: string;
@@ -8,17 +7,9 @@ type AuthLinkProps = {
   children: ReactNode;
 };
 
-export function AuthLink({ href, className, children }: AuthLinkProps) {
-  const pathname = useAuthPathname();
-  if (pathname) {
-    return (
-      <Link to="/auth/$pathname" params={{ pathname }} className={className}>
-        {children}
-      </Link>
-    );
-  }
+export function AuthLink({ className, children }: AuthLinkProps) {
   return (
-    <Link to={href as never} className={className}>
+    <Link to="/auth/sign-in" className={className}>
       {children}
     </Link>
   );

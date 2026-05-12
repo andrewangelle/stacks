@@ -12,17 +12,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       authClient={authClient}
       credentials={{ forgotPassword: true }}
       Link={AuthLink}
-      navigate={(href) => {
-        const AUTH_PATH_SEGMENTS = /^\/auth\/([^/?#]+)/;
-        const m = AUTH_PATH_SEGMENTS.exec(href);
-        if (m) {
-          void router.navigate({
-            to: '/auth/$pathname',
-            params: { pathname: m[1] },
-          });
-          return;
-        }
-        void router.navigate({ to: href as never });
+      navigate={(_) => {
+        void router.navigate({
+          to: '/auth/sign-in',
+        });
       }}
       redirectTo="/boards"
       social={{ providers: ['google'] }}

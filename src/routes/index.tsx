@@ -13,6 +13,6 @@ export const Route = createFileRoute('/')({
       return <Navigate to="/boards" />;
     }
 
-    return <Navigate to="/auth/$pathname" params={{ pathname: 'sign-in' }} />;
+    return <Navigate to="/auth/sign-in" />;
   },
 });
