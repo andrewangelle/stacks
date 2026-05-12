@@ -19,7 +19,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       }}
       redirectTo="/boards"
       social={{ providers: ['google'] }}
-      signUp={false}
     >
       {children}
     </NeonAuthUIProvider>
