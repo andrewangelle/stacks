@@ -1,9 +1,9 @@
 {
-  "name": "remix-app-template",
+  "name": "stacks",
   "private": true,
   "type": "module",
-  "description": "",
-  "license": "",
+  "description": "a trello clone",
+  "license": "MIT",
   "sideEffects": true,
   "scripts": {
     "build": "vite build",
@@ -41,7 +41,6 @@
     "dotenv": "^16.0.0",
     "formik": "^2.2.9",
     "jose": "^6.2.3",
-    "node-uuid": "^1.4.8",
     "pg": "^8.20.0",
     "react": "^19.2.0",
     "react-beautiful-dnd": "^13.1.0",
