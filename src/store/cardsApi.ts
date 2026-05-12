@@ -5,7 +5,7 @@ import { resourceRequest } from '~/store/resourceClient';
 
 export type ListCardType = {
   id: string;
-  created_at: string;
+  createdAt: string;
   listId: string;
   userId: string;
   cardTitle: string;
