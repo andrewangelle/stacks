@@ -87,8 +87,8 @@ export function CardModalActivity({ listId, cardId }: CardModalActivityProps) {
           ?.filter((value) => value.type === 'feed')
           .map((comment) => {
             const commentTime = formatRelative(
-              new Date(comment.created_at),
-              new Date(comment.created_at),
+              new Date(comment.createdAt),
+              new Date(comment.createdAt),
             );
             return (
               <ActivityContainer key={comment.id}>

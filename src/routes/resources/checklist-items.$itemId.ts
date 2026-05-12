@@ -1,5 +1,5 @@
 import { createFileRoute } from '@tanstack/react-router';
-import { authMiddleware } from '~/auth/requireUser';
+import { authMiddleware } from '~/auth/middleware';
 import { prisma } from '~/db/prisma';
 import { data } from '~/utils/response';
 
@@ -9,10 +9,6 @@ export const Route = createFileRoute('/resources/checklist-items/$itemId')({
 
     handlers: {
       async PUT({ request, params, context }) {
-        if (!context?.uid) {
-          return data({ message: 'Unauthorized' }, 401);
-        }
-
         const userData = await request.json();
 
         const patch: { label?: string; isCompleted?: boolean } = {};
@@ -41,10 +37,6 @@ export const Route = createFileRoute('/resources/checklist-items/$itemId')({
       },
 
       async DELETE({ params, context }) {
-        if (!context?.uid) {
-          return data({ message: 'Unauthorized' }, 401);
-        }
-
         const row = await prisma.checklistItem.findFirst({
           where: {
             id: params.itemId,

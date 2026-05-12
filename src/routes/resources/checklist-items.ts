@@ -1,5 +1,5 @@
 import { createFileRoute } from '@tanstack/react-router';
-import { authMiddleware } from '~/auth/requireUser';
+import { authMiddleware } from '~/auth/middleware';
 import { prisma } from '~/db/prisma';
 import { data } from '~/utils/response';
 
@@ -9,10 +9,6 @@ export const Route = createFileRoute('/resources/checklist-items')({
 
     handlers: {
       async GET({ request, context }) {
-        if (!context?.uid) {
-          return data({ message: 'Unauthorized' }, 401);
-        }
-
         const checklistId = new URL(request.url).searchParams.get(
           'checklistId',
         );
@@ -35,10 +31,6 @@ export const Route = createFileRoute('/resources/checklist-items')({
       },
 
       async POST({ request, context }) {
-        if (!context?.uid) {
-          return data({ message: 'Unauthorized' }, 401);
-        }
-
         const userData = await request.json();
         const cardId = userData.cardId ?? '';
         const checklistId = userData.checklistId ?? '';

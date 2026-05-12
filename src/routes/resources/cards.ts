@@ -1,5 +1,5 @@
 import { createFileRoute } from '@tanstack/react-router';
-import { authMiddleware } from '~/auth/requireUser';
+import { authMiddleware } from '~/auth/middleware';
 import { prisma } from '~/db/prisma';
 import { data } from '~/utils/response';
 
@@ -9,10 +9,6 @@ export const Route = createFileRoute('/resources/cards')({
 
     handlers: {
       async GET({ request, context }) {
-        if (!context?.uid) {
-          return data({ message: 'Unauthorized' }, 401);
-        }
-
         const listId = new URL(request.url).searchParams.get('listId');
 
         if (!listId) {
@@ -31,10 +27,6 @@ export const Route = createFileRoute('/resources/cards')({
       },
 
       async POST({ request, context }) {
-        if (!context?.uid) {
-          return data({ message: 'Unauthorized' }, 401);
-        }
-
         const userData = await request.json();
         const listId = userData.listId ?? '';
         const cardTitle = userData.cardTitle ?? '';

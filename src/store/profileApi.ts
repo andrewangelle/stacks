@@ -4,7 +4,7 @@ import { resourceRequest } from '~/store/resourceClient';
 
 export type ProfileType = {
   id: string;
-  created_at: string;
+  createdAt: string;
   firstName: string;
   lastName: string;
   email: string;

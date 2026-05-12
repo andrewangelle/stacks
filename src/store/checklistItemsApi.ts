@@ -6,7 +6,7 @@ import { resourceRequest } from '~/store/resourceClient';
 
 export type ChecklistItemType = {
   id: string;
-  created_at: string;
+  createdAt: string;
   label: string;
   cardId: string;
   listId: string;
@@ -79,12 +79,7 @@ export function useCreateChecklistItemMutation() {
 
 export function useUpdateChecklistItemMutation() {
   const mutation = useMutation({
-    mutationFn: ({
-      id,
-      isCompleted,
-      label,
-      checklistId,
-    }: UpdateChecklistItemArgs) =>
+    mutationFn: ({ id, isCompleted, label }: UpdateChecklistItemArgs) =>
       resourceRequest<{ data: ChecklistItemType[] }>(
         `checklist-items/${id}`,
         { method: 'PUT' },

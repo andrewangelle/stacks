@@ -5,7 +5,7 @@ import { resourceRequest } from '~/store/resourceClient';
 
 export type ChecklistType = {
   id: string;
-  created_at: string;
+  createdAt: string;
   checklistTitle: string;
   cardId: string;
   userId: string;

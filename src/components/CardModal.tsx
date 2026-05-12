@@ -35,7 +35,7 @@ export function CardModal({
   listName,
   cardTitle,
   cardDescription,
-  created_at,
+  createdAt,
   userId,
 }: CardModalProps) {
   const [isEditingTitle, setEditingTitle] = useState(false);
@@ -124,7 +124,7 @@ export function CardModal({
                   listId={listId}
                   cardTitle={cardTitle}
                   cardDescription={cardDescription}
-                  created_at={created_at}
+                  createdAt={createdAt}
                   userId={userId}
                   listName={listName}
                 />

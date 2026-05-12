@@ -28,8 +28,8 @@ export function ActivityComment(props: ActivityType) {
   const [editedComment, setEditedComment] = useState(props.content);
   const [updateActivity] = useUpdateActivityMutation();
   const commentTime = formatRelative(
-    new Date(props.created_at),
-    new Date(props.created_at),
+    new Date(props.createdAt),
+    new Date(props.createdAt),
   );
   return (
     <ActivityContainer key={props.id}>

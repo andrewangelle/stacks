@@ -1,5 +1,5 @@
 import { createFileRoute } from '@tanstack/react-router';
-import { authMiddleware } from '~/auth/requireUser';
+import { authMiddleware } from '~/auth/middleware';
 import { prisma } from '~/db/prisma';
 import { data } from '~/utils/response';
 
@@ -9,10 +9,6 @@ export const Route = createFileRoute('/resources/boards')({
 
     handlers: {
       async GET({ context }) {
-        if (!context?.uid) {
-          return data({ message: 'Unauthorized' }, 401);
-        }
-
         const response = await prisma.stack.findMany({
           where: { userId: context.uid },
           orderBy: { createdAt: 'asc' },
@@ -22,10 +18,6 @@ export const Route = createFileRoute('/resources/boards')({
       },
 
       async POST({ request, context }) {
-        if (!context?.uid) {
-          return data({ message: 'Unauthorized' }, 401);
-        }
-
         const userData = await request.json();
         const boardTitle = userData.boardTitle ?? '';
         const boardColor = userData.boardColor ?? '';

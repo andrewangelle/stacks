@@ -1,5 +1,5 @@
 import { createFileRoute } from '@tanstack/react-router';
-import { authMiddleware } from '~/auth/requireUser';
+import { authMiddleware } from '~/auth/middleware';
 import { prisma } from '~/db/prisma';
 import { data } from '~/utils/response';
 
@@ -9,10 +9,6 @@ export const Route = createFileRoute('/resources/lists')({
 
     handlers: {
       async GET({ request, context }) {
-        if (!context?.uid) {
-          return data({ message: 'Unauthorized' }, 401);
-        }
-
         const boardId = new URL(request.url).searchParams.get('boardId');
 
         if (!boardId) {
@@ -31,10 +27,6 @@ export const Route = createFileRoute('/resources/lists')({
       },
 
       async POST({ request, context }) {
-        if (!context?.uid) {
-          return data({ message: 'Unauthorized' }, 401);
-        }
-
         const userData = await request.json();
         const boardId = userData.boardId ?? '';
         const listTitle = userData.listTitle ?? '';
