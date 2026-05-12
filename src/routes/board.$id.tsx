@@ -24,7 +24,7 @@ export const Route = createFileRoute('/board/$id')({
     }
 
     if (!session?.user) {
-      return <Navigate to="/auth/sign-in" />;
+      return <Navigate to="/auth/$pathname" params={{ pathname: 'sign-in' }} />;
     }
 
     return (

@@ -2,7 +2,7 @@ import { NeonAuthUIProvider } from '@neondatabase/neon-js/auth/react';
 import { useRouter } from '@tanstack/react-router';
 import type { ReactNode } from 'react';
 import { authClient } from '~/auth/client';
-import { AuthLink } from '~/components/AuthLink';
+import { AuthLink, authPathnameFromHref } from '~/components/AuthLink';
 
 export function AuthProvider({ children }: { children: ReactNode }) {
   const router = useRouter();
@@ -12,9 +12,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       authClient={authClient}
       credentials={{ forgotPassword: true }}
       Link={AuthLink}
-      navigate={(_) => {
+      navigate={(href) => {
+        const authPathname = authPathnameFromHref(href) ?? 'sign-in';
         void router.navigate({
-          to: '/auth/sign-in',
+          to: '/auth/$pathname',
+          params: { pathname: authPathname },
         });
       }}
       redirectTo="/boards"

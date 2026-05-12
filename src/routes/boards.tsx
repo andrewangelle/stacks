@@ -22,7 +22,7 @@ export const Route = createFileRoute('/boards')({
     }
 
     if (!session?.user || !userId) {
-      return <Navigate to="/auth/sign-in" />;
+      return <Navigate to="/auth/$pathname" params={{ pathname: 'sign-in' }} />;
     }
 
     return (
