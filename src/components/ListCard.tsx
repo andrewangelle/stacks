@@ -1,17 +1,8 @@
 import { useParams } from '@tanstack/react-router';
-import { useAtom } from 'jotai';
-import {
-  type MouseEvent,
-  useCallback,
-  useEffect,
-  useRef,
-  useState,
-} from 'react';
-
+import { useState } from 'react';
 import { CardModal } from '~/components/CardModal';
 import { DeleteListPopover } from '~/components/DeleteListPopover';
 import { DragDropCard } from '~/components/DragDropCard';
-import { tokenState } from '~/store/atoms';
 import { useCreateCardMutation, useGetCardsQuery } from '~/store/cardsApi';
 import { type List, useUpdateListMutation } from '~/store/listsApi';
 import {
@@ -23,46 +14,10 @@ import {
   ListName,
 } from '~/styles/List';
 import { Flex } from '~/styles/Page';
-export function useOutsideClick<ElementType = HTMLDivElement>(
-  handler: (e: MouseEvent<ElementType>) => void,
-  when = true,
-) {
-  const savedHandler = useRef(handler);
-
-  const [node, setNode] = useState<Element | null>(null);
-
-  const memoizedCallback = useCallback(
-    (e: globalThis.MouseEvent) => {
-      if (node && !node.contains(e.target as Element)) {
-        savedHandler.current(e as unknown as MouseEvent<ElementType>);
-      }
-    },
-    [node],
-  );
-
-  useEffect(() => {
-    savedHandler.current = handler;
-  });
-
-  const ref = useCallback((node: HTMLElement | null) => {
-    setNode(node);
-  }, []);
-
-  useEffect(() => {
-    if (when) {
-      document.addEventListener('click', memoizedCallback);
-    }
-    return () => {
-      document.removeEventListener('click', memoizedCallback);
-    };
-  }, [when, memoizedCallback]);
-
-  return ref;
-}
+import { useOutsideClick } from '~/utils/useOutsideClick';
 
 export function ListCard({ id, listTitle }: List) {
   const params = useParams({ strict: false });
-  const [token] = useAtom(tokenState);
   const [isEditing, setEditing] = useState(false);
   const [isEditingName, setIsEditingName] = useState(false);
   const [cardTitle, setCardTitle] = useState('');
@@ -83,8 +38,6 @@ export function ListCard({ id, listTitle }: List) {
         boardId: params.id ?? '',
         listId: id,
         listTitle: editedListTitle,
-        token: token?.access_token ?? '',
-        userId: token?.user.id ?? '',
       });
     }
   }
@@ -93,8 +46,6 @@ export function ListCard({ id, listTitle }: List) {
     createCard({
       cardTitle,
       listId: id,
-      token: token?.access_token ?? '',
-      userId: token?.user.id ?? '',
     });
     setEditing(false);
   }

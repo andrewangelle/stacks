@@ -1,6 +1,4 @@
 import * as Popover from '@radix-ui/react-popover';
-import { useAtom } from 'jotai';
-import { tokenState } from '~/store/atoms';
 import { type ListCardType, useDeleteCardMutation } from '~/store/cardsApi';
 import { CreateBoardCloseBorder, PopoverClose } from '~/styles/Boards';
 import {
@@ -21,7 +19,6 @@ export function DeleteCardPopover({
   listId,
   cardTitle,
 }: DeleteCardPopoverProps) {
-  const [token] = useAtom(tokenState);
   const [deleteCard] = useDeleteCardMutation();
   return (
     <Popover.Root>
@@ -43,8 +40,6 @@ export function DeleteCardPopover({
             deleteCard({
               id,
               listId,
-              token: token?.access_token ?? '',
-              userId: token?.user.id ?? '',
             });
           }}
         >

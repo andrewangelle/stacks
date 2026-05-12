@@ -1,5 +1,6 @@
 {
   "compilerOptions": {
+    "types": ["node", "vite/client"],
     "strict": false,
     "jsx": "react-jsx",
     "moduleResolution": "Bundler",

@@ -1,14 +1,12 @@
 import { formatRelative } from 'date-fns';
-import { useAtom } from 'jotai';
 import { useState } from 'react';
-
+import { useSessionUserId } from '~/auth/useSessionUserId';
 import { ActivityLogo } from '~/components/ActivityLogo';
 import { DeleteCommentPopover } from '~/components/DeleteCommentPopover';
 import {
   type ActivityType,
   useUpdateActivityMutation,
 } from '~/store/activityApi';
-import { tokenState } from '~/store/atoms';
 import { useGetProfileQuery } from '~/store/profileApi';
 import {
   ActivityCommentContainer,
@@ -21,17 +19,17 @@ import { CloseAddCardButton } from '~/styles/List';
 import { Flex } from '~/styles/Page';
 
 export function ActivityComment(props: ActivityType) {
-  const [token] = useAtom(tokenState);
+  const userId = useSessionUserId();
   const profile = useGetProfileQuery(
-    { userId: token?.user.id ?? '' },
-    { skip: !token?.user.id },
+    { userId: userId ?? '' },
+    { skip: !userId },
   );
   const [isEditing, setIsEditing] = useState(false);
   const [editedComment, setEditedComment] = useState(props.content);
   const [updateActivity] = useUpdateActivityMutation();
   const commentTime = formatRelative(
-    new Date(props.created_at),
-    new Date(props.created_at),
+    new Date(props.createdAt),
+    new Date(props.createdAt),
   );
   return (
     <ActivityContainer key={props.id}>
@@ -62,7 +60,6 @@ export function ActivityComment(props: ActivityType) {
                       id: props.id,
                       cardId: props.cardId,
                       content: editedComment,
-                      token: token?.access_token ?? '',
                     });
                     setIsEditing(false);
                   }}

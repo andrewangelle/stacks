@@ -1,7 +1,5 @@
-import { useAtom } from 'jotai';
 import { useState } from 'react';
 import * as Io from 'react-icons/io';
-import { tokenState } from '~/store/atoms';
 import { useUpdateCardMutation } from '~/store/cardsApi';
 import {
   CardDescriptionText,
@@ -28,7 +26,6 @@ export function CardModalDescription({
   cardTitle,
   cardDescription,
 }: CardModalDescriptionProps) {
-  const [token] = useAtom(tokenState);
   const [isEditing, setEditing] = useState(false);
   const [description, setDescription] = useState(cardDescription);
   const [updateCard] = useUpdateCardMutation();
@@ -70,8 +67,6 @@ export function CardModalDescription({
             <SaveDescriptionButton
               onClick={() => {
                 updateCard({
-                  token: token?.access_token ?? '',
-                  userId: token?.user.id ?? '',
                   cardId,
                   cardTitle,
                   cardDescription: description,

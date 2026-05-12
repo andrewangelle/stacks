@@ -5,7 +5,7 @@ import { resourceRequest } from '~/store/resourceClient';
 
 export type ListCardType = {
   id: string;
-  created_at: string;
+  createdAt: string;
   listId: string;
   userId: string;
   cardTitle: string;
@@ -17,8 +17,6 @@ type CardArgs = { listId: string };
 type CreateCardArgs = {
   cardTitle: string;
   listId: string;
-  token: string;
-  userId: string;
 };
 
 type UpdateCardArgs = {
@@ -26,36 +24,35 @@ type UpdateCardArgs = {
   cardId: string;
   cardDescription: string;
   cardTitle: string;
-  token: string;
-  userId: string;
 };
 
 type DeleteCardArgs = {
   id: string;
   listId: string;
-  token: string;
-  userId: string;
 };
 
 export function useGetCardsQuery(args: CardArgs) {
   return useQuery({
     queryKey: queryKeys.cards(args.listId),
     queryFn: () =>
-      resourceRequest<ListCardType[]>('cards/get', 'POST', {
-        listId: args.listId,
+      resourceRequest<ListCardType[]>('cards', {
+        method: 'GET',
+        searchParams: { listId: args.listId },
       }),
   });
 }
 
 export function useCreateCardMutation() {
   const mutation = useMutation({
-    mutationFn: ({ cardTitle, listId, token, userId }: CreateCardArgs) =>
-      resourceRequest<{ data: ListCardType[] }>('cards/create', 'POST', {
-        cardTitle,
-        listId,
-        token,
-        userId,
-      }),
+    mutationFn: ({ cardTitle, listId }: CreateCardArgs) =>
+      resourceRequest<{ data: ListCardType[] }>(
+        'cards',
+        { method: 'POST' },
+        {
+          cardTitle,
+          listId,
+        },
+      ),
     onSuccess: (result, variables) => {
       queryClient.setQueryData<ListCardType[]>(
         queryKeys.cards(variables.listId),
@@ -69,19 +66,15 @@ export function useCreateCardMutation() {
 
 export function useUpdateCardMutation() {
   const mutation = useMutation({
-    mutationFn: ({
-      cardId,
-      cardDescription,
-      cardTitle,
-      token,
-      userId,
-    }: UpdateCardArgs) =>
-      resourceRequest<void>(`cards/${cardId}`, 'PUT', {
-        cardDescription,
-        cardTitle,
-        token,
-        userId,
-      }),
+    mutationFn: ({ cardId, cardDescription, cardTitle }: UpdateCardArgs) =>
+      resourceRequest<void>(
+        `cards/${cardId}`,
+        { method: 'PUT' },
+        {
+          cardDescription,
+          cardTitle,
+        },
+      ),
     onSuccess: (_result, variables) => {
       queryClient.setQueryData<ListCardType[]>(
         queryKeys.cards(variables.listId),
@@ -104,12 +97,14 @@ export function useUpdateCardMutation() {
 
 export function useDeleteCardMutation() {
   const mutation = useMutation({
-    mutationFn: ({ id, token, userId }: DeleteCardArgs) =>
-      resourceRequest<void>(`cards/${id}`, 'DELETE', {
-        id,
-        token,
-        userId,
-      }),
+    mutationFn: ({ id }: DeleteCardArgs) =>
+      resourceRequest<void>(
+        `cards/${id}`,
+        { method: 'DELETE' },
+        {
+          id,
+        },
+      ),
     onSuccess: (_result, variables) => {
       queryClient.setQueryData<ListCardType[]>(
         queryKeys.cards(variables.listId),

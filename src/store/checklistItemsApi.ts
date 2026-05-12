@@ -6,7 +6,7 @@ import { resourceRequest } from '~/store/resourceClient';
 
 export type ChecklistItemType = {
   id: string;
-  created_at: string;
+  createdAt: string;
   label: string;
   cardId: string;
   listId: string;
@@ -22,8 +22,6 @@ type CreateChecklistItemArgs = {
   cardId: string;
   checklistId: string;
   listId: string;
-  token: string;
-  userId: string;
 };
 
 type UpdateChecklistItemArgs = {
@@ -32,22 +30,20 @@ type UpdateChecklistItemArgs = {
   cardId: string;
   checklistId: string;
   label: string;
-  token: string;
-  userId: string;
 };
 
 type DeleteChecklistItemArgs = {
   id: string;
   checklistId: string;
-  token: string;
 };
 
 export function useGetChecklistItemsQuery(args: ChecklistItemsArgs) {
   return useQuery({
     queryKey: queryKeys.checklistItems(args.checklistId),
     queryFn: () =>
-      resourceRequest<ChecklistItemType[]>('checklist-items/get', 'POST', {
-        checklistId: args.checklistId,
+      resourceRequest<ChecklistItemType[]>('checklist-items', {
+        method: 'GET',
+        searchParams: { checklistId: args.checklistId },
       }),
   });
 }
@@ -59,19 +55,15 @@ export function useCreateChecklistItemMutation() {
       cardId,
       checklistId,
       listId,
-      token,
-      userId,
     }: CreateChecklistItemArgs) =>
       resourceRequest<{ data: ChecklistItemType[] }>(
-        'checklist-items/create',
-        'POST',
+        'checklist-items',
+        { method: 'POST' },
         {
           label,
           cardId,
           checklistId,
           listId,
-          token,
-          userId,
         },
       ),
     onSuccess: (result, variables) => {
@@ -87,20 +79,12 @@ export function useCreateChecklistItemMutation() {
 
 export function useUpdateChecklistItemMutation() {
   const mutation = useMutation({
-    mutationFn: ({
-      id,
-      isCompleted,
-      label,
-      token,
-      userId,
-    }: UpdateChecklistItemArgs) =>
+    mutationFn: ({ id, isCompleted, label }: UpdateChecklistItemArgs) =>
       resourceRequest<{ data: ChecklistItemType[] }>(
         `checklist-items/${id}`,
-        'PUT',
+        { method: 'PUT' },
         {
           isCompleted,
-          token,
-          userId,
           label,
         },
       ),
@@ -126,15 +110,10 @@ export function useUpdateChecklistItemMutation() {
 
 export function useDeleteChecklistItemMutation() {
   const mutation = useMutation({
-    mutationFn: ({ token, id }: DeleteChecklistItemArgs) =>
-      resourceRequest<{ data: ChecklistType[] }>(
-        `checklist-items/${id}`,
-        'DELETE',
-        {
-          id,
-          token,
-        },
-      ),
+    mutationFn: ({ id }: DeleteChecklistItemArgs) =>
+      resourceRequest<{ data: ChecklistType[] }>(`checklist-items/${id}`, {
+        method: 'DELETE',
+      }),
     onSuccess: (_result, variables) => {
       queryClient.setQueryData<ChecklistItemType[]>(
         queryKeys.checklistItems(variables.checklistId),

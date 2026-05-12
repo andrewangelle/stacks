@@ -1,6 +1,4 @@
-import { useAtom } from 'jotai';
 import { useState } from 'react';
-import { tokenState } from '~/store/atoms';
 import { useCreateListMutation } from '~/store/listsApi';
 import {
   AddListButton,
@@ -15,7 +13,6 @@ type AddListsProps = {
 };
 
 export function AddLists({ boardId }: AddListsProps) {
-  const [token] = useAtom(tokenState);
   const [isEditing, setEditing] = useState(false);
   const [listName, setListName] = useState('');
   const [createList] = useCreateListMutation();
@@ -24,8 +21,6 @@ export function AddLists({ boardId }: AddListsProps) {
     createList({
       listTitle: listName,
       boardId,
-      token: token?.access_token ?? '',
-      userId: token?.user.id ?? '',
     });
     setEditing(false);
   }

@@ -29,6 +29,14 @@ export const Flex = styled.div`
   display: flex;
 `;
 
+export const FlexCenter = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+
+`;
+
 type ButtonExtraProps = {
   isDisabled?: boolean;
   secondary?: boolean;

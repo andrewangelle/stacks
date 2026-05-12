@@ -5,7 +5,7 @@ import { resourceRequest } from '~/store/resourceClient';
 
 export type ChecklistType = {
   id: string;
-  created_at: string;
+  createdAt: string;
   checklistTitle: string;
   cardId: string;
   userId: string;
@@ -18,42 +18,36 @@ type CreateChecklistArgs = {
   checklistTitle: string;
   cardId: string;
   listId: string;
-  token: string;
-  userId: string;
 };
 
 type DeleteChecklistArgs = {
   id: string;
   cardId: string;
-  token: string;
 };
 
 export function useGetChecklistsQuery(args: ChecklistArgs) {
   return useQuery({
     queryKey: queryKeys.checklists(args.cardId),
     queryFn: () =>
-      resourceRequest<ChecklistType[]>('checklists/get', 'POST', {
-        cardId: args.cardId,
+      resourceRequest<ChecklistType[]>('checklists', {
+        method: 'GET',
+        searchParams: { cardId: args.cardId },
       }),
   });
 }
 
 export function useCreateChecklistMutation() {
   const mutation = useMutation({
-    mutationFn: ({
-      checklistTitle,
-      cardId,
-      listId,
-      token,
-      userId,
-    }: CreateChecklistArgs) =>
-      resourceRequest<{ data: ChecklistType[] }>('checklists/create', 'POST', {
-        checklistTitle,
-        cardId,
-        listId,
-        token,
-        userId,
-      }),
+    mutationFn: ({ checklistTitle, cardId, listId }: CreateChecklistArgs) =>
+      resourceRequest<{ data: ChecklistType[] }>(
+        'checklists',
+        { method: 'POST' },
+        {
+          checklistTitle,
+          cardId,
+          listId,
+        },
+      ),
     onSuccess: (result, variables) => {
       queryClient.setQueryData<ChecklistType[]>(
         queryKeys.checklists(variables.cardId),
@@ -67,15 +61,10 @@ export function useCreateChecklistMutation() {
 
 export function useDeleteChecklistMutation() {
   const mutation = useMutation({
-    mutationFn: ({ token, id }: DeleteChecklistArgs) =>
-      resourceRequest<{ data: ChecklistType[] }>(
-        'checklists/delete',
-        'DELETE',
-        {
-          id,
-          token,
-        },
-      ),
+    mutationFn: ({ id }: DeleteChecklistArgs) =>
+      resourceRequest<{ data: ChecklistType[] }>(`checklists/${id}`, {
+        method: 'DELETE',
+      }),
     onSuccess: (_result, variables) => {
       queryClient.setQueryData<ChecklistType[]>(
         queryKeys.checklists(variables.cardId),

@@ -16,22 +16,16 @@ type UpdateListArgs = {
   boardId: string;
   listId: string;
   listTitle: string;
-  token: string;
-  userId: string;
 };
 
 type CreateListArgs = {
   listTitle: string;
   boardId: string;
-  token: string;
-  userId: string;
 };
 
 type DeleteListArgs = {
   id: string;
-  userId: string;
   boardId: string;
-  token: string;
 };
 
 export function useGetListsQuery(
@@ -43,18 +37,24 @@ export function useGetListsQuery(
   return useQuery({
     queryKey: queryKeys.lists(boardId),
     enabled: !options?.skip && !!args.boardId,
-    queryFn: () => resourceRequest<List[]>('lists/get', 'POST', { boardId }),
+    queryFn: () =>
+      resourceRequest<List[]>('lists', {
+        method: 'GET',
+        searchParams: { boardId },
+      }),
   });
 }
 
 export function useUpdateListMutation() {
   const mutation = useMutation({
-    mutationFn: ({ listId, listTitle, token, userId }: UpdateListArgs) =>
-      resourceRequest<void>(`lists/${listId}`, 'PUT', {
-        listTitle,
-        token,
-        userId,
-      }),
+    mutationFn: ({ listId, listTitle }: UpdateListArgs) =>
+      resourceRequest<void>(
+        `lists/${listId}`,
+        { method: 'PUT' },
+        {
+          listTitle,
+        },
+      ),
     onSuccess: (_result, variables) => {
       queryClient.setQueryData<List[]>(
         queryKeys.lists(variables.boardId),
@@ -74,7 +74,7 @@ export function useUpdateListMutation() {
 export function useCreateListMutation() {
   const mutation = useMutation({
     mutationFn: (args: CreateListArgs) =>
-      resourceRequest<{ data: List[] }>('lists/create', 'POST', args),
+      resourceRequest<{ data: List[] }>('lists', { method: 'POST' }, args),
     onSuccess: (result, variables) => {
       queryClient.setQueryData<List[]>(
         queryKeys.lists(variables.boardId),
@@ -88,13 +88,15 @@ export function useCreateListMutation() {
 
 export function useDeleteListMutation() {
   const mutation = useMutation({
-    mutationFn: ({ token, id, boardId, userId }: DeleteListArgs) =>
-      resourceRequest<{ data: List[] }>(`lists/${id}`, 'DELETE', {
-        id,
-        boardId,
-        token,
-        userId,
-      }),
+    mutationFn: ({ id, boardId }: DeleteListArgs) =>
+      resourceRequest<{ data: List[] }>(
+        `lists/${id}`,
+        { method: 'DELETE' },
+        {
+          id,
+          boardId,
+        },
+      ),
     onSuccess: (_result, variables) => {
       queryClient.setQueryData<List[]>(
         queryKeys.lists(variables.boardId),

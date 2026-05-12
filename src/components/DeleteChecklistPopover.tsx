@@ -1,6 +1,4 @@
 import * as Popover from '@radix-ui/react-popover';
-import { useAtom } from 'jotai';
-import { tokenState } from '~/store/atoms';
 import {
   type ChecklistType,
   useDeleteChecklistMutation,
@@ -15,7 +13,6 @@ import {
 } from '~/styles/CardModal';
 
 export function DeleteChecklistPopover(props: ChecklistType) {
-  const [token] = useAtom(tokenState);
   const [deleteChecklist] = useDeleteChecklistMutation();
   return (
     <Popover.Root>
@@ -33,7 +30,6 @@ export function DeleteChecklistPopover(props: ChecklistType) {
         <DeleteChecklistPopoverButton
           onClick={() =>
             deleteChecklist({
-              token: token?.access_token ?? '',
               id: props.id,
               cardId: props.cardId,
             })

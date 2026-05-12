@@ -1,4 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { authClient } from '~/auth/client';
 import { queryKeys } from '~/store/queryKeys';
 import { resourceRequest } from '~/store/resourceClient';
 
@@ -12,23 +13,18 @@ export type Board = {
 type CreateBoardArgs = {
   boardTitle: string;
   boardColor: string;
-  token: string;
   userId: string;
 };
 
-export function useGetBoardsQuery(
-  userId: string | undefined,
-  options?: { skip?: boolean },
-) {
-  const normalizedUserId = userId ?? '';
-
+export function useGetBoardsQuery() {
+  const { data } = authClient.useSession();
   return useQuery({
-    queryKey: queryKeys.boards(normalizedUserId),
-    enabled: !options?.skip && !!userId,
+    queryKey: queryKeys.boards(data?.user?.id ?? ''),
+    enabled: !!data?.user?.id,
     queryFn: () =>
-      resourceRequest<Board[]>(
-        `boards/get?userId=${encodeURIComponent(normalizedUserId)}`,
-      ),
+      resourceRequest<Board[]>('boards', {
+        method: 'GET',
+      }),
   });
 }
 
@@ -46,13 +42,15 @@ export function useCreateBoardMutation() {
   const queryClient = useQueryClient();
 
   const mutation = useMutation({
-    mutationFn: ({ boardTitle, boardColor, token, userId }: CreateBoardArgs) =>
-      resourceRequest<{ data: Board[] }>('boards/create', 'POST', {
-        boardColor,
-        boardTitle,
-        token,
-        userId,
-      }),
+    mutationFn: ({ boardTitle, boardColor }: CreateBoardArgs) =>
+      resourceRequest<{ data: Board[] }>(
+        'boards',
+        { method: 'POST' },
+        {
+          boardColor,
+          boardTitle,
+        },
+      ),
     onSuccess: (result, variables) => {
       queryClient.setQueryData<Board[]>(
         queryKeys.boards(variables.userId),

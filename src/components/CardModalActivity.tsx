@@ -1,16 +1,14 @@
 import { useParams } from '@tanstack/react-router';
 import { formatRelative } from 'date-fns';
-import { useAtom } from 'jotai';
 import { useState } from 'react';
 import * as Md from 'react-icons/md';
-
+import { useSessionUserId } from '~/auth/useSessionUserId';
 import { ActivityComment } from '~/components/ActivityComment';
 import { ActivityLogo } from '~/components/ActivityLogo';
 import {
   useCreateActivityMutation,
   useGetActivityQuery,
 } from '~/store/activityApi';
-import { tokenState } from '~/store/atoms';
 import { useGetProfileQuery } from '~/store/profileApi';
 import {
   ActivityCommentContainer,
@@ -31,12 +29,12 @@ type CardModalActivityProps = {
 export function CardModalActivity({ listId, cardId }: CardModalActivityProps) {
   const [showActivity, setShowActivity] = useState(false);
   const params = useParams({ strict: false });
-  const [token] = useAtom(tokenState);
+  const userId = useSessionUserId();
   const { data } = useGetActivityQuery({ cardId });
   const [comment, setComment] = useState<string>('');
   const profile = useGetProfileQuery(
-    { userId: token?.user.id ?? '' },
-    { skip: !token?.user.id },
+    { userId: userId ?? '' },
+    { skip: !userId },
   );
   const [createActivity] = useCreateActivityMutation();
 
@@ -45,8 +43,6 @@ export function CardModalActivity({ listId, cardId }: CardModalActivityProps) {
       boardId: params.id ?? '',
       cardId,
       listId,
-      token: token?.access_token ?? '',
-      userId: token?.user.id ?? '',
       type: 'comment',
       content: comment,
     });
@@ -91,8 +87,8 @@ export function CardModalActivity({ listId, cardId }: CardModalActivityProps) {
           ?.filter((value) => value.type === 'feed')
           .map((comment) => {
             const commentTime = formatRelative(
-              new Date(comment.created_at),
-              new Date(comment.created_at),
+              new Date(comment.createdAt),
+              new Date(comment.createdAt),
             );
             return (
               <ActivityContainer key={comment.id}>

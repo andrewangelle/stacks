@@ -4,7 +4,7 @@ import { resourceRequest } from '~/store/resourceClient';
 
 export type ProfileType = {
   id: string;
-  created_at: string;
+  createdAt: string;
   firstName: string;
   lastName: string;
   email: string;
@@ -22,8 +22,8 @@ export function useGetProfileQuery(
     queryKey: queryKeys.profile(args.userId),
     enabled: !options?.skip && !!args.userId,
     queryFn: () =>
-      resourceRequest<ProfileType>('profiles/get', 'POST', {
-        userId: args.userId,
+      resourceRequest<ProfileType>('profiles', {
+        method: 'GET',
       }),
   });
 }

@@ -9,37 +9,24 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as SigninRouteImport } from './routes/signin'
 import { Route as BoardsRouteImport } from './routes/boards'
 import { Route as IndexRouteImport } from './routes/index'
-import { Route as ResourcesSigninRouteImport } from './routes/resources/signin'
-import { Route as ResourcesRegisterRouteImport } from './routes/resources/register'
-import { Route as BoardIdRouteImport } from './routes/board/$id'
-import { Route as ResourcesProfilesGetRouteImport } from './routes/resources/profiles/get'
-import { Route as ResourcesListsGetRouteImport } from './routes/resources/lists/get'
-import { Route as ResourcesListsCreateRouteImport } from './routes/resources/lists/create'
-import { Route as ResourcesListsListIdRouteImport } from './routes/resources/lists/$listId'
-import { Route as ResourcesChecklistsGetRouteImport } from './routes/resources/checklists/get'
-import { Route as ResourcesChecklistsDeleteRouteImport } from './routes/resources/checklists/delete'
-import { Route as ResourcesChecklistsCreateRouteImport } from './routes/resources/checklists/create'
-import { Route as ResourcesChecklistItemsGetRouteImport } from './routes/resources/checklist-items/get'
-import { Route as ResourcesChecklistItemsCreateRouteImport } from './routes/resources/checklist-items/create'
-import { Route as ResourcesChecklistItemsItemIdRouteImport } from './routes/resources/checklist-items/$itemId'
-import { Route as ResourcesCardsGetRouteImport } from './routes/resources/cards/get'
-import { Route as ResourcesCardsCreateRouteImport } from './routes/resources/cards/create'
-import { Route as ResourcesCardsCardIdRouteImport } from './routes/resources/cards/$cardId'
-import { Route as ResourcesBoardsGetRouteImport } from './routes/resources/boards/get'
-import { Route as ResourcesBoardsCreateRouteImport } from './routes/resources/boards/create'
-import { Route as ResourcesBoardsBoardIdRouteImport } from './routes/resources/boards/$boardId'
-import { Route as ResourcesActivityGetRouteImport } from './routes/resources/activity/get'
-import { Route as ResourcesActivityCreateRouteImport } from './routes/resources/activity/create'
-import { Route as ResourcesActivityActivityIdRouteImport } from './routes/resources/activity/$activityId'
+import { Route as ResourcesProfilesRouteImport } from './routes/resources/profiles'
+import { Route as ResourcesListsRouteImport } from './routes/resources/lists'
+import { Route as ResourcesChecklistsRouteImport } from './routes/resources/checklists'
+import { Route as ResourcesChecklistItemsRouteImport } from './routes/resources/checklist-items'
+import { Route as ResourcesCardsRouteImport } from './routes/resources/cards'
+import { Route as ResourcesBoardsRouteImport } from './routes/resources/boards'
+import { Route as ResourcesActivityRouteImport } from './routes/resources/activity'
+import { Route as BoardIdRouteImport } from './routes/board.$id'
+import { Route as AuthSignInRouteImport } from './routes/auth.sign-in'
+import { Route as ResourcesListsListIdRouteImport } from './routes/resources/lists.$listId'
+import { Route as ResourcesChecklistsChecklistIdRouteImport } from './routes/resources/checklists.$checklistId'
+import { Route as ResourcesChecklistItemsItemIdRouteImport } from './routes/resources/checklist-items.$itemId'
+import { Route as ResourcesCardsCardIdRouteImport } from './routes/resources/cards.$cardId'
+import { Route as ResourcesBoardsBoardIdRouteImport } from './routes/resources/boards.$boardId'
+import { Route as ResourcesActivityActivityIdRouteImport } from './routes/resources/activity.$activityId'
 
-const SigninRoute = SigninRouteImport.update({
-  id: '/signin',
-  path: '/signin',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const BoardsRoute = BoardsRouteImport.update({
   id: '/boards',
   path: '/boards',
@@ -50,14 +37,39 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
-const ResourcesSigninRoute = ResourcesSigninRouteImport.update({
-  id: '/resources/signin',
-  path: '/resources/signin',
+const ResourcesProfilesRoute = ResourcesProfilesRouteImport.update({
+  id: '/resources/profiles',
+  path: '/resources/profiles',
   getParentRoute: () => rootRouteImport,
 } as any)
-const ResourcesRegisterRoute = ResourcesRegisterRouteImport.update({
-  id: '/resources/register',
-  path: '/resources/register',
+const ResourcesListsRoute = ResourcesListsRouteImport.update({
+  id: '/resources/lists',
+  path: '/resources/lists',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ResourcesChecklistsRoute = ResourcesChecklistsRouteImport.update({
+  id: '/resources/checklists',
+  path: '/resources/checklists',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ResourcesChecklistItemsRoute = ResourcesChecklistItemsRouteImport.update({
+  id: '/resources/checklist-items',
+  path: '/resources/checklist-items',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ResourcesCardsRoute = ResourcesCardsRouteImport.update({
+  id: '/resources/cards',
+  path: '/resources/cards',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ResourcesBoardsRoute = ResourcesBoardsRouteImport.update({
+  id: '/resources/boards',
+  path: '/resources/boards',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ResourcesActivityRoute = ResourcesActivityRouteImport.update({
+  id: '/resources/activity',
+  path: '/resources/activity',
   getParentRoute: () => rootRouteImport,
 } as any)
 const BoardIdRoute = BoardIdRouteImport.update({
@@ -65,311 +77,179 @@ const BoardIdRoute = BoardIdRouteImport.update({
   path: '/board/$id',
   getParentRoute: () => rootRouteImport,
 } as any)
-const ResourcesProfilesGetRoute = ResourcesProfilesGetRouteImport.update({
-  id: '/resources/profiles/get',
-  path: '/resources/profiles/get',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ResourcesListsGetRoute = ResourcesListsGetRouteImport.update({
-  id: '/resources/lists/get',
-  path: '/resources/lists/get',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ResourcesListsCreateRoute = ResourcesListsCreateRouteImport.update({
-  id: '/resources/lists/create',
-  path: '/resources/lists/create',
+const AuthSignInRoute = AuthSignInRouteImport.update({
+  id: '/auth/sign-in',
+  path: '/auth/sign-in',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ResourcesListsListIdRoute = ResourcesListsListIdRouteImport.update({
-  id: '/resources/lists/$listId',
-  path: '/resources/lists/$listId',
-  getParentRoute: () => rootRouteImport,
+  id: '/$listId',
+  path: '/$listId',
+  getParentRoute: () => ResourcesListsRoute,
 } as any)
-const ResourcesChecklistsGetRoute = ResourcesChecklistsGetRouteImport.update({
-  id: '/resources/checklists/get',
-  path: '/resources/checklists/get',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ResourcesChecklistsDeleteRoute =
-  ResourcesChecklistsDeleteRouteImport.update({
-    id: '/resources/checklists/delete',
-    path: '/resources/checklists/delete',
-    getParentRoute: () => rootRouteImport,
-  } as any)
-const ResourcesChecklistsCreateRoute =
-  ResourcesChecklistsCreateRouteImport.update({
-    id: '/resources/checklists/create',
-    path: '/resources/checklists/create',
-    getParentRoute: () => rootRouteImport,
-  } as any)
-const ResourcesChecklistItemsGetRoute =
-  ResourcesChecklistItemsGetRouteImport.update({
-    id: '/resources/checklist-items/get',
-    path: '/resources/checklist-items/get',
-    getParentRoute: () => rootRouteImport,
-  } as any)
-const ResourcesChecklistItemsCreateRoute =
-  ResourcesChecklistItemsCreateRouteImport.update({
-    id: '/resources/checklist-items/create',
-    path: '/resources/checklist-items/create',
-    getParentRoute: () => rootRouteImport,
+const ResourcesChecklistsChecklistIdRoute =
+  ResourcesChecklistsChecklistIdRouteImport.update({
+    id: '/$checklistId',
+    path: '/$checklistId',
+    getParentRoute: () => ResourcesChecklistsRoute,
   } as any)
 const ResourcesChecklistItemsItemIdRoute =
   ResourcesChecklistItemsItemIdRouteImport.update({
-    id: '/resources/checklist-items/$itemId',
-    path: '/resources/checklist-items/$itemId',
-    getParentRoute: () => rootRouteImport,
+    id: '/$itemId',
+    path: '/$itemId',
+    getParentRoute: () => ResourcesChecklistItemsRoute,
   } as any)
-const ResourcesCardsGetRoute = ResourcesCardsGetRouteImport.update({
-  id: '/resources/cards/get',
-  path: '/resources/cards/get',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ResourcesCardsCreateRoute = ResourcesCardsCreateRouteImport.update({
-  id: '/resources/cards/create',
-  path: '/resources/cards/create',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const ResourcesCardsCardIdRoute = ResourcesCardsCardIdRouteImport.update({
-  id: '/resources/cards/$cardId',
-  path: '/resources/cards/$cardId',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ResourcesBoardsGetRoute = ResourcesBoardsGetRouteImport.update({
-  id: '/resources/boards/get',
-  path: '/resources/boards/get',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ResourcesBoardsCreateRoute = ResourcesBoardsCreateRouteImport.update({
-  id: '/resources/boards/create',
-  path: '/resources/boards/create',
-  getParentRoute: () => rootRouteImport,
+  id: '/$cardId',
+  path: '/$cardId',
+  getParentRoute: () => ResourcesCardsRoute,
 } as any)
 const ResourcesBoardsBoardIdRoute = ResourcesBoardsBoardIdRouteImport.update({
-  id: '/resources/boards/$boardId',
-  path: '/resources/boards/$boardId',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ResourcesActivityGetRoute = ResourcesActivityGetRouteImport.update({
-  id: '/resources/activity/get',
-  path: '/resources/activity/get',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ResourcesActivityCreateRoute = ResourcesActivityCreateRouteImport.update({
-  id: '/resources/activity/create',
-  path: '/resources/activity/create',
-  getParentRoute: () => rootRouteImport,
+  id: '/$boardId',
+  path: '/$boardId',
+  getParentRoute: () => ResourcesBoardsRoute,
 } as any)
 const ResourcesActivityActivityIdRoute =
   ResourcesActivityActivityIdRouteImport.update({
-    id: '/resources/activity/$activityId',
-    path: '/resources/activity/$activityId',
-    getParentRoute: () => rootRouteImport,
+    id: '/$activityId',
+    path: '/$activityId',
+    getParentRoute: () => ResourcesActivityRoute,
   } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/boards': typeof BoardsRoute
-  '/signin': typeof SigninRoute
+  '/auth/sign-in': typeof AuthSignInRoute
   '/board/$id': typeof BoardIdRoute
-  '/resources/register': typeof ResourcesRegisterRoute
-  '/resources/signin': typeof ResourcesSigninRoute
+  '/resources/activity': typeof ResourcesActivityRouteWithChildren
+  '/resources/boards': typeof ResourcesBoardsRouteWithChildren
+  '/resources/cards': typeof ResourcesCardsRouteWithChildren
+  '/resources/checklist-items': typeof ResourcesChecklistItemsRouteWithChildren
+  '/resources/checklists': typeof ResourcesChecklistsRouteWithChildren
+  '/resources/lists': typeof ResourcesListsRouteWithChildren
+  '/resources/profiles': typeof ResourcesProfilesRoute
   '/resources/activity/$activityId': typeof ResourcesActivityActivityIdRoute
-  '/resources/activity/create': typeof ResourcesActivityCreateRoute
-  '/resources/activity/get': typeof ResourcesActivityGetRoute
   '/resources/boards/$boardId': typeof ResourcesBoardsBoardIdRoute
-  '/resources/boards/create': typeof ResourcesBoardsCreateRoute
-  '/resources/boards/get': typeof ResourcesBoardsGetRoute
   '/resources/cards/$cardId': typeof ResourcesCardsCardIdRoute
-  '/resources/cards/create': typeof ResourcesCardsCreateRoute
-  '/resources/cards/get': typeof ResourcesCardsGetRoute
   '/resources/checklist-items/$itemId': typeof ResourcesChecklistItemsItemIdRoute
-  '/resources/checklist-items/create': typeof ResourcesChecklistItemsCreateRoute
-  '/resources/checklist-items/get': typeof ResourcesChecklistItemsGetRoute
-  '/resources/checklists/create': typeof ResourcesChecklistsCreateRoute
-  '/resources/checklists/delete': typeof ResourcesChecklistsDeleteRoute
-  '/resources/checklists/get': typeof ResourcesChecklistsGetRoute
+  '/resources/checklists/$checklistId': typeof ResourcesChecklistsChecklistIdRoute
   '/resources/lists/$listId': typeof ResourcesListsListIdRoute
-  '/resources/lists/create': typeof ResourcesListsCreateRoute
-  '/resources/lists/get': typeof ResourcesListsGetRoute
-  '/resources/profiles/get': typeof ResourcesProfilesGetRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/boards': typeof BoardsRoute
-  '/signin': typeof SigninRoute
+  '/auth/sign-in': typeof AuthSignInRoute
   '/board/$id': typeof BoardIdRoute
-  '/resources/register': typeof ResourcesRegisterRoute
-  '/resources/signin': typeof ResourcesSigninRoute
+  '/resources/activity': typeof ResourcesActivityRouteWithChildren
+  '/resources/boards': typeof ResourcesBoardsRouteWithChildren
+  '/resources/cards': typeof ResourcesCardsRouteWithChildren
+  '/resources/checklist-items': typeof ResourcesChecklistItemsRouteWithChildren
+  '/resources/checklists': typeof ResourcesChecklistsRouteWithChildren
+  '/resources/lists': typeof ResourcesListsRouteWithChildren
+  '/resources/profiles': typeof ResourcesProfilesRoute
   '/resources/activity/$activityId': typeof ResourcesActivityActivityIdRoute
-  '/resources/activity/create': typeof ResourcesActivityCreateRoute
-  '/resources/activity/get': typeof ResourcesActivityGetRoute
   '/resources/boards/$boardId': typeof ResourcesBoardsBoardIdRoute
-  '/resources/boards/create': typeof ResourcesBoardsCreateRoute
-  '/resources/boards/get': typeof ResourcesBoardsGetRoute
   '/resources/cards/$cardId': typeof ResourcesCardsCardIdRoute
-  '/resources/cards/create': typeof ResourcesCardsCreateRoute
-  '/resources/cards/get': typeof ResourcesCardsGetRoute
   '/resources/checklist-items/$itemId': typeof ResourcesChecklistItemsItemIdRoute
-  '/resources/checklist-items/create': typeof ResourcesChecklistItemsCreateRoute
-  '/resources/checklist-items/get': typeof ResourcesChecklistItemsGetRoute
-  '/resources/checklists/create': typeof ResourcesChecklistsCreateRoute
-  '/resources/checklists/delete': typeof ResourcesChecklistsDeleteRoute
-  '/resources/checklists/get': typeof ResourcesChecklistsGetRoute
+  '/resources/checklists/$checklistId': typeof ResourcesChecklistsChecklistIdRoute
   '/resources/lists/$listId': typeof ResourcesListsListIdRoute
-  '/resources/lists/create': typeof ResourcesListsCreateRoute
-  '/resources/lists/get': typeof ResourcesListsGetRoute
-  '/resources/profiles/get': typeof ResourcesProfilesGetRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/boards': typeof BoardsRoute
-  '/signin': typeof SigninRoute
+  '/auth/sign-in': typeof AuthSignInRoute
   '/board/$id': typeof BoardIdRoute
-  '/resources/register': typeof ResourcesRegisterRoute
-  '/resources/signin': typeof ResourcesSigninRoute
+  '/resources/activity': typeof ResourcesActivityRouteWithChildren
+  '/resources/boards': typeof ResourcesBoardsRouteWithChildren
+  '/resources/cards': typeof ResourcesCardsRouteWithChildren
+  '/resources/checklist-items': typeof ResourcesChecklistItemsRouteWithChildren
+  '/resources/checklists': typeof ResourcesChecklistsRouteWithChildren
+  '/resources/lists': typeof ResourcesListsRouteWithChildren
+  '/resources/profiles': typeof ResourcesProfilesRoute
   '/resources/activity/$activityId': typeof ResourcesActivityActivityIdRoute
-  '/resources/activity/create': typeof ResourcesActivityCreateRoute
-  '/resources/activity/get': typeof ResourcesActivityGetRoute
   '/resources/boards/$boardId': typeof ResourcesBoardsBoardIdRoute
-  '/resources/boards/create': typeof ResourcesBoardsCreateRoute
-  '/resources/boards/get': typeof ResourcesBoardsGetRoute
   '/resources/cards/$cardId': typeof ResourcesCardsCardIdRoute
-  '/resources/cards/create': typeof ResourcesCardsCreateRoute
-  '/resources/cards/get': typeof ResourcesCardsGetRoute
   '/resources/checklist-items/$itemId': typeof ResourcesChecklistItemsItemIdRoute
-  '/resources/checklist-items/create': typeof ResourcesChecklistItemsCreateRoute
-  '/resources/checklist-items/get': typeof ResourcesChecklistItemsGetRoute
-  '/resources/checklists/create': typeof ResourcesChecklistsCreateRoute
-  '/resources/checklists/delete': typeof ResourcesChecklistsDeleteRoute
-  '/resources/checklists/get': typeof ResourcesChecklistsGetRoute
+  '/resources/checklists/$checklistId': typeof ResourcesChecklistsChecklistIdRoute
   '/resources/lists/$listId': typeof ResourcesListsListIdRoute
-  '/resources/lists/create': typeof ResourcesListsCreateRoute
-  '/resources/lists/get': typeof ResourcesListsGetRoute
-  '/resources/profiles/get': typeof ResourcesProfilesGetRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
     | '/boards'
-    | '/signin'
+    | '/auth/sign-in'
     | '/board/$id'
-    | '/resources/register'
-    | '/resources/signin'
+    | '/resources/activity'
+    | '/resources/boards'
+    | '/resources/cards'
+    | '/resources/checklist-items'
+    | '/resources/checklists'
+    | '/resources/lists'
+    | '/resources/profiles'
     | '/resources/activity/$activityId'
-    | '/resources/activity/create'
-    | '/resources/activity/get'
     | '/resources/boards/$boardId'
-    | '/resources/boards/create'
-    | '/resources/boards/get'
     | '/resources/cards/$cardId'
-    | '/resources/cards/create'
-    | '/resources/cards/get'
     | '/resources/checklist-items/$itemId'
-    | '/resources/checklist-items/create'
-    | '/resources/checklist-items/get'
-    | '/resources/checklists/create'
-    | '/resources/checklists/delete'
-    | '/resources/checklists/get'
+    | '/resources/checklists/$checklistId'
     | '/resources/lists/$listId'
-    | '/resources/lists/create'
-    | '/resources/lists/get'
-    | '/resources/profiles/get'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
     | '/boards'
-    | '/signin'
+    | '/auth/sign-in'
     | '/board/$id'
-    | '/resources/register'
-    | '/resources/signin'
+    | '/resources/activity'
+    | '/resources/boards'
+    | '/resources/cards'
+    | '/resources/checklist-items'
+    | '/resources/checklists'
+    | '/resources/lists'
+    | '/resources/profiles'
     | '/resources/activity/$activityId'
-    | '/resources/activity/create'
-    | '/resources/activity/get'
     | '/resources/boards/$boardId'
-    | '/resources/boards/create'
-    | '/resources/boards/get'
     | '/resources/cards/$cardId'
-    | '/resources/cards/create'
-    | '/resources/cards/get'
     | '/resources/checklist-items/$itemId'
-    | '/resources/checklist-items/create'
-    | '/resources/checklist-items/get'
-    | '/resources/checklists/create'
-    | '/resources/checklists/delete'
-    | '/resources/checklists/get'
+    | '/resources/checklists/$checklistId'
     | '/resources/lists/$listId'
-    | '/resources/lists/create'
-    | '/resources/lists/get'
-    | '/resources/profiles/get'
   id:
     | '__root__'
     | '/'
     | '/boards'
-    | '/signin'
+    | '/auth/sign-in'
     | '/board/$id'
-    | '/resources/register'
-    | '/resources/signin'
+    | '/resources/activity'
+    | '/resources/boards'
+    | '/resources/cards'
+    | '/resources/checklist-items'
+    | '/resources/checklists'
+    | '/resources/lists'
+    | '/resources/profiles'
     | '/resources/activity/$activityId'
-    | '/resources/activity/create'
-    | '/resources/activity/get'
     | '/resources/boards/$boardId'
-    | '/resources/boards/create'
-    | '/resources/boards/get'
     | '/resources/cards/$cardId'
-    | '/resources/cards/create'
-    | '/resources/cards/get'
     | '/resources/checklist-items/$itemId'
-    | '/resources/checklist-items/create'
-    | '/resources/checklist-items/get'
-    | '/resources/checklists/create'
-    | '/resources/checklists/delete'
-    | '/resources/checklists/get'
+    | '/resources/checklists/$checklistId'
     | '/resources/lists/$listId'
-    | '/resources/lists/create'
-    | '/resources/lists/get'
-    | '/resources/profiles/get'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   BoardsRoute: typeof BoardsRoute
-  SigninRoute: typeof SigninRoute
+  AuthSignInRoute: typeof AuthSignInRoute
   BoardIdRoute: typeof BoardIdRoute
-  ResourcesRegisterRoute: typeof ResourcesRegisterRoute
-  ResourcesSigninRoute: typeof ResourcesSigninRoute
-  ResourcesActivityActivityIdRoute: typeof ResourcesActivityActivityIdRoute
-  ResourcesActivityCreateRoute: typeof ResourcesActivityCreateRoute
-  ResourcesActivityGetRoute: typeof ResourcesActivityGetRoute
-  ResourcesBoardsBoardIdRoute: typeof ResourcesBoardsBoardIdRoute
-  ResourcesBoardsCreateRoute: typeof ResourcesBoardsCreateRoute
-  ResourcesBoardsGetRoute: typeof ResourcesBoardsGetRoute
-  ResourcesCardsCardIdRoute: typeof ResourcesCardsCardIdRoute
-  ResourcesCardsCreateRoute: typeof ResourcesCardsCreateRoute
-  ResourcesCardsGetRoute: typeof ResourcesCardsGetRoute
-  ResourcesChecklistItemsItemIdRoute: typeof ResourcesChecklistItemsItemIdRoute
-  ResourcesChecklistItemsCreateRoute: typeof ResourcesChecklistItemsCreateRoute
-  ResourcesChecklistItemsGetRoute: typeof ResourcesChecklistItemsGetRoute
-  ResourcesChecklistsCreateRoute: typeof ResourcesChecklistsCreateRoute
-  ResourcesChecklistsDeleteRoute: typeof ResourcesChecklistsDeleteRoute
-  ResourcesChecklistsGetRoute: typeof ResourcesChecklistsGetRoute
-  ResourcesListsListIdRoute: typeof ResourcesListsListIdRoute
-  ResourcesListsCreateRoute: typeof ResourcesListsCreateRoute
-  ResourcesListsGetRoute: typeof ResourcesListsGetRoute
-  ResourcesProfilesGetRoute: typeof ResourcesProfilesGetRoute
+  ResourcesActivityRoute: typeof ResourcesActivityRouteWithChildren
+  ResourcesBoardsRoute: typeof ResourcesBoardsRouteWithChildren
+  ResourcesCardsRoute: typeof ResourcesCardsRouteWithChildren
+  ResourcesChecklistItemsRoute: typeof ResourcesChecklistItemsRouteWithChildren
+  ResourcesChecklistsRoute: typeof ResourcesChecklistsRouteWithChildren
+  ResourcesListsRoute: typeof ResourcesListsRouteWithChildren
+  ResourcesProfilesRoute: typeof ResourcesProfilesRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/signin': {
-      id: '/signin'
-      path: '/signin'
-      fullPath: '/signin'
-      preLoaderRoute: typeof SigninRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/boards': {
       id: '/boards'
       path: '/boards'
@@ -384,18 +264,53 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/resources/signin': {
-      id: '/resources/signin'
-      path: '/resources/signin'
-      fullPath: '/resources/signin'
-      preLoaderRoute: typeof ResourcesSigninRouteImport
+    '/resources/profiles': {
+      id: '/resources/profiles'
+      path: '/resources/profiles'
+      fullPath: '/resources/profiles'
+      preLoaderRoute: typeof ResourcesProfilesRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/resources/register': {
-      id: '/resources/register'
-      path: '/resources/register'
-      fullPath: '/resources/register'
-      preLoaderRoute: typeof ResourcesRegisterRouteImport
+    '/resources/lists': {
+      id: '/resources/lists'
+      path: '/resources/lists'
+      fullPath: '/resources/lists'
+      preLoaderRoute: typeof ResourcesListsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/resources/checklists': {
+      id: '/resources/checklists'
+      path: '/resources/checklists'
+      fullPath: '/resources/checklists'
+      preLoaderRoute: typeof ResourcesChecklistsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/resources/checklist-items': {
+      id: '/resources/checklist-items'
+      path: '/resources/checklist-items'
+      fullPath: '/resources/checklist-items'
+      preLoaderRoute: typeof ResourcesChecklistItemsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/resources/cards': {
+      id: '/resources/cards'
+      path: '/resources/cards'
+      fullPath: '/resources/cards'
+      preLoaderRoute: typeof ResourcesCardsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/resources/boards': {
+      id: '/resources/boards'
+      path: '/resources/boards'
+      fullPath: '/resources/boards'
+      preLoaderRoute: typeof ResourcesBoardsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/resources/activity': {
+      id: '/resources/activity'
+      path: '/resources/activity'
+      fullPath: '/resources/activity'
+      preLoaderRoute: typeof ResourcesActivityRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/board/$id': {
@@ -405,168 +320,142 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof BoardIdRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/resources/profiles/get': {
-      id: '/resources/profiles/get'
-      path: '/resources/profiles/get'
-      fullPath: '/resources/profiles/get'
-      preLoaderRoute: typeof ResourcesProfilesGetRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/resources/lists/get': {
-      id: '/resources/lists/get'
-      path: '/resources/lists/get'
-      fullPath: '/resources/lists/get'
-      preLoaderRoute: typeof ResourcesListsGetRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/resources/lists/create': {
-      id: '/resources/lists/create'
-      path: '/resources/lists/create'
-      fullPath: '/resources/lists/create'
-      preLoaderRoute: typeof ResourcesListsCreateRouteImport
+    '/auth/sign-in': {
+      id: '/auth/sign-in'
+      path: '/auth/sign-in'
+      fullPath: '/auth/sign-in'
+      preLoaderRoute: typeof AuthSignInRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/resources/lists/$listId': {
       id: '/resources/lists/$listId'
-      path: '/resources/lists/$listId'
+      path: '/$listId'
       fullPath: '/resources/lists/$listId'
       preLoaderRoute: typeof ResourcesListsListIdRouteImport
-      parentRoute: typeof rootRouteImport
+      parentRoute: typeof ResourcesListsRoute
     }
-    '/resources/checklists/get': {
-      id: '/resources/checklists/get'
-      path: '/resources/checklists/get'
-      fullPath: '/resources/checklists/get'
-      preLoaderRoute: typeof ResourcesChecklistsGetRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/resources/checklists/delete': {
-      id: '/resources/checklists/delete'
-      path: '/resources/checklists/delete'
-      fullPath: '/resources/checklists/delete'
-      preLoaderRoute: typeof ResourcesChecklistsDeleteRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/resources/checklists/create': {
-      id: '/resources/checklists/create'
-      path: '/resources/checklists/create'
-      fullPath: '/resources/checklists/create'
-      preLoaderRoute: typeof ResourcesChecklistsCreateRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/resources/checklist-items/get': {
-      id: '/resources/checklist-items/get'
-      path: '/resources/checklist-items/get'
-      fullPath: '/resources/checklist-items/get'
-      preLoaderRoute: typeof ResourcesChecklistItemsGetRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/resources/checklist-items/create': {
-      id: '/resources/checklist-items/create'
-      path: '/resources/checklist-items/create'
-      fullPath: '/resources/checklist-items/create'
-      preLoaderRoute: typeof ResourcesChecklistItemsCreateRouteImport
-      parentRoute: typeof rootRouteImport
+    '/resources/checklists/$checklistId': {
+      id: '/resources/checklists/$checklistId'
+      path: '/$checklistId'
+      fullPath: '/resources/checklists/$checklistId'
+      preLoaderRoute: typeof ResourcesChecklistsChecklistIdRouteImport
+      parentRoute: typeof ResourcesChecklistsRoute
     }
     '/resources/checklist-items/$itemId': {
       id: '/resources/checklist-items/$itemId'
-      path: '/resources/checklist-items/$itemId'
+      path: '/$itemId'
       fullPath: '/resources/checklist-items/$itemId'
       preLoaderRoute: typeof ResourcesChecklistItemsItemIdRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/resources/cards/get': {
-      id: '/resources/cards/get'
-      path: '/resources/cards/get'
-      fullPath: '/resources/cards/get'
-      preLoaderRoute: typeof ResourcesCardsGetRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/resources/cards/create': {
-      id: '/resources/cards/create'
-      path: '/resources/cards/create'
-      fullPath: '/resources/cards/create'
-      preLoaderRoute: typeof ResourcesCardsCreateRouteImport
-      parentRoute: typeof rootRouteImport
+      parentRoute: typeof ResourcesChecklistItemsRoute
     }
     '/resources/cards/$cardId': {
       id: '/resources/cards/$cardId'
-      path: '/resources/cards/$cardId'
+      path: '/$cardId'
       fullPath: '/resources/cards/$cardId'
       preLoaderRoute: typeof ResourcesCardsCardIdRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/resources/boards/get': {
-      id: '/resources/boards/get'
-      path: '/resources/boards/get'
-      fullPath: '/resources/boards/get'
-      preLoaderRoute: typeof ResourcesBoardsGetRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/resources/boards/create': {
-      id: '/resources/boards/create'
-      path: '/resources/boards/create'
-      fullPath: '/resources/boards/create'
-      preLoaderRoute: typeof ResourcesBoardsCreateRouteImport
-      parentRoute: typeof rootRouteImport
+      parentRoute: typeof ResourcesCardsRoute
     }
     '/resources/boards/$boardId': {
       id: '/resources/boards/$boardId'
-      path: '/resources/boards/$boardId'
+      path: '/$boardId'
       fullPath: '/resources/boards/$boardId'
       preLoaderRoute: typeof ResourcesBoardsBoardIdRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/resources/activity/get': {
-      id: '/resources/activity/get'
-      path: '/resources/activity/get'
-      fullPath: '/resources/activity/get'
-      preLoaderRoute: typeof ResourcesActivityGetRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/resources/activity/create': {
-      id: '/resources/activity/create'
-      path: '/resources/activity/create'
-      fullPath: '/resources/activity/create'
-      preLoaderRoute: typeof ResourcesActivityCreateRouteImport
-      parentRoute: typeof rootRouteImport
+      parentRoute: typeof ResourcesBoardsRoute
     }
     '/resources/activity/$activityId': {
       id: '/resources/activity/$activityId'
-      path: '/resources/activity/$activityId'
+      path: '/$activityId'
       fullPath: '/resources/activity/$activityId'
       preLoaderRoute: typeof ResourcesActivityActivityIdRouteImport
-      parentRoute: typeof rootRouteImport
+      parentRoute: typeof ResourcesActivityRoute
     }
   }
 }
 
+interface ResourcesActivityRouteChildren {
+  ResourcesActivityActivityIdRoute: typeof ResourcesActivityActivityIdRoute
+}
+
+const ResourcesActivityRouteChildren: ResourcesActivityRouteChildren = {
+  ResourcesActivityActivityIdRoute: ResourcesActivityActivityIdRoute,
+}
+
+const ResourcesActivityRouteWithChildren =
+  ResourcesActivityRoute._addFileChildren(ResourcesActivityRouteChildren)
+
+interface ResourcesBoardsRouteChildren {
+  ResourcesBoardsBoardIdRoute: typeof ResourcesBoardsBoardIdRoute
+}
+
+const ResourcesBoardsRouteChildren: ResourcesBoardsRouteChildren = {
+  ResourcesBoardsBoardIdRoute: ResourcesBoardsBoardIdRoute,
+}
+
+const ResourcesBoardsRouteWithChildren = ResourcesBoardsRoute._addFileChildren(
+  ResourcesBoardsRouteChildren,
+)
+
+interface ResourcesCardsRouteChildren {
+  ResourcesCardsCardIdRoute: typeof ResourcesCardsCardIdRoute
+}
+
+const ResourcesCardsRouteChildren: ResourcesCardsRouteChildren = {
+  ResourcesCardsCardIdRoute: ResourcesCardsCardIdRoute,
+}
+
+const ResourcesCardsRouteWithChildren = ResourcesCardsRoute._addFileChildren(
+  ResourcesCardsRouteChildren,
+)
+
+interface ResourcesChecklistItemsRouteChildren {
+  ResourcesChecklistItemsItemIdRoute: typeof ResourcesChecklistItemsItemIdRoute
+}
+
+const ResourcesChecklistItemsRouteChildren: ResourcesChecklistItemsRouteChildren =
+  {
+    ResourcesChecklistItemsItemIdRoute: ResourcesChecklistItemsItemIdRoute,
+  }
+
+const ResourcesChecklistItemsRouteWithChildren =
+  ResourcesChecklistItemsRoute._addFileChildren(
+    ResourcesChecklistItemsRouteChildren,
+  )
+
+interface ResourcesChecklistsRouteChildren {
+  ResourcesChecklistsChecklistIdRoute: typeof ResourcesChecklistsChecklistIdRoute
+}
+
+const ResourcesChecklistsRouteChildren: ResourcesChecklistsRouteChildren = {
+  ResourcesChecklistsChecklistIdRoute: ResourcesChecklistsChecklistIdRoute,
+}
+
+const ResourcesChecklistsRouteWithChildren =
+  ResourcesChecklistsRoute._addFileChildren(ResourcesChecklistsRouteChildren)
+
+interface ResourcesListsRouteChildren {
+  ResourcesListsListIdRoute: typeof ResourcesListsListIdRoute
+}
+
+const ResourcesListsRouteChildren: ResourcesListsRouteChildren = {
+  ResourcesListsListIdRoute: ResourcesListsListIdRoute,
+}
+
+const ResourcesListsRouteWithChildren = ResourcesListsRoute._addFileChildren(
+  ResourcesListsRouteChildren,
+)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   BoardsRoute: BoardsRoute,
-  SigninRoute: SigninRoute,
+  AuthSignInRoute: AuthSignInRoute,
   BoardIdRoute: BoardIdRoute,
-  ResourcesRegisterRoute: ResourcesRegisterRoute,
-  ResourcesSigninRoute: ResourcesSigninRoute,
-  ResourcesActivityActivityIdRoute: ResourcesActivityActivityIdRoute,
-  ResourcesActivityCreateRoute: ResourcesActivityCreateRoute,
-  ResourcesActivityGetRoute: ResourcesActivityGetRoute,
-  ResourcesBoardsBoardIdRoute: ResourcesBoardsBoardIdRoute,
-  ResourcesBoardsCreateRoute: ResourcesBoardsCreateRoute,
-  ResourcesBoardsGetRoute: ResourcesBoardsGetRoute,
-  ResourcesCardsCardIdRoute: ResourcesCardsCardIdRoute,
-  ResourcesCardsCreateRoute: ResourcesCardsCreateRoute,
-  ResourcesCardsGetRoute: ResourcesCardsGetRoute,
-  ResourcesChecklistItemsItemIdRoute: ResourcesChecklistItemsItemIdRoute,
-  ResourcesChecklistItemsCreateRoute: ResourcesChecklistItemsCreateRoute,
-  ResourcesChecklistItemsGetRoute: ResourcesChecklistItemsGetRoute,
-  ResourcesChecklistsCreateRoute: ResourcesChecklistsCreateRoute,
-  ResourcesChecklistsDeleteRoute: ResourcesChecklistsDeleteRoute,
-  ResourcesChecklistsGetRoute: ResourcesChecklistsGetRoute,
-  ResourcesListsListIdRoute: ResourcesListsListIdRoute,
-  ResourcesListsCreateRoute: ResourcesListsCreateRoute,
-  ResourcesListsGetRoute: ResourcesListsGetRoute,
-  ResourcesProfilesGetRoute: ResourcesProfilesGetRoute,
+  ResourcesActivityRoute: ResourcesActivityRouteWithChildren,
+  ResourcesBoardsRoute: ResourcesBoardsRouteWithChildren,
+  ResourcesCardsRoute: ResourcesCardsRouteWithChildren,
+  ResourcesChecklistItemsRoute: ResourcesChecklistItemsRouteWithChildren,
+  ResourcesChecklistsRoute: ResourcesChecklistsRouteWithChildren,
+  ResourcesListsRoute: ResourcesListsRouteWithChildren,
+  ResourcesProfilesRoute: ResourcesProfilesRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

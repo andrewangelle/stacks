@@ -5,7 +5,7 @@ import { resourceRequest } from '~/store/resourceClient';
 
 export type ActivityType = {
   id: string;
-  created_at: string;
+  createdAt: string;
   listId: string;
   cardId: string;
   boardId: string;
@@ -16,8 +16,6 @@ export type ActivityType = {
 type ActivityArgs = { cardId: string };
 
 type CreateActivityArgs = {
-  token: string;
-  userId: string;
   cardId: string;
   listId: string;
   boardId: string;
@@ -27,14 +25,12 @@ type CreateActivityArgs = {
 
 type UpdateActivityArgs = {
   id: string;
-  token: string;
   cardId: string;
   content: string;
 };
 
 type DeleteActivityArgs = {
   id: string;
-  token: string;
   cardId: string;
 };
 
@@ -42,8 +38,9 @@ export function useGetActivityQuery(args: ActivityArgs) {
   return useQuery({
     queryKey: queryKeys.activity(args.cardId),
     queryFn: () =>
-      resourceRequest<ActivityType[]>('activity/get', 'POST', {
-        cardId: args.cardId,
+      resourceRequest<ActivityType[]>('activity', {
+        method: 'GET',
+        searchParams: { cardId: args.cardId },
       }),
   });
 }
@@ -52,8 +49,8 @@ export function useCreateActivityMutation() {
   const mutation = useMutation({
     mutationFn: (args: CreateActivityArgs) =>
       resourceRequest<{ data: ActivityType[] }>(
-        'activity/create',
-        'POST',
+        'activity',
+        { method: 'POST' },
         args,
       ),
 
@@ -73,8 +70,10 @@ export function useUpdateActivityMutation() {
     mutationFn: (args: UpdateActivityArgs) =>
       resourceRequest<{ data: ActivityType[] }>(
         `activity/${args.id}`,
-        'PUT',
-        args,
+        { method: 'PUT' },
+        {
+          content: args.content,
+        },
       ),
 
     onSuccess: (_result, variables) => {
@@ -95,9 +94,9 @@ export function useUpdateActivityMutation() {
 
 export function useDeleteActivityMutation() {
   const mutation = useMutation({
-    mutationFn: ({ token, id }: DeleteActivityArgs) =>
-      resourceRequest<{ data: ActivityType[] }>(`activity/${id}`, 'DELETE', {
-        token,
+    mutationFn: ({ id }: DeleteActivityArgs) =>
+      resourceRequest<{ data: ActivityType[] }>(`activity/${id}`, {
+        method: 'DELETE',
       }),
     onSuccess: (_result, variables) => {
       queryClient.setQueryData<ActivityType[]>(

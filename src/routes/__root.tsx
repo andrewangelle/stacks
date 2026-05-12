@@ -1,5 +1,4 @@
 import { QueryClientProvider } from '@tanstack/react-query';
-// @ts-expect-error no types
 import '@pigment-css/react/styles.css';
 import {
   createRootRoute,
@@ -7,10 +6,10 @@ import {
   Outlet,
   Scripts,
 } from '@tanstack/react-router';
-import { Provider as JotaiProvider } from 'jotai';
 import type { ReactNode } from 'react';
 import { DndProvider } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
+import { AuthProvider } from '~/components/AuthProvider';
 import { queryClient } from '~/store/queryClient';
 import GlobalFonts from '~/styles/GlobalFonts';
 
@@ -28,7 +27,9 @@ export const Route = createRootRoute({
 function RootComponent() {
   return (
     <RootDocument>
-      <Outlet />
+      <AuthProvider>
+        <Outlet />
+      </AuthProvider>
     </RootDocument>
   );
 }
@@ -41,13 +42,11 @@ function RootDocument({ children }: { children: ReactNode }) {
       </head>
       <body>
         <QueryClientProvider client={queryClient}>
-          <JotaiProvider>
-            <DndProvider backend={HTML5Backend}>
-              {children}
-              <Scripts />
-              <GlobalFonts />
-            </DndProvider>
-          </JotaiProvider>
+          <DndProvider backend={HTML5Backend}>
+            {children}
+            <Scripts />
+            <GlobalFonts />
+          </DndProvider>
         </QueryClientProvider>
       </body>
     </html>

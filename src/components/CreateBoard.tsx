@@ -1,8 +1,6 @@
 import * as Popover from '@radix-ui/react-popover';
-import { useAtom } from 'jotai';
 import { useState } from 'react';
 import * as Fa from 'react-icons/fa';
-import { tokenState } from '~/store/atoms';
 import { useCreateBoardMutation } from '~/store/boardsApi';
 import {
   type BoardBackground,
@@ -29,23 +27,25 @@ const backgroundChoices: BoardBackground[] = [
   'red',
 ];
 
-export function CreateBoard() {
+type CreateBoardProps = {
+  userId: string;
+};
+
+export function CreateBoard({ userId }: CreateBoardProps) {
   const [isCreateOpen, setCreateOpen] = useState(false);
   const [selectedColor, setSelectedColor] = useState('blue');
   const [boardTitle, setBoardTitle] = useState('');
-  const [token] = useAtom(tokenState);
   const [createBoard] = useCreateBoardMutation();
 
   function onBoardCreate() {
-    if (!token?.access_token || !token?.user?.id) {
+    if (!boardTitle || !userId) {
       return;
     }
 
     createBoard({
       boardColor: selectedColor,
       boardTitle,
-      token: token.access_token,
-      userId: token.user.id,
+      userId,
     });
   }
 
@@ -68,6 +68,7 @@ export function CreateBoard() {
         <CreateBoardCloseBorder />
 
         <CreateBoardBackgroundText>Background</CreateBoardBackgroundText>
+
         <CreateBoardBackgroundChoices>
           {backgroundChoices.map((color) => (
             <CreateBoardBackgroundChoice
