@@ -4,17 +4,16 @@ import { createFileRoute } from '@tanstack/react-router';
 import { NavBar } from '~/components/NavBar';
 import { FlexCenter } from '~/styles/Page';
 
-export const Route = createFileRoute('/auth/$pathname')({
+export const Route = createFileRoute('/auth/sign-in')({
   head: () => ({
     links: [{ rel: 'stylesheet', href: neonAuthStylesheetUrl }],
   }),
   component() {
-    const { pathname: authPathname } = Route.useParams();
     return (
       <>
         <NavBar />
         <FlexCenter>
-          <AuthView pathname={authPathname} />
+          <AuthView pathname="sign-in" />
         </FlexCenter>
       </>
     );

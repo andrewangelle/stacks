@@ -19,7 +19,7 @@ import { Route as ResourcesCardsRouteImport } from './routes/resources/cards'
 import { Route as ResourcesBoardsRouteImport } from './routes/resources/boards'
 import { Route as ResourcesActivityRouteImport } from './routes/resources/activity'
 import { Route as BoardIdRouteImport } from './routes/board.$id'
-import { Route as AuthPathnameRouteImport } from './routes/auth.$pathname'
+import { Route as AuthSignInRouteImport } from './routes/auth.sign-in'
 import { Route as ResourcesListsListIdRouteImport } from './routes/resources/lists.$listId'
 import { Route as ResourcesChecklistsChecklistIdRouteImport } from './routes/resources/checklists.$checklistId'
 import { Route as ResourcesChecklistItemsItemIdRouteImport } from './routes/resources/checklist-items.$itemId'
@@ -77,9 +77,9 @@ const BoardIdRoute = BoardIdRouteImport.update({
   path: '/board/$id',
   getParentRoute: () => rootRouteImport,
 } as any)
-const AuthPathnameRoute = AuthPathnameRouteImport.update({
-  id: '/auth/$pathname',
-  path: '/auth/$pathname',
+const AuthSignInRoute = AuthSignInRouteImport.update({
+  id: '/auth/sign-in',
+  path: '/auth/sign-in',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ResourcesListsListIdRoute = ResourcesListsListIdRouteImport.update({
@@ -119,7 +119,7 @@ const ResourcesActivityActivityIdRoute =
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/boards': typeof BoardsRoute
-  '/auth/$pathname': typeof AuthPathnameRoute
+  '/auth/sign-in': typeof AuthSignInRoute
   '/board/$id': typeof BoardIdRoute
   '/resources/activity': typeof ResourcesActivityRouteWithChildren
   '/resources/boards': typeof ResourcesBoardsRouteWithChildren
@@ -138,7 +138,7 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/boards': typeof BoardsRoute
-  '/auth/$pathname': typeof AuthPathnameRoute
+  '/auth/sign-in': typeof AuthSignInRoute
   '/board/$id': typeof BoardIdRoute
   '/resources/activity': typeof ResourcesActivityRouteWithChildren
   '/resources/boards': typeof ResourcesBoardsRouteWithChildren
@@ -158,7 +158,7 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/boards': typeof BoardsRoute
-  '/auth/$pathname': typeof AuthPathnameRoute
+  '/auth/sign-in': typeof AuthSignInRoute
   '/board/$id': typeof BoardIdRoute
   '/resources/activity': typeof ResourcesActivityRouteWithChildren
   '/resources/boards': typeof ResourcesBoardsRouteWithChildren
@@ -179,7 +179,7 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/boards'
-    | '/auth/$pathname'
+    | '/auth/sign-in'
     | '/board/$id'
     | '/resources/activity'
     | '/resources/boards'
@@ -198,7 +198,7 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/boards'
-    | '/auth/$pathname'
+    | '/auth/sign-in'
     | '/board/$id'
     | '/resources/activity'
     | '/resources/boards'
@@ -217,7 +217,7 @@ export interface FileRouteTypes {
     | '__root__'
     | '/'
     | '/boards'
-    | '/auth/$pathname'
+    | '/auth/sign-in'
     | '/board/$id'
     | '/resources/activity'
     | '/resources/boards'
@@ -237,7 +237,7 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   BoardsRoute: typeof BoardsRoute
-  AuthPathnameRoute: typeof AuthPathnameRoute
+  AuthSignInRoute: typeof AuthSignInRoute
   BoardIdRoute: typeof BoardIdRoute
   ResourcesActivityRoute: typeof ResourcesActivityRouteWithChildren
   ResourcesBoardsRoute: typeof ResourcesBoardsRouteWithChildren
@@ -320,11 +320,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof BoardIdRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/auth/$pathname': {
-      id: '/auth/$pathname'
-      path: '/auth/$pathname'
-      fullPath: '/auth/$pathname'
-      preLoaderRoute: typeof AuthPathnameRouteImport
+    '/auth/sign-in': {
+      id: '/auth/sign-in'
+      path: '/auth/sign-in'
+      fullPath: '/auth/sign-in'
+      preLoaderRoute: typeof AuthSignInRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/resources/lists/$listId': {
@@ -447,7 +447,7 @@ const ResourcesListsRouteWithChildren = ResourcesListsRoute._addFileChildren(
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   BoardsRoute: BoardsRoute,
-  AuthPathnameRoute: AuthPathnameRoute,
+  AuthSignInRoute: AuthSignInRoute,
   BoardIdRoute: BoardIdRoute,
   ResourcesActivityRoute: ResourcesActivityRouteWithChildren,
   ResourcesBoardsRoute: ResourcesBoardsRouteWithChildren,
