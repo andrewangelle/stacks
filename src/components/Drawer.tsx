@@ -1,8 +1,8 @@
+import { useUser } from '@clerk/tanstack-react-start';
 import { useNavigate, useParams } from '@tanstack/react-router';
 import { type CSSProperties, useState } from 'react';
 import * as Io from 'react-icons/io';
 import * as Ri from 'react-icons/ri';
-import { authClient } from '~/auth/client';
 import { useGetBoardQuery, useGetBoardsQuery } from '~/store/boardsApi';
 import {
   BoardsLinkContainer,
@@ -27,9 +27,9 @@ export const sharedDrawerArrowStyles: CSSProperties = {
 };
 
 export function Drawer() {
+  const { user } = useUser();
   const params = useParams({ strict: false });
   const { data: board } = useGetBoardQuery(params.id);
-  const session = authClient.useSession();
   const [isDrawerOpen, setDrawerOpen] = useState(false);
   const navigate = useNavigate();
   const { data: boards } = useGetBoardsQuery();
@@ -50,9 +50,11 @@ export function Drawer() {
         {isDrawerOpen && (
           <>
             <DrawerHeader>
-              {session.data?.user && (
+              {user && (
                 <DrawerHeaderTitle>
-                  <div>{session.data.user.email}&apos;s workspace</div>
+                  <div>
+                    {user.emailAddresses[0].emailAddress}&apos;s workspace
+                  </div>
                 </DrawerHeaderTitle>
               )}
               <Io.IoIosArrowBack

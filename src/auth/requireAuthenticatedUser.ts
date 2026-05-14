@@ -1,33 +1,34 @@
-import type { VerifiedNeonUser } from '~/auth/verifyJwt';
-import { verifyNeonAuthJwt } from '~/auth/verifyJwt';
+import {
+  auth,
+  clerkClient,
+  type User,
+} from '@clerk/tanstack-react-start/server';
 import { prisma } from '~/db/prisma';
 import { data } from '~/utils/response';
 
 export async function requireAuthenticatedUser(
-  request: Request,
+  _request: Request,
 ): Promise<{ uid: string } | Response> {
-  const token = bearerToken(request);
-  if (!token) {
+  const { isAuthenticated, userId } = await auth();
+
+  if (!isAuthenticated) {
     return data({ message: 'Unauthorized' }, 401);
   }
 
   try {
-    const claims = await verifyNeonAuthJwt(token);
-    await upsertUserAndProfileToDB(claims);
-    return { uid: claims.id };
+    const user = await clerkClient().users.getUser(userId);
+    await upsertUserAndProfileToDB(user);
+    return { uid: user.id };
   } catch {
     return data({ message: 'Unauthorized' }, 401);
   }
 }
 
-async function upsertUserAndProfileToDB(
-  claims: VerifiedNeonUser,
-): Promise<void> {
-  const email = claims.email ?? `user-${claims.id}@local.invalid`;
-  const trimmed = claims.name?.trim() ?? '';
-  const parts = trimmed.split(/\s+/).filter(Boolean);
-  const firstName = parts[0] ?? null;
-  const lastName = parts.length > 1 ? parts.slice(1).join(' ') : firstName;
+async function upsertUserAndProfileToDB(claims: User): Promise<void> {
+  const email =
+    claims.emailAddresses[0].emailAddress ?? `user-${claims.id}@local.invalid`;
+  const firstName = claims.firstName ?? null;
+  const lastName = claims.lastName ?? null;
 
   await prisma.user.upsert({
     where: { id: claims.id },
@@ -49,13 +50,4 @@ async function upsertUserAndProfileToDB(
       lastName: lastName ?? undefined,
     },
   });
-}
-
-function bearerToken(request: Request): string | null {
-  const authHeader = request.headers.get('authorization');
-  if (!authHeader?.startsWith('Bearer ')) {
-    return null;
-  }
-  const token = authHeader.slice('Bearer '.length).trim();
-  return token.length > 0 ? token : null;
 }

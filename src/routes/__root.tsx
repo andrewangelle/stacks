@@ -1,5 +1,6 @@
 import { QueryClientProvider } from '@tanstack/react-query';
 import '@pigment-css/react/styles.css';
+import { ClerkProvider } from '@clerk/tanstack-react-start';
 import {
   createRootRoute,
   HeadContent,
@@ -9,7 +10,6 @@ import {
 import type { ReactNode } from 'react';
 import { DndProvider } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
-import { AuthProvider } from '~/components/AuthProvider';
 import { queryClient } from '~/store/queryClient';
 import GlobalFonts from '~/styles/GlobalFonts';
 
@@ -27,9 +27,9 @@ export const Route = createRootRoute({
 function RootComponent() {
   return (
     <RootDocument>
-      <AuthProvider>
+      <ClerkProvider>
         <Outlet />
-      </AuthProvider>
+      </ClerkProvider>
     </RootDocument>
   );
 }

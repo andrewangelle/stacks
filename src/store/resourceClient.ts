@@ -1,10 +1,11 @@
-import { getJWTToken } from '~/auth/client';
+import { auth } from '@clerk/tanstack-react-start/server';
 
 type RequestMethod = 'GET' | 'POST' | 'PUT' | 'DELETE' | 'PATCH';
 
 type RequestOptions = {
   method: RequestMethod;
   searchParams?: Record<string, string>;
+  headers?: Record<string, string>;
 };
 
 function getBaseUrl(): string {
@@ -21,6 +22,8 @@ export async function resourceRequest<ResponseType>(
   },
   body?: unknown,
 ): Promise<ResponseType> {
+  const { getToken } = await auth();
+
   const endpoint = new URL(`/resources/${path}`, getBaseUrl());
 
   if (requestOptions.searchParams) {
@@ -31,16 +34,8 @@ export async function resourceRequest<ResponseType>(
 
   const headers: Record<string, string> = {
     'Content-Type': 'application/json',
+    Authorization: `Bearer ${await getToken()}`,
   };
-
-  try {
-    const token = await getJWTToken();
-    if (token) {
-      headers.Authorization = `Bearer ${token}`;
-    }
-  } catch {
-    /* SSR / no session */
-  }
 
   const response = await fetch(endpoint.toString(), {
     method: requestOptions.method,
@@ -48,6 +43,8 @@ export async function resourceRequest<ResponseType>(
     credentials: 'include',
     body: body === undefined ? undefined : JSON.stringify(body),
   });
+
+  console.log(response);
 
   if (!response.ok) {
     throw new Error(

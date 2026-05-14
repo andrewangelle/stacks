@@ -1,19 +1,26 @@
-import { AuthView } from '@neondatabase/neon-js/auth/react';
-import neonAuthStylesheetUrl from '@neondatabase/neon-js/ui/css?url';
+import {
+  Show,
+  SignInButton,
+  SignUpButton,
+  UserButton,
+} from '@clerk/tanstack-react-start';
 import { createFileRoute } from '@tanstack/react-router';
 import { NavBar } from '~/components/NavBar';
 import { FlexCenter } from '~/styles/Page';
 
 export const Route = createFileRoute('/auth/sign-in')({
-  head: () => ({
-    links: [{ rel: 'stylesheet', href: neonAuthStylesheetUrl }],
-  }),
   component() {
     return (
       <>
         <NavBar />
         <FlexCenter>
-          <AuthView pathname="sign-in" />
+          <Show when="signed-in">
+            <UserButton />
+          </Show>
+          <Show when="signed-out">
+            <SignInButton />
+            <SignUpButton />
+          </Show>
         </FlexCenter>
       </>
     );

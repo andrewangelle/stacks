@@ -1,15 +1,15 @@
+import { useUser } from '@clerk/tanstack-react-start';
 import { createFileRoute, Navigate } from '@tanstack/react-router';
-import { authClient } from '~/auth/client';
+import { authStateFn } from '~/auth/middleware';
 
 export const Route = createFileRoute('/')({
+  async beforeLoad() {
+    return await authStateFn();
+  },
   component() {
-    const { data, isPending } = authClient.useSession();
-
-    if (isPending) {
-      return null;
-    }
-
-    if (data?.user) {
+    const { user } = useUser();
+    console.log(user);
+    if (user) {
       return <Navigate to="/boards" />;
     }
 

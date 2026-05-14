@@ -1,8 +1,8 @@
+import { useAuth } from '@clerk/tanstack-react-start';
 import { useParams } from '@tanstack/react-router';
 import { formatRelative } from 'date-fns';
 import { useState } from 'react';
 import * as Md from 'react-icons/md';
-import { useSessionUserId } from '~/auth/useSessionUserId';
 import { ActivityComment } from '~/components/ActivityComment';
 import { ActivityLogo } from '~/components/ActivityLogo';
 import {
@@ -29,7 +29,7 @@ type CardModalActivityProps = {
 export function CardModalActivity({ listId, cardId }: CardModalActivityProps) {
   const [showActivity, setShowActivity] = useState(false);
   const params = useParams({ strict: false });
-  const userId = useSessionUserId();
+  const { userId } = useAuth();
   const { data } = useGetActivityQuery({ cardId });
   const [comment, setComment] = useState<string>('');
   const profile = useGetProfileQuery(

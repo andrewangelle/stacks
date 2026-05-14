@@ -1,3 +1,4 @@
+import { clerkMiddleware } from '@clerk/tanstack-react-start/server';
 import {
   sentryGlobalFunctionMiddleware,
   sentryGlobalRequestMiddleware,
@@ -5,6 +6,6 @@ import {
 import { createStart } from '@tanstack/react-start';
 
 export const startInstance = createStart(() => ({
-  requestMiddleware: [sentryGlobalRequestMiddleware],
+  requestMiddleware: [sentryGlobalRequestMiddleware, clerkMiddleware()],
   functionMiddleware: [sentryGlobalFunctionMiddleware],
 }));

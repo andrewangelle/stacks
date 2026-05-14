@@ -1,4 +1,4 @@
-import { useSessionUserId } from '~/auth/useSessionUserId';
+import { useAuth } from '@clerk/tanstack-react-start';
 import { useGetProfileQuery } from '~/store/profileApi';
 import { ActivityNameCircle } from '~/styles/Activity';
 import { Center } from '~/styles/Page';
@@ -18,7 +18,8 @@ export function getInitials(
 }
 
 export function ActivityLogo() {
-  const userId = useSessionUserId();
+  const { userId } = useAuth();
+
   const profile = useGetProfileQuery(
     { userId: userId ?? '' },
     { skip: !userId },
