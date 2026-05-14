@@ -1,4 +1,4 @@
-import { auth } from '@clerk/tanstack-react-start/server';
+import { fetchToken } from '~/auth/middleware';
 
 type RequestMethod = 'GET' | 'POST' | 'PUT' | 'DELETE' | 'PATCH';
 
@@ -22,8 +22,6 @@ export async function resourceRequest<ResponseType>(
   },
   body?: unknown,
 ): Promise<ResponseType> {
-  const { getToken } = await auth();
-
   const endpoint = new URL(`/resources/${path}`, getBaseUrl());
 
   if (requestOptions.searchParams) {
@@ -34,7 +32,7 @@ export async function resourceRequest<ResponseType>(
 
   const headers: Record<string, string> = {
     'Content-Type': 'application/json',
-    Authorization: `Bearer ${await getToken()}`,
+    Authorization: `Bearer ${await fetchToken()}`,
   };
 
   const response = await fetch(endpoint.toString(), {
@@ -43,8 +41,6 @@ export async function resourceRequest<ResponseType>(
     credentials: 'include',
     body: body === undefined ? undefined : JSON.stringify(body),
   });
-
-  console.log(response);
 
   if (!response.ok) {
     throw new Error(

@@ -1,4 +1,4 @@
-import { createFileRoute, useParams } from '@tanstack/react-router';
+import { createFileRoute, redirect, useParams } from '@tanstack/react-router';
 import { authStateFn } from '~/auth/middleware';
 import { AddLists } from '~/components/AddList';
 import { DragDropList } from '~/components/DragDropList';
@@ -11,7 +11,13 @@ import { BoardPageBackground, Flex, Padding } from '~/styles/Page';
 
 export const Route = createFileRoute('/board/$id')({
   async beforeLoad() {
-    return await authStateFn();
+    const { userId } = await authStateFn();
+    return { userId };
+  },
+  loader({ context }) {
+    if (!context.userId) {
+      throw redirect({ to: '/auth/sign-in' });
+    }
   },
   component() {
     const params = useParams({ strict: false });

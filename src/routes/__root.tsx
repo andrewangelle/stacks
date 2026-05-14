@@ -26,11 +26,11 @@ export const Route = createRootRoute({
 
 function RootComponent() {
   return (
-    <RootDocument>
-      <ClerkProvider>
+    <ClerkProvider>
+      <RootDocument>
         <Outlet />
-      </ClerkProvider>
-    </RootDocument>
+      </RootDocument>
+    </ClerkProvider>
   );
 }
 

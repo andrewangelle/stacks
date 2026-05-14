@@ -9,11 +9,10 @@ export const authMiddleware = createMiddleware().server(async ({ next }) => {
   if (!isAuthenticated) {
     return data({ message: 'Unauthorized' }, 401);
   }
-  const user = await clerkClient().users.getUser(userId);
 
   return await next({
     context: {
-      uid: user.id,
+      uid: userId,
     },
   });
 });
@@ -31,4 +30,9 @@ export const authStateFn = createServerFn().handler(async () => {
   const user = await clerkClient().users.getUser(userId);
 
   return { userId, firstName: user?.firstName };
+});
+
+export const fetchToken = createServerFn().handler(async () => {
+  const { getToken } = await auth();
+  return await getToken();
 });

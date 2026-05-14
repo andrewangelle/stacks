@@ -1,4 +1,4 @@
-import { createFileRoute, useNavigate } from '@tanstack/react-router';
+import { createFileRoute, redirect, useNavigate } from '@tanstack/react-router';
 import { authStateFn } from '~/auth/middleware';
 import { CreateBoard } from '~/components/CreateBoard';
 import { NavBar } from '~/components/NavBar';
@@ -12,9 +12,13 @@ import { Padding } from '~/styles/Page';
 
 export const Route = createFileRoute('/boards')({
   async beforeLoad() {
-    return await authStateFn();
+    const { userId, firstName } = await authStateFn();
+    return { userId, firstName };
   },
-  async loader({ context }) {
+  loader({ context }) {
+    if (!context.userId) {
+      throw redirect({ to: '/auth/sign-in' });
+    }
     return { userId: context.userId, firstName: context.firstName };
   },
   component() {

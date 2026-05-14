@@ -1,18 +1,15 @@
-import { useUser } from '@clerk/tanstack-react-start';
-import { createFileRoute, Navigate } from '@tanstack/react-router';
+import { createFileRoute, redirect } from '@tanstack/react-router';
 import { authStateFn } from '~/auth/middleware';
 
 export const Route = createFileRoute('/')({
   async beforeLoad() {
-    return await authStateFn();
+    const { userId } = await authStateFn();
+    return { userId };
   },
-  component() {
-    const { user } = useUser();
-    console.log(user);
-    if (user) {
-      return <Navigate to="/boards" />;
+  loader({ context }) {
+    if (context.userId) {
+      throw redirect({ to: '/boards' });
     }
-
-    return <Navigate to="/auth/sign-in" />;
+    throw redirect({ to: '/auth/sign-in' });
   },
 });

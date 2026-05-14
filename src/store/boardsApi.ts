@@ -18,7 +18,6 @@ type CreateBoardArgs = {
 
 export function useGetBoardsQuery() {
   const { userId, isSignedIn } = useAuth();
-  console.log(userId, isSignedIn);
   return useQuery({
     queryKey: queryKeys.boards(userId ?? ''),
     enabled: isSignedIn,
