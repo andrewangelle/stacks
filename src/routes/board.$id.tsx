@@ -1,4 +1,5 @@
-import { createFileRoute, useParams } from '@tanstack/react-router';
+import { createFileRoute, redirect, useParams } from '@tanstack/react-router';
+import { fetchUserId } from '~/auth/middleware';
 import { AddLists } from '~/components/AddList';
 import { DragDropList } from '~/components/DragDropList';
 import { Drawer } from '~/components/Drawer';
@@ -9,6 +10,15 @@ import { useGetListsQuery } from '~/store/listsApi';
 import { BoardPageBackground, Flex, Padding } from '~/styles/Page';
 
 export const Route = createFileRoute('/board/$id')({
+  async beforeLoad() {
+    const { userId } = await fetchUserId();
+    return { userId };
+  },
+  loader({ context }) {
+    if (!context.userId) {
+      throw redirect({ to: '/auth/sign-in' });
+    }
+  },
   component() {
     const params = useParams({ strict: false });
     const { data: board } = useGetBoardQuery(params.id);
