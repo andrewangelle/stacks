@@ -1,11 +1,11 @@
 import { createFileRoute } from '@tanstack/react-router';
-import { authMiddleware } from '~/auth/middleware';
+import { authResourceRouteMiddleware } from '~/auth/middleware';
 import { prisma } from '~/db/prisma';
 import { data } from '~/utils/response';
 
 export const Route = createFileRoute('/resources/checklist-items/$itemId')({
   server: {
-    middleware: [authMiddleware],
+    middleware: [authResourceRouteMiddleware],
 
     handlers: {
       async PUT({ request, params, context }) {

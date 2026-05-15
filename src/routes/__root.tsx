@@ -10,29 +10,34 @@ import {
 import type { ReactNode } from 'react';
 import { DndProvider } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
+import { authStateFn } from '~/auth/middleware';
 import { queryClient } from '~/store/queryClient';
 import GlobalFonts from '~/styles/GlobalFonts';
 
 export const Route = createRootRoute({
-  head: () => ({
-    meta: [
-      { charSet: 'utf-8' },
-      { name: 'viewport', content: 'width=device-width, initial-scale=1' },
-      { title: 'Stacks' },
-    ],
-  }),
-  component: RootComponent,
+  async beforeLoad() {
+    const { userId } = await authStateFn();
+    return { userId };
+  },
+  head() {
+    return {
+      meta: [
+        { charSet: 'utf-8' },
+        { name: 'viewport', content: 'width=device-width, initial-scale=1' },
+        { title: 'Stacks' },
+      ],
+    };
+  },
+  component() {
+    return (
+      <ClerkProvider>
+        <RootDocument>
+          <Outlet />
+        </RootDocument>
+      </ClerkProvider>
+    );
+  },
 });
-
-function RootComponent() {
-  return (
-    <ClerkProvider>
-      <RootDocument>
-        <Outlet />
-      </RootDocument>
-    </ClerkProvider>
-  );
-}
 
 function RootDocument({ children }: { children: ReactNode }) {
   return (
