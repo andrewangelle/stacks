@@ -129,8 +129,8 @@ export const BoardPageBackground = styled('div')<BoardPageBackgroundProps>({
 });
 
 export const NavBarContainer = styled('div')<BackgroundProps>({
-  width: '100vw',
-  position: 'sticky',
+  width: '100%',
+  position: 'fixed',
   height: '40px',
   padding: '0px 10px 0px 0px',
   zIndex: 1,

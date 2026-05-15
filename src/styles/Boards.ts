@@ -37,6 +37,7 @@ export const BoardCardContainer = styled('div')<BackgroundProps>({
   textAlign: 'center',
   width: '100%',
   maxWidth: '15%',
+  minWidth: '165px',
   height: '80px',
   padding: '20px',
   borderRadius: '5px',
