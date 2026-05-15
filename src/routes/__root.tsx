@@ -10,13 +10,13 @@ import {
 import type { ReactNode } from 'react';
 import { DndProvider } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
-import { authStateFn } from '~/auth/middleware';
+import { fetchUserId } from '~/auth/middleware';
 import { queryClient } from '~/store/queryClient';
 import GlobalFonts from '~/styles/GlobalFonts';
 
 export const Route = createRootRoute({
   async beforeLoad() {
-    const { userId } = await authStateFn();
+    const { userId } = await fetchUserId();
     return { userId };
   },
   head() {
