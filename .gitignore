@@ -8,3 +8,4 @@ dist
 .tanstack
 RISKS.md
 src/generated
+.output
