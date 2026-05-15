@@ -29,6 +29,10 @@ export function NavBar() {
           <UserButton />
         </Padding>
       </Show>
+
+      <Show when="signed-out">
+        <div data-testid="column-placeholder" />
+      </Show>
     </NavBarContainer>
   );
 }
