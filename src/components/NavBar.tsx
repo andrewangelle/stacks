@@ -3,7 +3,7 @@ import { useLocation, useParams } from '@tanstack/react-router';
 import * as Ri from 'react-icons/ri';
 import { useGetBoardQuery } from '~/store/boardsApi';
 import type { BoardBackground } from '~/styles/Boards';
-import { NavBarContainer } from '~/styles/Page';
+import { NavBarContainer, Padding } from '~/styles/Page';
 
 export function NavBar() {
   const location = useLocation();
@@ -21,23 +21,32 @@ export function NavBar() {
 
   return (
     <NavBarContainer background={background as BoardBackground}>
-      <div
-        style={{
-          display: 'flex',
-          alignItems: 'center',
-          gap: '8px',
-        }}
-      >
-        <Ri.RiTrelloFill
-          size={18}
-          style={{ color: 'white', verticalAlign: '-webkit-baseline-middle' }}
-        />
-        <span style={{ verticalAlign: 'bottom' }}>stacks - a trello clone</span>
-      </div>
+      <div data-testid="column-placeholder" />
+      <Logo />
 
       <Show when="signed-in">
-        <UserButton />
+        <Padding padding="5px 20px 0px 0px">
+          <UserButton />
+        </Padding>
       </Show>
     </NavBarContainer>
+  );
+}
+
+function Logo() {
+  return (
+    <div
+      style={{
+        display: 'flex',
+        alignItems: 'center',
+        gap: '8px',
+      }}
+    >
+      <Ri.RiTrelloFill
+        size={18}
+        style={{ color: 'white', verticalAlign: '-webkit-baseline-middle' }}
+      />
+      <span style={{ verticalAlign: 'bottom' }}>stacks - a trello clone</span>
+    </div>
   );
 }

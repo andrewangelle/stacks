@@ -129,11 +129,10 @@ export const BoardPageBackground = styled('div')<BoardPageBackgroundProps>({
 });
 
 export const NavBarContainer = styled('div')<BackgroundProps>({
-  fontFamily:
-    '-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Noto Sans,Ubuntu,Droid Sans,Helvetica Neue,sans-serif;',
   width: '100vw',
   position: 'sticky',
   height: '40px',
+  padding: '0px 10px 0px 0px',
   zIndex: 1,
   variants: [
     {
@@ -164,7 +163,7 @@ export const NavBarContainer = styled('div')<BackgroundProps>({
     },
   ],
   display: 'flex',
-  justifyContent: 'space-around',
+  justifyContent: 'space-between',
   color: 'white',
 });
 
