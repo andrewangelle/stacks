@@ -1,5 +1,6 @@
 import { QueryClientProvider } from '@tanstack/react-query';
 import '@pigment-css/react/styles.css';
+import { ClerkProvider } from '@clerk/tanstack-react-start';
 import {
   createRootRoute,
   HeadContent,
@@ -9,30 +10,34 @@ import {
 import type { ReactNode } from 'react';
 import { DndProvider } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
-import { AuthProvider } from '~/components/AuthProvider';
+import { fetchUserId } from '~/auth/middleware';
 import { queryClient } from '~/store/queryClient';
 import GlobalFonts from '~/styles/GlobalFonts';
 
 export const Route = createRootRoute({
-  head: () => ({
-    meta: [
-      { charSet: 'utf-8' },
-      { name: 'viewport', content: 'width=device-width, initial-scale=1' },
-      { title: 'Stacks' },
-    ],
-  }),
-  component: RootComponent,
+  async beforeLoad() {
+    const { userId } = await fetchUserId();
+    return { userId };
+  },
+  head() {
+    return {
+      meta: [
+        { charSet: 'utf-8' },
+        { name: 'viewport', content: 'width=device-width, initial-scale=1' },
+        { title: 'Stacks' },
+      ],
+    };
+  },
+  component() {
+    return (
+      <ClerkProvider>
+        <RootDocument>
+          <Outlet />
+        </RootDocument>
+      </ClerkProvider>
+    );
+  },
 });
-
-function RootComponent() {
-  return (
-    <RootDocument>
-      <AuthProvider>
-        <Outlet />
-      </AuthProvider>
-    </RootDocument>
-  );
-}
 
 function RootDocument({ children }: { children: ReactNode }) {
   return (

@@ -1,15 +1,14 @@
+import { Show, UserButton } from '@clerk/tanstack-react-start';
 import { useLocation, useParams } from '@tanstack/react-router';
 import * as Ri from 'react-icons/ri';
-import { authClient } from '~/auth/client';
 import { useGetBoardQuery } from '~/store/boardsApi';
 import type { BoardBackground } from '~/styles/Boards';
-import { LogOutText, NavBarContainer } from '~/styles/Page';
+import { NavBarContainer, Padding } from '~/styles/Page';
 
 export function NavBar() {
   const location = useLocation();
   const params = useParams({ strict: false });
   const board = useGetBoardQuery(params.id);
-  const session = authClient.useSession();
 
   const boardBackground = board.data?.boardColor ?? 'blue';
   const onAuthPath = location.pathname.startsWith('/auth');
@@ -20,34 +19,38 @@ export function NavBar() {
       ? 'blue'
       : boardBackground;
 
-  const showLogout =
-    !onAuthPath && location.pathname !== '/signin' && !!session.data?.user;
-
   return (
     <NavBarContainer background={background as BoardBackground}>
-      <div
-        style={{
-          display: 'flex',
-          alignItems: 'center',
-          gap: '8px',
-        }}
-      >
-        <Ri.RiTrelloFill
-          size={18}
-          style={{ color: 'white', verticalAlign: '-webkit-baseline-middle' }}
-        />
-        <span style={{ verticalAlign: 'bottom' }}>stacks - a trello clone</span>
-      </div>
+      <div data-testid="column-placeholder" />
+      <Logo />
 
-      {showLogout && (
-        <LogOutText
-          onClick={() => {
-            void authClient.signOut();
-          }}
-        >
-          Log out
-        </LogOutText>
-      )}
+      <Show when="signed-in">
+        <Padding padding="5px 20px 0px 0px">
+          <UserButton />
+        </Padding>
+      </Show>
+
+      <Show when="signed-out">
+        <div data-testid="column-placeholder" />
+      </Show>
     </NavBarContainer>
+  );
+}
+
+function Logo() {
+  return (
+    <div
+      style={{
+        display: 'flex',
+        alignItems: 'center',
+        gap: '8px',
+      }}
+    >
+      <Ri.RiTrelloFill
+        size={18}
+        style={{ color: 'white', verticalAlign: '-webkit-baseline-middle' }}
+      />
+      <span style={{ verticalAlign: 'bottom' }}>stacks - a trello clone</span>
+    </div>
   );
 }

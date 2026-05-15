@@ -1,10 +1,11 @@
-import { getJWTToken } from '~/auth/client';
+import { fetchToken } from '~/auth/middleware';
 
 type RequestMethod = 'GET' | 'POST' | 'PUT' | 'DELETE' | 'PATCH';
 
 type RequestOptions = {
   method: RequestMethod;
   searchParams?: Record<string, string>;
+  headers?: Record<string, string>;
 };
 
 function getBaseUrl(): string {
@@ -31,16 +32,8 @@ export async function resourceRequest<ResponseType>(
 
   const headers: Record<string, string> = {
     'Content-Type': 'application/json',
+    Authorization: `Bearer ${await fetchToken()}`,
   };
-
-  try {
-    const token = await getJWTToken();
-    if (token) {
-      headers.Authorization = `Bearer ${token}`;
-    }
-  } catch {
-    /* SSR / no session */
-  }
 
   const response = await fetch(endpoint.toString(), {
     method: requestOptions.method,

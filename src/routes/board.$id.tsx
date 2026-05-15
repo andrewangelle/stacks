@@ -1,5 +1,4 @@
-import { createFileRoute, Navigate, useParams } from '@tanstack/react-router';
-import { authClient } from '~/auth/client';
+import { createFileRoute, useParams } from '@tanstack/react-router';
 import { AddLists } from '~/components/AddList';
 import { DragDropList } from '~/components/DragDropList';
 import { Drawer } from '~/components/Drawer';
@@ -13,19 +12,10 @@ export const Route = createFileRoute('/board/$id')({
   component() {
     const params = useParams({ strict: false });
     const { data: board } = useGetBoardQuery(params.id);
-    const { data: session, isPending } = authClient.useSession();
     const { data: lists = [] } = useGetListsQuery(
       { boardId: params.id },
       { skip: !params.id },
     );
-
-    if (isPending) {
-      return null;
-    }
-
-    if (!session?.user) {
-      return <Navigate to="/auth/$pathname" params={{ pathname: 'sign-in' }} />;
-    }
 
     return (
       <>

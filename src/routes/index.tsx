@@ -1,18 +1,15 @@
-import { createFileRoute, Navigate } from '@tanstack/react-router';
-import { authClient } from '~/auth/client';
+import { createFileRoute, redirect } from '@tanstack/react-router';
+import { fetchUserId } from '~/auth/middleware';
 
 export const Route = createFileRoute('/')({
-  component() {
-    const { data, isPending } = authClient.useSession();
-
-    if (isPending) {
-      return null;
+  async beforeLoad() {
+    const { userId } = await fetchUserId();
+    return { userId };
+  },
+  loader({ context }) {
+    if (context.userId) {
+      throw redirect({ to: '/boards' });
     }
-
-    if (data?.user) {
-      return <Navigate to="/boards" />;
-    }
-
-    return <Navigate to="/auth/$pathname" params={{ pathname: 'sign-in' }} />;
+    throw redirect({ to: '/auth/sign-in' });
   },
 });

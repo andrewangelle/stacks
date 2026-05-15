@@ -1,5 +1,5 @@
+import { useAuth } from '@clerk/tanstack-react-start';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { authClient } from '~/auth/client';
 import { queryKeys } from '~/store/queryKeys';
 import { resourceRequest } from '~/store/resourceClient';
 
@@ -17,10 +17,10 @@ type CreateBoardArgs = {
 };
 
 export function useGetBoardsQuery() {
-  const { data } = authClient.useSession();
+  const { userId, isSignedIn } = useAuth();
   return useQuery({
-    queryKey: queryKeys.boards(data?.user?.id ?? ''),
-    enabled: !!data?.user?.id,
+    queryKey: queryKeys.boards(userId ?? ''),
+    enabled: isSignedIn,
     queryFn: () =>
       resourceRequest<Board[]>('boards', {
         method: 'GET',

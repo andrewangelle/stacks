@@ -1,5 +1,5 @@
-import { createFileRoute, Navigate, useNavigate } from '@tanstack/react-router';
-import { authClient } from '~/auth/client';
+import { useUser } from '@clerk/tanstack-react-start';
+import { createFileRoute, useNavigate } from '@tanstack/react-router';
 import { CreateBoard } from '~/components/CreateBoard';
 import { NavBar } from '~/components/NavBar';
 import { useGetBoardsQuery } from '~/store/boardsApi';
@@ -12,19 +12,9 @@ import { Padding } from '~/styles/Page';
 
 export const Route = createFileRoute('/boards')({
   component() {
-    const { data: session, isPending } = authClient.useSession();
-    const navigate = useNavigate();
-    const userId = session?.user.id;
+    const { user } = useUser();
     const { data: boards = [] } = useGetBoardsQuery();
-
-    if (isPending) {
-      return null;
-    }
-
-    if (!session?.user || !userId) {
-      return <Navigate to="/auth/$pathname" params={{ pathname: 'sign-in' }} />;
-    }
-
+    const navigate = useNavigate();
     return (
       <>
         <NavBar />
@@ -39,7 +29,7 @@ export const Route = createFileRoute('/boards')({
                 {board.boardTitle}
               </BoardCardContainer>
             ))}
-            <CreateBoard userId={userId} />
+            <CreateBoard userId={user?.id ?? ''} />
           </BoardsContainer>
         </Padding>
       </>

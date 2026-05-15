@@ -1,6 +1,6 @@
+import { useAuth } from '@clerk/tanstack-react-start';
 import { formatRelative } from 'date-fns';
 import { useState } from 'react';
-import { useSessionUserId } from '~/auth/useSessionUserId';
 import { ActivityLogo } from '~/components/ActivityLogo';
 import { DeleteCommentPopover } from '~/components/DeleteCommentPopover';
 import {
@@ -19,7 +19,7 @@ import { CloseAddCardButton } from '~/styles/List';
 import { Flex } from '~/styles/Page';
 
 export function ActivityComment(props: ActivityType) {
-  const userId = useSessionUserId();
+  const { userId } = useAuth();
   const profile = useGetProfileQuery(
     { userId: userId ?? '' },
     { skip: !userId },
