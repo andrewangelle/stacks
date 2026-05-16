@@ -12,7 +12,7 @@ export function AppError(props: ErrorComponentProps) {
   return (
     <>
       <NavBar />
-      <FlexCenter>
+      <FlexCenter data-testid="FlexCenter">
         <h1>Yikes</h1>
         <p>Something went wrong</p>
       </FlexCenter>

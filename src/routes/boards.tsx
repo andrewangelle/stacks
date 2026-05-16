@@ -29,9 +29,10 @@ export const Route = createFileRoute('/boards')({
       <>
         <NavBar />
         <Padding padding="50px 30px 30px">
-          <BoardsContainer>
+          <BoardsContainer data-testid="BoardsContainer">
             {boards.map((board) => (
               <BoardCardContainer
+                data-testid="BoardCardContainer"
                 key={board.id}
                 background={board.boardColor as BoardBackground}
                 onClick={() => navigate({ to: `/board/${board.id}` })}

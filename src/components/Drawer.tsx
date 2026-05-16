@@ -46,15 +46,17 @@ export function Drawer() {
           size={24}
         />
       )}
-      <DrawerContainer isOpen={isDrawerOpen} background={board?.boardColor}>
+      <DrawerContainer
+        data-testid="DrawerContainer"
+        isOpen={isDrawerOpen}
+        background={board?.boardColor}
+      >
         {isDrawerOpen && (
           <>
-            <DrawerHeader>
+            <DrawerHeader data-testid="DrawerHeader">
               {user && (
-                <DrawerHeaderTitle>
-                  <div>
-                    {user.emailAddresses[0].emailAddress}&apos;s workspace
-                  </div>
+                <DrawerHeaderTitle data-testid="DrawerHeaderTitle">
+                  <div>{`${user.firstName}'s workspace`}</div>
                 </DrawerHeaderTitle>
               )}
               <Io.IoIosArrowBack
@@ -67,30 +69,39 @@ export function Drawer() {
               />
             </DrawerHeader>
 
-            <BoardsLinkContainer>
+            <BoardsLinkContainer data-testid="BoardsLinkContainer">
               <Ri.RiTrelloFill
                 size={18}
                 style={{ color: 'white', padding: '8px' }}
               />
-              <YourBoardsTitle onClick={() => navigate({ to: '/boards' })}>
+              <YourBoardsTitle
+                data-testid="YourBoardsTitle"
+                onClick={() => navigate({ to: '/boards' })}
+              >
                 Boards
               </YourBoardsTitle>
             </BoardsLinkContainer>
 
-            <YourBoardsTitle>Your boards</YourBoardsTitle>
+            <YourBoardsTitle data-testid="YourBoardsTitle">
+              Your boards
+            </YourBoardsTitle>
 
-            <FlexColumn>
+            <FlexColumn data-testid="FlexColumn">
               {boards?.map((boardEntry) => {
                 return (
                   <DrawerBoardEntry
+                    data-testid="DrawerBoardEntry"
                     key={boardEntry.id}
                     isSelected={boardEntry.id === board?.id}
                     onClick={() => navigate({ to: `/board/${boardEntry.id}` })}
                   >
                     <CreateBoardBackgroundChoice
+                      data-testid="CreateBoardBackgroundChoice"
                       background={boardEntry.boardColor as BoardBackground}
                     />
-                    <BoardTitle>{boardEntry.boardTitle}</BoardTitle>
+                    <BoardTitle data-testid="BoardTitle">
+                      {boardEntry.boardTitle}
+                    </BoardTitle>
                   </DrawerBoardEntry>
                 );
               })}

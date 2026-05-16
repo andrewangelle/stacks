@@ -53,15 +53,40 @@ type DrawerContainerProps = {
   isOpen: boolean;
 };
 
+const openStyles = {
+  minWidth: '35vw',
+  width: '35vw',
+  '@media (max-width: 600px)': {
+    minWidth: '50vw',
+    width: '50vw',
+  },
+};
+
 export const DrawerContainer = styled('div')<DrawerContainerProps>({
   minHeight: '100vh',
   borderRight: '1px solid white',
   transition: 'width 0.25s ease-in-out',
-  zIndex: 2,
+  zIndex: 5,
   variants: [
     {
-      props: { isOpen: true, background: 'rgba(255, 255, 255, 0.16)' },
-      style: { background: 'rgba(255, 255, 255, 0.16)', width: '24vw' },
+      props: { isOpen: true, background: 'green' },
+      style: { background: '#519839', ...openStyles },
+    },
+    {
+      props: { isOpen: true, background: 'lightGreen' },
+      style: { background: '#4bbf6b', ...openStyles },
+    },
+    {
+      props: { isOpen: true, background: 'blue' },
+      style: { background: '#0079bf', ...openStyles },
+    },
+    {
+      props: { isOpen: true, background: 'orange' },
+      style: { background: '#d29034', ...openStyles },
+    },
+    {
+      props: { isOpen: true, background: 'red' },
+      style: { background: '#b04632', ...openStyles },
     },
     {
       props: { isOpen: false, background: 'transparent' },

@@ -22,20 +22,23 @@ export function DeleteCardPopover({
   const [deleteCard] = useDeleteCardMutation();
   return (
     <Popover.Root>
-      <DeleteCardPopoverTrigger>
-        <CardModalSiderButton>
-          <CardModalSiderButtonText>Delete Card</CardModalSiderButtonText>
+      <DeleteCardPopoverTrigger data-testid="DeleteCardPopoverTrigger">
+        <CardModalSiderButton data-testid="CardModalSiderButton">
+          <CardModalSiderButtonText data-testid="CardModalSiderButtonText">
+            Delete Card
+          </CardModalSiderButtonText>
         </CardModalSiderButton>
       </DeleteCardPopoverTrigger>
 
-      <DeleteChecklistPopoverContent>
-        <ChecklistPopoverHeader>
+      <DeleteChecklistPopoverContent data-testid="DeleteChecklistPopoverContent">
+        <ChecklistPopoverHeader data-testid="ChecklistPopoverHeader">
           {`Delete ${cardTitle}`}
-          <PopoverClose>X</PopoverClose>
+          <PopoverClose data-testid="PopoverClose">X</PopoverClose>
         </ChecklistPopoverHeader>
-        <CreateBoardCloseBorder />
+        <CreateBoardCloseBorder data-testid="CreateBoardCloseBorder" />
         Deleting a card is permanent and there is no way to get it back.
         <DeleteChecklistPopoverButton
+          data-testid="DeleteChecklistPopoverButton"
           onClick={() => {
             deleteCard({
               id,

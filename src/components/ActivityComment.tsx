@@ -32,11 +32,11 @@ export function ActivityComment(props: ActivityType) {
     new Date(props.createdAt),
   );
   return (
-    <ActivityContainer key={props.id}>
-      <Flex>
+    <ActivityContainer data-testid="ActivityContainer" key={props.id}>
+      <Flex data-testid="Flex">
         <ActivityLogo />
 
-        <ActivityCommentContainer>
+        <ActivityCommentContainer data-testid="ActivityCommentContainer">
           <div style={{ marginLeft: '8px' }}>
             <strong>
               {profile.data?.firstName} {profile.data?.lastName}
@@ -47,13 +47,15 @@ export function ActivityComment(props: ActivityType) {
           {isEditing && (
             <>
               <AddActivityInput
+                data-testid="AddActivityInput"
                 value={editedComment}
                 onChange={(event) => setEditedComment(event.target.value)}
                 placeholder={props.content}
               />
 
-              <Flex>
+              <Flex data-testid="Flex">
                 <SaveCommentButton
+                  data-testid="SaveCommentButton"
                   style={{ margin: 0 }}
                   onClick={() => {
                     updateActivity({
@@ -68,6 +70,7 @@ export function ActivityComment(props: ActivityType) {
                 </SaveCommentButton>
 
                 <CloseAddCardButton
+                  data-testid="CloseAddCardButton"
                   secondary
                   style={{ margin: '0 0 0 4px' }}
                   onClick={() => setIsEditing(false)}
@@ -80,10 +83,12 @@ export function ActivityComment(props: ActivityType) {
 
           {!isEditing && (
             <>
-              <ActivityCommentContent>{props.content}</ActivityCommentContent>
+              <ActivityCommentContent data-testid="ActivityCommentContent">
+                {props.content}
+              </ActivityCommentContent>
 
               <div style={{ marginLeft: '8px' }}>
-                <Flex>
+                <Flex data-testid="Flex">
                   <button
                     type="button"
                     onKeyDown={(event) => {

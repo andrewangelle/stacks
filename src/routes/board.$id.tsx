@@ -31,11 +31,14 @@ export const Route = createFileRoute('/board/$id')({
       <>
         <NavBar />
 
-        <BoardPageBackground background={board?.boardColor}>
+        <BoardPageBackground
+          data-testid="BoardPageBackground"
+          background={board?.boardColor}
+        >
           <Drawer />
 
           <Padding padding="50px 30px 30px">
-            <Flex>
+            <Flex data-testid="Flex">
               {lists?.map((list) => (
                 <DragDropList
                   key={list.id}

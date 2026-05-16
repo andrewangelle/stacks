@@ -40,21 +40,27 @@ function Checklist(props: ChecklistType) {
 
   return (
     <div style={{ margin: '30px 0px' }}>
-      <ChecklistHeader key={props.id}>
-        <Flex>
+      <ChecklistHeader data-testid="ChecklistHeader" key={props.id}>
+        <Flex data-testid="Flex">
           <Bs.BsCheck2Square style={{ marginRight: '4px' }} />
-          <CardModalTitle>{props.checklistTitle}</CardModalTitle>
+          <CardModalTitle data-testid="CardModalTitle">
+            {props.checklistTitle}
+          </CardModalTitle>
         </Flex>
         <DeleteChecklistPopover {...props} />
       </ChecklistHeader>
 
-      <Flex style={{ position: 'relative' }}>
-        <ChecklistProgressPercentage>
+      <Flex data-testid="Flex" style={{ position: 'relative' }}>
+        <ChecklistProgressPercentage data-testid="ChecklistProgressPercentage">
           {`${progressPercent}%`}
         </ChecklistProgressPercentage>
 
-        <ChecklistProgressRoot style={{ margin: '15px 0' }}>
+        <ChecklistProgressRoot
+          data-testid="ChecklistProgressRoot"
+          style={{ margin: '15px 0' }}
+        >
           <ChecklistProgressIndicator
+            data-testid="ChecklistProgressIndicator"
             style={{ width: `${progressPercent}%` }}
           />
         </ChecklistProgressRoot>
@@ -72,7 +78,11 @@ function Checklist(props: ChecklistType) {
       ))}
 
       {!isEditing && (
-        <AddChecklistItemButton secondary onClick={() => setIsEditing(true)}>
+        <AddChecklistItemButton
+          data-testid="AddChecklistItemButton"
+          secondary
+          onClick={() => setIsEditing(true)}
+        >
           Add an item
         </AddChecklistItemButton>
       )}
@@ -80,12 +90,14 @@ function Checklist(props: ChecklistType) {
       {isEditing && (
         <>
           <AddChecklistItemInput
+            data-testid="AddChecklistItemInput"
             value={label}
             onChange={(event) => setLabel(event.target.value)}
             placeholder={'Add an item'}
           />
-          <Flex>
+          <Flex data-testid="Flex">
             <AddChecklistButton
+              data-testid="AddChecklistButton"
               onClick={() => {
                 createChecklistItem({
                   label,
@@ -99,6 +111,7 @@ function Checklist(props: ChecklistType) {
               Add
             </AddChecklistButton>
             <CloseDescriptionButton
+              data-testid="CloseDescriptionButton"
               secondary
               onClick={() => setIsEditing(false)}
             >

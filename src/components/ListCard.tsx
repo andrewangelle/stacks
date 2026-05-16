@@ -51,16 +51,20 @@ export function ListCard({ id, listTitle }: List) {
   }
 
   return (
-    <ListContainer key={id}>
+    <ListContainer data-testid="ListContainer" key={id}>
       <div ref={outsideClickRef}>
         {!isEditingName && (
-          <ListName onClick={() => setIsEditingName(true)}>
+          <ListName
+            data-testid="ListName"
+            onClick={() => setIsEditingName(true)}
+          >
             {listTitle}
           </ListName>
         )}
 
         {isEditingName && (
           <AddCardInput
+            data-testid="AddCardInput"
             value={editedListTitle}
             onChange={(event) =>
               setEditedListTitle((_prevState) => event.target.value)
@@ -73,6 +77,7 @@ export function ListCard({ id, listTitle }: List) {
 
       {isEditing && (
         <AddCardInput
+          data-testid="AddCardInput"
           value={cardTitle}
           onChange={(event) => setCardTitle((_prevState) => event.target.value)}
         />
@@ -89,17 +94,26 @@ export function ListCard({ id, listTitle }: List) {
         </DragDropCard>
       ))}
 
-      <Flex>
+      <Flex data-testid="Flex">
         {!isEditing && (
-          <AddCardText onClick={() => setEditing(true)}>
+          <AddCardText
+            data-testid="AddCardText"
+            onClick={() => setEditing(true)}
+          >
             + Add a card
           </AddCardText>
         )}
         {isEditing && (
-          <AddCardButton onClick={onCardCreate}>Add card</AddCardButton>
+          <AddCardButton data-testid="AddCardButton" onClick={onCardCreate}>
+            Add card
+          </AddCardButton>
         )}
         {isEditing && (
-          <CloseAddCardButton secondary onClick={() => setEditing(false)}>
+          <CloseAddCardButton
+            data-testid="CloseAddCardButton"
+            secondary
+            onClick={() => setEditing(false)}
+          >
             X
           </CloseAddCardButton>
         )}

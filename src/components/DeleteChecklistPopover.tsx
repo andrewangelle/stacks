@@ -16,18 +16,21 @@ export function DeleteChecklistPopover(props: ChecklistType) {
   const [deleteChecklist] = useDeleteChecklistMutation();
   return (
     <Popover.Root>
-      <DeleteChecklistPopoverTrigger>
-        <DeleteChecklistButton secondary>Delete</DeleteChecklistButton>
+      <DeleteChecklistPopoverTrigger data-testid="DeleteChecklistPopoverTrigger">
+        <DeleteChecklistButton data-testid="DeleteChecklistButton" secondary>
+          Delete
+        </DeleteChecklistButton>
       </DeleteChecklistPopoverTrigger>
 
-      <DeleteChecklistPopoverContent>
-        <ChecklistPopoverHeader>
+      <DeleteChecklistPopoverContent data-testid="DeleteChecklistPopoverContent">
+        <ChecklistPopoverHeader data-testid="ChecklistPopoverHeader">
           {`Delete ${props.checklistTitle}`}
-          <PopoverClose>X</PopoverClose>
+          <PopoverClose data-testid="PopoverClose">X</PopoverClose>
         </ChecklistPopoverHeader>
-        <CreateBoardCloseBorder />
+        <CreateBoardCloseBorder data-testid="CreateBoardCloseBorder" />
         Deleting a checklist is permanent and there is no way to get it back.
         <DeleteChecklistPopoverButton
+          data-testid="DeleteChecklistPopoverButton"
           onClick={() =>
             deleteChecklist({
               id: props.id,
