@@ -1,10 +1,10 @@
+import netlify from '@netlify/vite-plugin-tanstack-start';
 import { pigment } from '@pigment-css/vite-plugin';
 import viteReact from '@vitejs/plugin-react';
 import { tanstackStart } from '@tanstack/react-start/plugin/vite';
 import * as dotenv from 'dotenv';
 import { defineConfig } from 'vite';
 import { sentryTanstackStart } from "@sentry/tanstackstart-react/vite";
-import { nitro } from 'nitro/vite';
 
 dotenv.config();
 
@@ -37,7 +37,7 @@ export default defineConfig({
   },
   plugins: [
     tanstackStart(),
-    nitro(),
+    netlify(),
     pigment({}),
     viteReact(),
     sentryTanstackStart({

@@ -19,8 +19,7 @@
       "!**/public",
       "!**/node_modules",
       "./.vscode/settings.json",
-      "!**/netlify",
-      "!**/.output"
+      "!**/netlify"
     ]
   },
   "formatter": {

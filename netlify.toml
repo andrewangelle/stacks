@@ -1,0 +1,13 @@
+[build]
+  command = "prisma generate && vite build"
+  publish = "dist/client"
+
+[dev]
+  functions = ".netlify/functions-serve/server"
+  publish = "dist/client"
+  targetPort = 3000
+
+[[headers]]
+  for = "/assets/*"
+  [headers.values]
+    "Cache-Control" = "public, max-age=31536000, s-maxage=31536000"
