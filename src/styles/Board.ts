@@ -65,32 +65,41 @@ const openStyles = {
 export const DrawerContainer = styled('div')<DrawerContainerProps>({
   minHeight: '100vh',
   borderRight: '1px solid white',
-  transition: 'width 0.25s ease-in-out',
+  transition: 'width 0.25s ease-in-out, min-width 0.25s ease-in-out',
   zIndex: 5,
+  overflow: 'hidden',
   variants: [
     {
+      props: { isOpen: true },
+      style: openStyles,
+    },
+    {
+      props: { isOpen: false },
+      style: {
+        width: '0.775vw',
+        minWidth: '0.775vw',
+        background: 'transparent',
+      },
+    },
+    {
       props: { isOpen: true, background: 'green' },
-      style: { background: '#519839', ...openStyles },
+      style: { background: '#519839' },
     },
     {
       props: { isOpen: true, background: 'lightGreen' },
-      style: { background: '#4bbf6b', ...openStyles },
+      style: { background: '#4bbf6b' },
     },
     {
       props: { isOpen: true, background: 'blue' },
-      style: { background: '#0079bf', ...openStyles },
+      style: { background: '#0079bf' },
     },
     {
       props: { isOpen: true, background: 'orange' },
-      style: { background: '#d29034', ...openStyles },
+      style: { background: '#d29034' },
     },
     {
       props: { isOpen: true, background: 'red' },
-      style: { background: '#b04632', ...openStyles },
-    },
-    {
-      props: { isOpen: false, background: 'transparent' },
-      style: { background: 'transparent', width: '0.7vw' },
+      style: { background: '#b04632' },
     },
   ],
 });
