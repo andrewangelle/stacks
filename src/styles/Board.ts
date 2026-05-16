@@ -57,8 +57,8 @@ const openStyles = {
   minWidth: '35vw',
   width: '35vw',
   '@media (max-width: 600px)': {
-    minWidth: '50vw',
-    width: '50vw',
+    minWidth: '66vw',
+    width: '66vw',
   },
 };
 
@@ -97,7 +97,7 @@ export const DrawerContainer = styled('div')<DrawerContainerProps>({
 
 export const DrawerHeader = styled.div`
   position: relative;
-  height: 12%;
+  min-height: 40px;
   border-bottom: 1px solid white;
 `;
 

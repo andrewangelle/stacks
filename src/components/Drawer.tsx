@@ -33,6 +33,8 @@ export function Drawer() {
   const [isDrawerOpen, setDrawerOpen] = useState(false);
   const navigate = useNavigate();
   const { data: boards } = useGetBoardsQuery();
+  const userName = user?.firstName ?? user?.primaryEmailAddress?.emailAddress;
+  const workspaceName = userName ? `${userName}'s workspace` : 'Your workspace';
   return (
     <>
       {!isDrawerOpen && (
@@ -56,7 +58,7 @@ export function Drawer() {
             <DrawerHeader data-testid="DrawerHeader">
               {user && (
                 <DrawerHeaderTitle data-testid="DrawerHeaderTitle">
-                  <div>{`${user.firstName}'s workspace`}</div>
+                  <div>{workspaceName}</div>
                 </DrawerHeaderTitle>
               )}
               <Io.IoIosArrowBack
