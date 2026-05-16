@@ -1,5 +1,5 @@
 import * as Popover from '@radix-ui/react-popover';
-import { type ListCardType, useDeleteCardMutation } from '~/query/cardsApi';
+import { type ListCardType, useDeleteCardMutation } from '~/query/cards';
 import { CreateBoardCloseBorder, PopoverClose } from '~/styles/Boards';
 import {
   CardModalSiderButton,

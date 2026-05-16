@@ -8,8 +8,8 @@ import { ActivityLogo } from '~/components/ActivityLogo';
 import {
   useCreateActivityMutation,
   useGetActivityQuery,
-} from '~/query/activityApi';
-import { useGetProfileQuery } from '~/query/profileApi';
+} from '~/query/activity';
+import { useGetProfileQuery } from '~/query/profile';
 import {
   ActivityCommentContainer,
   ActivityContainer,

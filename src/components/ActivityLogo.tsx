@@ -1,5 +1,5 @@
 import { useAuth } from '@clerk/tanstack-react-start';
-import { useGetProfileQuery } from '~/query/profileApi';
+import { useGetProfileQuery } from '~/query/profile';
 import { ActivityNameCircle } from '~/styles/Activity';
 import { Center } from '~/styles/Page';
 

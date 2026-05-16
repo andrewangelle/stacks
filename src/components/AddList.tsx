@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useCreateListMutation } from '~/query/listsApi';
+import { useCreateListMutation } from '~/query/lists';
 import {
   AddListButton,
   AddListContainer,

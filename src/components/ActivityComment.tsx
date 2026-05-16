@@ -3,11 +3,8 @@ import { formatRelative } from 'date-fns';
 import { useState } from 'react';
 import { ActivityLogo } from '~/components/ActivityLogo';
 import { DeleteCommentPopover } from '~/components/DeleteCommentPopover';
-import {
-  type ActivityType,
-  useUpdateActivityMutation,
-} from '~/query/activityApi';
-import { useGetProfileQuery } from '~/query/profileApi';
+import { type ActivityType, useUpdateActivityMutation } from '~/query/activity';
+import { useGetProfileQuery } from '~/query/profile';
 import {
   ActivityCommentContainer,
   ActivityCommentContent,

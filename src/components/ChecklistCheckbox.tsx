@@ -7,12 +7,12 @@ import { useOutsideClick } from '~/utils/useOutsideClick';
 const AiOutlineCheck = AiIcons.AiOutlineCheck;
 const AiOutlineEllipsis = AiIcons.AiOutlineEllipsis;
 
-import { useCreateActivityMutation } from '~/query/activityApi';
-import type { ChecklistItemType } from '~/query/checklistItemsApi';
+import { useCreateActivityMutation } from '~/query/activity';
+import type { ChecklistItemType } from '~/query/checklistItems';
 import {
   useDeleteChecklistItemMutation,
   useUpdateChecklistItemMutation,
-} from '~/query/checklistItemsApi';
+} from '~/query/checklistItems';
 import { CreateBoardCloseBorder, PopoverClose } from '~/styles/Boards';
 import {
   AddChecklistButton,

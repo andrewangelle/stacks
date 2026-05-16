@@ -1,6 +1,6 @@
 import * as Popover from '@radix-ui/react-popover';
 import { useParams } from '@tanstack/react-router';
-import { useDeleteListMutation } from '~/query/listsApi';
+import { useDeleteListMutation } from '~/query/lists';
 import { CreateBoardCloseBorder, PopoverClose } from '~/styles/Boards';
 import {
   ChecklistPopoverHeader,

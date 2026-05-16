@@ -1,8 +1,5 @@
 import * as Popover from '@radix-ui/react-popover';
-import {
-  type ActivityType,
-  useDeleteActivityMutation,
-} from '~/query/activityApi';
+import { type ActivityType, useDeleteActivityMutation } from '~/query/activity';
 import { CreateBoardCloseBorder, PopoverClose } from '~/styles/Boards';
 import {
   ChecklistPopoverHeader,

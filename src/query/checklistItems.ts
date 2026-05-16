@@ -1,5 +1,5 @@
 import { useMutation, useQuery } from '@tanstack/react-query';
-import type { ChecklistType } from '~/query/checklistsApi';
+import type { ChecklistType } from '~/query/checklists';
 import { queryClient } from '~/query/queryClient';
 import { queryKeys } from '~/query/queryKeys';
 import { resourceRequest } from '~/query/resourceClient';

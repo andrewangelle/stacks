@@ -3,7 +3,7 @@ import { useNavigate, useParams } from '@tanstack/react-router';
 import { type CSSProperties, useState } from 'react';
 import * as Io from 'react-icons/io';
 import * as Ri from 'react-icons/ri';
-import { useGetBoardQuery, useGetBoardsQuery } from '~/query/boardsApi';
+import { useGetBoardQuery, useGetBoardsQuery } from '~/query/boards';
 import {
   BoardsLinkContainer,
   BoardTitle,
@@ -71,15 +71,15 @@ export function Drawer() {
               />
             </DrawerHeader>
 
-            <BoardsLinkContainer data-testid="BoardsLinkContainer">
+            <BoardsLinkContainer
+              data-testid="BoardsLinkContainer"
+              onClick={() => navigate({ to: '/boards' })}
+            >
               <Ri.RiTrelloFill
                 size={18}
                 style={{ color: 'white', padding: '8px' }}
               />
-              <YourBoardsTitle
-                data-testid="YourBoardsTitle"
-                onClick={() => navigate({ to: '/boards' })}
-              >
+              <YourBoardsTitle data-testid="YourBoardsTitle">
                 Boards
               </YourBoardsTitle>
             </BoardsLinkContainer>

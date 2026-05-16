@@ -2,7 +2,7 @@ import { useParams } from '@tanstack/react-router';
 import { type ReactNode, type RefObject, useRef } from 'react';
 import { useDrag, useDrop } from 'react-dnd';
 
-import { type List, reorderLists } from '~/query/listsApi';
+import { type List, reorderLists } from '~/query/lists';
 
 type DragDropListProps = {
   id: string;

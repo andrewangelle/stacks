@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import * as Io from 'react-icons/io';
-import { useUpdateCardMutation } from '~/query/cardsApi';
+import { useUpdateCardMutation } from '~/query/cards';
 import {
   CardDescriptionText,
   CardModalTitle,
