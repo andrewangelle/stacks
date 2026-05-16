@@ -1,60 +1,69 @@
 import { createFileRoute } from '@tanstack/react-router';
-import { authResourceRouteMiddleware } from '~/auth/middleware';
 import { prisma } from '~/db/prisma';
+import { authResourceRouteMiddleware } from '~/middleware/auth';
+import {
+  validateDeleteListRequestMiddleware,
+  validateUpdateListRequestMiddleware,
+} from '~/middleware/lists';
 import { data } from '~/utils/response';
 
 export const Route = createFileRoute('/resources/lists/$listId')({
   server: {
     middleware: [authResourceRouteMiddleware],
 
-    handlers: {
-      async PUT({ request, params, context }) {
-        const userData = await request.json();
-        const listTitle = userData.listTitle ?? '';
+    handlers({ createHandlers }) {
+      return createHandlers({
+        PUT: {
+          middleware: [validateUpdateListRequestMiddleware],
+          async handler({ params, context }) {
+            const updated = await prisma.list.updateMany({
+              where: { id: params.listId, userId: context.uid },
+              data: {
+                listTitle: context.listTitle,
+              },
+            });
 
-        const updated = await prisma.list.updateMany({
-          where: { id: params.listId, userId: context.uid },
-          data: {
-            listTitle,
+            if (updated.count === 0) {
+              return data([]);
+            }
+
+            const rows = await prisma.list.findMany({
+              where: { id: params.listId },
+            });
+
+            return data(rows);
           },
-        });
+        },
 
-        if (updated.count === 0) {
-          return data([]);
-        }
+        DELETE: {
+          middleware: [validateDeleteListRequestMiddleware],
+          async handler({ context }) {
+            const row = await prisma.list.findFirst({
+              where: {
+                id: context.id,
+                userId: context.uid,
+              },
+            });
 
-        const rows = await prisma.list.findMany({
-          where: { id: params.listId },
-        });
+            if (!row) {
+              return data(
+                { message: 'List Not found' },
+                { status: 404, statusText: 'Not found' },
+              );
+            }
 
-        return data(rows);
-      },
+            await prisma.list.delete({
+              where: { id: row.id },
+            });
 
-      async DELETE({ request, context }) {
-        const userData = await request.json();
-        const id = userData.id ?? '';
-
-        const row = await prisma.list.findFirst({
-          where: {
-            id,
-            userId: context.uid,
+            return data({
+              code: 'lists:delete:success',
+              message: 'success',
+              data: [row],
+            });
           },
-        });
-
-        if (!row) {
-          return data({ message: 'Not found' }, 404);
-        }
-
-        await prisma.list.delete({
-          where: { id: row.id },
-        });
-
-        return data({
-          code: 'lists:delete:success',
-          message: 'success',
-          data: [row],
-        });
-      },
+        },
+      });
     },
   },
 });

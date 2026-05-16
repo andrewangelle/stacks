@@ -1,6 +1,6 @@
 import { createFileRoute } from '@tanstack/react-router';
-import { authResourceRouteMiddleware } from '~/auth/middleware';
 import { prisma } from '~/db/prisma';
+import { authResourceRouteMiddleware } from '~/middleware/auth';
 import { data } from '~/utils/response';
 
 export const Route = createFileRoute('/resources/checklists/$checklistId')({
@@ -17,7 +17,10 @@ export const Route = createFileRoute('/resources/checklists/$checklistId')({
         });
 
         if (!row) {
-          return data({ message: 'Not found' }, 404);
+          return data(
+            { message: 'Checklist Not found' },
+            { status: 404, statusText: 'Not found' },
+          );
         }
 
         await prisma.checklist.delete({

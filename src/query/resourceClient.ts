@@ -1,5 +1,3 @@
-import { fetchToken } from '~/auth/middleware';
-
 type RequestMethod = 'GET' | 'POST' | 'PUT' | 'DELETE' | 'PATCH';
 
 type RequestOptions = {
@@ -32,7 +30,6 @@ export async function resourceRequest<ResponseType>(
 
   const headers: Record<string, string> = {
     'Content-Type': 'application/json',
-    Authorization: `Bearer ${await fetchToken()}`,
   };
 
   const response = await fetch(endpoint.toString(), {

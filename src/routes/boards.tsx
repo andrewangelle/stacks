@@ -1,8 +1,8 @@
 import { useUser } from '@clerk/tanstack-react-start';
 import { createFileRoute, redirect, useNavigate } from '@tanstack/react-router';
-import { fetchUserId } from '~/auth/middleware';
 import { CreateBoard } from '~/components/CreateBoard';
 import { NavBar } from '~/components/NavBar';
+import { fetchUserId } from '~/middleware/auth';
 import { useGetBoardsQuery } from '~/query/boards';
 import {
   type BoardBackground,

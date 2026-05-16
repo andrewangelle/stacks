@@ -1,6 +1,6 @@
 import { createFileRoute } from '@tanstack/react-router';
-import { authResourceRouteMiddleware } from '~/auth/middleware';
 import { prisma } from '~/db/prisma';
+import { authResourceRouteMiddleware } from '~/middleware/auth';
 import { data } from '~/utils/response';
 
 export const Route = createFileRoute('/resources/boards/$boardId')({

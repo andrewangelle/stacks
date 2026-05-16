@@ -1,10 +1,10 @@
 import { createFileRoute, redirect, useParams } from '@tanstack/react-router';
-import { fetchUserId } from '~/auth/middleware';
 import { AddLists } from '~/components/AddList';
 import { DragDropList } from '~/components/DragDropList';
 import { Drawer } from '~/components/Drawer';
 import { ListCard } from '~/components/ListCard';
 import { NavBar } from '~/components/NavBar';
+import { fetchUserId } from '~/middleware/auth';
 import { useGetBoardQuery } from '~/query/boards';
 import { useGetListsQuery } from '~/query/lists';
 import { BoardPageBackground, Flex, Padding } from '~/styles/Page';
