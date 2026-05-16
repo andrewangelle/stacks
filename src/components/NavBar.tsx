@@ -42,7 +42,7 @@ export function NavBar() {
 
 function Logo() {
   return (
-    <LogoLink data-testid="LogoLink">
+    <LogoLink to="/boards" data-testid="LogoLink">
       <Ri.RiTrelloFill
         size={18}
         style={{ color: 'white', verticalAlign: '-webkit-baseline-middle' }}

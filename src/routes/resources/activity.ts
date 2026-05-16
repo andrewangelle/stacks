@@ -1,64 +1,69 @@
 import { createFileRoute } from '@tanstack/react-router';
-import { authResourceRouteMiddleware } from '~/auth/middleware';
 import { prisma } from '~/db/prisma';
+import { validateCreateActivityRequestMiddleware } from '~/middleware/activity';
+import { authResourceRouteMiddleware } from '~/middleware/auth';
 import { data } from '~/utils/response';
 
 export const Route = createFileRoute('/resources/activity')({
   server: {
     middleware: [authResourceRouteMiddleware],
 
-    handlers: {
-      async GET({ request, context }) {
-        const cardId = new URL(request.url).searchParams.get('cardId');
+    handlers({ createHandlers }) {
+      return createHandlers({
+        async GET({ request, context }) {
+          const cardId = new URL(request.url).searchParams.get('cardId');
 
-        if (!cardId) {
-          return data({ message: 'Bad Request' }, 400);
-        }
+          if (!cardId) {
+            return data(
+              { message: 'Bad Request' },
+              { status: 400, statusText: 'Bad Request' },
+            );
+          }
 
-        const response = await prisma.activity.findMany({
-          where: {
-            cardId,
-            card: { list: { board: { userId: context.uid } } },
+          const response = await prisma.activity.findMany({
+            where: {
+              cardId,
+              card: { list: { board: { userId: context.uid } } },
+            },
+            orderBy: { createdAt: 'asc' },
+          });
+
+          return data(response);
+        },
+
+        POST: {
+          middleware: [validateCreateActivityRequestMiddleware],
+          async handler({ context }) {
+            const board = await prisma.stack.findFirst({
+              where: { id: context.boardId, userId: context.uid },
+            });
+
+            if (!board) {
+              return data(
+                { message: 'Forbidden' },
+                { status: 403, statusText: 'Forbidden' },
+              );
+            }
+
+            const row = await prisma.activity.create({
+              data: {
+                listId: context.listId,
+                cardId: context.cardId,
+                boardId: context.boardId,
+                userId: context.uid,
+                content: context.content,
+                type: context.type,
+              },
+            });
+
+            return data({
+              code: 'activity:create:success',
+              message: 'success',
+              data: [row],
+            });
           },
-          orderBy: { createdAt: 'asc' },
-        });
-
-        return data(response);
-      },
-
-      async POST({ request, context }) {
-        const userData = await request.json();
-        const listId = userData.listId ?? '';
-        const cardId = userData.cardId ?? '';
-        const boardId = userData.boardId ?? '';
-        const content = userData.content ?? '';
-        const type = userData.type ?? '';
-
-        const board = await prisma.stack.findFirst({
-          where: { id: boardId, userId: context.uid },
-        });
-
-        if (!board) {
-          return data({ message: 'Forbidden' }, 403);
-        }
-
-        const row = await prisma.activity.create({
-          data: {
-            listId,
-            cardId,
-            boardId,
-            userId: context.uid,
-            content,
-            type,
-          },
-        });
-
-        return data({
-          code: 'activity:create:success',
-          message: 'success',
-          data: [row],
-        });
-      },
+        },
+      });
     },
   },
 });

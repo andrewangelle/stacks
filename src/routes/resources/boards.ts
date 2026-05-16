@@ -1,41 +1,43 @@
 import { createFileRoute } from '@tanstack/react-router';
-import { authResourceRouteMiddleware } from '~/auth/middleware';
 import { prisma } from '~/db/prisma';
+import { authResourceRouteMiddleware } from '~/middleware/auth';
+import { validateCreateBoardRequestMiddleware } from '~/middleware/boards';
 import { data } from '~/utils/response';
 
 export const Route = createFileRoute('/resources/boards')({
   server: {
     middleware: [authResourceRouteMiddleware],
 
-    handlers: {
-      async GET({ context }) {
-        const response = await prisma.stack.findMany({
-          where: { userId: context.uid },
-          orderBy: { createdAt: 'asc' },
-        });
+    handlers({ createHandlers }) {
+      return createHandlers({
+        async GET({ context }) {
+          const response = await prisma.stack.findMany({
+            where: { userId: context.uid },
+            orderBy: { createdAt: 'asc' },
+          });
 
-        return data(response);
-      },
+          return data(response);
+        },
 
-      async POST({ request, context }) {
-        const userData = await request.json();
-        const boardTitle = userData.boardTitle ?? '';
-        const boardColor = userData.boardColor ?? '';
+        POST: {
+          middleware: [validateCreateBoardRequestMiddleware],
+          async handler({ context }) {
+            const row = await prisma.stack.create({
+              data: {
+                boardTitle: context.boardTitle,
+                boardColor: context.boardColor,
+                userId: context.uid,
+              },
+            });
 
-        const row = await prisma.stack.create({
-          data: {
-            boardTitle,
-            boardColor,
-            userId: context.uid,
+            return data({
+              code: 'stacks:create:success',
+              message: 'success',
+              data: [row],
+            });
           },
-        });
-
-        return data({
-          code: 'stacks:create:success',
-          message: 'success',
-          data: [row],
-        });
-      },
+        },
+      });
     },
   },
 });

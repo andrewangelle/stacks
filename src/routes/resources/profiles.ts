@@ -1,6 +1,6 @@
 import { createFileRoute } from '@tanstack/react-router';
-import { authResourceRouteMiddleware } from '~/auth/middleware';
 import { prisma } from '~/db/prisma';
+import { authResourceRouteMiddleware } from '~/middleware/auth';
 import { data } from '~/utils/response';
 
 export const Route = createFileRoute('/resources/profiles')({
@@ -14,7 +14,10 @@ export const Route = createFileRoute('/resources/profiles')({
         });
 
         if (!profile) {
-          return data({ message: 'Not found' }, 404);
+          return data(
+            { message: 'Profile Not found' },
+            { status: 404, statusText: 'Not found' },
+          );
         }
 
         return data({

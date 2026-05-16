@@ -1,5 +1,5 @@
 import { createFileRoute, redirect } from '@tanstack/react-router';
-import { fetchUserId } from '~/auth/middleware';
+import { fetchUserId } from '~/middleware/auth';
 
 export const Route = createFileRoute('/')({
   async beforeLoad() {

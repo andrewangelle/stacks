@@ -1,7 +1,11 @@
-export function data(data: unknown, status = 200) {
+export function data(data: unknown, init?: ResponseInit) {
+  const options = init ?? {
+    status: 200,
+  };
   return new Response(JSON.stringify(data), {
-    status,
+    ...options,
     headers: {
+      ...options.headers,
       'Content-Type': 'application/json',
     },
   });
