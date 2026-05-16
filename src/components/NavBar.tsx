@@ -1,5 +1,5 @@
 import { Show, UserButton } from '@clerk/tanstack-react-start';
-import { useLocation, useParams } from '@tanstack/react-router';
+import { useLocation } from '@tanstack/react-router';
 import * as Ri from 'react-icons/ri';
 import { useGetBoardQuery } from '~/query/boards';
 import type { BoardBackground } from '~/styles/Boards';
@@ -7,8 +7,7 @@ import { LogoLink, NavBarContainer, Padding } from '~/styles/Page';
 
 export function NavBar() {
   const location = useLocation();
-  const params = useParams({ strict: false });
-  const board = useGetBoardQuery(params.id);
+  const board = useGetBoardQuery();
 
   const boardBackground = board.data?.boardColor ?? 'blue';
   const onAuthPath = location.pathname.startsWith('/auth');

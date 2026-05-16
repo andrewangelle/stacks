@@ -1,5 +1,6 @@
 import { useAuth } from '@clerk/tanstack-react-start';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { useParams } from '@tanstack/react-router';
 import { queryKeys } from '~/query/queryKeys';
 import { resourceRequest } from '~/query/resourceClient';
 
@@ -28,13 +29,14 @@ export function useGetBoardsQuery() {
   });
 }
 
-export function useGetBoardQuery(boardId: string | undefined) {
-  const normalizedBoardId = boardId ?? '';
+export function useGetBoardQuery() {
+  const params = useParams({ strict: false });
+  const boardId = params.id ?? '';
 
   return useQuery({
-    queryKey: queryKeys.board(normalizedBoardId),
+    queryKey: queryKeys.board(boardId),
     enabled: !!boardId,
-    queryFn: () => resourceRequest<Board>(`boards/${normalizedBoardId}`),
+    queryFn: () => resourceRequest<Board>(`boards/${boardId}`),
   });
 }
 

@@ -1,4 +1,5 @@
 import { useMutation, useQuery } from '@tanstack/react-query';
+import { useParams } from '@tanstack/react-router';
 import { queryClient } from '~/query/queryClient';
 import { queryKeys } from '~/query/queryKeys';
 import { resourceRequest } from '~/query/resourceClient';
@@ -9,8 +10,6 @@ export type List = {
   listTitle: string;
   userId: string;
 };
-
-type ListsArgs = { boardId?: string };
 
 type UpdateListArgs = {
   boardId: string;
@@ -28,15 +27,12 @@ type DeleteListArgs = {
   boardId: string;
 };
 
-export function useGetListsQuery(
-  args: ListsArgs,
-  options?: { skip?: boolean },
-) {
-  const boardId = args.boardId ?? '';
-
+export function useGetListsQuery() {
+  const params = useParams({ strict: false });
+  const boardId = params.id ?? '';
   return useQuery({
     queryKey: queryKeys.lists(boardId),
-    enabled: !options?.skip && !!args.boardId,
+    enabled: !!boardId,
     queryFn: () =>
       resourceRequest<List[]>('lists', {
         method: 'GET',

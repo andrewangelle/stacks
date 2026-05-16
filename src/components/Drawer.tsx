@@ -1,5 +1,5 @@
 import { useUser } from '@clerk/tanstack-react-start';
-import { useNavigate, useParams } from '@tanstack/react-router';
+import { useNavigate } from '@tanstack/react-router';
 import { type CSSProperties, useState } from 'react';
 import * as Io from 'react-icons/io';
 import * as Ri from 'react-icons/ri';
@@ -28,8 +28,7 @@ export const sharedDrawerArrowStyles: CSSProperties = {
 
 export function Drawer() {
   const { user } = useUser();
-  const params = useParams({ strict: false });
-  const { data: board } = useGetBoardQuery(params.id);
+  const { data: board } = useGetBoardQuery();
   const [isDrawerOpen, setDrawerOpen] = useState(false);
   const navigate = useNavigate();
   const { data: boards } = useGetBoardsQuery();

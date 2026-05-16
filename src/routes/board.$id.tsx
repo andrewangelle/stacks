@@ -1,4 +1,4 @@
-import { createFileRoute, redirect, useParams } from '@tanstack/react-router';
+import { createFileRoute, redirect } from '@tanstack/react-router';
 import { AddLists } from '~/components/AddList';
 import { DragDropList } from '~/components/DragDropList';
 import { Drawer } from '~/components/Drawer';
@@ -20,12 +20,8 @@ export const Route = createFileRoute('/board/$id')({
     }
   },
   component() {
-    const params = useParams({ strict: false });
-    const { data: board } = useGetBoardQuery(params.id);
-    const { data: lists = [] } = useGetListsQuery(
-      { boardId: params.id },
-      { skip: !params.id },
-    );
+    const { data: board } = useGetBoardQuery();
+    const { data: lists = [] } = useGetListsQuery();
 
     return (
       <>
