@@ -2,8 +2,8 @@ import * as Popover from '@radix-ui/react-popover';
 import { useParams } from '@tanstack/react-router';
 import { useState } from 'react';
 import * as Bs from 'react-icons/bs';
-import { useCreateActivityMutation } from '~/store/activityApi';
-import { useCreateChecklistMutation } from '~/store/checklistsApi';
+import { useCreateActivityMutation } from '~/query/activityApi';
+import { useCreateChecklistMutation } from '~/query/checklistsApi';
 import { CreateBoardCloseBorder, PopoverClose } from '~/styles/Boards';
 import {
   CardModalSiderButton,

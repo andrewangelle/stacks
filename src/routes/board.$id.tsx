@@ -5,8 +5,8 @@ import { DragDropList } from '~/components/DragDropList';
 import { Drawer } from '~/components/Drawer';
 import { ListCard } from '~/components/ListCard';
 import { NavBar } from '~/components/NavBar';
-import { useGetBoardQuery } from '~/store/boardsApi';
-import { useGetListsQuery } from '~/store/listsApi';
+import { useGetBoardQuery } from '~/query/boardsApi';
+import { useGetListsQuery } from '~/query/listsApi';
 import { BoardPageBackground, Flex, Padding } from '~/styles/Page';
 
 export const Route = createFileRoute('/board/$id')({

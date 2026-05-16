@@ -3,8 +3,8 @@ import { useState } from 'react';
 import { CardModal } from '~/components/CardModal';
 import { DeleteListPopover } from '~/components/DeleteListPopover';
 import { DragDropCard } from '~/components/DragDropCard';
-import { useCreateCardMutation, useGetCardsQuery } from '~/store/cardsApi';
-import { type List, useUpdateListMutation } from '~/store/listsApi';
+import { useCreateCardMutation, useGetCardsQuery } from '~/query/cardsApi';
+import { type List, useUpdateListMutation } from '~/query/listsApi';
 import {
   AddCardButton,
   AddCardInput,

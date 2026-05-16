@@ -2,7 +2,7 @@ import * as Popover from '@radix-ui/react-popover';
 import {
   type ChecklistType,
   useDeleteChecklistMutation,
-} from '~/store/checklistsApi';
+} from '~/query/checklistsApi';
 import { CreateBoardCloseBorder, PopoverClose } from '~/styles/Boards';
 import {
   ChecklistPopoverHeader,

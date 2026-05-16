@@ -1,7 +1,7 @@
 import * as Popover from '@radix-ui/react-popover';
 import { useState } from 'react';
 import * as Fa from 'react-icons/fa';
-import { useCreateBoardMutation } from '~/store/boardsApi';
+import { useCreateBoardMutation } from '~/query/boardsApi';
 import {
   type BoardBackground,
   CreateBoardBackgroundChoice,

@@ -5,7 +5,7 @@ import { CardModalChecklists } from '~/components/CardModalChecklists';
 import { CardModalDescription } from '~/components/CardModalDescription';
 import { CreateChecklist } from '~/components/CreateChecklist';
 import { DeleteCardPopover } from '~/components/DeleteCardPopover';
-import { type ListCardType, useUpdateCardMutation } from '~/store/cardsApi';
+import { type ListCardType, useUpdateCardMutation } from '~/query/cardsApi';
 import {
   CardModalClose,
   CardModalContent,

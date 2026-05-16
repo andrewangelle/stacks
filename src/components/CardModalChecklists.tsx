@@ -8,11 +8,11 @@ import {
   type ChecklistItemType,
   useCreateChecklistItemMutation,
   useGetChecklistItemsQuery,
-} from '~/store/checklistItemsApi';
+} from '~/query/checklistItemsApi';
 import {
   type ChecklistType,
   useGetChecklistsQuery,
-} from '~/store/checklistsApi';
+} from '~/query/checklistsApi';
 import {
   AddChecklistButton,
   AddChecklistItemButton,

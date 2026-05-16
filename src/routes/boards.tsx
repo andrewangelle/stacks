@@ -3,7 +3,7 @@ import { createFileRoute, redirect, useNavigate } from '@tanstack/react-router';
 import { fetchUserId } from '~/auth/middleware';
 import { CreateBoard } from '~/components/CreateBoard';
 import { NavBar } from '~/components/NavBar';
-import { useGetBoardsQuery } from '~/store/boardsApi';
+import { useGetBoardsQuery } from '~/query/boardsApi';
 import {
   type BoardBackground,
   BoardCardContainer,

@@ -1,7 +1,7 @@
 import { Show, UserButton } from '@clerk/tanstack-react-start';
 import { useLocation, useParams } from '@tanstack/react-router';
 import * as Ri from 'react-icons/ri';
-import { useGetBoardQuery } from '~/store/boardsApi';
+import { useGetBoardQuery } from '~/query/boardsApi';
 import type { BoardBackground } from '~/styles/Boards';
 import { LogoLink, NavBarContainer, Padding } from '~/styles/Page';
 

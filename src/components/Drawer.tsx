@@ -3,7 +3,7 @@ import { useNavigate, useParams } from '@tanstack/react-router';
 import { type CSSProperties, useState } from 'react';
 import * as Io from 'react-icons/io';
 import * as Ri from 'react-icons/ri';
-import { useGetBoardQuery, useGetBoardsQuery } from '~/store/boardsApi';
+import { useGetBoardQuery, useGetBoardsQuery } from '~/query/boardsApi';
 import {
   BoardsLinkContainer,
   BoardTitle,

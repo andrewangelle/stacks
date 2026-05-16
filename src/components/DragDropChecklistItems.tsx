@@ -3,7 +3,7 @@ import { useDrag, useDrop } from 'react-dnd';
 import {
   type ChecklistItemType,
   reorderChecklistItems,
-} from '~/store/checklistItemsApi';
+} from '~/query/checklistItemsApi';
 
 type DragDropChecklistItemProps = {
   id: string;

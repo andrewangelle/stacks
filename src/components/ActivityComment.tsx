@@ -6,8 +6,8 @@ import { DeleteCommentPopover } from '~/components/DeleteCommentPopover';
 import {
   type ActivityType,
   useUpdateActivityMutation,
-} from '~/store/activityApi';
-import { useGetProfileQuery } from '~/store/profileApi';
+} from '~/query/activityApi';
+import { useGetProfileQuery } from '~/query/profileApi';
 import {
   ActivityCommentContainer,
   ActivityCommentContent,
