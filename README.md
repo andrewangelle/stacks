@@ -1,6 +1,8 @@
 # stacks - a trello clone 
 
-- Built with [Tanstack Start](https://tanstack.com/start/latest), [React](https://react.dev/), [Neon](https://neon.com/)
+[Try it out](https://stacks-app.fyi)
+
+- Built with [Tanstack Start](https://tanstack.com/start/latest), [React](https://react.dev/), [Neon](https://neon.com/), [Clerk](https://clerk.com/)
 - Deployed with [Netlify](https://www.netlify.com/)
 
 <img src="public/screenshot1.png" />
