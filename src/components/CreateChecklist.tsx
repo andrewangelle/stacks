@@ -2,8 +2,8 @@ import * as Popover from '@radix-ui/react-popover';
 import { useParams } from '@tanstack/react-router';
 import { useState } from 'react';
 import * as Bs from 'react-icons/bs';
-import { useCreateActivityMutation } from '~/store/activityApi';
-import { useCreateChecklistMutation } from '~/store/checklistsApi';
+import { useCreateActivityMutation } from '~/query/activity';
+import { useCreateChecklistMutation } from '~/query/checklists';
 import { CreateBoardCloseBorder, PopoverClose } from '~/styles/Boards';
 import {
   CardModalSiderButton,
@@ -45,29 +45,37 @@ export function CreateChecklist({ listId, cardId }: CreateChecklistProps) {
 
   return (
     <Popover.Root>
-      <CreateChecklistPopoverTrigger>
-        <CardModalSiderButton>
+      <CreateChecklistPopoverTrigger data-testid="CreateChecklistPopoverTrigger">
+        <CardModalSiderButton data-testid="CardModalSiderButton">
           <Bs.BsCheck2Square style={{ marginRight: '4px' }} />
-          <CardModalSiderButtonText>Checklist</CardModalSiderButtonText>
+          <CardModalSiderButtonText data-testid="CardModalSiderButtonText">
+            Checklist
+          </CardModalSiderButtonText>
         </CardModalSiderButton>
       </CreateChecklistPopoverTrigger>
 
-      <ChecklistPopoverContent>
-        <ChecklistPopoverHeader>
+      <ChecklistPopoverContent data-testid="ChecklistPopoverContent">
+        <ChecklistPopoverHeader data-testid="ChecklistPopoverHeader">
           Add checklist
-          <PopoverClose>X</PopoverClose>
+          <PopoverClose data-testid="PopoverClose">X</PopoverClose>
         </ChecklistPopoverHeader>
 
-        <CreateBoardCloseBorder />
+        <CreateBoardCloseBorder data-testid="CreateBoardCloseBorder" />
 
-        <CreateChecklistTitle>Title</CreateChecklistTitle>
+        <CreateChecklistTitle data-testid="CreateChecklistTitle">
+          Title
+        </CreateChecklistTitle>
 
         <CreateChecklistInput
+          data-testid="CreateChecklistInput"
           value={checklistTitle}
           onChange={(event) => setChecklistTitle(event.target.value)}
         />
 
-        <CreateChecklistAddButton onClick={addChecklist}>
+        <CreateChecklistAddButton
+          data-testid="CreateChecklistAddButton"
+          onClick={addChecklist}
+        >
           Add
         </CreateChecklistAddButton>
       </ChecklistPopoverContent>

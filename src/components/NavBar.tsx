@@ -1,9 +1,9 @@
 import { Show, UserButton } from '@clerk/tanstack-react-start';
 import { useLocation, useParams } from '@tanstack/react-router';
 import * as Ri from 'react-icons/ri';
-import { useGetBoardQuery } from '~/store/boardsApi';
+import { useGetBoardQuery } from '~/query/boards';
 import type { BoardBackground } from '~/styles/Boards';
-import { NavBarContainer, Padding } from '~/styles/Page';
+import { LogoLink, NavBarContainer, Padding } from '~/styles/Page';
 
 export function NavBar() {
   const location = useLocation();
@@ -20,7 +20,10 @@ export function NavBar() {
       : boardBackground;
 
   return (
-    <NavBarContainer background={background as BoardBackground}>
+    <NavBarContainer
+      data-testid="NavBarContainer"
+      background={background as BoardBackground}
+    >
       <div data-testid="column-placeholder" />
       <Logo />
 
@@ -39,18 +42,12 @@ export function NavBar() {
 
 function Logo() {
   return (
-    <div
-      style={{
-        display: 'flex',
-        alignItems: 'center',
-        gap: '8px',
-      }}
-    >
+    <LogoLink data-testid="LogoLink">
       <Ri.RiTrelloFill
         size={18}
         style={{ color: 'white', verticalAlign: '-webkit-baseline-middle' }}
       />
       <span style={{ verticalAlign: 'bottom' }}>stacks - a trello clone</span>
-    </div>
+    </LogoLink>
   );
 }

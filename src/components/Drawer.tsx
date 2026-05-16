@@ -3,7 +3,7 @@ import { useNavigate, useParams } from '@tanstack/react-router';
 import { type CSSProperties, useState } from 'react';
 import * as Io from 'react-icons/io';
 import * as Ri from 'react-icons/ri';
-import { useGetBoardQuery, useGetBoardsQuery } from '~/store/boardsApi';
+import { useGetBoardQuery, useGetBoardsQuery } from '~/query/boards';
 import {
   BoardsLinkContainer,
   BoardTitle,
@@ -33,6 +33,8 @@ export function Drawer() {
   const [isDrawerOpen, setDrawerOpen] = useState(false);
   const navigate = useNavigate();
   const { data: boards } = useGetBoardsQuery();
+  const userName = user?.firstName ?? user?.primaryEmailAddress?.emailAddress;
+  const workspaceName = userName ? `${userName}'s workspace` : 'Your workspace';
   return (
     <>
       {!isDrawerOpen && (
@@ -46,15 +48,17 @@ export function Drawer() {
           size={24}
         />
       )}
-      <DrawerContainer isOpen={isDrawerOpen} background={board?.boardColor}>
+      <DrawerContainer
+        data-testid="DrawerContainer"
+        isOpen={isDrawerOpen}
+        background={board?.boardColor}
+      >
         {isDrawerOpen && (
           <>
-            <DrawerHeader>
+            <DrawerHeader data-testid="DrawerHeader">
               {user && (
-                <DrawerHeaderTitle>
-                  <div>
-                    {user.emailAddresses[0].emailAddress}&apos;s workspace
-                  </div>
+                <DrawerHeaderTitle data-testid="DrawerHeaderTitle">
+                  <div>{workspaceName}</div>
                 </DrawerHeaderTitle>
               )}
               <Io.IoIosArrowBack
@@ -67,30 +71,39 @@ export function Drawer() {
               />
             </DrawerHeader>
 
-            <BoardsLinkContainer>
+            <BoardsLinkContainer
+              data-testid="BoardsLinkContainer"
+              onClick={() => navigate({ to: '/boards' })}
+            >
               <Ri.RiTrelloFill
                 size={18}
                 style={{ color: 'white', padding: '8px' }}
               />
-              <YourBoardsTitle onClick={() => navigate({ to: '/boards' })}>
+              <YourBoardsTitle data-testid="YourBoardsTitle">
                 Boards
               </YourBoardsTitle>
             </BoardsLinkContainer>
 
-            <YourBoardsTitle>Your boards</YourBoardsTitle>
+            <YourBoardsTitle data-testid="YourBoardsTitle">
+              Your boards
+            </YourBoardsTitle>
 
-            <FlexColumn>
+            <FlexColumn data-testid="FlexColumn">
               {boards?.map((boardEntry) => {
                 return (
                   <DrawerBoardEntry
+                    data-testid="DrawerBoardEntry"
                     key={boardEntry.id}
                     isSelected={boardEntry.id === board?.id}
                     onClick={() => navigate({ to: `/board/${boardEntry.id}` })}
                   >
                     <CreateBoardBackgroundChoice
+                      data-testid="CreateBoardBackgroundChoice"
                       background={boardEntry.boardColor as BoardBackground}
                     />
-                    <BoardTitle>{boardEntry.boardTitle}</BoardTitle>
+                    <BoardTitle data-testid="BoardTitle">
+                      {boardEntry.boardTitle}
+                    </BoardTitle>
                   </DrawerBoardEntry>
                 );
               })}

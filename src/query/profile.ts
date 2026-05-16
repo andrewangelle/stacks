@@ -1,6 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
-import { queryKeys } from '~/store/queryKeys';
-import { resourceRequest } from '~/store/resourceClient';
+import { queryKeys } from '~/query/queryKeys';
+import { resourceRequest } from '~/query/resourceClient';
 
 export type ProfileType = {
   id: string;

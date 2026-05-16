@@ -1,7 +1,7 @@
 import { useAuth } from '@clerk/tanstack-react-start';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { queryKeys } from '~/store/queryKeys';
-import { resourceRequest } from '~/store/resourceClient';
+import { queryKeys } from '~/query/queryKeys';
+import { resourceRequest } from '~/query/resourceClient';
 
 export type Board = {
   id: string;

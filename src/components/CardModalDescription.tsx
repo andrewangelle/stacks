@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import * as Io from 'react-icons/io';
-import { useUpdateCardMutation } from '~/store/cardsApi';
+import { useUpdateCardMutation } from '~/query/cards';
 import {
   CardDescriptionText,
   CardModalTitle,
@@ -32,25 +32,36 @@ export function CardModalDescription({
 
   const placeHolderText = 'Add a more detailed description...';
   return (
-    <DescriptionContainer>
-      <Flex>
+    <DescriptionContainer data-testid="DescriptionContainer">
+      <Flex data-testid="Flex">
         <Io.IoMdList size={24} />
 
-        <CardModalTitle>Description</CardModalTitle>
+        <CardModalTitle data-testid="CardModalTitle">
+          Description
+        </CardModalTitle>
 
         {cardDescription && !isEditing && (
-          <EditDescriptionButton secondary onClick={() => setEditing(true)}>
+          <EditDescriptionButton
+            data-testid="EditDescriptionButton"
+            secondary
+            onClick={() => setEditing(true)}
+          >
             Edit
           </EditDescriptionButton>
         )}
       </Flex>
 
       {cardDescription && !isEditing && (
-        <CardDescriptionText>{cardDescription}</CardDescriptionText>
+        <CardDescriptionText data-testid="CardDescriptionText">
+          {cardDescription}
+        </CardDescriptionText>
       )}
 
       {!isEditing && !cardDescription && (
-        <DescriptionPlaceholder onClick={() => setEditing(true)}>
+        <DescriptionPlaceholder
+          data-testid="DescriptionPlaceholder"
+          onClick={() => setEditing(true)}
+        >
           {placeHolderText}
         </DescriptionPlaceholder>
       )}
@@ -58,13 +69,15 @@ export function CardModalDescription({
       {isEditing && (
         <>
           <DescriptionInput
+            data-testid="DescriptionInput"
             value={description}
             onChange={(event) => setDescription(event.target.value)}
             placeholder={placeHolderText}
           />
 
-          <Flex>
+          <Flex data-testid="Flex">
             <SaveDescriptionButton
+              data-testid="SaveDescriptionButton"
               onClick={() => {
                 updateCard({
                   cardId,
@@ -78,7 +91,11 @@ export function CardModalDescription({
               Save
             </SaveDescriptionButton>
 
-            <CloseDescriptionButton secondary onClick={() => setEditing(false)}>
+            <CloseDescriptionButton
+              data-testid="CloseDescriptionButton"
+              secondary
+              onClick={() => setEditing(false)}
+            >
               X
             </CloseDescriptionButton>
           </Flex>

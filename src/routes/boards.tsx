@@ -3,7 +3,7 @@ import { createFileRoute, redirect, useNavigate } from '@tanstack/react-router';
 import { fetchUserId } from '~/auth/middleware';
 import { CreateBoard } from '~/components/CreateBoard';
 import { NavBar } from '~/components/NavBar';
-import { useGetBoardsQuery } from '~/store/boardsApi';
+import { useGetBoardsQuery } from '~/query/boards';
 import {
   type BoardBackground,
   BoardCardContainer,
@@ -29,9 +29,10 @@ export const Route = createFileRoute('/boards')({
       <>
         <NavBar />
         <Padding padding="50px 30px 30px">
-          <BoardsContainer>
+          <BoardsContainer data-testid="BoardsContainer">
             {boards.map((board) => (
               <BoardCardContainer
+                data-testid="BoardCardContainer"
                 key={board.id}
                 background={board.boardColor as BoardBackground}
                 onClick={() => navigate({ to: `/board/${board.id}` })}

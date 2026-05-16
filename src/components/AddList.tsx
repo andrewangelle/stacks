@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useCreateListMutation } from '~/store/listsApi';
+import { useCreateListMutation } from '~/query/lists';
 import {
   AddListButton,
   AddListContainer,
@@ -26,7 +26,7 @@ export function AddLists({ boardId }: AddListsProps) {
   }
 
   return (
-    <AddListContainer isEditing={isEditing}>
+    <AddListContainer data-testid="AddListContainer" isEditing={isEditing}>
       {!isEditing && (
         <button
           type="button"
@@ -39,12 +39,19 @@ export function AddLists({ boardId }: AddListsProps) {
       {isEditing && (
         <>
           <AddListInput
+            data-testid="AddListInput"
             value={listName}
             onChange={(event) => setListName(event.target.value)}
           />
-          <Flex style={{ margin: '0' }}>
-            <AddListButton onClick={onListCreate}>Add list</AddListButton>
-            <CloseAddListButton secondary onClick={() => setEditing(false)}>
+          <Flex data-testid="Flex" style={{ margin: '0' }}>
+            <AddListButton data-testid="AddListButton" onClick={onListCreate}>
+              Add list
+            </AddListButton>
+            <CloseAddListButton
+              data-testid="CloseAddListButton"
+              secondary
+              onClick={() => setEditing(false)}
+            >
               X
             </CloseAddListButton>
           </Flex>

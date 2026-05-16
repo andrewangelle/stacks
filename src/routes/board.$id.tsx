@@ -5,8 +5,8 @@ import { DragDropList } from '~/components/DragDropList';
 import { Drawer } from '~/components/Drawer';
 import { ListCard } from '~/components/ListCard';
 import { NavBar } from '~/components/NavBar';
-import { useGetBoardQuery } from '~/store/boardsApi';
-import { useGetListsQuery } from '~/store/listsApi';
+import { useGetBoardQuery } from '~/query/boards';
+import { useGetListsQuery } from '~/query/lists';
 import { BoardPageBackground, Flex, Padding } from '~/styles/Page';
 
 export const Route = createFileRoute('/board/$id')({
@@ -31,11 +31,14 @@ export const Route = createFileRoute('/board/$id')({
       <>
         <NavBar />
 
-        <BoardPageBackground background={board?.boardColor}>
+        <BoardPageBackground
+          data-testid="BoardPageBackground"
+          background={board?.boardColor}
+        >
           <Drawer />
 
           <Padding padding="50px 30px 30px">
-            <Flex>
+            <Flex data-testid="Flex">
               {lists?.map((list) => (
                 <DragDropList
                   key={list.id}

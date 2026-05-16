@@ -8,8 +8,8 @@ import { ActivityLogo } from '~/components/ActivityLogo';
 import {
   useCreateActivityMutation,
   useGetActivityQuery,
-} from '~/store/activityApi';
-import { useGetProfileQuery } from '~/store/profileApi';
+} from '~/query/activity';
+import { useGetProfileQuery } from '~/query/profile';
 import {
   ActivityCommentContainer,
   ActivityContainer,
@@ -51,12 +51,13 @@ export function CardModalActivity({ listId, cardId }: CardModalActivityProps) {
 
   return (
     <div>
-      <ActivityHeader>
-        <Flex>
+      <ActivityHeader data-testid="ActivityHeader">
+        <Flex data-testid="Flex">
           <Md.MdOutlineFormatListBulleted size={24} />
-          <CardModalTitle>Activity</CardModalTitle>
+          <CardModalTitle data-testid="CardModalTitle">Activity</CardModalTitle>
         </Flex>
         <HideActivityButton
+          data-testid="HideActivityButton"
           secondary
           onClick={() => setShowActivity((prev) => !prev)}
         >
@@ -64,16 +65,22 @@ export function CardModalActivity({ listId, cardId }: CardModalActivityProps) {
         </HideActivityButton>
       </ActivityHeader>
 
-      <ActivityContainer>
-        <Flex>
+      <ActivityContainer data-testid="ActivityContainer">
+        <Flex data-testid="Flex">
           <ActivityLogo />
           <AddActivityInput
+            data-testid="AddActivityInput"
             value={comment}
             onChange={(event) => setComment(event.target.value)}
             placeholder="Write a comment..."
           />
         </Flex>
-        <SaveCommentButton onClick={createComment}>Save</SaveCommentButton>
+        <SaveCommentButton
+          data-testid="SaveCommentButton"
+          onClick={createComment}
+        >
+          Save
+        </SaveCommentButton>
       </ActivityContainer>
 
       {data
@@ -91,10 +98,13 @@ export function CardModalActivity({ listId, cardId }: CardModalActivityProps) {
               new Date(comment.createdAt),
             );
             return (
-              <ActivityContainer key={comment.id}>
-                <Flex>
+              <ActivityContainer
+                data-testid="ActivityContainer"
+                key={comment.id}
+              >
+                <Flex data-testid="Flex">
                   <ActivityLogo />
-                  <ActivityCommentContainer>
+                  <ActivityCommentContainer data-testid="ActivityCommentContainer">
                     <div style={{ marginLeft: '8px' }}>
                       <strong>
                         {profile.data?.firstName} {profile.data?.lastName}

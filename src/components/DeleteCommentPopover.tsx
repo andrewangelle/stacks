@@ -1,8 +1,5 @@
 import * as Popover from '@radix-ui/react-popover';
-import {
-  type ActivityType,
-  useDeleteActivityMutation,
-} from '~/store/activityApi';
+import { type ActivityType, useDeleteActivityMutation } from '~/query/activity';
 import { CreateBoardCloseBorder, PopoverClose } from '~/styles/Boards';
 import {
   ChecklistPopoverHeader,
@@ -15,7 +12,7 @@ export function DeleteCommentPopover(props: ActivityType) {
   const [deleteActivity] = useDeleteActivityMutation();
   return (
     <Popover.Root>
-      <DeleteChecklistPopoverTrigger>
+      <DeleteChecklistPopoverTrigger data-testid="DeleteChecklistPopoverTrigger">
         <div
           style={{
             textDecoration: 'underline',
@@ -27,14 +24,15 @@ export function DeleteCommentPopover(props: ActivityType) {
         </div>
       </DeleteChecklistPopoverTrigger>
 
-      <DeleteChecklistPopoverContent>
-        <ChecklistPopoverHeader>
+      <DeleteChecklistPopoverContent data-testid="DeleteChecklistPopoverContent">
+        <ChecklistPopoverHeader data-testid="ChecklistPopoverHeader">
           {'Delete comment'}
-          <PopoverClose>X</PopoverClose>
+          <PopoverClose data-testid="PopoverClose">X</PopoverClose>
         </ChecklistPopoverHeader>
-        <CreateBoardCloseBorder />
+        <CreateBoardCloseBorder data-testid="CreateBoardCloseBorder" />
         Deleting a comment is permanent and there is no way to get it back.
         <DeleteChecklistPopoverButton
+          data-testid="DeleteChecklistPopoverButton"
           onClick={() =>
             deleteActivity({
               id: props.id,

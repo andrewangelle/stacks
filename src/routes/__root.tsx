@@ -10,7 +10,7 @@ import {
 import type { ReactNode } from 'react';
 import { DndProvider } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
-import { queryClient } from '~/store/queryClient';
+import { queryClient } from '~/query/queryClient';
 import GlobalFonts from '~/styles/GlobalFonts';
 
 export const Route = createRootRoute({

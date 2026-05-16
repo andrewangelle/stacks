@@ -1,7 +1,7 @@
 import { useMutation, useQuery } from '@tanstack/react-query';
-import { queryClient } from '~/store/queryClient';
-import { queryKeys } from '~/store/queryKeys';
-import { resourceRequest } from '~/store/resourceClient';
+import { queryClient } from '~/query/queryClient';
+import { queryKeys } from '~/query/queryKeys';
+import { resourceRequest } from '~/query/resourceClient';
 
 export type ActivityType = {
   id: string;

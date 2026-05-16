@@ -1,6 +1,6 @@
 import * as Popover from '@radix-ui/react-popover';
 import { useParams } from '@tanstack/react-router';
-import { useDeleteListMutation } from '~/store/listsApi';
+import { useDeleteListMutation } from '~/query/lists';
 import { CreateBoardCloseBorder, PopoverClose } from '~/styles/Boards';
 import {
   ChecklistPopoverHeader,
@@ -20,18 +20,19 @@ export function DeleteListPopover({ id, listTitle }: DeleteListPopoverProps) {
   const [deleteList] = useDeleteListMutation();
   return (
     <Popover.Root>
-      <DeleteCardPopoverTrigger>
-        <DeleteListIcon />
+      <DeleteCardPopoverTrigger data-testid="DeleteCardPopoverTrigger">
+        <DeleteListIcon data-testid="DeleteListIcon" />
       </DeleteCardPopoverTrigger>
 
-      <DeleteChecklistPopoverContent>
-        <ChecklistPopoverHeader>
+      <DeleteChecklistPopoverContent data-testid="DeleteChecklistPopoverContent">
+        <ChecklistPopoverHeader data-testid="ChecklistPopoverHeader">
           {`Delete ${listTitle}`}
-          <PopoverClose>X</PopoverClose>
+          <PopoverClose data-testid="PopoverClose">X</PopoverClose>
         </ChecklistPopoverHeader>
-        <CreateBoardCloseBorder />
+        <CreateBoardCloseBorder data-testid="CreateBoardCloseBorder" />
         Deleting a list is permanent and there is no way to get it back.
         <DeleteChecklistPopoverButton
+          data-testid="DeleteChecklistPopoverButton"
           onClick={() => {
             deleteList({
               id,

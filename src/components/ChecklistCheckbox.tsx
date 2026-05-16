@@ -7,12 +7,12 @@ import { useOutsideClick } from '~/utils/useOutsideClick';
 const AiOutlineCheck = AiIcons.AiOutlineCheck;
 const AiOutlineEllipsis = AiIcons.AiOutlineEllipsis;
 
-import { useCreateActivityMutation } from '~/store/activityApi';
-import type { ChecklistItemType } from '~/store/checklistItemsApi';
+import { useCreateActivityMutation } from '~/query/activity';
+import type { ChecklistItemType } from '~/query/checklistItems';
 import {
   useDeleteChecklistItemMutation,
   useUpdateChecklistItemMutation,
-} from '~/store/checklistItemsApi';
+} from '~/query/checklistItems';
 import { CreateBoardCloseBorder, PopoverClose } from '~/styles/Boards';
 import {
   AddChecklistButton,
@@ -52,11 +52,13 @@ export function ChecklistCheckbox(props: ChecklistItemType) {
 
   return (
     <ChecklistCheckboxContainer
+      data-testid="ChecklistCheckboxContainer"
       isHovering={isHovering}
       onMouseOver={() => setHovering(true)}
       onMouseOut={() => setHovering(false)}
     >
       <CheckboxRoot
+        data-testid="CheckboxRoot"
         checked={props.isCompleted}
         style={{
           height: 16,
@@ -81,13 +83,14 @@ export function ChecklistCheckbox(props: ChecklistItemType) {
           });
         }}
       >
-        <CheckboxIndicator>
+        <CheckboxIndicator data-testid="CheckboxIndicator">
           <AiOutlineCheck style={checkIconStyles} />
         </CheckboxIndicator>
       </CheckboxRoot>
 
       {!isEditingLabel && (
         <CheckboxLabel
+          data-testid="CheckboxLabel"
           checked={props.isCompleted}
           onClick={() => setIsEditingLabel(true)}
         >
@@ -98,12 +101,14 @@ export function ChecklistCheckbox(props: ChecklistItemType) {
       {isEditingLabel && (
         <>
           <AddChecklistItemInput
+            data-testid="AddChecklistItemInput"
             value={editedLabel}
             onChange={(event) => setEditedLabel(event.target.value)}
             placeholder={editedLabel}
           />
-          <Flex style={{ marginLeft: '20px' }}>
+          <Flex data-testid="Flex" style={{ marginLeft: '20px' }}>
             <AddChecklistButton
+              data-testid="AddChecklistButton"
               onClick={() => {
                 updateItem({
                   id: props.id,
@@ -119,6 +124,7 @@ export function ChecklistCheckbox(props: ChecklistItemType) {
               Save
             </AddChecklistButton>
             <CloseDescriptionButton
+              data-testid="CloseDescriptionButton"
               secondary
               onClick={() => setIsEditingLabel(false)}
             >
@@ -130,24 +136,31 @@ export function ChecklistCheckbox(props: ChecklistItemType) {
 
       <span ref={outsideClickRef}>
         <Popover.Root open={isDeleteOpen}>
-          <DeleteChecklistPopoverTrigger>
+          <DeleteChecklistPopoverTrigger data-testid="DeleteChecklistPopoverTrigger">
             <AiOutlineEllipsis
               onClick={() => setDeleteOpen(true)}
               style={{ position: 'absolute', right: 5, top: 15 }}
             />
           </DeleteChecklistPopoverTrigger>
 
-          <DeleteChecklistPopoverContent side="right">
-            <ChecklistPopoverHeader>
+          <DeleteChecklistPopoverContent
+            data-testid="DeleteChecklistPopoverContent"
+            side="right"
+          >
+            <ChecklistPopoverHeader data-testid="ChecklistPopoverHeader">
               Item actions
-              <PopoverClose onClick={() => setDeleteOpen(false)}>
+              <PopoverClose
+                data-testid="PopoverClose"
+                onClick={() => setDeleteOpen(false)}
+              >
                 X
               </PopoverClose>
             </ChecklistPopoverHeader>
 
-            <CreateBoardCloseBorder />
+            <CreateBoardCloseBorder data-testid="CreateBoardCloseBorder" />
 
             <DeleteChecklistPopoverButton
+              data-testid="DeleteChecklistPopoverButton"
               onClick={() =>
                 deleteChecklistItem({
                   id: props.id,

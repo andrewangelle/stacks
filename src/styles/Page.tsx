@@ -1,4 +1,5 @@
 import { styled } from '@pigment-css/react';
+import { Link } from '@tanstack/react-router';
 import type { ReactNode } from 'react';
 import type { BackgroundProps } from '~/styles/Boards';
 import { blue } from '~/styles/tokens';
@@ -173,3 +174,13 @@ export const LogOutText = styled.div`
   top: 25%;
   cursor: pointer;
 `;
+
+export const LogoLink = styled(Link)({
+  textDecoration: 'none',
+  color: 'white',
+  cursor: 'pointer',
+  display: 'flex',
+  alignItems: 'center',
+  gap: '8px',
+  minHeight: 'unset',
+});

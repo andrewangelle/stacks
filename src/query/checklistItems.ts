@@ -1,8 +1,8 @@
 import { useMutation, useQuery } from '@tanstack/react-query';
-import type { ChecklistType } from '~/store/checklistsApi';
-import { queryClient } from '~/store/queryClient';
-import { queryKeys } from '~/store/queryKeys';
-import { resourceRequest } from '~/store/resourceClient';
+import type { ChecklistType } from '~/query/checklists';
+import { queryClient } from '~/query/queryClient';
+import { queryKeys } from '~/query/queryKeys';
+import { resourceRequest } from '~/query/resourceClient';
 
 export type ChecklistItemType = {
   id: string;

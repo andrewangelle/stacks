@@ -1,6 +1,6 @@
 import { type ReactNode, type RefObject, useRef } from 'react';
 import { useDrag, useDrop } from 'react-dnd';
-import { type ListCardType, reorderCards } from '~/store/cardsApi';
+import { type ListCardType, reorderCards } from '~/query/cards';
 
 type DragDropCardProps = {
   id: string;

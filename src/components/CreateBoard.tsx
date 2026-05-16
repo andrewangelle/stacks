@@ -1,7 +1,7 @@
 import * as Popover from '@radix-ui/react-popover';
 import { useState } from 'react';
 import * as Fa from 'react-icons/fa';
-import { useCreateBoardMutation } from '~/store/boardsApi';
+import { useCreateBoardMutation } from '~/query/boards';
 import {
   type BoardBackground,
   CreateBoardBackgroundChoice,
@@ -51,33 +51,45 @@ export function CreateBoard({ userId }: CreateBoardProps) {
 
   return (
     <Popover.Root open={isCreateOpen}>
-      <CreateBoardPopoverTrigger>
+      <CreateBoardPopoverTrigger data-testid="CreateBoardPopoverTrigger">
         <CreateBoardCard
+          data-testid="CreateBoardCard"
           onClick={() => setCreateOpen((prevState) => !prevState)}
         >
           Create new board
         </CreateBoardCard>
       </CreateBoardPopoverTrigger>
 
-      <CreateBoardPopoverContent side="bottom">
-        <CreateBoardPopoverHeader>
+      <CreateBoardPopoverContent
+        data-testid="CreateBoardPopoverContent"
+        side="bottom"
+      >
+        <CreateBoardPopoverHeader data-testid="CreateBoardPopoverHeader">
           Create Board
-          <PopoverClose onClick={() => setCreateOpen(false)}>X</PopoverClose>
+          <PopoverClose
+            data-testid="PopoverClose"
+            onClick={() => setCreateOpen(false)}
+          >
+            X
+          </PopoverClose>
         </CreateBoardPopoverHeader>
 
-        <CreateBoardCloseBorder />
+        <CreateBoardCloseBorder data-testid="CreateBoardCloseBorder" />
 
-        <CreateBoardBackgroundText>Background</CreateBoardBackgroundText>
+        <CreateBoardBackgroundText data-testid="CreateBoardBackgroundText">
+          Background
+        </CreateBoardBackgroundText>
 
-        <CreateBoardBackgroundChoices>
+        <CreateBoardBackgroundChoices data-testid="CreateBoardBackgroundChoices">
           {backgroundChoices.map((color) => (
             <CreateBoardBackgroundChoice
+              data-testid="CreateBoardBackgroundChoice"
               key={color}
               background={color}
               onClick={() => setSelectedColor(color)}
             >
               {color === selectedColor && (
-                <Center>
+                <Center data-testid="Center">
                   <Fa.FaCheck />
                 </Center>
               )}
@@ -85,14 +97,21 @@ export function CreateBoard({ userId }: CreateBoardProps) {
           ))}
         </CreateBoardBackgroundChoices>
 
-        <CreateBoardBackgroundText>Board Title</CreateBoardBackgroundText>
+        <CreateBoardBackgroundText data-testid="CreateBoardBackgroundText">
+          Board Title
+        </CreateBoardBackgroundText>
 
         <CreateBoardTitleInput
+          data-testid="CreateBoardTitleInput"
           onChange={(event) => setBoardTitle(event.target.value)}
           value={boardTitle}
         />
 
-        <CreateBoardButton isDisabled={!boardTitle} onClick={onBoardCreate}>
+        <CreateBoardButton
+          data-testid="CreateBoardButton"
+          isDisabled={!boardTitle}
+          onClick={onBoardCreate}
+        >
           Create
         </CreateBoardButton>
       </CreateBoardPopoverContent>
