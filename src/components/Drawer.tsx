@@ -76,7 +76,11 @@ export function Drawer() {
             >
               <Ri.RiTrelloFill
                 size={18}
-                style={{ color: 'white', padding: '8px' }}
+                style={{
+                  color: 'white',
+                  padding: '8px',
+                  transform: 'scale(-1, -1)',
+                }}
               />
               <YourBoardsTitle data-testid="YourBoardsTitle">
                 Boards
