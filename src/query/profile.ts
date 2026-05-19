@@ -1,3 +1,4 @@
+import { useAuth } from '@clerk/tanstack-react-start';
 import { useQuery } from '@tanstack/react-query';
 import { queryKeys } from '~/query/queryKeys';
 import { resourceRequest } from '~/query/resourceClient';
@@ -10,17 +11,11 @@ export type ProfileType = {
   email: string;
 };
 
-type ProfileArgs = {
-  userId: string;
-};
-
-export function useGetProfileQuery(
-  args: ProfileArgs,
-  options?: { skip?: boolean },
-) {
+export function useGetProfileQuery() {
+  const { userId } = useAuth();
   return useQuery({
-    queryKey: queryKeys.profile(args.userId),
-    enabled: !options?.skip && !!args.userId,
+    queryKey: queryKeys.profile(userId ?? ''),
+    enabled: !!userId,
     queryFn: () =>
       resourceRequest<ProfileType>('profiles', {
         method: 'GET',

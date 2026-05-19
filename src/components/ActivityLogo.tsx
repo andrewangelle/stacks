@@ -1,4 +1,3 @@
-import { useAuth } from '@clerk/tanstack-react-start';
 import { useGetProfileQuery } from '~/query/profile';
 import { ActivityNameCircle } from '~/styles/Activity';
 import { Center } from '~/styles/Page';
@@ -18,12 +17,7 @@ export function getInitials(
 }
 
 export function ActivityLogo() {
-  const { userId } = useAuth();
-
-  const profile = useGetProfileQuery(
-    { userId: userId ?? '' },
-    { skip: !userId },
-  );
+  const profile = useGetProfileQuery();
   const initials = getInitials(profile.data ?? null);
   return (
     <ActivityNameCircle data-testid="ActivityNameCircle">

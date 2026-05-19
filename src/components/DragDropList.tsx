@@ -20,9 +20,9 @@ export function DragDropList({ id, listTitle, children }: DragDropListProps) {
     }),
   });
 
-  const [, dropRef] = useDrop({
+  const [, dropRef] = useDrop<List>({
     accept: 'list',
-    drop: (item, ..._args) => reorderLists(item as List, params.id ?? '', id),
+    drop: (item, ..._args) => reorderLists(item, params.id ?? '', id),
     collect: (monitor) => ({
       isOver: monitor.isOver(),
     }),

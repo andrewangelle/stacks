@@ -1,4 +1,3 @@
-import { useAuth } from '@clerk/tanstack-react-start';
 import { useParams } from '@tanstack/react-router';
 import { formatRelative } from 'date-fns';
 import { useState } from 'react';
@@ -29,13 +28,9 @@ type CardModalActivityProps = {
 export function CardModalActivity({ listId, cardId }: CardModalActivityProps) {
   const [showActivity, setShowActivity] = useState(false);
   const params = useParams({ strict: false });
-  const { userId } = useAuth();
   const { data } = useGetActivityQuery({ cardId });
   const [comment, setComment] = useState<string>('');
-  const profile = useGetProfileQuery(
-    { userId: userId ?? '' },
-    { skip: !userId },
-  );
+  const profile = useGetProfileQuery();
   const [createActivity] = useCreateActivityMutation();
 
   function createComment() {
