@@ -7,6 +7,7 @@ import { useGetBoardsQuery } from '~/query/boards';
 import {
   type BoardBackground,
   BoardCardContainer,
+  BoardCardTitle,
   BoardsContainer,
 } from '~/styles/Boards';
 import { Padding } from '~/styles/Page';
@@ -37,7 +38,9 @@ export const Route = createFileRoute('/boards')({
                 background={board.boardColor as BoardBackground}
                 onClick={() => navigate({ to: `/board/${board.id}` })}
               >
-                {board.boardTitle}
+                <BoardCardTitle data-testid="BoardCardTitle">
+                  {board.boardTitle}
+                </BoardCardTitle>
               </BoardCardContainer>
             ))}
             <CreateBoard userId={user?.id ?? ''} />

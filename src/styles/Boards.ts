@@ -33,45 +33,87 @@ export const BoardsContainer = styled.div`
 
 export const BoardCardContainer = styled('div')<BackgroundProps>({
   position: 'relative',
+  display: 'flex',
+  flexDirection: 'column',
+  justifyContent: 'flex-end',
   fontFamily: fontFamily,
-  textAlign: 'center',
   width: '100%',
   maxWidth: '15%',
-  minWidth: '165px',
-  height: '80px',
-  padding: '20px',
-  borderRadius: '5px',
+  minWidth: '200px',
+  height: '110px',
+  borderRadius: '8px',
+  overflow: 'hidden',
+  boxShadow:
+    '0 1px 0.5px rgba(9, 30, 66, 0.25), 0 0 0 1px rgba(9, 30, 66, 0.12)',
   fontSize: '14px',
   cursor: 'pointer',
   margin: '10px',
   variants: [
     {
       props: { background: 'green' },
-      style: { background: '#519839' },
+      style: {
+        background: '#519839',
+        '&:hover': {
+          background: 'color-mix(in srgb, #519839 88%, black)',
+        },
+      },
     },
     {
       props: { background: 'lightGreen' },
-      style: { background: '#4bbf6b' },
+      style: {
+        background: '#4bbf6b',
+        '&:hover': {
+          background: 'color-mix(in srgb, #4bbf6b 88%, black)',
+        },
+      },
     },
     {
       props: { background: 'blue' },
-      style: { background: '#0079bf' },
+      style: {
+        background: '#0079bf',
+        '&:hover': {
+          background: 'color-mix(in srgb, #0079bf 88%, black)',
+        },
+      },
     },
     {
       props: { background: 'orange' },
-      style: { background: '#d29034' },
+      style: {
+        background: '#d29034',
+        '&:hover': {
+          background: 'color-mix(in srgb, #d29034 88%, black)',
+        },
+      },
     },
     {
       props: { background: 'red' },
-      style: { background: '#b04632' },
+      style: {
+        background: '#b04632',
+        '&:hover': {
+          background: 'color-mix(in srgb, #b04632 88%, black)',
+        },
+      },
     },
   ],
 });
 
+export type BoardCardTitleProps = {
+  isCreateBoard?: boolean;
+};
+
+export const BoardCardTitle = styled('div')<BoardCardTitleProps>({
+  fontSize: '14px',
+  background: '#fff',
+  padding: '10px',
+  borderBottomLeftRadius: '8px',
+  borderBottomRightRadius: '8px',
+});
+
 export const CreateBoardCard = styled(BoardCardContainer)` 
   background: rgba(9, 30, 66, 0.04);
-  min-width: 165px;
-
+  max-height: 100px;
+  padding-bottom: 10px;
+  justify-content: center;
   &:hover {
     background: rgba(9, 30, 66, 0.08); 
   }
