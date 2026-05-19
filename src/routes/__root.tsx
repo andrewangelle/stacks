@@ -1,4 +1,5 @@
 import { QueryClientProvider } from '@tanstack/react-query';
+import '~/styles/board-gradient.css';
 import '@pigment-css/react/styles.css';
 import { ClerkProvider } from '@clerk/tanstack-react-start';
 import {

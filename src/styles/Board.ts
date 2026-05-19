@@ -1,6 +1,7 @@
 import { styled } from '@pigment-css/react';
 import { fontFamily } from '~/styles/Boards';
 import { Button } from '~/styles/Page';
+import { boardGradientVars } from '~/styles/tokens';
 
 type AddListContainerProps = {
   isEditing: boolean;
@@ -83,23 +84,23 @@ export const DrawerContainer = styled('div')<DrawerContainerProps>({
     },
     {
       props: { isOpen: true, background: 'green' },
-      style: { background: '#519839' },
+      style: { background: boardGradientVars.green },
     },
     {
       props: { isOpen: true, background: 'lightGreen' },
-      style: { background: '#4bbf6b' },
+      style: { background: boardGradientVars.lightGreen },
     },
     {
       props: { isOpen: true, background: 'blue' },
-      style: { background: '#0079bf' },
+      style: { background: boardGradientVars.blue },
     },
     {
       props: { isOpen: true, background: 'orange' },
-      style: { background: '#d29034' },
+      style: { background: boardGradientVars.orange },
     },
     {
       props: { isOpen: true, background: 'red' },
-      style: { background: '#b04632' },
+      style: { background: boardGradientVars.red },
     },
   ],
 });
