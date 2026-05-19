@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" role="img" aria-label="Stacks">
+  <rect
+    x="1"
+    y="1"
+    width="30"
+    height="30"
+    rx="5"
+    fill="#ffffff"
+    stroke="#0079bf"
+    stroke-width="2"
+  />
+  <g transform="translate(16 16) scale(-1.52 -1.52) translate(-12 -12)">
+    <path
+      fill="#0079bf"
+      d="M6.995 6.995h4.513v10.01H6.995V6.995zm6.492 0h4.513v6.504h-4.513V6.995z"
+    />
+  </g>
+</svg>

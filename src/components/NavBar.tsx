@@ -44,7 +44,11 @@ function Logo() {
     <LogoLink to="/boards" data-testid="LogoLink">
       <Ri.RiTrelloFill
         size={18}
-        style={{ color: 'white', verticalAlign: '-webkit-baseline-middle' }}
+        style={{
+          color: 'white',
+          verticalAlign: '-webkit-baseline-middle',
+          transform: 'scale(-1, -1)',
+        }}
       />
       <span style={{ verticalAlign: 'bottom' }}>stacks - a trello clone</span>
     </LogoLink>
