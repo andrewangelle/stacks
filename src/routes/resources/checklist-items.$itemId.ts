@@ -50,7 +50,10 @@ export const Route = createFileRoute('/resources/checklist-items/$itemId')({
 
           if (!row) {
             return data(
-              { message: 'Checklist Item Not found' },
+              {
+                code: 'checklists:delete:error',
+                message: 'Checklist Item Not found',
+              },
               { status: 404, statusText: 'Not found' },
             );
           }

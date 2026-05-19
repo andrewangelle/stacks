@@ -1,4 +1,3 @@
-import { useAuth } from '@clerk/tanstack-react-start';
 import { formatRelative } from 'date-fns';
 import { useState } from 'react';
 import { ActivityLogo } from '~/components/ActivityLogo';
@@ -16,11 +15,7 @@ import { CloseAddCardButton } from '~/styles/List';
 import { Flex } from '~/styles/Page';
 
 export function ActivityComment(props: ActivityType) {
-  const { userId } = useAuth();
-  const profile = useGetProfileQuery(
-    { userId: userId ?? '' },
-    { skip: !userId },
-  );
+  const profile = useGetProfileQuery();
   const [isEditing, setIsEditing] = useState(false);
   const [editedComment, setEditedComment] = useState(props.content);
   const [updateActivity] = useUpdateActivityMutation();
