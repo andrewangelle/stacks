@@ -4,6 +4,8 @@ import * as Ti from 'react-icons/ti';
 
 import {
   blue,
+  boardGradientHoverVars,
+  boardGradientVars,
   darkGray,
   fontFamily,
   green,
@@ -52,46 +54,36 @@ export const BoardCardContainer = styled('div')<BackgroundProps>({
     {
       props: { background: 'green' },
       style: {
-        background: '#519839',
-        '&:hover': {
-          background: 'color-mix(in srgb, #519839 88%, black)',
-        },
+        background: boardGradientVars.green,
+        '&:hover': { background: boardGradientHoverVars.green },
       },
     },
     {
       props: { background: 'lightGreen' },
       style: {
-        background: '#4bbf6b',
-        '&:hover': {
-          background: 'color-mix(in srgb, #4bbf6b 88%, black)',
-        },
+        background: boardGradientVars.lightGreen,
+        '&:hover': { background: boardGradientHoverVars.lightGreen },
       },
     },
     {
       props: { background: 'blue' },
       style: {
-        background: '#0079bf',
-        '&:hover': {
-          background: 'color-mix(in srgb, #0079bf 88%, black)',
-        },
+        background: boardGradientVars.blue,
+        '&:hover': { background: boardGradientHoverVars.blue },
       },
     },
     {
       props: { background: 'orange' },
       style: {
-        background: '#d29034',
-        '&:hover': {
-          background: 'color-mix(in srgb, #d29034 88%, black)',
-        },
+        background: boardGradientVars.orange,
+        '&:hover': { background: boardGradientHoverVars.orange },
       },
     },
     {
       props: { background: 'red' },
       style: {
-        background: '#b04632',
-        '&:hover': {
-          background: 'color-mix(in srgb, #b04632 88%, black)',
-        },
+        background: boardGradientVars.red,
+        '&:hover': { background: boardGradientHoverVars.red },
       },
     },
   ],
@@ -188,36 +180,36 @@ export const CreateBoardBackgroundChoice = styled('div')<BackgroundProps>({
     {
       props: { background: 'green' },
       style: {
-        background: '#519839',
-        '&:hover': { background: 'rgba(81, 152, 57, .8)' },
+        background: boardGradientVars.green,
+        '&:hover': { background: boardGradientHoverVars.green },
       },
     },
     {
       props: { background: 'lightGreen' },
       style: {
-        background: '#4bbf6b',
-        '&:hover': { background: 'rgba(75, 191, 107, .8)' },
+        background: boardGradientVars.lightGreen,
+        '&:hover': { background: boardGradientHoverVars.lightGreen },
       },
     },
     {
       props: { background: 'blue' },
       style: {
-        background: '#0079bf',
-        '&:hover': { background: 'rgba(0, 121, 191, .8)' },
+        background: boardGradientVars.blue,
+        '&:hover': { background: boardGradientHoverVars.blue },
       },
     },
     {
       props: { background: 'orange' },
       style: {
-        background: '#d29034',
-        '&:hover': { background: 'rgba(210, 144, 52, .8)' },
+        background: boardGradientVars.orange,
+        '&:hover': { background: boardGradientHoverVars.orange },
       },
     },
     {
       props: { background: 'red' },
       style: {
-        background: '#b04632',
-        '&:hover': { background: 'rgba(176, 70, 50, .8)' },
+        background: boardGradientVars.red,
+        '&:hover': { background: boardGradientHoverVars.red },
       },
     },
   ],

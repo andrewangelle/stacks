@@ -2,7 +2,7 @@ import { styled } from '@pigment-css/react';
 import { Link } from '@tanstack/react-router';
 import type { ReactNode } from 'react';
 import type { BackgroundProps } from '~/styles/Boards';
-import { blue } from '~/styles/tokens';
+import { blue, boardGradientVars } from '~/styles/tokens';
 
 type PaddingProps = {
   padding: string;
@@ -108,23 +108,23 @@ export const BoardPageBackground = styled('div')<BoardPageBackgroundProps>({
   variants: [
     {
       props: { background: 'blue' },
-      style: { background: '#0079bf' },
+      style: { background: boardGradientVars.blue },
     },
     {
       props: { background: 'green' },
-      style: { background: '#519839' },
+      style: { background: boardGradientVars.green },
     },
     {
       props: { background: 'lightGreen' },
-      style: { background: '#4bbf6b' },
+      style: { background: boardGradientVars.lightGreen },
     },
     {
       props: { background: 'orange' },
-      style: { background: '#d29034' },
+      style: { background: boardGradientVars.orange },
     },
     {
       props: { background: 'red' },
-      style: { background: '#b04632' },
+      style: { background: boardGradientVars.red },
     },
   ],
 });
@@ -139,28 +139,37 @@ export const NavBarContainer = styled('div')<BackgroundProps>({
     {
       props: { background: 'blue' },
       style: {
-        background: '#0079bf',
+        background: boardGradientVars.blue,
         borderBottom: '1px solid white',
       },
     },
     {
       props: { background: 'green' },
       style: {
-        background: '#519839',
+        background: boardGradientVars.green,
         borderBottom: '1px solid white',
       },
     },
     {
       props: { background: 'lightGreen' },
-      style: { background: '#4bbf6b', borderBottom: '1px solid white' },
+      style: {
+        background: boardGradientVars.lightGreen,
+        borderBottom: '1px solid white',
+      },
     },
     {
       props: { background: 'orange' },
-      style: { background: '#d29034', borderBottom: '1px solid white' },
+      style: {
+        background: boardGradientVars.orange,
+        borderBottom: '1px solid white',
+      },
     },
     {
       props: { background: 'red' },
-      style: { background: '#b04632', borderBottom: '1px solid white' },
+      style: {
+        background: boardGradientVars.red,
+        borderBottom: '1px solid white',
+      },
     },
   ],
   display: 'flex',
