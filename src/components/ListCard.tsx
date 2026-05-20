@@ -48,6 +48,7 @@ export function ListCard({ id, listTitle }: List) {
       listId: id,
     });
     setEditing(false);
+    setCardTitle('');
   }
 
   return (
@@ -75,14 +76,6 @@ export function ListCard({ id, listTitle }: List) {
 
       {!isEditingName && <DeleteListPopover id={id} listTitle={listTitle} />}
 
-      {isEditing && (
-        <AddCardInput
-          data-testid="AddCardInput"
-          value={cardTitle}
-          onChange={(event) => setCardTitle((_prevState) => event.target.value)}
-        />
-      )}
-
       {cards?.map((card) => (
         <DragDropCard
           key={card.id}
@@ -94,6 +87,15 @@ export function ListCard({ id, listTitle }: List) {
         </DragDropCard>
       ))}
 
+      {isEditing && (
+        <AddCardInput
+          data-testid="AddCardInput"
+          value={cardTitle}
+          placeholder="Enter a title"
+          onChange={(event) => setCardTitle((_prevState) => event.target.value)}
+        />
+      )}
+
       <Flex data-testid="Flex">
         {!isEditing && (
           <AddCardText
@@ -103,11 +105,13 @@ export function ListCard({ id, listTitle }: List) {
             + Add a card
           </AddCardText>
         )}
+
         {isEditing && (
           <AddCardButton data-testid="AddCardButton" onClick={onCardCreate}>
             Add card
           </AddCardButton>
         )}
+
         {isEditing && (
           <CloseAddCardButton
             data-testid="CloseAddCardButton"

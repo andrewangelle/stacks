@@ -37,6 +37,7 @@ export const Route = createFileRoute('/boards')({
               (['one', 'two', 'three'] as const).map((id) => (
                 <BoardCardSkeleton data-testid="BoardCardSkeleton" key={id} />
               ))}
+
             {!isLoading &&
               boards.map((board) => (
                 <BoardCardContainer

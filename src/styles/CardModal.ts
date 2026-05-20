@@ -236,7 +236,7 @@ export const CardModalContent = styled(Dialog.Content)`
 
 export const CardModalTrigger = styled(Dialog.Trigger)` 
   border: none;
-  padding: none;
+  padding: 0px;
   cursor: pointer;
   width: 100%;
 `;
