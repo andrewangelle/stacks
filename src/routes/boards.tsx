@@ -1,4 +1,3 @@
-import { useUser } from '@clerk/tanstack-react-start';
 import { createFileRoute, redirect, useNavigate } from '@tanstack/react-router';
 import { CreateBoard } from '~/components/CreateBoard';
 import { NavBar } from '~/components/NavBar';
@@ -7,6 +6,7 @@ import { useGetBoardsQuery } from '~/query/boards';
 import {
   type BoardBackground,
   BoardCardContainer,
+  BoardCardSkeleton,
   BoardCardTitle,
   BoardsContainer,
 } from '~/styles/Boards';
@@ -21,29 +21,36 @@ export const Route = createFileRoute('/boards')({
     if (!context.userId) {
       throw redirect({ to: '/auth/sign-in' });
     }
+    return { userId: context.userId };
   },
   component() {
-    const { user } = useUser();
-    const { data: boards = [] } = useGetBoardsQuery();
+    const { isLoading, data: boards = [] } = useGetBoardsQuery();
     const navigate = useNavigate();
+    const { userId } = Route.useLoaderData();
+
     return (
       <>
         <NavBar />
         <Padding padding="50px 30px 30px">
           <BoardsContainer data-testid="BoardsContainer">
-            {boards.map((board) => (
-              <BoardCardContainer
-                data-testid="BoardCardContainer"
-                key={board.id}
-                background={board.boardColor as BoardBackground}
-                onClick={() => navigate({ to: `/board/${board.id}` })}
-              >
-                <BoardCardTitle data-testid="BoardCardTitle">
-                  {board.boardTitle}
-                </BoardCardTitle>
-              </BoardCardContainer>
-            ))}
-            <CreateBoard userId={user?.id ?? ''} />
+            {isLoading &&
+              (['one', 'two', 'three'] as const).map((id) => (
+                <BoardCardSkeleton data-testid="BoardCardSkeleton" key={id} />
+              ))}
+            {!isLoading &&
+              boards.map((board) => (
+                <BoardCardContainer
+                  data-testid="BoardCardContainer"
+                  key={board.id}
+                  background={board.boardColor as BoardBackground}
+                  onClick={() => navigate({ to: `/board/${board.id}` })}
+                >
+                  <BoardCardTitle data-testid="BoardCardTitle">
+                    {board.boardTitle}
+                  </BoardCardTitle>
+                </BoardCardContainer>
+              ))}
+            {!isLoading && <CreateBoard userId={userId} />}
           </BoardsContainer>
         </Padding>
       </>

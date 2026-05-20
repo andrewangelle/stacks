@@ -2,6 +2,7 @@ import { styled } from '@pigment-css/react';
 import * as Popover from '@radix-ui/react-popover';
 import * as Ti from 'react-icons/ti';
 
+import { animationStyles } from '~/styles/animations';
 import {
   blue,
   boardGradientHoverVars,
@@ -99,6 +100,13 @@ export const BoardCardTitle = styled('div')<BoardCardTitleProps>({
   padding: '10px',
   borderBottomLeftRadius: '8px',
   borderBottomRightRadius: '8px',
+});
+
+export const BoardCardSkeleton = styled(BoardCardContainer)({
+  background: 'rgba(9, 30, 66, 0.25)',
+  cursor: 'default',
+  pointerEvents: 'none',
+  ...animationStyles.pulse,
 });
 
 export const CreateBoardCard = styled(BoardCardContainer)` 
