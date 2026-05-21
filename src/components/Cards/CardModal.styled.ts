@@ -3,32 +3,27 @@ import * as Checkbox from '@radix-ui/react-checkbox';
 import * as Dialog from '@radix-ui/react-dialog';
 import * as Popover from '@radix-ui/react-popover';
 import * as Progress from '@radix-ui/react-progress';
-import { darkGray, fontFamily, red } from '~/components/Boards/Boards.styled';
+import { fontFamily, red } from '~/components/Boards/Boards.styled';
 import { AddCardInput } from '~/components/Lists/List.styled';
 import { Button } from '~/styles/Page.styled';
 
-export const CardModalSiderContainer = styled.div` 
-  position: absolute;
-  right: 15px;
-  width: 200px;
-  top: 80px;
+const cardModalBreakpoint = '@media (max-width: 850px)';
+
+export const CardModalActionsContainer = styled.div`
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin: 12px 12px 0px 44px;
 `;
 
-export const CardModalSiderTitle = styled.div` 
-  font-family: ${fontFamily};
-  font-size: 14px;
-  color: ${darkGray};
-  padding: 8px 10px;
-  font-weight: 600;
-`;
-
-export const CardModalSiderButton = styled.div` 
+export const CardModalSiderButton = styled.div`
   font-family: ${fontFamily};
   background: #091e420a;
   border-radius: 5px;
   padding: 12px;
   display: flex;
   cursor: pointer;
+  white-space: nowrap;
 `;
 
 export const CardModalSiderButtonText = styled.span` 
@@ -40,7 +35,7 @@ export const CreateChecklistPopoverTrigger = styled(Popover.Trigger)`
   border: none;
   background: transparent;
   cursor: pointer;
-  width: 100%;
+  width: auto;
 `;
 
 export const DeleteChecklistPopoverTrigger = styled(Popover.Trigger)` 
@@ -53,7 +48,7 @@ export const DeleteCardPopoverTrigger = styled(Popover.Trigger)`
   border: none;
   background: transparent;
   cursor: pointer;
-  width: 100%;
+  width: auto;
 `;
 
 export const ChecklistPopoverContent = styled(Popover.Content)` 
@@ -141,14 +136,13 @@ export const DeleteChecklistPopoverButton = styled(Button)`
 export const ChecklistHeader = styled.div` 
   display: flex;
   justify-content: space-between;
-  width: 70%;
 `;
 
 export const ChecklistProgressPercentage = styled.span`
   color: #5e6c84;
   font-size: 11px;
   width: 32px;
-  margin-top: 10px;
+  margin-top: 12px;
 `;
 
 export const ChecklistProgressRoot = styled(Progress.Root)` 
@@ -156,8 +150,8 @@ export const ChecklistProgressRoot = styled(Progress.Root)`
   overflow: hidden;
   background: #091e4214;
   border-radius: 99999px;
-  width: 60%;
   height: 8px;
+  width: 100%;
 `;
 
 export const ChecklistProgressIndicator = styled(Progress.Indicator)` 
@@ -174,7 +168,6 @@ export const ChecklistCheckboxContainer = styled(
   'div',
 )<ChecklistCheckboxContainerProps>({
   padding: '10px 0px',
-  width: '70%',
   position: 'relative',
   cursor: 'pointer',
   background: (props) => (props.isHovering ? 'rgb(223 225 230)' : undefined),
@@ -221,17 +214,56 @@ export const CardModalOverlay = styled(Dialog.Overlay)`
   z-index: 2;
 `;
 
-export const CardModalContent = styled(Dialog.Content)` 
+export const CardModalBody = styled.div`
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(200px, 280px);
+  gap: 0;
+  align-items: start;
+
+  ${cardModalBreakpoint} {
+    grid-template-columns: 1fr;
+    gap: 24px;
+  }
+`;
+
+export const CardModalMainColumn = styled.div`
+  min-width: 0;
+  border-right: 1px solid rgba(0, 0, 0, 0.2);
+
+  ${cardModalBreakpoint} {
+    padding-right: 0;
+    border-right: none;
+  }
+`;
+
+export const CardModalActivityColumn = styled.div`
+  min-width: 0;
+  padding: 12px;
+  background: #ebecf0;
+  height: 100%;
+
+  ${cardModalBreakpoint} {
+    background: white;
+  }
+`;
+
+export const CardModalContent = styled(Dialog.Content)`
   position: relative;
   font-family: ${fontFamily};
   min-width: 700px;
-  min-height: 500px;
-  max-height: 700px;
+  max-width: 900px;
+  width: 100%;
+  margin: 0 30px;
   height: max-content;
   overflow: scroll;
-  background: #ebecf0;
+  background: white;
   padding: 30;
   border-radius: 5px;
+
+  ${cardModalBreakpoint} {
+    min-width: unset;
+    max-width: calc(100% - 60px);
+  }
 `;
 
 export const CardModalTrigger = styled(Dialog.Trigger)` 
@@ -241,12 +273,24 @@ export const CardModalTrigger = styled(Dialog.Trigger)`
   width: 100%;
 `;
 
+export const CardModalCloseContainer = styled.div` 
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  border-bottom: 1px solid rgba(0,0,0, 0.2);
+  `;
+
 export const CardModalClose = styled(Dialog.Close)` 
   border: none;
-  position: absolute;
   right: 0;
-  padding: 16px;
+  padding: 12px;
   cursor: pointer;
+  background: white;
+`;
+
+export const CardModalTitleContainer = styled.div`
+  display: flex;
+  margin: 12px 12px 0px;
 `;
 
 export const CardModalTitle = styled(Dialog.Title)` 
@@ -256,17 +300,16 @@ export const CardModalTitle = styled(Dialog.Title)`
 
 export const CardModalListName = styled.div` 
   font-size: 14px;
-  margin-left: 40px;
-`;
+  margin: 4px 12px 12px 20px;
+ `;
 
-export const DescriptionContainer = styled.div` 
-  margin-top: 30px;
+export const DescriptionContainer = styled.div`
+  margin: 30px 12px 0px;
 `;
 
 export const DescriptionPlaceholder = styled.div` 
   background: rgba(0,0,0, 0.03);
   height: 30px;
-  width: 60%;
   margin-left: 40px;
   font-size: 14px;
   padding: 15px;
@@ -280,7 +323,7 @@ export const DescriptionPlaceholder = styled.div`
 
 export const DescriptionInput = styled.textarea` 
   height: 60px;
-  width: 60%;
+  width: 80%;
   margin-left: 40px;
   font-size: 14px;
   padding: 15px;

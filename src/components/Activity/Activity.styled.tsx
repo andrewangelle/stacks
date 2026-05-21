@@ -5,7 +5,7 @@ import { Button } from '~/styles/Page.styled';
 export const ActivityHeader = styled.div` 
   display: flex;
   justify-content: space-between;
-  width: 70%;
+  width: 100%;
 `;
 
 export const HideActivityButton = styled(Button)` 
@@ -17,7 +17,7 @@ export const HideActivityButton = styled(Button)`
 
 export const ActivityContainer = styled.div` 
   margin: 10px 0px;
-  width: 70%;
+  width: 100%;
 `;
 
 export const ActivityCommentContainer = styled.div` 

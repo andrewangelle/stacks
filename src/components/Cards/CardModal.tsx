@@ -2,15 +2,18 @@ import { useState } from 'react';
 import * as Bs from 'react-icons/bs';
 import { CardModalActivity } from '~/components/Activity/CardModalActivity';
 import {
+  CardModalActionsContainer,
+  CardModalActivityColumn,
+  CardModalBody,
   CardModalClose,
+  CardModalCloseContainer,
   CardModalContent,
-  CardModalListName,
+  CardModalMainColumn,
   CardModalOverlay,
   CardModalPortal,
   CardModalRoot,
-  CardModalSiderContainer,
-  CardModalSiderTitle,
   CardModalTitle,
+  CardModalTitleContainer,
   CardModalTrigger,
   EditCardTitleCancelButton,
   EditCardTitleInput,
@@ -22,7 +25,7 @@ import { CardModalChecklists } from '~/components/Checklists/CardModalChecklists
 import { CreateChecklist } from '~/components/Checklists/CreateChecklist';
 import { ListCardContainer } from '~/components/Lists/List.styled';
 import { type ListCardType, useUpdateCardMutation } from '~/query/cards';
-import { Flex, Padding } from '~/styles/Page.styled';
+import { Flex } from '~/styles/Page.styled';
 
 type CardModalProps = ListCardType & {
   listId: string;
@@ -62,86 +65,80 @@ export function CardModal({
       <CardModalPortal data-testid="CardModalPortal">
         <CardModalOverlay data-testid="CardModalOverlay">
           <CardModalContent data-testid="CardModalContent">
-            <CardModalClose data-testid="CardModalClose">X</CardModalClose>
+            <CardModalCloseContainer data-testid="CardModalCloseContainer">
+              <CardModalClose data-testid="CardModalClose">X</CardModalClose>
+            </CardModalCloseContainer>
 
-            <Padding padding="15px">
-              <Flex data-testid="Flex">
-                <Bs.BsCardHeading size={24} />
+            <CardModalBody data-testid="CardModalBody">
+              <CardModalMainColumn data-testid="CardModalMainColumn">
+                <CardModalTitleContainer data-testid="CardModalTitleContainer">
+                  <Bs.BsCardHeading size={24} />
 
-                {!isEditingTitle && (
-                  <CardModalTitle
-                    data-testid="CardModalTitle"
-                    onClick={() => {
-                      setEditingTitle(true);
-                    }}
-                  >
-                    {cardTitle}
-                  </CardModalTitle>
-                )}
+                  {!isEditingTitle && (
+                    <CardModalTitle
+                      data-testid="CardModalTitle"
+                      onClick={() => {
+                        setEditingTitle(true);
+                      }}
+                    >
+                      {cardTitle}
+                    </CardModalTitle>
+                  )}
 
-                {isEditingTitle && (
-                  <div style={{ position: 'relative' }}>
-                    <Flex data-testid="Flex">
-                      <EditCardTitleInput
-                        data-testid="EditCardTitleInput"
-                        value={editedTitle}
-                        onChange={(event) =>
-                          setEditedTitle((_prevState) => event.target.value)
-                        }
-                      />
-                      <EditCardTitleSaveButton
-                        data-testid="EditCardTitleSaveButton"
-                        onClick={onSave}
-                      >
-                        Save
-                      </EditCardTitleSaveButton>
-                      <EditCardTitleCancelButton
-                        data-testid="EditCardTitleCancelButton"
-                        secondary
-                        onClick={() => setEditingTitle(false)}
-                      >
-                        Cancel
-                      </EditCardTitleCancelButton>
-                    </Flex>
-                  </div>
-                )}
-              </Flex>
+                  {isEditingTitle && (
+                    <div style={{ position: 'relative' }}>
+                      <Flex data-testid="Flex">
+                        <EditCardTitleInput
+                          data-testid="EditCardTitleInput"
+                          value={editedTitle}
+                          onChange={(event) =>
+                            setEditedTitle((_prevState) => event.target.value)
+                          }
+                        />
+                        <EditCardTitleSaveButton
+                          data-testid="EditCardTitleSaveButton"
+                          onClick={onSave}
+                        >
+                          Save
+                        </EditCardTitleSaveButton>
+                        <EditCardTitleCancelButton
+                          data-testid="EditCardTitleCancelButton"
+                          secondary
+                          onClick={() => setEditingTitle(false)}
+                        >
+                          Cancel
+                        </EditCardTitleCancelButton>
+                      </Flex>
+                    </div>
+                  )}
+                </CardModalTitleContainer>
 
-              <CardModalListName data-testid="CardModalListName">{`in list ${listName}`}</CardModalListName>
-
-              <CardModalDescription
-                listId={listId}
-                cardId={id}
-                cardTitle={cardTitle}
-                cardDescription={cardDescription}
-              />
-
-              <CardModalChecklists cardId={id} />
-
-              <CardModalActivity listId={listId} cardId={id} />
-
-              <CardModalSiderContainer data-testid="CardModalSiderContainer">
-                <CardModalSiderTitle data-testid="CardModalSiderTitle">
-                  Add to card
-                </CardModalSiderTitle>
-
-                <CreateChecklist listId={listId} cardId={id} />
-
-                <CardModalSiderTitle data-testid="CardModalSiderTitle">
-                  Actions
-                </CardModalSiderTitle>
-
-                <DeleteCardPopover
-                  id={id}
+                <CardModalActionsContainer data-testid="CardModalActionsContainer">
+                  <CreateChecklist listId={listId} cardId={id} />
+                  <DeleteCardPopover
+                    id={id}
+                    listId={listId}
+                    cardTitle={cardTitle}
+                    cardDescription={cardDescription}
+                    createdAt={createdAt}
+                    userId={userId}
+                    listName={listName}
+                  />
+                </CardModalActionsContainer>
+                <CardModalDescription
                   listId={listId}
+                  cardId={id}
                   cardTitle={cardTitle}
                   cardDescription={cardDescription}
-                  createdAt={createdAt}
-                  userId={userId}
-                  listName={listName}
                 />
-              </CardModalSiderContainer>
-            </Padding>
+
+                <CardModalChecklists cardId={id} />
+              </CardModalMainColumn>
+
+              <CardModalActivityColumn data-testid="CardModalActivityColumn">
+                <CardModalActivity listId={listId} cardId={id} />
+              </CardModalActivityColumn>
+            </CardModalBody>
           </CardModalContent>
         </CardModalOverlay>
       </CardModalPortal>

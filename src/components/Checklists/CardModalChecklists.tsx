@@ -123,7 +123,7 @@ function Checklist(props: ChecklistType) {
 export function CardModalChecklists({ cardId }: { cardId: string }) {
   const { data } = useGetChecklistsQuery({ cardId });
   return (
-    <div style={{ marginTop: '30px' }}>
+    <div style={{ margin: '30px 12px 0px' }}>
       {data?.map((checklist) => (
         <Checklist key={checklist.id} {...checklist} />
       ))}
