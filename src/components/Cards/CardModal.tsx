@@ -16,9 +16,9 @@ import {
   EditCardTitleInput,
   EditCardTitleSaveButton,
 } from '~/components/Cards/CardModal.styled';
-import { CardModalChecklists } from '~/components/Cards/CardModalChecklists';
 import { CardModalDescription } from '~/components/Cards/CardModalDescription';
 import { DeleteCardPopover } from '~/components/Cards/DeleteCardPopover';
+import { CardModalChecklists } from '~/components/Checklists/CardModalChecklists';
 import { CreateChecklist } from '~/components/Checklists/CreateChecklist';
 import { ListCardContainer } from '~/components/Lists/List.styled';
 import { type ListCardType, useUpdateCardMutation } from '~/query/cards';
