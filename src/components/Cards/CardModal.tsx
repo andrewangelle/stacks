@@ -1,11 +1,6 @@
 import { useState } from 'react';
 import * as Bs from 'react-icons/bs';
-import { CardModalActivity } from '~/components/CardModalActivity';
-import { CardModalChecklists } from '~/components/CardModalChecklists';
-import { CardModalDescription } from '~/components/CardModalDescription';
-import { CreateChecklist } from '~/components/CreateChecklist';
-import { DeleteCardPopover } from '~/components/DeleteCardPopover';
-import { type ListCardType, useUpdateCardMutation } from '~/query/cards';
+import { CardModalActivity } from '~/components/Activity/CardModalActivity';
 import {
   CardModalClose,
   CardModalContent,
@@ -20,9 +15,14 @@ import {
   EditCardTitleCancelButton,
   EditCardTitleInput,
   EditCardTitleSaveButton,
-} from '~/styles/CardModal';
-import { ListCardContainer } from '~/styles/List';
-import { Flex, Padding } from '~/styles/Page';
+} from '~/components/Cards/CardModal.styled';
+import { CardModalChecklists } from '~/components/Cards/CardModalChecklists';
+import { CardModalDescription } from '~/components/Cards/CardModalDescription';
+import { DeleteCardPopover } from '~/components/Cards/DeleteCardPopover';
+import { CreateChecklist } from '~/components/Checklists/CreateChecklist';
+import { ListCardContainer } from '~/components/Lists/List.styled';
+import { type ListCardType, useUpdateCardMutation } from '~/query/cards';
+import { Flex, Padding } from '~/styles/Page.styled';
 
 type CardModalProps = ListCardType & {
   listId: string;

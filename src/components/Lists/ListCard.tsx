@@ -1,10 +1,8 @@
 import { useParams } from '@tanstack/react-router';
 import { useState } from 'react';
-import { CardModal } from '~/components/CardModal';
-import { DeleteListPopover } from '~/components/DeleteListPopover';
-import { DragDropCard } from '~/components/DragDropCard';
-import { useCreateCardMutation, useGetCardsQuery } from '~/query/cards';
-import { type List, useUpdateListMutation } from '~/query/lists';
+import { CardModal } from '~/components/Cards/CardModal';
+import { DragDropCard } from '~/components/Cards/DragDropCard';
+import { DeleteListPopover } from '~/components/Lists/DeleteListPopover';
 import {
   AddCardButton,
   AddCardInput,
@@ -12,8 +10,10 @@ import {
   CloseAddCardButton,
   ListContainer,
   ListName,
-} from '~/styles/List';
-import { Flex } from '~/styles/Page';
+} from '~/components/Lists/List.styled';
+import { useCreateCardMutation, useGetCardsQuery } from '~/query/cards';
+import { type List, useUpdateListMutation } from '~/query/lists';
+import { Flex } from '~/styles/Page.styled';
 import { useOutsideClick } from '~/utils/useOutsideClick';
 
 export function ListCard({ id, listTitle }: List) {

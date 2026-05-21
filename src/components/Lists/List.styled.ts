@@ -1,7 +1,7 @@
 import { styled } from '@pigment-css/react';
 import * as Ti from 'react-icons/ti';
-import { fontFamily } from '~/styles/Boards';
-import { Button } from '~/styles/Page';
+import { fontFamily } from '~/components/Boards/Boards.styled';
+import { Button } from '~/styles/Page.styled';
 
 export const ListGridContainer = styled.div` 
   display: grid;

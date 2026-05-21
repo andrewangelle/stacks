@@ -1,18 +1,18 @@
 import { formatRelative } from 'date-fns';
 import { useState } from 'react';
-import { ActivityLogo } from '~/components/ActivityLogo';
-import { DeleteCommentPopover } from '~/components/DeleteCommentPopover';
-import { type ActivityType, useUpdateActivityMutation } from '~/query/activity';
-import { useGetProfileQuery } from '~/query/profile';
 import {
   ActivityCommentContainer,
   ActivityCommentContent,
   ActivityContainer,
   AddActivityInput,
   SaveCommentButton,
-} from '~/styles/Activity';
-import { CloseAddCardButton } from '~/styles/List';
-import { Flex } from '~/styles/Page';
+} from '~/components/Activity/Activity.styled';
+import { ActivityLogo } from '~/components/Activity/ActivityLogo';
+import { DeleteCommentPopover } from '~/components/Cards/DeleteCommentPopover';
+import { CloseAddCardButton } from '~/components/Lists/List.styled';
+import { type ActivityType, useUpdateActivityMutation } from '~/query/activity';
+import { useGetProfileQuery } from '~/query/profile';
+import { Flex } from '~/styles/Page.styled';
 
 export function ActivityComment(props: ActivityType) {
   const profile = useGetProfileQuery();

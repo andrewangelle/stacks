@@ -1,6 +1,8 @@
 import * as Popover from '@radix-ui/react-popover';
-import { type ListCardType, useDeleteCardMutation } from '~/query/cards';
-import { CreateBoardCloseBorder, PopoverClose } from '~/styles/Boards';
+import {
+  CreateBoardCloseBorder,
+  PopoverClose,
+} from '~/components/Boards/Boards.styled';
 import {
   CardModalSiderButton,
   CardModalSiderButtonText,
@@ -8,7 +10,8 @@ import {
   DeleteCardPopoverTrigger,
   DeleteChecklistPopoverButton,
   DeleteChecklistPopoverContent,
-} from '~/styles/CardModal';
+} from '~/components/Cards/CardModal.styled';
+import { type ListCardType, useDeleteCardMutation } from '~/query/cards';
 
 type DeleteCardPopoverProps = ListCardType & {
   listId: string;

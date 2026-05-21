@@ -3,9 +3,9 @@ import * as Checkbox from '@radix-ui/react-checkbox';
 import * as Dialog from '@radix-ui/react-dialog';
 import * as Popover from '@radix-ui/react-popover';
 import * as Progress from '@radix-ui/react-progress';
-import { darkGray, fontFamily, red } from '~/styles/Boards';
-import { AddCardInput } from '~/styles/List';
-import { Button } from '~/styles/Page';
+import { darkGray, fontFamily, red } from '~/components/Boards/Boards.styled';
+import { AddCardInput } from '~/components/Lists/List.styled';
+import { Button } from '~/styles/Page.styled';
 
 export const CardModalSiderContainer = styled.div` 
   position: absolute;

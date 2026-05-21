@@ -1,16 +1,16 @@
 import { createFileRoute, redirect, useNavigate } from '@tanstack/react-router';
-import { CreateBoard } from '~/components/CreateBoard';
-import { NavBar } from '~/components/NavBar';
-import { fetchUserId } from '~/middleware/auth';
-import { useGetBoardsQuery } from '~/query/boards';
 import {
   type BoardBackground,
   BoardCardContainer,
   BoardCardSkeleton,
   BoardCardTitle,
   BoardsContainer,
-} from '~/styles/Boards';
-import { Padding } from '~/styles/Page';
+} from '~/components/Boards/Boards.styled';
+import { CreateBoard } from '~/components/Boards/CreateBoard';
+import { NavBar } from '~/components/NavBar';
+import { fetchUserId } from '~/middleware/auth';
+import { useGetBoardsQuery } from '~/query/boards';
+import { Padding } from '~/styles/Page.styled';
 
 export const Route = createFileRoute('/boards')({
   async beforeLoad() {

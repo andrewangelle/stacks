@@ -2,7 +2,7 @@ import { Show, SignIn, UserButton } from '@clerk/tanstack-react-start';
 import { createFileRoute, redirect } from '@tanstack/react-router';
 import { NavBar } from '~/components/NavBar';
 import { fetchUserId } from '~/middleware/auth';
-import { FlexCenter } from '~/styles/Page';
+import { FlexCenter } from '~/styles/Page.styled';
 
 export const Route = createFileRoute('/auth/sign-in')({
   async beforeLoad() {

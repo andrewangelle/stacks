@@ -1,14 +1,17 @@
 import * as Popover from '@radix-ui/react-popover';
 import { useParams } from '@tanstack/react-router';
-import { useDeleteListMutation } from '~/query/lists';
-import { CreateBoardCloseBorder, PopoverClose } from '~/styles/Boards';
+import {
+  CreateBoardCloseBorder,
+  PopoverClose,
+} from '~/components/Boards/Boards.styled';
 import {
   ChecklistPopoverHeader,
   DeleteCardPopoverTrigger,
   DeleteChecklistPopoverButton,
   DeleteChecklistPopoverContent,
-} from '~/styles/CardModal';
-import { DeleteListIcon } from '~/styles/List';
+} from '~/components/Cards/CardModal.styled';
+import { DeleteListIcon } from '~/components/Lists/List.styled';
+import { useDeleteListMutation } from '~/query/lists';
 
 type DeleteListPopoverProps = {
   id: string;

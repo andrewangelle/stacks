@@ -2,9 +2,10 @@ import * as Popover from '@radix-ui/react-popover';
 import { useParams } from '@tanstack/react-router';
 import { useState } from 'react';
 import * as Bs from 'react-icons/bs';
-import { useCreateActivityMutation } from '~/query/activity';
-import { useCreateChecklistMutation } from '~/query/checklists';
-import { CreateBoardCloseBorder, PopoverClose } from '~/styles/Boards';
+import {
+  CreateBoardCloseBorder,
+  PopoverClose,
+} from '~/components/Boards/Boards.styled';
 import {
   CardModalSiderButton,
   CardModalSiderButtonText,
@@ -14,7 +15,9 @@ import {
   CreateChecklistInput,
   CreateChecklistPopoverTrigger,
   CreateChecklistTitle,
-} from '~/styles/CardModal';
+} from '~/components/Cards/CardModal.styled';
+import { useCreateActivityMutation } from '~/query/activity';
+import { useCreateChecklistMutation } from '~/query/checklists';
 
 type CreateChecklistProps = {
   listId: string;

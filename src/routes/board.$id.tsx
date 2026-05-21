@@ -1,13 +1,13 @@
 import { createFileRoute, redirect } from '@tanstack/react-router';
-import { AddLists } from '~/components/AddList';
-import { DragDropList } from '~/components/DragDropList';
 import { Drawer } from '~/components/Drawer';
-import { ListCard } from '~/components/ListCard';
+import { AddLists } from '~/components/Lists/AddList';
+import { DragDropList } from '~/components/Lists/DragDropList';
+import { ListCard } from '~/components/Lists/ListCard';
 import { NavBar } from '~/components/NavBar';
 import { fetchUserId } from '~/middleware/auth';
 import { useGetBoardQuery } from '~/query/boards';
 import { useGetListsQuery } from '~/query/lists';
-import { BoardPageBackground, Flex, Padding } from '~/styles/Page';
+import { BoardPageBackground, Flex, Padding } from '~/styles/Page.styled';
 
 export const Route = createFileRoute('/board/$id')({
   async beforeLoad() {

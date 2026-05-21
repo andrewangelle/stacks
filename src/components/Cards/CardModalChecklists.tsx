@@ -1,15 +1,5 @@
 import { useState } from 'react';
 import * as Bs from 'react-icons/bs';
-
-import { ChecklistCheckbox } from '~/components/ChecklistCheckbox';
-import { DeleteChecklistPopover } from '~/components/DeleteChecklistPopover';
-import { DragDropChecklistItem } from '~/components/DragDropChecklistItems';
-import {
-  type ChecklistItemType,
-  useCreateChecklistItemMutation,
-  useGetChecklistItemsQuery,
-} from '~/query/checklistItems';
-import { type ChecklistType, useGetChecklistsQuery } from '~/query/checklists';
 import {
   AddChecklistButton,
   AddChecklistItemButton,
@@ -20,8 +10,17 @@ import {
   ChecklistProgressPercentage,
   ChecklistProgressRoot,
   CloseDescriptionButton,
-} from '~/styles/CardModal';
-import { Flex } from '~/styles/Page';
+} from '~/components/Cards/CardModal.styled';
+import { ChecklistCheckbox } from '~/components/Checklists/ChecklistCheckbox';
+import { DeleteChecklistPopover } from '~/components/Checklists/DeleteChecklistPopover';
+import { DragDropChecklistItem } from '~/components/Checklists/DragDropChecklistItems';
+import {
+  type ChecklistItemType,
+  useCreateChecklistItemMutation,
+  useGetChecklistItemsQuery,
+} from '~/query/checklistItems';
+import { type ChecklistType, useGetChecklistsQuery } from '~/query/checklists';
+import { Flex } from '~/styles/Page.styled';
 
 function Checklist(props: ChecklistType) {
   const { data } = useGetChecklistItemsQuery({ checklistId: props.id });

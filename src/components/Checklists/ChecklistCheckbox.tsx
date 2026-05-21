@@ -7,13 +7,10 @@ import { useOutsideClick } from '~/utils/useOutsideClick';
 const AiOutlineCheck = AiIcons.AiOutlineCheck;
 const AiOutlineEllipsis = AiIcons.AiOutlineEllipsis;
 
-import { useCreateActivityMutation } from '~/query/activity';
-import type { ChecklistItemType } from '~/query/checklistItems';
 import {
-  useDeleteChecklistItemMutation,
-  useUpdateChecklistItemMutation,
-} from '~/query/checklistItems';
-import { CreateBoardCloseBorder, PopoverClose } from '~/styles/Boards';
+  CreateBoardCloseBorder,
+  PopoverClose,
+} from '~/components/Boards/Boards.styled';
 import {
   AddChecklistButton,
   AddChecklistItemInput,
@@ -26,8 +23,14 @@ import {
   DeleteChecklistPopoverButton,
   DeleteChecklistPopoverContent,
   DeleteChecklistPopoverTrigger,
-} from '~/styles/CardModal';
-import { Flex } from '~/styles/Page';
+} from '~/components/Cards/CardModal.styled';
+import { useCreateActivityMutation } from '~/query/activity';
+import type { ChecklistItemType } from '~/query/checklistItems';
+import {
+  useDeleteChecklistItemMutation,
+  useUpdateChecklistItemMutation,
+} from '~/query/checklistItems';
+import { Flex } from '~/styles/Page.styled';
 
 export function ChecklistCheckbox(props: ChecklistItemType) {
   const params = useParams({ strict: false });

@@ -2,13 +2,6 @@ import { useParams } from '@tanstack/react-router';
 import { formatRelative } from 'date-fns';
 import { useState } from 'react';
 import * as Md from 'react-icons/md';
-import { ActivityComment } from '~/components/ActivityComment';
-import { ActivityLogo } from '~/components/ActivityLogo';
-import {
-  useCreateActivityMutation,
-  useGetActivityQuery,
-} from '~/query/activity';
-import { useGetProfileQuery } from '~/query/profile';
 import {
   ActivityCommentContainer,
   ActivityContainer,
@@ -16,9 +9,16 @@ import {
   AddActivityInput,
   HideActivityButton,
   SaveCommentButton,
-} from '~/styles/Activity';
-import { CardModalTitle } from '~/styles/CardModal';
-import { Flex } from '~/styles/Page';
+} from '~/components/Activity/Activity.styled';
+import { ActivityComment } from '~/components/Activity/ActivityComment';
+import { ActivityLogo } from '~/components/Activity/ActivityLogo';
+import { CardModalTitle } from '~/components/Cards/CardModal.styled';
+import {
+  useCreateActivityMutation,
+  useGetActivityQuery,
+} from '~/query/activity';
+import { useGetProfileQuery } from '~/query/profile';
+import { Flex } from '~/styles/Page.styled';
 
 type CardModalActivityProps = {
   listId: string;

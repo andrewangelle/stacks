@@ -1,7 +1,7 @@
 import { styled } from '@pigment-css/react';
 import { Link } from '@tanstack/react-router';
 import type { ReactNode } from 'react';
-import type { BackgroundProps } from '~/styles/Boards';
+import type { BackgroundProps } from '~/components/Boards/Boards.styled';
 import { blue, boardGradientVars } from '~/styles/tokens';
 
 type PaddingProps = {

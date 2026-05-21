@@ -1,6 +1,6 @@
 import { styled } from '@pigment-css/react';
-import { fontFamily } from '~/styles/Boards';
-import { Button } from '~/styles/Page';
+import { fontFamily } from '~/components/Boards/Boards.styled';
+import { Button } from '~/styles/Page.styled';
 import { boardGradientVars } from '~/styles/tokens';
 
 type AddListContainerProps = {

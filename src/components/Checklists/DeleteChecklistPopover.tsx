@@ -1,40 +1,41 @@
 import * as Popover from '@radix-ui/react-popover';
-import { type ActivityType, useDeleteActivityMutation } from '~/query/activity';
-import { CreateBoardCloseBorder, PopoverClose } from '~/styles/Boards';
+import {
+  CreateBoardCloseBorder,
+  PopoverClose,
+} from '~/components/Boards/Boards.styled';
 import {
   ChecklistPopoverHeader,
+  DeleteChecklistButton,
   DeleteChecklistPopoverButton,
   DeleteChecklistPopoverContent,
   DeleteChecklistPopoverTrigger,
-} from '~/styles/CardModal';
+} from '~/components/Cards/CardModal.styled';
+import {
+  type ChecklistType,
+  useDeleteChecklistMutation,
+} from '~/query/checklists';
 
-export function DeleteCommentPopover(props: ActivityType) {
-  const [deleteActivity] = useDeleteActivityMutation();
+export function DeleteChecklistPopover(props: ChecklistType) {
+  const [deleteChecklist] = useDeleteChecklistMutation();
   return (
     <Popover.Root>
       <DeleteChecklistPopoverTrigger data-testid="DeleteChecklistPopoverTrigger">
-        <div
-          style={{
-            textDecoration: 'underline',
-            marginLeft: '4px',
-            cursor: 'pointer',
-          }}
-        >
+        <DeleteChecklistButton data-testid="DeleteChecklistButton" secondary>
           Delete
-        </div>
+        </DeleteChecklistButton>
       </DeleteChecklistPopoverTrigger>
 
       <DeleteChecklistPopoverContent data-testid="DeleteChecklistPopoverContent">
         <ChecklistPopoverHeader data-testid="ChecklistPopoverHeader">
-          {'Delete comment'}
+          {`Delete ${props.checklistTitle}`}
           <PopoverClose data-testid="PopoverClose">X</PopoverClose>
         </ChecklistPopoverHeader>
         <CreateBoardCloseBorder data-testid="CreateBoardCloseBorder" />
-        Deleting a comment is permanent and there is no way to get it back.
+        Deleting a checklist is permanent and there is no way to get it back.
         <DeleteChecklistPopoverButton
           data-testid="DeleteChecklistPopoverButton"
           onClick={() =>
-            deleteActivity({
+            deleteChecklist({
               id: props.id,
               cardId: props.cardId,
             })
