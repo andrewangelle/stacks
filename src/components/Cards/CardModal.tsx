@@ -1,5 +1,3 @@
-import { useState } from 'react';
-import * as Bs from 'react-icons/bs';
 import { CardModalActivity } from '~/components/Activity/CardModalActivity';
 import {
   CardModalActionsContainer,
@@ -12,20 +10,15 @@ import {
   CardModalOverlay,
   CardModalPortal,
   CardModalRoot,
-  CardModalTitle,
-  CardModalTitleContainer,
   CardModalTrigger,
-  EditCardTitleCancelButton,
-  EditCardTitleInput,
-  EditCardTitleSaveButton,
 } from '~/components/Cards/CardModal.styled';
 import { CardModalDescription } from '~/components/Cards/CardModalDescription';
+import { CardModalEditableTitle } from '~/components/Cards/CardModalEditableTitle';
 import { DeleteCardPopover } from '~/components/Cards/DeleteCardPopover';
 import { CardModalChecklists } from '~/components/Checklists/CardModalChecklists';
 import { CreateChecklist } from '~/components/Checklists/CreateChecklist';
 import { ListCardContainer } from '~/components/Lists/List.styled';
-import { type ListCardType, useUpdateCardMutation } from '~/query/cards';
-import { Flex } from '~/styles/Page.styled';
+import type { ListCardType } from '~/query/cards';
 
 type CardModalProps = ListCardType & {
   listId: string;
@@ -41,19 +34,6 @@ export function CardModal({
   createdAt,
   userId,
 }: CardModalProps) {
-  const [isEditingTitle, setEditingTitle] = useState(false);
-  const [editedTitle, setEditedTitle] = useState(cardTitle);
-  const [updateCard] = useUpdateCardMutation();
-
-  function onSave() {
-    updateCard({
-      cardDescription: cardDescription,
-      cardTitle: editedTitle,
-      cardId: id,
-      listId: listId,
-    });
-    setEditingTitle(false);
-  }
   return (
     <CardModalRoot data-testid="CardModalRoot">
       <CardModalTrigger data-testid="CardModalTrigger">
@@ -71,50 +51,11 @@ export function CardModal({
 
             <CardModalBody data-testid="CardModalBody">
               <CardModalMainColumn data-testid="CardModalMainColumn">
-                <CardModalTitleContainer data-testid="CardModalTitleContainer">
-                  <Bs.BsCardHeading size={24} />
-
-                  {!isEditingTitle && (
-                    <CardModalTitle
-                      data-testid="CardModalTitle"
-                      onClick={() => {
-                        setEditingTitle(true);
-                      }}
-                    >
-                      {cardTitle}
-                    </CardModalTitle>
-                  )}
-
-                  {isEditingTitle && (
-                    <div style={{ position: 'relative' }}>
-                      <Flex data-testid="Flex">
-                        <EditCardTitleInput
-                          data-testid="EditCardTitleInput"
-                          value={editedTitle}
-                          onChange={(event) =>
-                            setEditedTitle((_prevState) => event.target.value)
-                          }
-                        />
-                        <EditCardTitleSaveButton
-                          data-testid="EditCardTitleSaveButton"
-                          onClick={onSave}
-                        >
-                          Save
-                        </EditCardTitleSaveButton>
-                        <EditCardTitleCancelButton
-                          data-testid="EditCardTitleCancelButton"
-                          secondary
-                          onClick={() => setEditingTitle(false)}
-                        >
-                          Cancel
-                        </EditCardTitleCancelButton>
-                      </Flex>
-                    </div>
-                  )}
-                </CardModalTitleContainer>
+                <CardModalEditableTitle id={id} listId={listId} />
 
                 <CardModalActionsContainer data-testid="CardModalActionsContainer">
                   <CreateChecklist listId={listId} cardId={id} />
+
                   <DeleteCardPopover
                     id={id}
                     listId={listId}
@@ -125,6 +66,7 @@ export function CardModal({
                     listName={listName}
                   />
                 </CardModalActionsContainer>
+
                 <CardModalDescription
                   listId={listId}
                   cardId={id}

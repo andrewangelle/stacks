@@ -2,8 +2,9 @@ import { styled } from '@pigment-css/react';
 import * as Checkbox from '@radix-ui/react-checkbox';
 import * as Popover from '@radix-ui/react-popover';
 import * as Progress from '@radix-ui/react-progress';
-import { fontFamily } from '~/components/Boards/Boards.styled';
+import { fontFamily, red } from '~/components/Boards/Boards.styled';
 import { Button } from '~/styles/Page.styled';
+import { checklistProgressBlue } from '~/styles/tokens';
 
 export const ChecklistPopoverContent = styled(Popover.Content)` 
   height: 227px;
@@ -15,6 +16,7 @@ export const ChecklistPopoverContent = styled(Popover.Content)`
   background: #fff;
   display: flex;
   flex-direction: column;
+  z-index: 1;
 `;
 
 export const DeleteChecklistPopoverContent = styled(ChecklistPopoverContent)` 
@@ -59,10 +61,10 @@ export const DeleteChecklistButton = styled(Button)`
 `;
 
 export const AddChecklistItemButton = styled(Button)` 
-border: none;
-padding: 8px 10px;
-color: black;
-margin: 0;
+  border: none;
+  padding: 8px 10px;
+  color: black;
+  margin: 12px 0px 0px;
 `;
 
 export const AddChecklistItemInput = styled.textarea` 
@@ -81,7 +83,7 @@ export const AddChecklistButton = styled(Button)`
 `;
 
 export const DeleteChecklistPopoverButton = styled(Button)` 
-  background: #b04632;
+  background: ${red};
   width: 100%;
   margin: 15px 0px 0px;
   padding: 8px 10px;
@@ -109,7 +111,7 @@ export const ChecklistProgressRoot = styled(Progress.Root)`
 `;
 
 export const ChecklistProgressIndicator = styled(Progress.Indicator)` 
-  background-color: #5ba4cf;
+  background-color: ${checklistProgressBlue};
   height: 100%;
   transition: width 660ms cubic-bezier(0.65, 0, 0.35, 1);
 `;
@@ -124,14 +126,28 @@ export const ChecklistCheckboxContainer = styled(
   padding: '10px 0px',
   position: 'relative',
   cursor: 'pointer',
-  background: (props) => (props.isHovering ? 'rgb(223 225 230)' : undefined),
+  variants: [
+    {
+      props: { isHovering: true },
+      style: {
+        background: 'rgb(223 225 230)',
+      },
+    },
+  ],
 });
 
 export const CheckboxRoot = styled(Checkbox.Root)({
-  backgroundColor: (props) => (props.checked === true ? '#5ba4cf' : 'white'),
   width: 16,
   height: 16,
   position: 'relative',
+  variants: [
+    {
+      props: { checked: true },
+      style: {
+        backgroundColor: checklistProgressBlue,
+      },
+    },
+  ],
 });
 
 export const CheckboxIndicator = styled(Checkbox.Indicator)` 

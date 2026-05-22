@@ -4,7 +4,7 @@ import {
   PopoverClose,
 } from '~/components/Boards/Boards.styled';
 import {
-  CardModalSiderButton,
+  CardModalActionButton,
   CardModalSiderButtonText,
   DeleteCardPopoverTrigger,
 } from '~/components/Cards/CardModal.styled';
@@ -28,11 +28,11 @@ export function DeleteCardPopover({
   return (
     <Popover.Root>
       <DeleteCardPopoverTrigger data-testid="DeleteCardPopoverTrigger">
-        <CardModalSiderButton data-testid="CardModalSiderButton">
+        <CardModalActionButton data-testid="CardModalSiderButton">
           <CardModalSiderButtonText data-testid="CardModalSiderButtonText">
             Delete Card
           </CardModalSiderButtonText>
-        </CardModalSiderButton>
+        </CardModalActionButton>
       </DeleteCardPopoverTrigger>
 
       <DeleteChecklistPopoverContent data-testid="DeleteChecklistPopoverContent">

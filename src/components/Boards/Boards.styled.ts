@@ -139,7 +139,12 @@ export const PopoverClose = styled(Popover.Close)`
   width: 25px;
   cursor: pointer;
   position: absolute;
-  right: 0;
+  right: 4px;
+
+  &:hover {
+    background: rgba(0,0,0, 0.1);
+    border-radius: 24px;
+  }
 `;
 
 export const CreateBoardPopoverContent = styled(Popover.Content)` 

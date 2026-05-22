@@ -7,7 +7,7 @@ import {
   PopoverClose,
 } from '~/components/Boards/Boards.styled';
 import {
-  CardModalSiderButton,
+  CardModalActionButton,
   CardModalSiderButtonText,
   CreateChecklistPopoverTrigger,
 } from '~/components/Cards/CardModal.styled';
@@ -51,12 +51,12 @@ export function CreateChecklist({ listId, cardId }: CreateChecklistProps) {
   return (
     <Popover.Root>
       <CreateChecklistPopoverTrigger data-testid="CreateChecklistPopoverTrigger">
-        <CardModalSiderButton data-testid="CardModalSiderButton">
+        <CardModalActionButton data-testid="CardModalActionButton">
           <Bs.BsCheck2Square style={{ marginRight: '4px' }} />
           <CardModalSiderButtonText data-testid="CardModalSiderButtonText">
             Checklist
           </CardModalSiderButtonText>
-        </CardModalSiderButton>
+        </CardModalActionButton>
       </CreateChecklistPopoverTrigger>
 
       <ChecklistPopoverContent data-testid="ChecklistPopoverContent">

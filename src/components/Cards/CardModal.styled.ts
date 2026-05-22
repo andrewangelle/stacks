@@ -14,7 +14,7 @@ export const CardModalActionsContainer = styled.div`
   margin: 12px 12px 0px 44px;
 `;
 
-export const CardModalSiderButton = styled.div`
+export const CardModalActionButton = styled.div`
   font-family: ${fontFamily};
   background: #091e420a;
   border-radius: 5px;
@@ -22,6 +22,10 @@ export const CardModalSiderButton = styled.div`
   display: flex;
   cursor: pointer;
   white-space: nowrap;
+
+  &:hover {
+    background: rgba(0,0,0, 0.1);
+  }
 `;
 
 export const CardModalSiderButtonText = styled.span` 
@@ -42,8 +46,6 @@ export const DeleteCardPopoverTrigger = styled(Popover.Trigger)`
   cursor: pointer;
   width: auto;
 `;
-
-// Card Modal Styles
 
 export const CardModalRoot = styled(Dialog.Root)``;
 export const CardModalPortal = styled(Dialog.Portal)``;
@@ -132,6 +134,10 @@ export const CardModalClose = styled(Dialog.Close)`
   padding: 12px;
   cursor: pointer;
   background: white;
+  margin-right: 12px;
+  &:hover {
+    background: rgba(0,0,0, 0.1);
+  }
 `;
 
 export const CardModalTitleContainer = styled.div`
