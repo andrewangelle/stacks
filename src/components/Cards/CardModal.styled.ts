@@ -1,9 +1,10 @@
 import { styled } from '@pigment-css/react';
 import * as Dialog from '@radix-ui/react-dialog';
 import * as Popover from '@radix-ui/react-popover';
-import { fontFamily, red } from '~/components/Boards/Boards.styled';
+import { fontFamily } from '~/components/Boards/Boards.styled';
 import { AddCardInput } from '~/components/Lists/List.styled';
 import { Button } from '~/styles/Page.styled';
+import { focusRingBlue, red } from '~/styles/tokens';
 
 const cardModalBreakpoint = '@media (max-width: 850px)';
 
@@ -64,7 +65,7 @@ export const CardModalOverlay = styled(Dialog.Overlay)`
 
 export const CardModalBody = styled.div`
   display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(200px, 280px);
+  grid-template-columns: minmax(0, 1fr) 8px minmax(200px, 280px);
   gap: 0;
   align-items: start;
 
@@ -74,13 +75,38 @@ export const CardModalBody = styled.div`
   }
 `;
 
+export const CardModalResizeHandle = styled.div`
+  height: 100%;
+  cursor: grab;
+  touch-action: none;
+  position: relative;
+  user-select: none;
+
+  &::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 100%;
+    transform: translateX(-50%);
+    background: rgba(0, 0, 0, 0.2);
+  }
+
+  &:hover::after {
+    background: ${focusRingBlue}; 
+    width: 4px;
+  }
+
+  ${cardModalBreakpoint} {
+    display: none;
+  }
+`;
+
 export const CardModalMainColumn = styled.div`
   min-width: 0;
-  border-right: 1px solid rgba(0, 0, 0, 0.2);
 
   ${cardModalBreakpoint} {
     padding-right: 0;
-    border-right: none;
   }
 `;
 

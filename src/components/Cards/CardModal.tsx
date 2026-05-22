@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { CardModalActivity } from '~/components/Activity/CardModalActivity';
 import {
   CardModalActionsContainer,
@@ -12,6 +13,11 @@ import {
   CardModalRoot,
   CardModalTrigger,
 } from '~/components/Cards/CardModal.styled';
+import {
+  ACTIVITY_COLUMN_DEFAULT_WIDTH,
+  CARD_MODAL_WIDE_LAYOUT_QUERY,
+  CardModalColumnResize,
+} from '~/components/Cards/CardModalColumnResize';
 import { CardModalDescription } from '~/components/Cards/CardModalDescription';
 import { CardModalEditableTitle } from '~/components/Cards/CardModalEditableTitle';
 import { DeleteCardPopover } from '~/components/Cards/DeleteCardPopover';
@@ -34,6 +40,15 @@ export function CardModal({
   createdAt,
   userId,
 }: CardModalProps) {
+  const [columnWidth, setColumnWidth] = useState(ACTIVITY_COLUMN_DEFAULT_WIDTH);
+  const [isWideLayout, setIsWideLayout] = useState(() =>
+    typeof window !== 'undefined'
+      ? window.matchMedia(CARD_MODAL_WIDE_LAYOUT_QUERY).matches
+      : true,
+  );
+
+  const gridTemplateColumns = `minmax(0, 1fr) 8px ${columnWidth}px`;
+  const cardModalBodyStyle = isWideLayout ? { gridTemplateColumns } : undefined;
   return (
     <CardModalRoot data-testid="CardModalRoot">
       <CardModalTrigger data-testid="CardModalTrigger">
@@ -49,7 +64,10 @@ export function CardModal({
               <CardModalClose data-testid="CardModalClose">X</CardModalClose>
             </CardModalCloseContainer>
 
-            <CardModalBody data-testid="CardModalBody">
+            <CardModalBody
+              data-testid="CardModalBody"
+              style={cardModalBodyStyle}
+            >
               <CardModalMainColumn data-testid="CardModalMainColumn">
                 <CardModalEditableTitle id={id} listId={listId} />
 
@@ -76,6 +94,12 @@ export function CardModal({
 
                 <CardModalChecklists cardId={id} />
               </CardModalMainColumn>
+
+              <CardModalColumnResize
+                columnWidth={columnWidth}
+                setColumnWidth={setColumnWidth}
+                setIsWideLayout={setIsWideLayout}
+              />
 
               <CardModalActivityColumn data-testid="CardModalActivityColumn">
                 <CardModalActivity listId={listId} cardId={id} />

@@ -5,6 +5,7 @@ export const blue = '#0079bf';
 export const orange = '#d29034';
 export const red = '#b04632';
 export const checklistProgressBlue = '#5ba4cf';
+export const focusRingBlue = '#2F80ED';
 export const fontFamily =
   '-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Noto Sans,Ubuntu,Droid Sans,Helvetica Neue,sans-serif;';
 
