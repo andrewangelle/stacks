@@ -10,13 +10,15 @@ import {
 import { useGetCardByIdQuery, useUpdateCardMutation } from '~/query/cards';
 import { Flex } from '~/styles/Page.styled';
 
+type CardModalEditableTitleProps = {
+  id: string;
+  listId: string;
+};
+
 export function CardModalEditableTitle({
   id,
   listId,
-}: {
-  id: string;
-  listId: string;
-}) {
+}: CardModalEditableTitleProps) {
   const [isEditingTitle, setEditingTitle] = useState(false);
   const { data: card } = useGetCardByIdQuery({ id });
   const [editedTitle, setEditedTitle] = useState(card?.cardTitle ?? '');
@@ -63,12 +65,14 @@ export function CardModalEditableTitle({
                 setEditedTitle((_prevState) => event.target.value)
               }
             />
+
             <EditCardTitleSaveButton
               data-testid="EditCardTitleSaveButton"
               onClick={onSave}
             >
               Save
             </EditCardTitleSaveButton>
+
             <EditCardTitleCancelButton
               data-testid="EditCardTitleCancelButton"
               secondary

@@ -20,7 +20,7 @@ export const ListContainer = styled.div`
   position: relative;
   white-space: normal;
   width: 275px;
-  padding: 15px;
+  padding: 15px 15px 7.5px;
   margin: 0 15px;
 `;
 
