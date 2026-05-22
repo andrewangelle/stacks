@@ -99,13 +99,13 @@ export const CardModalContent = styled(Dialog.Content)`
   position: relative;
   font-family: ${fontFamily};
   min-width: 700px;
-  max-width: 900px;
+  max-width: 88%;
+  max-height: 95%;
   width: 100%;
   margin: 0 30px;
   height: max-content;
   overflow: scroll;
   background: white;
-  padding: 30;
   border-radius: 5px;
 
   ${cardModalBreakpoint} {
