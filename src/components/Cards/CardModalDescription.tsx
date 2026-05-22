@@ -1,6 +1,5 @@
 import { useState } from 'react';
 import * as Io from 'react-icons/io';
-import { useUpdateCardMutation } from '~/query/cards';
 import {
   CardDescriptionText,
   CardModalTitle,
@@ -10,8 +9,9 @@ import {
   DescriptionPlaceholder,
   EditDescriptionButton,
   SaveDescriptionButton,
-} from '~/styles/CardModal';
-import { Flex } from '~/styles/Page';
+} from '~/components/Cards/CardModal.styled';
+import { useUpdateCardMutation } from '~/query/cards';
+import { Flex } from '~/styles/Page.styled';
 
 type CardModalDescriptionProps = {
   listId: string;

@@ -1,12 +1,15 @@
 import * as Popover from '@radix-ui/react-popover';
-import { type ActivityType, useDeleteActivityMutation } from '~/query/activity';
-import { CreateBoardCloseBorder, PopoverClose } from '~/styles/Boards';
+import {
+  CreateBoardCloseBorder,
+  PopoverClose,
+} from '~/components/Boards/Boards.styled';
 import {
   ChecklistPopoverHeader,
   DeleteChecklistPopoverButton,
   DeleteChecklistPopoverContent,
   DeleteChecklistPopoverTrigger,
-} from '~/styles/CardModal';
+} from '~/components/Checklists/Checklists.styled';
+import { type ActivityType, useDeleteActivityMutation } from '~/query/activity';
 
 export function DeleteCommentPopover(props: ActivityType) {
   const [deleteActivity] = useDeleteActivityMutation();

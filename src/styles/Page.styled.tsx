@@ -1,7 +1,7 @@
 import { styled } from '@pigment-css/react';
 import { Link } from '@tanstack/react-router';
 import type { ReactNode } from 'react';
-import type { BackgroundProps } from '~/styles/Boards';
+import type { BackgroundProps } from '~/components/Boards/Boards.styled';
 import { blue, boardGradientVars } from '~/styles/tokens';
 
 type PaddingProps = {
@@ -44,6 +44,8 @@ type ButtonExtraProps = {
 };
 
 export const Button = styled('button')<ButtonExtraProps>({
+  position: 'relative',
+  overflow: 'hidden',
   borderRadius: '5px',
   margin: 'auto',
   display: 'flex',
@@ -51,6 +53,23 @@ export const Button = styled('button')<ButtonExtraProps>({
   textAlign: 'center',
   justifyContent: 'center',
   whiteSpace: 'nowrap',
+
+  // applies hover effect to the button
+  '&::before': {
+    content: '""',
+    position: 'absolute',
+    inset: 0,
+    borderRadius: 'inherit',
+    backgroundColor: '#000',
+    opacity: 0,
+    pointerEvents: 'none',
+    transition: 'opacity 0.15s ease',
+  },
+
+  '&:hover:not(:disabled)::before': {
+    opacity: 0.1,
+  },
+
   variants: [
     {
       props: { secondary: true },
@@ -68,6 +87,9 @@ export const Button = styled('button')<ButtonExtraProps>({
         color: '#fff',
         border: 'none',
         cursor: 'not-allowed',
+        '&:hover::before': {
+          opacity: 0,
+        },
       },
     },
     {
@@ -77,6 +99,9 @@ export const Button = styled('button')<ButtonExtraProps>({
         color: 'rgba(9, 30, 66, 0.08)',
         border: 'none',
         cursor: 'not-allowed',
+        '&:hover::before': {
+          opacity: 0,
+        },
       },
     },
     {
@@ -93,6 +118,9 @@ export const Button = styled('button')<ButtonExtraProps>({
       },
     },
   ],
+  '&:hover': {
+    color: 'white',
+  },
 });
 
 type BoardPageBackgroundProps = {

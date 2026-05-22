@@ -1,52 +1,49 @@
 import * as Popover from '@radix-ui/react-popover';
-import { type ListCardType, useDeleteCardMutation } from '~/query/cards';
-import { CreateBoardCloseBorder, PopoverClose } from '~/styles/Boards';
+import { useParams } from '@tanstack/react-router';
 import {
-  CardModalSiderButton,
-  CardModalSiderButtonText,
+  CreateBoardCloseBorder,
+  PopoverClose,
+} from '~/components/Boards/Boards.styled';
+import { DeleteCardPopoverTrigger } from '~/components/Cards/CardModal.styled';
+import {
   ChecklistPopoverHeader,
-  DeleteCardPopoverTrigger,
   DeleteChecklistPopoverButton,
   DeleteChecklistPopoverContent,
-} from '~/styles/CardModal';
+} from '~/components/Checklists/Checklists.styled';
+import { DeleteListIcon } from '~/components/Lists/List.styled';
+import { useDeleteListMutation } from '~/query/lists';
 
-type DeleteCardPopoverProps = ListCardType & {
-  listId: string;
-  listName: string;
+type DeleteListPopoverProps = {
+  id: string;
+  listTitle: string;
 };
-export function DeleteCardPopover({
-  id,
-  listId,
-  cardTitle,
-}: DeleteCardPopoverProps) {
-  const [deleteCard] = useDeleteCardMutation();
+
+export function DeleteListPopover({ id, listTitle }: DeleteListPopoverProps) {
+  const params = useParams({ strict: false });
+  const [deleteList] = useDeleteListMutation();
   return (
     <Popover.Root>
       <DeleteCardPopoverTrigger data-testid="DeleteCardPopoverTrigger">
-        <CardModalSiderButton data-testid="CardModalSiderButton">
-          <CardModalSiderButtonText data-testid="CardModalSiderButtonText">
-            Delete Card
-          </CardModalSiderButtonText>
-        </CardModalSiderButton>
+        <DeleteListIcon data-testid="DeleteListIcon" />
       </DeleteCardPopoverTrigger>
 
       <DeleteChecklistPopoverContent data-testid="DeleteChecklistPopoverContent">
         <ChecklistPopoverHeader data-testid="ChecklistPopoverHeader">
-          {`Delete ${cardTitle}`}
+          {`Delete ${listTitle}`}
           <PopoverClose data-testid="PopoverClose">X</PopoverClose>
         </ChecklistPopoverHeader>
         <CreateBoardCloseBorder data-testid="CreateBoardCloseBorder" />
-        Deleting a card is permanent and there is no way to get it back.
+        Deleting a list is permanent and there is no way to get it back.
         <DeleteChecklistPopoverButton
           data-testid="DeleteChecklistPopoverButton"
           onClick={() => {
-            deleteCard({
+            deleteList({
               id,
-              listId,
+              boardId: params.id ?? '',
             });
           }}
         >
-          Delete
+          Delete list
         </DeleteChecklistPopoverButton>
       </DeleteChecklistPopoverContent>
     </Popover.Root>

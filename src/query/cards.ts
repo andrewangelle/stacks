@@ -42,6 +42,17 @@ export function useGetCardsQuery(args: CardArgs) {
   });
 }
 
+export function useGetCardByIdQuery(args: { id: string }) {
+  return useQuery({
+    queryKey: queryKeys.card(args.id),
+    queryFn() {
+      return resourceRequest<ListCardType>(`cards/${args.id}`, {
+        method: 'GET',
+      });
+    },
+  });
+}
+
 export function useCreateCardMutation() {
   const mutation = useMutation({
     mutationFn: ({ cardTitle, listId }: CreateCardArgs) =>
@@ -76,6 +87,14 @@ export function useUpdateCardMutation() {
         },
       ),
     onSuccess: (_result, variables) => {
+      queryClient.setQueryData<ListCardType>(
+        queryKeys.card(variables.cardId),
+        (cache = {} as ListCardType) => ({
+          ...cache,
+          cardDescription: variables.cardDescription,
+          cardTitle: variables.cardTitle,
+        }),
+      );
       queryClient.setQueryData<ListCardType[]>(
         queryKeys.cards(variables.listId),
         (cache = []) =>

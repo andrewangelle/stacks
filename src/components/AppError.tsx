@@ -2,7 +2,7 @@ import * as Sentry from '@sentry/tanstackstart-react';
 import type { ErrorComponentProps } from '@tanstack/react-router';
 import { useEffect } from 'react';
 import { NavBar } from '~/components/NavBar';
-import { FlexCenter } from '~/styles/Page';
+import { FlexCenter } from '~/styles/Page.styled';
 
 export function AppError(props: ErrorComponentProps) {
   useEffect(() => {

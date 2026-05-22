@@ -1,10 +1,8 @@
 import { useParams } from '@tanstack/react-router';
 import { useState } from 'react';
-import { CardModal } from '~/components/CardModal';
-import { DeleteListPopover } from '~/components/DeleteListPopover';
-import { DragDropCard } from '~/components/DragDropCard';
-import { useCreateCardMutation, useGetCardsQuery } from '~/query/cards';
-import { type List, useUpdateListMutation } from '~/query/lists';
+import { CardModal } from '~/components/Cards/CardModal';
+import { DragDropCard } from '~/components/Cards/DragDropCard';
+import { DeleteListPopover } from '~/components/Lists/DeleteListPopover';
 import {
   AddCardButton,
   AddCardInput,
@@ -12,8 +10,10 @@ import {
   CloseAddCardButton,
   ListContainer,
   ListName,
-} from '~/styles/List';
-import { Flex } from '~/styles/Page';
+} from '~/components/Lists/List.styled';
+import { useCreateCardMutation, useGetCardsQuery } from '~/query/cards';
+import { type List, useUpdateListMutation } from '~/query/lists';
+import { Flex } from '~/styles/Page.styled';
 import { useOutsideClick } from '~/utils/useOutsideClick';
 
 export function ListCard({ id, listTitle }: List) {
@@ -48,6 +48,7 @@ export function ListCard({ id, listTitle }: List) {
       listId: id,
     });
     setEditing(false);
+    setCardTitle('');
   }
 
   return (
@@ -75,14 +76,6 @@ export function ListCard({ id, listTitle }: List) {
 
       {!isEditingName && <DeleteListPopover id={id} listTitle={listTitle} />}
 
-      {isEditing && (
-        <AddCardInput
-          data-testid="AddCardInput"
-          value={cardTitle}
-          onChange={(event) => setCardTitle((_prevState) => event.target.value)}
-        />
-      )}
-
       {cards?.map((card) => (
         <DragDropCard
           key={card.id}
@@ -94,6 +87,15 @@ export function ListCard({ id, listTitle }: List) {
         </DragDropCard>
       ))}
 
+      {isEditing && (
+        <AddCardInput
+          data-testid="AddCardInput"
+          value={cardTitle}
+          placeholder="Enter a title"
+          onChange={(event) => setCardTitle((_prevState) => event.target.value)}
+        />
+      )}
+
       <Flex data-testid="Flex">
         {!isEditing && (
           <AddCardText
@@ -103,11 +105,13 @@ export function ListCard({ id, listTitle }: List) {
             + Add a card
           </AddCardText>
         )}
+
         {isEditing && (
           <AddCardButton data-testid="AddCardButton" onClick={onCardCreate}>
             Add card
           </AddCardButton>
         )}
+
         {isEditing && (
           <CloseAddCardButton
             data-testid="CloseAddCardButton"

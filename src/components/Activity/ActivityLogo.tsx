@@ -1,6 +1,6 @@
+import { ActivityNameCircle } from '~/components/Activity/Activity.styled';
 import { useGetProfileQuery } from '~/query/profile';
-import { ActivityNameCircle } from '~/styles/Activity';
-import { Center } from '~/styles/Page';
+import { Center } from '~/styles/Page.styled';
 
 export function getInitials(
   data: { firstName: string; lastName: string } | null,

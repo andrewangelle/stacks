@@ -1,22 +1,28 @@
 import * as Popover from '@radix-ui/react-popover';
 import {
-  type ChecklistType,
-  useDeleteChecklistMutation,
-} from '~/query/checklists';
-import { CreateBoardCloseBorder, PopoverClose } from '~/styles/Boards';
+  CreateBoardCloseBorder,
+  PopoverClose,
+} from '~/components/Boards/Boards.styled';
 import {
   ChecklistPopoverHeader,
   DeleteChecklistButton,
   DeleteChecklistPopoverButton,
   DeleteChecklistPopoverContent,
   DeleteChecklistPopoverTrigger,
-} from '~/styles/CardModal';
+} from '~/components/Checklists/Checklists.styled';
+import {
+  type ChecklistType,
+  useDeleteChecklistMutation,
+} from '~/query/checklists';
 
 export function DeleteChecklistPopover(props: ChecklistType) {
   const [deleteChecklist] = useDeleteChecklistMutation();
   return (
     <Popover.Root>
-      <DeleteChecklistPopoverTrigger data-testid="DeleteChecklistPopoverTrigger">
+      <DeleteChecklistPopoverTrigger
+        asChild
+        data-testid="DeleteChecklistPopoverTrigger"
+      >
         <DeleteChecklistButton data-testid="DeleteChecklistButton" secondary>
           Delete
         </DeleteChecklistButton>

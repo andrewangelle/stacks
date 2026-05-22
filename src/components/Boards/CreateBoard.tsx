@@ -1,7 +1,6 @@
 import * as Popover from '@radix-ui/react-popover';
 import { useState } from 'react';
 import * as Fa from 'react-icons/fa';
-import { useCreateBoardMutation } from '~/query/boards';
 import {
   type BoardBackground,
   CreateBoardBackgroundChoice,
@@ -15,9 +14,10 @@ import {
   CreateBoardPopoverTrigger,
   CreateBoardTitleInput,
   PopoverClose,
-} from '~/styles/Boards';
+} from '~/components/Boards/Boards.styled';
+import { useCreateBoardMutation } from '~/query/boards';
 
-import { Center } from '~/styles/Page';
+import { Center } from '~/styles/Page.styled';
 
 const backgroundChoices: BoardBackground[] = [
   'green',

@@ -2,19 +2,24 @@ import * as Popover from '@radix-ui/react-popover';
 import { useParams } from '@tanstack/react-router';
 import { useState } from 'react';
 import * as Bs from 'react-icons/bs';
-import { useCreateActivityMutation } from '~/query/activity';
-import { useCreateChecklistMutation } from '~/query/checklists';
-import { CreateBoardCloseBorder, PopoverClose } from '~/styles/Boards';
 import {
-  CardModalSiderButton,
+  CreateBoardCloseBorder,
+  PopoverClose,
+} from '~/components/Boards/Boards.styled';
+import {
+  CardModalActionButton,
   CardModalSiderButtonText,
+  CreateChecklistPopoverTrigger,
+} from '~/components/Cards/CardModal.styled';
+import {
   ChecklistPopoverContent,
   ChecklistPopoverHeader,
   CreateChecklistAddButton,
   CreateChecklistInput,
-  CreateChecklistPopoverTrigger,
   CreateChecklistTitle,
-} from '~/styles/CardModal';
+} from '~/components/Checklists/Checklists.styled';
+import { useCreateActivityMutation } from '~/query/activity';
+import { useCreateChecklistMutation } from '~/query/checklists';
 
 type CreateChecklistProps = {
   listId: string;
@@ -46,12 +51,12 @@ export function CreateChecklist({ listId, cardId }: CreateChecklistProps) {
   return (
     <Popover.Root>
       <CreateChecklistPopoverTrigger data-testid="CreateChecklistPopoverTrigger">
-        <CardModalSiderButton data-testid="CardModalSiderButton">
+        <CardModalActionButton data-testid="CardModalActionButton">
           <Bs.BsCheck2Square style={{ marginRight: '4px' }} />
           <CardModalSiderButtonText data-testid="CardModalSiderButtonText">
             Checklist
           </CardModalSiderButtonText>
-        </CardModalSiderButton>
+        </CardModalActionButton>
       </CreateChecklistPopoverTrigger>
 
       <ChecklistPopoverContent data-testid="ChecklistPopoverContent">

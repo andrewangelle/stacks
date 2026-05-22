@@ -1,9 +1,9 @@
 import { Show, UserButton } from '@clerk/tanstack-react-start';
 import { useLocation } from '@tanstack/react-router';
 import * as Ri from 'react-icons/ri';
+import type { BoardBackground } from '~/components/Boards/Boards.styled';
 import { useGetBoardQuery } from '~/query/boards';
-import type { BoardBackground } from '~/styles/Boards';
-import { LogoLink, NavBarContainer, Padding } from '~/styles/Page';
+import { LogoLink, NavBarContainer, Padding } from '~/styles/Page.styled';
 
 export function NavBar() {
   const location = useLocation();

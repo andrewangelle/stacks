@@ -1,12 +1,12 @@
 import { useState } from 'react';
-import { useCreateListMutation } from '~/query/lists';
 import {
   AddListButton,
   AddListContainer,
   AddListInput,
   CloseAddListButton,
-} from '~/styles/Board';
-import { Flex } from '~/styles/Page';
+} from '~/components/Boards/Board.styled';
+import { useCreateListMutation } from '~/query/lists';
+import { Flex } from '~/styles/Page.styled';
 
 type AddListsProps = {
   boardId: string;

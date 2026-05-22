@@ -3,7 +3,6 @@ import { useNavigate } from '@tanstack/react-router';
 import { type CSSProperties, useState } from 'react';
 import * as Io from 'react-icons/io';
 import * as Ri from 'react-icons/ri';
-import { useGetBoardQuery, useGetBoardsQuery } from '~/query/boards';
 import {
   BoardsLinkContainer,
   BoardTitle,
@@ -12,12 +11,13 @@ import {
   DrawerHeader,
   DrawerHeaderTitle,
   YourBoardsTitle,
-} from '~/styles/Board';
+} from '~/components/Boards/Board.styled';
 import {
   type BoardBackground,
   CreateBoardBackgroundChoice,
-} from '~/styles/Boards';
-import { FlexColumn } from '~/styles/Page';
+} from '~/components/Boards/Boards.styled';
+import { useGetBoardQuery, useGetBoardsQuery } from '~/query/boards';
+import { FlexColumn } from '~/styles/Page.styled';
 
 export const sharedDrawerArrowStyles: CSSProperties = {
   cursor: 'pointer',
