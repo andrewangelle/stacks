@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react';
+import { type PointerEvent, useEffect, useRef } from 'react';
 import { CardModalResizeHandle } from '~/components/Cards/CardModal.styled';
 
 export const ACTIVITY_COLUMN_DEFAULT_WIDTH = 350;
@@ -21,7 +21,7 @@ export function CardModalColumnResize({
   const resizeStartXRef = useRef(0);
   const resizeStartWidthRef = useRef(columnWidth);
 
-  function handleResizePointerDown(event: React.PointerEvent<HTMLDivElement>) {
+  function initializePointer(event: PointerEvent<HTMLDivElement>) {
     event.preventDefault();
     isResizingRef.current = true;
     resizeStartXRef.current = event.clientX;
@@ -29,28 +29,26 @@ export function CardModalColumnResize({
     event.currentTarget.setPointerCapture(event.pointerId);
   }
 
-  function handleResizePointerMove(event: React.PointerEvent<HTMLDivElement>) {
+  function resizeColumnWidth(event: PointerEvent<HTMLDivElement>) {
     if (!isResizingRef.current) {
       return;
     }
 
     const deltaX = resizeStartXRef.current - event.clientX;
 
-    setColumnWidth(
-      clampActivityColumnWidth(resizeStartWidthRef.current + deltaX),
-    );
+    setColumnWidth(clamp(resizeStartWidthRef.current + deltaX));
   }
 
-  function clampActivityColumnWidth(width: number) {
+  function releasePointer(event: PointerEvent<HTMLDivElement>) {
+    isResizingRef.current = false;
+    event.currentTarget.releasePointerCapture(event.pointerId);
+  }
+
+  function clamp(width: number) {
     return Math.min(
       ACTIVITY_COLUMN_MAX_WIDTH,
       Math.max(ACTIVITY_COLUMN_MIN_WIDTH, width),
     );
-  }
-
-  function handleResizePointerUp(event: React.PointerEvent<HTMLDivElement>) {
-    isResizingRef.current = false;
-    event.currentTarget.releasePointerCapture(event.pointerId);
   }
 
   useEffect(() => {
@@ -63,10 +61,10 @@ export function CardModalColumnResize({
   return (
     <CardModalResizeHandle
       data-testid="CardModalResizeHandle"
-      onPointerDown={handleResizePointerDown}
-      onPointerMove={handleResizePointerMove}
-      onPointerUp={handleResizePointerUp}
-      onPointerCancel={handleResizePointerUp}
+      onPointerDown={initializePointer}
+      onPointerMove={resizeColumnWidth}
+      onPointerUp={releasePointer}
+      onPointerCancel={releasePointer}
     />
   );
 }

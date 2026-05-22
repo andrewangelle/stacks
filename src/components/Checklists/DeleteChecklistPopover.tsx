@@ -19,7 +19,10 @@ export function DeleteChecklistPopover(props: ChecklistType) {
   const [deleteChecklist] = useDeleteChecklistMutation();
   return (
     <Popover.Root>
-      <DeleteChecklistPopoverTrigger data-testid="DeleteChecklistPopoverTrigger">
+      <DeleteChecklistPopoverTrigger
+        asChild
+        data-testid="DeleteChecklistPopoverTrigger"
+      >
         <DeleteChecklistButton data-testid="DeleteChecklistButton" secondary>
           Delete
         </DeleteChecklistButton>
