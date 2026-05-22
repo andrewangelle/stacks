@@ -9,7 +9,7 @@ import {
   DeleteChecklistPopoverButton,
   DeleteChecklistPopoverContent,
   DeleteChecklistPopoverTrigger,
-} from '~/components/Cards/CardModal.styled';
+} from '~/components/Checklists/Checklists.styled';
 import {
   type ChecklistType,
   useDeleteChecklistMutation,

@@ -4,12 +4,12 @@ import {
   CreateBoardCloseBorder,
   PopoverClose,
 } from '~/components/Boards/Boards.styled';
+import { DeleteCardPopoverTrigger } from '~/components/Cards/CardModal.styled';
 import {
   ChecklistPopoverHeader,
-  DeleteCardPopoverTrigger,
   DeleteChecklistPopoverButton,
   DeleteChecklistPopoverContent,
-} from '~/components/Cards/CardModal.styled';
+} from '~/components/Checklists/Checklists.styled';
 import { DeleteListIcon } from '~/components/Lists/List.styled';
 import { useDeleteListMutation } from '~/query/lists';
 

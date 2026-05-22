@@ -1,17 +1,19 @@
 import { useState } from 'react';
 import * as Bs from 'react-icons/bs';
 import {
+  CardModalTitle,
+  CloseDescriptionButton,
+} from '~/components/Cards/CardModal.styled';
+import { ChecklistCheckbox } from '~/components/Checklists/ChecklistCheckbox';
+import {
   AddChecklistButton,
   AddChecklistItemButton,
   AddChecklistItemInput,
-  CardModalTitle,
   ChecklistHeader,
   ChecklistProgressIndicator,
   ChecklistProgressPercentage,
   ChecklistProgressRoot,
-  CloseDescriptionButton,
-} from '~/components/Cards/CardModal.styled';
-import { ChecklistCheckbox } from '~/components/Checklists/ChecklistCheckbox';
+} from '~/components/Checklists/Checklists.styled';
 import { DeleteChecklistPopover } from '~/components/Checklists/DeleteChecklistPopover';
 import { DragDropChecklistItem } from '~/components/Checklists/DragDropChecklistItems';
 import {

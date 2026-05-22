@@ -9,13 +9,15 @@ import {
 import {
   CardModalSiderButton,
   CardModalSiderButtonText,
+  CreateChecklistPopoverTrigger,
+} from '~/components/Cards/CardModal.styled';
+import {
   ChecklistPopoverContent,
   ChecklistPopoverHeader,
   CreateChecklistAddButton,
   CreateChecklistInput,
-  CreateChecklistPopoverTrigger,
   CreateChecklistTitle,
-} from '~/components/Cards/CardModal.styled';
+} from '~/components/Checklists/Checklists.styled';
 import { useCreateActivityMutation } from '~/query/activity';
 import { useCreateChecklistMutation } from '~/query/checklists';
 

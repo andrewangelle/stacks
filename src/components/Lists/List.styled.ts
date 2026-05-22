@@ -67,7 +67,6 @@ export const CloseAddCardButton = styled(Button)`
   &:hover {
     background-color: rgba(0, 0, 0, .3);
   }
-
 `;
 
 export const ListCardContainer = styled.div` 

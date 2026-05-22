@@ -6,11 +6,13 @@ import {
 import {
   CardModalSiderButton,
   CardModalSiderButtonText,
-  ChecklistPopoverHeader,
   DeleteCardPopoverTrigger,
+} from '~/components/Cards/CardModal.styled';
+import {
+  ChecklistPopoverHeader,
   DeleteChecklistPopoverButton,
   DeleteChecklistPopoverContent,
-} from '~/components/Cards/CardModal.styled';
+} from '~/components/Checklists/Checklists.styled';
 import { type ListCardType, useDeleteCardMutation } from '~/query/cards';
 
 type DeleteCardPopoverProps = ListCardType & {

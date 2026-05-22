@@ -11,6 +11,7 @@ import {
   CreateBoardCloseBorder,
   PopoverClose,
 } from '~/components/Boards/Boards.styled';
+import { CloseDescriptionButton } from '~/components/Cards/CardModal.styled';
 import {
   AddChecklistButton,
   AddChecklistItemInput,
@@ -19,11 +20,10 @@ import {
   CheckboxRoot,
   ChecklistCheckboxContainer,
   ChecklistPopoverHeader,
-  CloseDescriptionButton,
   DeleteChecklistPopoverButton,
   DeleteChecklistPopoverContent,
   DeleteChecklistPopoverTrigger,
-} from '~/components/Cards/CardModal.styled';
+} from '~/components/Checklists/Checklists.styled';
 import { useCreateActivityMutation } from '~/query/activity';
 import type { ChecklistItemType } from '~/query/checklistItems';
 import {
