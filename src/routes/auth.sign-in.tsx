@@ -1,6 +1,6 @@
 import { Show, SignIn, UserButton } from '@clerk/tanstack-react-start';
 import { createFileRoute, redirect } from '@tanstack/react-router';
-import { NavBar } from '~/components/NavBar';
+import { NavBar } from '~/components/Nav/NavBar';
 import { fetchUserId } from '~/middleware/auth';
 import { FlexCenter } from '~/styles/Page.styled';
 

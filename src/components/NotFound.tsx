@@ -1,7 +1,7 @@
 import * as Sentry from '@sentry/tanstackstart-react';
 import type { NotFoundRouteProps } from '@tanstack/react-router';
 import { useEffect } from 'react';
-import { NavBar } from '~/components/NavBar';
+import { NavBar } from '~/components/Nav/NavBar';
 import { FlexCenter } from '~/styles/Page.styled';
 
 export function NotFound(props: NotFoundRouteProps) {

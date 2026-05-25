@@ -25,3 +25,46 @@ export const boardGradientHoverVars = {
   orange: 'var(--board-gradient-orange-hover)',
   red: 'var(--board-gradient-red-hover)',
 } as const;
+
+export const tokenShades = {
+  darkGray: {
+    darkest: '#38414f',
+    darker: '#4b566a',
+    base: '#5e6c84',
+  },
+  green: {
+    darkest: '#315b22',
+    darker: '#417a2e',
+    base: '#519839',
+  },
+  lightGreen: {
+    darkest: '#2d7340',
+    darker: '#3c9956',
+    base: '#4bbf6b',
+  },
+  blue: {
+    darkest: '#004973',
+    darker: '#00578a',
+    base: '#0079bf',
+  },
+  orange: {
+    darkest: '#7e561f',
+    darker: '#a8732a',
+    base: '#d29034',
+  },
+  red: {
+    darkest: '#6a2a1e',
+    darker: '#7f3224',
+    base: '#b04632',
+  },
+  checklistProgressBlue: {
+    darkest: '#37627c',
+    darker: '#4983a6',
+    base: '#5ba4cf',
+  },
+  focusRingBlue: {
+    darkest: '#1c4d8e',
+    darker: '#2666be',
+    base: '#2F80ED',
+  },
+} as const;
