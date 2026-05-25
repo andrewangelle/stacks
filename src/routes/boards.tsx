@@ -7,7 +7,7 @@ import {
   BoardsContainer,
 } from '~/components/Boards/Boards.styled';
 import { CreateBoard } from '~/components/Boards/CreateBoard';
-import { NavBar } from '~/components/NavBar';
+import { NavBar } from '~/components/Nav/NavBar';
 import { fetchUserId } from '~/middleware/auth';
 import { useGetBoardsQuery } from '~/query/boards';
 import { Padding } from '~/styles/Page.styled';

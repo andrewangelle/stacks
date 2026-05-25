@@ -23,3 +23,25 @@ export const validateCreateBoardRequestMiddleware = createMiddleware().server(
     });
   },
 );
+
+export const validateUpdateBoardRequestMiddleware = createMiddleware().server(
+  async ({ next, request }) => {
+    const body = await request.clone().json();
+
+    if (!body?.boardTitle) {
+      return data(
+        {
+          code: 'boards:update:error',
+          message: 'Missing required fields',
+        },
+        { status: 400, statusText: 'Bad Request' },
+      );
+    }
+
+    return await next({
+      context: {
+        boardTitle: body.boardTitle,
+      },
+    });
+  },
+);

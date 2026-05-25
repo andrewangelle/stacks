@@ -63,3 +63,23 @@ export function useCreateBoardMutation() {
 
   return [mutation.mutate] as const;
 }
+
+export function useUpdateBoardMutation() {
+  const queryClient = useQueryClient();
+
+  const mutation = useMutation({
+    mutationFn: ({ id, boardTitle }: Pick<Board, 'id' | 'boardTitle'>) =>
+      resourceRequest<void>(`boards/${id}`, { method: 'PUT' }, { boardTitle }),
+    onSuccess: (_result, variables) => {
+      queryClient.setQueryData<Board>(
+        queryKeys.board(variables.id),
+        (cache = {} as Board) => ({
+          ...cache,
+          boardTitle: variables.boardTitle,
+        }),
+      );
+    },
+  });
+
+  return [mutation.mutate] as const;
+}

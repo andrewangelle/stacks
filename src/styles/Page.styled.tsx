@@ -1,8 +1,7 @@
 import { styled } from '@pigment-css/react';
 import { Link } from '@tanstack/react-router';
 import type { ReactNode } from 'react';
-import type { BackgroundProps } from '~/components/Boards/Boards.styled';
-import { blue, boardGradientVars } from '~/styles/tokens';
+import { blue } from '~/styles/tokens';
 
 type PaddingProps = {
   padding: string;
@@ -122,107 +121,6 @@ export const Button = styled('button')<ButtonExtraProps>({
     color: 'white',
   },
 });
-
-export const NavBarContainer = styled('div')<BackgroundProps>({
-  width: '100%',
-  zIndex: 1,
-  color: 'white',
-  display: 'flex',
-  flexDirection: 'column',
-  position: 'fixed',
-  variants: [
-    {
-      props: { background: 'blue' },
-      style: {
-        background: boardGradientVars.blue,
-        borderBottom: '1px solid white',
-      },
-    },
-    {
-      props: { background: 'green' },
-      style: {
-        background: boardGradientVars.green,
-        borderBottom: '1px solid white',
-      },
-    },
-    {
-      props: { background: 'lightGreen' },
-      style: {
-        background: boardGradientVars.lightGreen,
-        borderBottom: '1px solid white',
-      },
-    },
-    {
-      props: { background: 'orange' },
-      style: {
-        background: boardGradientVars.orange,
-        borderBottom: '1px solid white',
-      },
-    },
-    {
-      props: { background: 'red' },
-      style: {
-        background: boardGradientVars.red,
-        borderBottom: '1px solid white',
-      },
-    },
-  ],
-});
-
-export const NavBarContent = styled.div({
-  display: 'flex',
-  justifyContent: 'space-between',
-  minHeight: '46px',
-});
-
-export const BoardBarContainer = styled(NavBarContainer)({
-  padding: '20px',
-  zIndex: 1,
-  position: 'relative',
-});
-
-type BoardPageBackgroundProps = {
-  background?: string;
-};
-
-export const BoardPageBackground = styled('div')<BoardPageBackgroundProps>({
-  height: '100vh',
-  width: 'max-content',
-  minWidth: '100vw',
-  display: 'flex',
-  background: 'transparent',
-  position: 'relative',
-  top: 66,
-  variants: [
-    {
-      props: { background: 'blue' },
-      style: { background: boardGradientVars.blue },
-    },
-    {
-      props: { background: 'green' },
-      style: { background: boardGradientVars.green },
-    },
-    {
-      props: { background: 'lightGreen' },
-      style: { background: boardGradientVars.lightGreen },
-    },
-    {
-      props: { background: 'orange' },
-      style: { background: boardGradientVars.orange },
-    },
-    {
-      props: { background: 'red' },
-      style: { background: boardGradientVars.red },
-    },
-  ],
-});
-
-export const LogOutText = styled.div` 
-  position: absolute;
-  right: 15px;
-  top: 25%;
-  cursor: pointer;
-`;
 
 export const LogoLink = styled(Link)({
   textDecoration: 'none',

@@ -1,39 +1,22 @@
 import { Show, UserButton } from '@clerk/tanstack-react-start';
 import { useLocation } from '@tanstack/react-router';
 import * as Ri from 'react-icons/ri';
-import { BoardBar } from '~/components/BoardBar';
-import type { BoardBackground } from '~/components/Boards/Boards.styled';
-import { useGetBoardQuery } from '~/query/boards';
-import {
-  LogoLink,
-  NavBarContainer,
-  NavBarContent,
-  Padding,
-} from '~/styles/Page.styled';
+import { BoardBar } from '~/components/Nav/BoardBar';
+import { NavBarContainer, NavBarContent } from '~/components/Nav/Nav.styled';
+import { LogoLink, Padding } from '~/styles/Page.styled';
+import { useBoardBackgroundColor } from '~/utils/useBoardBackgroundColor';
 
 export function NavBar() {
   const location = useLocation();
-  const board = useGetBoardQuery();
-
-  const boardBackground = board.data?.boardColor ?? 'blue';
-  const onAuthPath = location.pathname.startsWith('/auth');
+  const background = useBoardBackgroundColor();
   const isOnBoardPage = !(
     location.pathname === '/boards' ||
     location.pathname === '/signin' ||
-    onAuthPath
+    location.pathname.startsWith('/auth')
   );
-  const background =
-    location.pathname === '/boards' ||
-    location.pathname === '/signin' ||
-    onAuthPath
-      ? 'blue'
-      : boardBackground;
 
   return (
-    <NavBarContainer
-      data-testid="NavBarContainer"
-      background={background as BoardBackground}
-    >
+    <NavBarContainer data-testid="NavBarContainer" background={background}>
       <NavBarContent data-testid="NavBarContent">
         <div data-testid="column-placeholder" />
         <Logo />

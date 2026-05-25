@@ -7,7 +7,7 @@
 :root {
   --board-gradient-green: linear-gradient(
     to bottom right,
-    color-mix(in srgb, #519839 75%, black),
+    color-mix(in srgb, #519839 84%, black),
     color-mix(in srgb, #519839 92%, white)
   );
   --board-gradient-green-hover: linear-gradient(
@@ -18,7 +18,7 @@
 
   --board-gradient-light-green: linear-gradient(
     to bottom right,
-    color-mix(in srgb, #4bbf6b 75%, black),
+    color-mix(in srgb, #4bbf6b 84%, black),
     color-mix(in srgb, #4bbf6b 92%, white)
   );
   --board-gradient-light-green-hover: linear-gradient(
@@ -29,7 +29,7 @@
 
   --board-gradient-blue: linear-gradient(
     to bottom right,
-    color-mix(in srgb, #0079bf 65%, black),
+    color-mix(in srgb, #0079bf 74%, black),
     color-mix(in srgb, #0079bf 82%, white)
   );
   --board-gradient-blue-hover: linear-gradient(
@@ -40,7 +40,7 @@
 
   --board-gradient-orange: linear-gradient(
     to bottom right,
-    color-mix(in srgb, #d29034 75%, black),
+    color-mix(in srgb, #d29034 84%, black),
     color-mix(in srgb, #d29034 92%, white)
   );
   --board-gradient-orange-hover: linear-gradient(
@@ -51,7 +51,7 @@
 
   --board-gradient-red: linear-gradient(
     to bottom right,
-    color-mix(in srgb, #b04632 65%, black),
+    color-mix(in srgb, #b04632 74%, black),
     color-mix(in srgb, #b04632 82%, white)
   );
   --board-gradient-red-hover: linear-gradient(
