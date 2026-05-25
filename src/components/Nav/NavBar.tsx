@@ -16,8 +16,8 @@ export function NavBar() {
   );
 
   return (
-    <NavBarContainer data-testid="NavBarContainer" background={background}>
-      <NavBarContent data-testid="NavBarContent">
+    <NavBarContainer data-testid="NavBarContainer">
+      <NavBarContent data-testid="NavBarContent" background={background}>
         <div data-testid="column-placeholder" />
         <Logo />
 

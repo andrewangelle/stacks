@@ -34,27 +34,27 @@ export const tokenShades = {
   },
   green: {
     darkest: '#315b22',
-    darker: '#366426',
+    darker: '#417a2e',
     base: '#519839',
   },
   lightGreen: {
     darkest: '#2d7340',
-    darker: '#327f47',
+    darker: '#3c9956',
     base: '#4bbf6b',
   },
   blue: {
     darkest: '#004973',
-    darker: '#00466d',
+    darker: '#00578a',
     base: '#0079bf',
   },
   orange: {
     darkest: '#7e561f',
-    darker: '#8b6022',
+    darker: '#a8732a',
     base: '#d29034',
   },
   red: {
     darkest: '#6a2a1e',
-    darker: '#64271c',
+    darker: '#7f3224',
     base: '#b04632',
   },
   checklistProgressBlue: {

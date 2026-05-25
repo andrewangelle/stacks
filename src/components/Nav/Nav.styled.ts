@@ -2,59 +2,54 @@ import { styled } from '@pigment-css/react';
 import type { BackgroundProps } from '~/components/Boards/Boards.styled';
 import { boardGradientVars, tokenShades } from '~/styles/tokens';
 
-export const NavBarContainer = styled('div')<BackgroundProps>({
+export const NavBarContainer = styled('div')({
   width: '100%',
   zIndex: 1,
   color: 'white',
   display: 'flex',
   flexDirection: 'column',
   position: 'fixed',
+});
+
+export const NavBarContent = styled.div<BackgroundProps>({
+  display: 'flex',
+  justifyContent: 'space-between',
+  minHeight: '46px',
   variants: [
     {
       props: { background: 'blue' },
       style: {
         background: tokenShades.blue.darkest,
-        borderBottom: '1px solid white',
       },
     },
     {
       props: { background: 'green' },
       style: {
         background: tokenShades.green.darkest,
-        borderBottom: '1px solid white',
       },
     },
     {
       props: { background: 'lightGreen' },
       style: {
         background: tokenShades.lightGreen.darkest,
-        borderBottom: '1px solid white',
       },
     },
     {
       props: { background: 'orange' },
       style: {
         background: tokenShades.orange.darkest,
-        borderBottom: '1px solid white',
       },
     },
     {
       props: { background: 'red' },
       style: {
         background: tokenShades.red.darkest,
-        borderBottom: '1px solid white',
       },
     },
   ],
 });
 
-export const NavBarContent = styled.div({
-  display: 'flex',
-  justifyContent: 'space-between',
-  minHeight: '46px',
-});
-
-export const BoardBarContainer = styled(NavBarContainer)({
+export const BoardBarContainer = styled(NavBarContainer)<BackgroundProps>({
   padding: '10px',
   zIndex: 1,
   position: 'relative',
