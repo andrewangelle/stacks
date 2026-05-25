@@ -123,46 +123,13 @@ export const Button = styled('button')<ButtonExtraProps>({
   },
 });
 
-type BoardPageBackgroundProps = {
-  background?: string;
-};
-
-export const BoardPageBackground = styled('div')<BoardPageBackgroundProps>({
-  height: '100vh',
-  width: 'max-content',
-  minWidth: '100vw',
-  display: 'flex',
-  background: 'transparent',
-  variants: [
-    {
-      props: { background: 'blue' },
-      style: { background: boardGradientVars.blue },
-    },
-    {
-      props: { background: 'green' },
-      style: { background: boardGradientVars.green },
-    },
-    {
-      props: { background: 'lightGreen' },
-      style: { background: boardGradientVars.lightGreen },
-    },
-    {
-      props: { background: 'orange' },
-      style: { background: boardGradientVars.orange },
-    },
-    {
-      props: { background: 'red' },
-      style: { background: boardGradientVars.red },
-    },
-  ],
-});
-
 export const NavBarContainer = styled('div')<BackgroundProps>({
   width: '100%',
-  position: 'fixed',
-  height: '40px',
-  padding: '0px 10px 0px 0px',
   zIndex: 1,
+  color: 'white',
+  display: 'flex',
+  flexDirection: 'column',
+  position: 'fixed',
   variants: [
     {
       props: { background: 'blue' },
@@ -200,9 +167,54 @@ export const NavBarContainer = styled('div')<BackgroundProps>({
       },
     },
   ],
+});
+
+export const NavBarContent = styled.div({
   display: 'flex',
   justifyContent: 'space-between',
-  color: 'white',
+  minHeight: '46px',
+});
+
+export const BoardBarContainer = styled(NavBarContainer)({
+  padding: '20px',
+  zIndex: 1,
+  position: 'relative',
+});
+
+type BoardPageBackgroundProps = {
+  background?: string;
+};
+
+export const BoardPageBackground = styled('div')<BoardPageBackgroundProps>({
+  height: '100vh',
+  width: 'max-content',
+  minWidth: '100vw',
+  display: 'flex',
+  background: 'transparent',
+  position: 'relative',
+  top: 66,
+  variants: [
+    {
+      props: { background: 'blue' },
+      style: { background: boardGradientVars.blue },
+    },
+    {
+      props: { background: 'green' },
+      style: { background: boardGradientVars.green },
+    },
+    {
+      props: { background: 'lightGreen' },
+      style: { background: boardGradientVars.lightGreen },
+    },
+    {
+      props: { background: 'orange' },
+      style: { background: boardGradientVars.orange },
+    },
+    {
+      props: { background: 'red' },
+      style: { background: boardGradientVars.red },
+    },
+  ],
 });
 
 export const LogOutText = styled.div` 

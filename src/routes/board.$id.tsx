@@ -1,5 +1,4 @@
 import { createFileRoute, redirect } from '@tanstack/react-router';
-import { Drawer } from '~/components/Drawer';
 import { AddLists } from '~/components/Lists/AddList';
 import { DragDropList } from '~/components/Lists/DragDropList';
 import { ListCard } from '~/components/Lists/ListCard';
@@ -26,13 +25,10 @@ export const Route = createFileRoute('/board/$id')({
     return (
       <>
         <NavBar />
-
         <BoardPageBackground
           data-testid="BoardPageBackground"
           background={board?.boardColor}
         >
-          <Drawer />
-
           <Padding padding="50px 30px 30px">
             <Flex data-testid="Flex">
               {lists?.map((list) => (
