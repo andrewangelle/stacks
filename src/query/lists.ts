@@ -1,31 +1,15 @@
+import type { List } from '@prisma/client';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import { useParams } from '@tanstack/react-router';
 import { queryClient } from '~/query/queryClient';
 import { queryKeys } from '~/query/queryKeys';
 import { resourceRequest } from '~/query/resourceClient';
 
-export type List = {
-  boardId: string;
-  id: string;
-  listTitle: string;
-  userId: string;
-};
+export type ListType = Omit<List, 'createdAt' | 'updatedAt'>;
 
-type UpdateListArgs = {
-  boardId: string;
-  listId: string;
-  listTitle: string;
-};
-
-type CreateListArgs = {
-  listTitle: string;
-  boardId: string;
-};
-
-type DeleteListArgs = {
-  id: string;
-  boardId: string;
-};
+export type UpdateListArgs = Pick<List, 'id' | 'boardId' | 'listTitle'>;
+export type CreateListArgs = Pick<List, 'listTitle' | 'boardId'>;
+export type DeleteListArgs = Pick<List, 'id' | 'boardId'>;
 
 export function useGetListsQuery() {
   const params = useParams({ strict: false });
@@ -43,9 +27,9 @@ export function useGetListsQuery() {
 
 export function useUpdateListMutation() {
   const mutation = useMutation({
-    mutationFn: ({ listId, listTitle }: UpdateListArgs) =>
+    mutationFn: ({ id, listTitle }: UpdateListArgs) =>
       resourceRequest<void>(
-        `lists/${listId}`,
+        `lists/${id}`,
         { method: 'PUT' },
         {
           listTitle,
@@ -56,7 +40,7 @@ export function useUpdateListMutation() {
         queryKeys.lists(variables.boardId),
         (cache = []) =>
           cache.map((item) =>
-            item.id === variables.listId
+            item.id === variables.id
               ? { ...item, listTitle: variables.listTitle }
               : item,
           ),

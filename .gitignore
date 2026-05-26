@@ -9,3 +9,4 @@ dist
 RISKS.md
 src/generated
 .pnpm-store
+.understand-anything

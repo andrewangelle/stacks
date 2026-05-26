@@ -1,21 +1,15 @@
 import { useAuth } from '@clerk/tanstack-react-start';
+import type { Stack } from '@prisma/client';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useParams } from '@tanstack/react-router';
 import { queryKeys } from '~/query/queryKeys';
 import { resourceRequest } from '~/query/resourceClient';
 
-export type Board = {
-  id: string;
-  boardColor: string;
-  boardTitle: string;
-  userId: string;
-};
-
-type CreateBoardArgs = {
-  boardTitle: string;
-  boardColor: string;
-  userId: string;
-};
+export type Board = Omit<Stack, 'createdAt' | 'updatedAt'>;
+export type CreateBoardArgs = Pick<
+  Stack,
+  'boardTitle' | 'boardColor' | 'userId'
+>;
 
 export function useGetBoardsQuery() {
   const { userId, isSignedIn } = useAuth();

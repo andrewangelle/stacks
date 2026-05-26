@@ -1,41 +1,35 @@
+import type { ChecklistItem } from '@prisma/client';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import type { ChecklistType } from '~/query/checklists';
 import { queryClient } from '~/query/queryClient';
 import { queryKeys } from '~/query/queryKeys';
 import { resourceRequest } from '~/query/resourceClient';
 
-export type ChecklistItemType = {
-  id: string;
-  createdAt: string;
-  label: string;
-  cardId: string;
-  listId: string;
-  checklistId: string;
-  isCompleted: boolean;
-  userId: string;
-};
+export type ChecklistItemType = Omit<ChecklistItem, 'createdAt' | 'updatedAt'>;
 
-type ChecklistItemsArgs = { checklistId: string };
+export type ChecklistItemsArgs = { checklistId: string };
 
-type CreateChecklistItemArgs = {
-  label: string;
-  cardId: string;
-  checklistId: string;
-  listId: string;
-};
+export type CreateChecklistItemArgs = Pick<
+  ChecklistItem,
+  'label' | 'cardId' | 'checklistId' | 'listId'
+>;
 
-type UpdateChecklistItemArgs = {
-  isCompleted: boolean;
-  id: string;
-  cardId: string;
-  checklistId: string;
-  label: string;
-};
+export type UpdateChecklistItemArgs = Pick<
+  ChecklistItem,
+  'id' | 'isCompleted' | 'label' | 'cardId' | 'checklistId'
+>;
 
-type DeleteChecklistItemArgs = {
-  id: string;
-  checklistId: string;
-};
+export type DeleteChecklistItemArgs = Pick<ChecklistItem, 'id' | 'checklistId'>;
+
+export function useGetChecklistItemQuery(args: { id: string }) {
+  return useQuery({
+    queryKey: queryKeys.checklistItem(args.id),
+    queryFn: () =>
+      resourceRequest<ChecklistItemType>(`checklist-items/${args.id}`, {
+        method: 'GET',
+      }),
+  });
+}
 
 export function useGetChecklistItemsQuery(args: ChecklistItemsArgs) {
   return useQuery({
@@ -91,16 +85,26 @@ export function useUpdateChecklistItemMutation() {
     onSuccess: (_result, variables) => {
       queryClient.setQueryData<ChecklistItemType[]>(
         queryKeys.checklistItems(variables.checklistId),
-        (cache = []) =>
-          cache.map((item) =>
-            item.id === variables.id
-              ? {
-                  ...item,
-                  isCompleted: variables.isCompleted,
-                  label: variables.label,
-                }
-              : item,
-          ),
+        (cache = [] as ChecklistItemType[]) =>
+          cache.map((item) => {
+            if (item.id === variables.id) {
+              return {
+                ...item,
+                isCompleted: variables.isCompleted,
+                label: variables.label,
+              };
+            }
+            return item;
+          }),
+      );
+
+      queryClient.setQueryData<ChecklistItemType>(
+        queryKeys.checklistItem(variables.id),
+        (cache = {} as ChecklistItemType) => ({
+          ...cache,
+          isCompleted: variables.isCompleted,
+          label: variables.label,
+        }),
       );
     },
   });
@@ -116,7 +120,7 @@ export function useDeleteChecklistItemMutation() {
       }),
     onSuccess: (_result, variables) => {
       queryClient.setQueryData<ChecklistItemType[]>(
-        queryKeys.checklistItems(variables.checklistId),
+        queryKeys.checklistItems(variables.id),
         (cache = []) => cache.filter((item) => item.id !== variables.id),
       );
     },

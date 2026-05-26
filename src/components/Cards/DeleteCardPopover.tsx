@@ -19,6 +19,7 @@ type DeleteCardPopoverProps = ListCardType & {
   listId: string;
   listName: string;
 };
+
 export function DeleteCardPopover({
   id,
   listId,

@@ -1,44 +1,22 @@
+import type { Activity } from '@prisma/client';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import { queryClient } from '~/query/queryClient';
 import { queryKeys } from '~/query/queryKeys';
 import { resourceRequest } from '~/query/resourceClient';
 
-export type ActivityType = {
-  id: string;
-  createdAt: string;
-  listId: string;
-  cardId: string;
-  boardId: string;
-  content: string;
-  type: string;
-};
-
-type ActivityArgs = { cardId: string };
-
-type CreateActivityArgs = {
-  cardId: string;
-  listId: string;
-  boardId: string;
-  content: string;
-  type: string;
-};
-
-type UpdateActivityArgs = {
-  id: string;
-  cardId: string;
-  content: string;
-};
-
-type DeleteActivityArgs = {
-  id: string;
-  cardId: string;
-};
+export type ActivityArgs = { cardId: string };
+export type CreateActivityArgs = Omit<
+  Activity,
+  'createdAt' | 'updatedAt' | 'id' | 'userId'
+>;
+export type UpdateActivityArgs = Pick<Activity, 'id' | 'cardId' | 'content'>;
+export type DeleteActivityArgs = Pick<Activity, 'id' | 'cardId'>;
 
 export function useGetActivityQuery(args: ActivityArgs) {
   return useQuery({
     queryKey: queryKeys.activity(args.cardId),
     queryFn: () =>
-      resourceRequest<ActivityType[]>('activity', {
+      resourceRequest<Activity[]>('activity', {
         method: 'GET',
         searchParams: { cardId: args.cardId },
       }),
@@ -48,14 +26,14 @@ export function useGetActivityQuery(args: ActivityArgs) {
 export function useCreateActivityMutation() {
   const mutation = useMutation({
     mutationFn: (args: CreateActivityArgs) =>
-      resourceRequest<{ data: ActivityType[] }>(
+      resourceRequest<{ data: Activity[] }>(
         'activity',
         { method: 'POST' },
         args,
       ),
 
     onSuccess: (result, variables) => {
-      queryClient.setQueryData<ActivityType[]>(
+      queryClient.setQueryData<Activity[]>(
         queryKeys.activity(variables.cardId),
         (cache = []) => [...cache, result.data[0]],
       );
@@ -68,7 +46,7 @@ export function useCreateActivityMutation() {
 export function useUpdateActivityMutation() {
   const mutation = useMutation({
     mutationFn: (args: UpdateActivityArgs) =>
-      resourceRequest<{ data: ActivityType[] }>(
+      resourceRequest<{ data: Activity[] }>(
         `activity/${args.id}`,
         { method: 'PUT' },
         {
@@ -77,7 +55,7 @@ export function useUpdateActivityMutation() {
       ),
 
     onSuccess: (_result, variables) => {
-      queryClient.setQueryData<ActivityType[]>(
+      queryClient.setQueryData<Activity[]>(
         queryKeys.activity(variables.cardId),
         (cache = []) =>
           cache.map((item) =>
@@ -95,11 +73,11 @@ export function useUpdateActivityMutation() {
 export function useDeleteActivityMutation() {
   const mutation = useMutation({
     mutationFn: ({ id }: DeleteActivityArgs) =>
-      resourceRequest<{ data: ActivityType[] }>(`activity/${id}`, {
+      resourceRequest<{ data: Activity[] }>(`activity/${id}`, {
         method: 'DELETE',
       }),
     onSuccess: (_result, variables) => {
-      queryClient.setQueryData<ActivityType[]>(
+      queryClient.setQueryData<Activity[]>(
         queryKeys.activity(variables.cardId),
         (cache = []) => cache.filter((item) => item.id !== variables.id),
       );

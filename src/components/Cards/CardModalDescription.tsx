@@ -80,7 +80,7 @@ export function CardModalDescription({
               data-testid="SaveDescriptionButton"
               onClick={() => {
                 updateCard({
-                  cardId,
+                  id: cardId,
                   cardTitle,
                   cardDescription: description,
                   listId,

@@ -1,3 +1,4 @@
+import type { Activity } from '@prisma/client';
 import * as Popover from '@radix-ui/react-popover';
 import {
   CreateBoardCloseBorder,
@@ -9,9 +10,9 @@ import {
   DeleteChecklistPopoverContent,
   DeleteChecklistPopoverTrigger,
 } from '~/components/Checklists/Checklists.styled';
-import { type ActivityType, useDeleteActivityMutation } from '~/query/activity';
+import { useDeleteActivityMutation } from '~/query/activity';
 
-export function DeleteCommentPopover(props: ActivityType) {
+export function DeleteCommentPopover(props: Activity) {
   const [deleteActivity] = useDeleteActivityMutation();
   return (
     <Popover.Root>

@@ -1,37 +1,18 @@
+import type { Card } from '@prisma/client';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import { queryClient } from '~/query/queryClient';
 import { queryKeys } from '~/query/queryKeys';
 import { resourceRequest } from '~/query/resourceClient';
 
-export type ListCardType = {
-  id: string;
-  createdAt: string;
-  listId: string;
-  userId: string;
-  cardTitle: string;
-  cardDescription: string;
-};
+export type ListCardType = Omit<Card, 'updatedAt'>;
+export type CreateCardArgs = Pick<Card, 'cardTitle' | 'listId'>;
+export type UpdateCardArgs = Pick<
+  Card,
+  'id' | 'cardDescription' | 'cardTitle' | 'listId'
+>;
+export type DeleteCardArgs = Pick<Card, 'id' | 'listId'>;
 
-type CardArgs = { listId: string };
-
-type CreateCardArgs = {
-  cardTitle: string;
-  listId: string;
-};
-
-type UpdateCardArgs = {
-  listId: string;
-  cardId: string;
-  cardDescription: string;
-  cardTitle: string;
-};
-
-type DeleteCardArgs = {
-  id: string;
-  listId: string;
-};
-
-export function useGetCardsQuery(args: CardArgs) {
+export function useGetCardsQuery(args: { listId: string }) {
   return useQuery({
     queryKey: queryKeys.cards(args.listId),
     queryFn: () =>
@@ -77,9 +58,9 @@ export function useCreateCardMutation() {
 
 export function useUpdateCardMutation() {
   const mutation = useMutation({
-    mutationFn: ({ cardId, cardDescription, cardTitle }: UpdateCardArgs) =>
+    mutationFn: ({ id, cardDescription, cardTitle }: UpdateCardArgs) =>
       resourceRequest<void>(
-        `cards/${cardId}`,
+        `cards/${id}`,
         { method: 'PUT' },
         {
           cardDescription,
@@ -88,7 +69,7 @@ export function useUpdateCardMutation() {
       ),
     onSuccess: (_result, variables) => {
       queryClient.setQueryData<ListCardType>(
-        queryKeys.card(variables.cardId),
+        queryKeys.card(variables.id),
         (cache = {} as ListCardType) => ({
           ...cache,
           cardDescription: variables.cardDescription,
@@ -99,7 +80,7 @@ export function useUpdateCardMutation() {
         queryKeys.cards(variables.listId),
         (cache = []) =>
           cache.map((item) =>
-            item.id === variables.cardId
+            item.id === variables.id
               ? {
                   ...item,
                   cardDescription: variables.cardDescription,

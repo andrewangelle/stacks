@@ -10,6 +10,12 @@ export const Route = createFileRoute('/resources/checklist-items/$itemId')({
 
     handlers({ createHandlers }) {
       return createHandlers({
+        async GET({ params, context }) {
+          const row = await prisma.checklistItem.findFirst({
+            where: { id: params.itemId, userId: context.uid },
+          });
+          return data(row ?? {});
+        },
         PUT: {
           middleware: [validateUpdateChecklistItemRequestMiddleware],
 

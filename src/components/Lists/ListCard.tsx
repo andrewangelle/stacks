@@ -1,3 +1,4 @@
+import type { List } from '@prisma/client';
 import { useParams } from '@tanstack/react-router';
 import { useState } from 'react';
 import { CardModal } from '~/components/Cards/CardModal';
@@ -12,7 +13,7 @@ import {
   ListName,
 } from '~/components/Lists/List.styled';
 import { useCreateCardMutation, useGetCardsQuery } from '~/query/cards';
-import { type List, useUpdateListMutation } from '~/query/lists';
+import { useUpdateListMutation } from '~/query/lists';
 import { Flex } from '~/styles/Page.styled';
 import { useOutsideClick } from '~/utils/useOutsideClick';
 
@@ -35,8 +36,8 @@ export function ListCard({ id, listTitle }: List) {
 
     if (editedListTitle !== listTitle) {
       updateList({
+        id,
         boardId: params.id ?? '',
-        listId: id,
         listTitle: editedListTitle,
       });
     }

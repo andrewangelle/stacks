@@ -8,6 +8,15 @@ export const Route = createFileRoute('/resources/checklists/$checklistId')({
     middleware: [authResourceRouteMiddleware],
 
     handlers: {
+      async GET({ params, context }) {
+        const row = await prisma.checklist.findFirst({
+          where: {
+            id: params.checklistId,
+            userId: context.uid,
+          },
+        });
+        return data(row ?? {});
+      },
       async DELETE({ params, context }) {
         const row = await prisma.checklist.findFirst({
           where: {

@@ -21,10 +21,14 @@ import {
   useCreateChecklistItemMutation,
   useGetChecklistItemsQuery,
 } from '~/query/checklistItems';
-import { type ChecklistType, useGetChecklistsQuery } from '~/query/checklists';
+import {
+  useGetChecklistQuery,
+  useGetChecklistsQuery,
+} from '~/query/checklists';
 import { Flex } from '~/styles/Page.styled';
 
-function Checklist(props: ChecklistType) {
+function Checklist(props: { id: string }) {
+  const { data: checklist } = useGetChecklistQuery({ id: props.id });
   const { data } = useGetChecklistItemsQuery({ checklistId: props.id });
   const [isEditing, setIsEditing] = useState(false);
   const [label, setLabel] = useState('');
@@ -36,13 +40,15 @@ function Checklist(props: ChecklistType) {
     (Number.isNaN(progressValue) ? 0 : progressValue) * 100,
   );
 
+  if (!checklist) return null;
+
   return (
     <div style={{ margin: '30px 0px' }}>
       <ChecklistHeader data-testid="ChecklistHeader" key={props.id}>
         <Flex data-testid="Flex">
           <Bs.BsCheck2Square style={{ marginRight: '4px' }} />
           <CardModalTitle data-testid="CardModalTitle">
-            {props.checklistTitle}
+            {checklist?.checklistTitle}
           </CardModalTitle>
         </Flex>
         <DeleteChecklistPopover {...props} />
@@ -71,7 +77,7 @@ function Checklist(props: ChecklistType) {
           label={item.label}
           checklistId={props.id}
         >
-          <ChecklistCheckbox {...item} />
+          <ChecklistCheckbox id={item.id} />
         </DragDropChecklistItem>
       ))}
 
@@ -99,9 +105,9 @@ function Checklist(props: ChecklistType) {
               onClick={() => {
                 createChecklistItem({
                   label,
-                  cardId: props.cardId,
+                  cardId: checklist?.cardId,
                   checklistId: props.id,
-                  listId: props.listId,
+                  listId: checklist?.listId,
                 });
                 setIsEditing(false);
               }}
@@ -127,7 +133,7 @@ export function CardModalChecklists({ cardId }: { cardId: string }) {
   return (
     <div style={{ margin: '30px 12px 0px' }}>
       {data?.map((checklist) => (
-        <Checklist key={checklist.id} {...checklist} />
+        <Checklist key={checklist.id} id={checklist.id} />
       ))}
     </div>
   );

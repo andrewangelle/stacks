@@ -28,7 +28,7 @@ export function CardModalEditableTitle({
     updateCard({
       cardDescription: card?.cardDescription ?? '',
       cardTitle: editedTitle,
-      cardId: id,
+      id,
       listId: listId,
     });
     setEditingTitle(false);
