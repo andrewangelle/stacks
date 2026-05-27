@@ -1,8 +1,15 @@
+import { useAuth } from '@clerk/tanstack-react-start';
 import type { Card } from '@prisma/client';
 import { useMutation, useQuery } from '@tanstack/react-query';
+import {
+  createCard,
+  deleteCard,
+  getCardById,
+  getCards,
+  updateCard,
+} from '~/db/cards';
 import { queryClient } from '~/query/queryClient';
 import { queryKeys } from '~/query/queryKeys';
-import { resourceRequest } from '~/query/resourceClient';
 
 export type ListCardType = Omit<Card, 'updatedAt'>;
 export type CreateCardArgs = Pick<Card, 'cardTitle' | 'listId'>;
@@ -13,38 +20,28 @@ export type UpdateCardArgs = Pick<
 export type DeleteCardArgs = Pick<Card, 'id' | 'listId'>;
 
 export function useGetCardsQuery(args: { listId: string }) {
+  const { userId } = useAuth();
   return useQuery({
     queryKey: queryKeys.cards(args.listId),
     queryFn: () =>
-      resourceRequest<ListCardType[]>('cards', {
-        method: 'GET',
-        searchParams: { listId: args.listId },
-      }),
+      getCards({ data: { listId: args.listId, userId: userId ?? '' } }),
   });
 }
 
 export function useGetCardByIdQuery(args: { id: string }) {
+  const { userId } = useAuth();
   return useQuery({
     queryKey: queryKeys.card(args.id),
-    queryFn() {
-      return resourceRequest<ListCardType>(`cards/${args.id}`, {
-        method: 'GET',
-      });
-    },
+    queryFn: () =>
+      getCardById({ data: { cardId: args.id, userId: userId ?? '' } }),
   });
 }
 
 export function useCreateCardMutation() {
+  const { userId } = useAuth();
   const mutation = useMutation({
     mutationFn: ({ cardTitle, listId }: CreateCardArgs) =>
-      resourceRequest<{ data: ListCardType[] }>(
-        'cards',
-        { method: 'POST' },
-        {
-          cardTitle,
-          listId,
-        },
-      ),
+      createCard({ data: { userId: userId ?? '', cardTitle, listId } }),
     onSuccess: (result, variables) => {
       queryClient.setQueryData<ListCardType[]>(
         queryKeys.cards(variables.listId),
@@ -57,16 +54,17 @@ export function useCreateCardMutation() {
 }
 
 export function useUpdateCardMutation() {
+  const { userId } = useAuth();
   const mutation = useMutation({
     mutationFn: ({ id, cardDescription, cardTitle }: UpdateCardArgs) =>
-      resourceRequest<void>(
-        `cards/${id}`,
-        { method: 'PUT' },
-        {
+      updateCard({
+        data: {
+          cardId: id,
+          userId: userId ?? '',
           cardDescription,
           cardTitle,
         },
-      ),
+      }),
     onSuccess: (_result, variables) => {
       queryClient.setQueryData<ListCardType>(
         queryKeys.card(variables.id),
@@ -96,15 +94,10 @@ export function useUpdateCardMutation() {
 }
 
 export function useDeleteCardMutation() {
+  const { userId } = useAuth();
   const mutation = useMutation({
     mutationFn: ({ id }: DeleteCardArgs) =>
-      resourceRequest<void>(
-        `cards/${id}`,
-        { method: 'DELETE' },
-        {
-          id,
-        },
-      ),
+      deleteCard({ data: { cardId: id, userId: userId ?? '' } }),
     onSuccess: (_result, variables) => {
       queryClient.setQueryData<ListCardType[]>(
         queryKeys.cards(variables.listId),

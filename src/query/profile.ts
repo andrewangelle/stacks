@@ -1,8 +1,8 @@
 import { useAuth } from '@clerk/tanstack-react-start';
 import type { Profile } from '@prisma/client';
 import { useQuery } from '@tanstack/react-query';
+import { getProfile } from '~/db/profile';
 import { queryKeys } from '~/query/queryKeys';
-import { resourceRequest } from '~/query/resourceClient';
 
 export type ProfileType = Omit<Profile, 'createdAt' | 'updatedAt'>;
 
@@ -11,9 +11,6 @@ export function useGetProfileQuery() {
   return useQuery({
     queryKey: queryKeys.profile(userId ?? ''),
     enabled: !!userId,
-    queryFn: () =>
-      resourceRequest<ProfileType>('profiles', {
-        method: 'GET',
-      }),
+    queryFn: () => getProfile({ data: { userId: userId ?? '' } }),
   });
 }
