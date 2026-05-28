@@ -2,9 +2,6 @@ import { createServerFn } from '@tanstack/react-start';
 import { z } from 'zod';
 import { prisma } from '~/db/prisma';
 
-/**
- * GET /boards
- */
 const GetBoardsSchema = z.object({
   userId: z.string(),
 });
@@ -19,9 +16,6 @@ export const getBoards = createServerFn({ method: 'GET' })
     return response;
   });
 
-/**
- * POST /boards
- */
 const CreateBoardSchema = z.object({
   userId: z.string(),
   boardTitle: z.string(),
@@ -48,9 +42,6 @@ export const createBoard = createServerFn({ method: 'POST' })
     };
   });
 
-/**
- * GET /boards/:boardId
- */
 const GetBoardByIdSchema = z.object({
   boardId: z.string(),
   userId: z.string(),
@@ -66,9 +57,6 @@ export const getBoardById = createServerFn({ method: 'GET' })
     return board;
   });
 
-/**
- * PUT /boards/:boardId
- */
 const UpdateBoardSchema = z.object({
   boardId: z.string(),
   userId: z.string(),
