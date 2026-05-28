@@ -32,9 +32,9 @@ import {
 } from '~/query/checklistItems';
 import { Flex } from '~/styles/Page.styled';
 
-export function ChecklistCheckbox(props: { id: string }) {
+export function ChecklistCheckbox({ id }: { id: string }) {
   const params = useParams({ strict: false });
-  const { data: checklistItem } = useGetChecklistItemQuery({ id: props.id });
+  const { data: checklistItem } = useGetChecklistItemQuery({ id });
   const [updateItem] = useUpdateChecklistItemMutation();
   const [deleteChecklistItem] = useDeleteChecklistItemMutation();
   const [editedLabel, setEditedLabel] = useState(checklistItem?.label);
@@ -43,7 +43,7 @@ export function ChecklistCheckbox(props: { id: string }) {
   const [isDeleteOpen, setDeleteOpen] = useState(false);
   const [createActivity] = useCreateActivityMutation();
 
-  const outsideClickRef = useOutsideClick(
+  const clickOutsideDeletePopoverRef = useOutsideClick(
     () => setDeleteOpen(false),
     isDeleteOpen,
   );
@@ -57,18 +57,23 @@ export function ChecklistCheckbox(props: { id: string }) {
   function toggleCheckbox() {
     if (checklistItem) {
       updateItem({
-        id: props.id,
+        id,
         cardId: checklistItem.cardId,
         label: editedLabel ?? checklistItem.label,
         checklistId: checklistItem.checklistId,
         isCompleted: !checklistItem.isCompleted,
       });
+
+      const contentNextState = checklistItem.isCompleted
+        ? 'incomplete'
+        : 'complete';
+
       createActivity({
         cardId: checklistItem.cardId,
         listId: checklistItem.listId,
         boardId: params.id ?? '',
         type: 'feed',
-        content: `marked ${editedLabel} ${checklistItem.isCompleted ? 'incomplete' : 'complete'} on this card`,
+        content: `marked ${editedLabel} ${contentNextState} on this card`,
       });
     }
   }
@@ -76,7 +81,7 @@ export function ChecklistCheckbox(props: { id: string }) {
   function addChecklistItem() {
     if (checklistItem) {
       updateItem({
-        id: props.id,
+        id,
         cardId: checklistItem.cardId,
         label: editedLabel ?? checklistItem.label,
         checklistId: checklistItem.checklistId,
@@ -97,7 +102,7 @@ export function ChecklistCheckbox(props: { id: string }) {
   return (
     <ChecklistCheckboxContainer
       data-testid="ChecklistCheckboxContainer"
-      isHovering={isHovering}
+      isHovering={isHovering && !isEditingLabel}
       onMouseOver={() => setHovering(true)}
       onMouseOut={() => setHovering(false)}
     >
@@ -132,8 +137,9 @@ export function ChecklistCheckbox(props: { id: string }) {
           <AddChecklistItemInput
             data-testid="AddChecklistItemInput"
             value={editedLabel}
-            onChange={(event) => setEditedLabel(event.target.value)}
             placeholder={editedLabel}
+            autoFocus
+            onChange={(event) => setEditedLabel(event.target.value)}
           />
           <Flex data-testid="Flex" style={{ marginLeft: '20px' }}>
             <AddChecklistButton
@@ -153,7 +159,7 @@ export function ChecklistCheckbox(props: { id: string }) {
         </>
       )}
 
-      <span ref={outsideClickRef}>
+      <span ref={clickOutsideDeletePopoverRef}>
         <Popover.Root open={isDeleteOpen}>
           <DeleteChecklistPopoverTrigger data-testid="DeleteChecklistPopoverTrigger">
             <AiOutlineEllipsis
@@ -182,7 +188,7 @@ export function ChecklistCheckbox(props: { id: string }) {
               data-testid="DeleteChecklistPopoverButton"
               onClick={() =>
                 deleteChecklistItem({
-                  id: props.id,
+                  id,
                   checklistId: checklistItem.checklistId,
                 })
               }

@@ -56,6 +56,7 @@ export function BoardBar() {
             data-testid="EditBoardTitleInput"
             value={editedBoardTitle}
             placeholder={board.data?.boardTitle}
+            autoFocus
             onChange={(event) => setEditedBoardTitle(event.target.value)}
           />
         </form>

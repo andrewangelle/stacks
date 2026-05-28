@@ -61,6 +61,7 @@ export function CardModalEditableTitle({
             <EditCardTitleInput
               data-testid="EditCardTitleInput"
               value={editedTitle}
+              autoFocus
               onChange={(event) =>
                 setEditedTitle((_prevState) => event.target.value)
               }

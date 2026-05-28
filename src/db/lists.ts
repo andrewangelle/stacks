@@ -2,11 +2,35 @@ import { createServerFn } from '@tanstack/react-start';
 import { z } from 'zod';
 import { prisma } from '~/db/prisma';
 
+/** */
 const GetListsSchema = z.object({
   boardId: z.string(),
   userId: z.string(),
 });
 
+const GetListByIdSchema = z.object({
+  id: z.string(),
+  userId: z.string(),
+});
+
+const CreateListSchema = z.object({
+  userId: z.string(),
+  boardId: z.string(),
+  listTitle: z.string(),
+});
+
+const UpdateListSchema = z.object({
+  listId: z.string(),
+  userId: z.string(),
+  listTitle: z.string(),
+});
+
+const DeleteListSchema = z.object({
+  listId: z.string(),
+  userId: z.string(),
+});
+
+/** */
 export const getLists = createServerFn({ method: 'GET' })
   .inputValidator(GetListsSchema)
   .handler(async ({ data }) => {
@@ -19,11 +43,13 @@ export const getLists = createServerFn({ method: 'GET' })
     });
   });
 
-const CreateListSchema = z.object({
-  userId: z.string(),
-  boardId: z.string(),
-  listTitle: z.string(),
-});
+export const getListById = createServerFn({ method: 'GET' })
+  .inputValidator(GetListByIdSchema)
+  .handler(async ({ data }) => {
+    return prisma.list.findFirst({
+      where: { id: data.id, userId: data.userId },
+    });
+  });
 
 export const createList = createServerFn({ method: 'POST' })
   .inputValidator(CreateListSchema)
@@ -51,12 +77,6 @@ export const createList = createServerFn({ method: 'POST' })
     };
   });
 
-const UpdateListSchema = z.object({
-  listId: z.string(),
-  userId: z.string(),
-  listTitle: z.string(),
-});
-
 export const updateList = createServerFn({ method: 'POST' })
   .inputValidator(UpdateListSchema)
   .handler(async ({ data }) => {
@@ -75,11 +95,6 @@ export const updateList = createServerFn({ method: 'POST' })
       where: { id: data.listId },
     });
   });
-
-const DeleteListSchema = z.object({
-  listId: z.string(),
-  userId: z.string(),
-});
 
 export const deleteList = createServerFn({ method: 'POST' })
   .inputValidator(DeleteListSchema)

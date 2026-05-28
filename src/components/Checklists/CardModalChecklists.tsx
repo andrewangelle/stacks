@@ -27,31 +27,28 @@ import {
 } from '~/query/checklists';
 import { Flex } from '~/styles/Page.styled';
 
-function Checklist(props: { id: string }) {
-  const { data: checklist } = useGetChecklistQuery({ id: props.id });
-  const { data } = useGetChecklistItemsQuery({ checklistId: props.id });
+function Checklist({ id }: { id: string }) {
+  const { data: checklist } = useGetChecklistQuery({ id });
+  const { data } = useGetChecklistItemsQuery({ checklistId: id });
   const [isEditing, setIsEditing] = useState(false);
   const [label, setLabel] = useState('');
   const [createChecklistItem] = useCreateChecklistItemMutation();
 
   const completedItems = data?.filter((item) => item.isCompleted);
-  const progressValue = (completedItems?.length || 0) / (data?.length || 0);
-  const progressPercent = Math.round(
-    (Number.isNaN(progressValue) ? 0 : progressValue) * 100,
-  );
+  const progressPercent = getPercent(data?.length, completedItems?.length);
 
   if (!checklist) return null;
 
   return (
     <div style={{ margin: '30px 0px' }}>
-      <ChecklistHeader data-testid="ChecklistHeader" key={props.id}>
+      <ChecklistHeader data-testid="ChecklistHeader" key={id}>
         <Flex data-testid="Flex">
           <Bs.BsCheck2Square style={{ marginRight: '4px' }} />
           <CardModalTitle data-testid="CardModalTitle">
             {checklist?.checklistTitle}
           </CardModalTitle>
         </Flex>
-        <DeleteChecklistPopover {...props} />
+        <DeleteChecklistPopover id={id} />
       </ChecklistHeader>
 
       <Flex data-testid="Flex" style={{ position: 'relative' }}>
@@ -75,7 +72,7 @@ function Checklist(props: { id: string }) {
           key={item.id}
           id={item.id}
           label={item.label}
-          checklistId={props.id}
+          checklistId={id}
         >
           <ChecklistCheckbox id={item.id} />
         </DragDropChecklistItem>
@@ -96,8 +93,9 @@ function Checklist(props: { id: string }) {
           <AddChecklistItemInput
             data-testid="AddChecklistItemInput"
             value={label}
-            onChange={(event) => setLabel(event.target.value)}
             placeholder={'Add an item'}
+            autoFocus
+            onChange={(event) => setLabel(event.target.value)}
           />
           <Flex data-testid="Flex">
             <AddChecklistButton
@@ -106,7 +104,7 @@ function Checklist(props: { id: string }) {
                 createChecklistItem({
                   label,
                   cardId: checklist?.cardId,
-                  checklistId: props.id,
+                  checklistId: id,
                   listId: checklist?.listId,
                 });
                 setIsEditing(false);
@@ -137,4 +135,9 @@ export function CardModalChecklists({ cardId }: { cardId: string }) {
       ))}
     </div>
   );
+}
+
+function getPercent(total?: number, completed?: number) {
+  const value = (completed || 0) / (total || 0);
+  return Math.round((Number.isNaN(value) ? 0 : value) * 100);
 }

@@ -44,6 +44,7 @@ export function ActivityComment(props: Activity) {
                 value={editedComment}
                 onChange={(event) => setEditedComment(event.target.value)}
                 placeholder={props.content}
+                autoFocus
               />
 
               <Flex data-testid="Flex">

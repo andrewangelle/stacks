@@ -2,11 +2,15 @@ import { useAuth } from '@clerk/tanstack-react-start';
 import type { List } from '@prisma/client';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import { useParams } from '@tanstack/react-router';
-import { createList, deleteList, getLists, updateList } from '~/db/lists';
+import {
+  createList,
+  deleteList,
+  getListById,
+  getLists,
+  updateList,
+} from '~/db/lists';
 import { queryClient } from '~/query/queryClient';
 import { queryKeys } from '~/query/queryKeys';
-
-export type ListType = Omit<List, 'createdAt' | 'updatedAt'>;
 
 export type UpdateListArgs = Pick<List, 'id' | 'boardId' | 'listTitle'>;
 export type CreateListArgs = Pick<List, 'listTitle' | 'boardId'>;
@@ -20,6 +24,15 @@ export function useGetListsQuery() {
     queryKey: queryKeys.lists(boardId),
     enabled: !!boardId,
     queryFn: () => getLists({ data: { boardId, userId: userId ?? '' } }),
+  });
+}
+
+export function useGetListByIdQuery({ id }: { id: string }) {
+  const { userId } = useAuth();
+  return useQuery({
+    queryKey: queryKeys.list(id),
+    enabled: !!id && !!userId,
+    queryFn: () => getListById({ data: { id, userId: userId ?? '' } }),
   });
 }
 

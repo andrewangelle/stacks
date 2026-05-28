@@ -11,7 +11,7 @@ import {
 import { queryClient } from '~/query/queryClient';
 import { queryKeys } from '~/query/queryKeys';
 
-export type ListCardType = Omit<Card, 'updatedAt'>;
+export type CardType = Omit<Card, 'updatedAt'>;
 export type CreateCardArgs = Pick<Card, 'cardTitle' | 'listId'>;
 export type UpdateCardArgs = Pick<
   Card,
@@ -43,7 +43,7 @@ export function useCreateCardMutation() {
     mutationFn: ({ cardTitle, listId }: CreateCardArgs) =>
       createCard({ data: { userId: userId ?? '', cardTitle, listId } }),
     onSuccess: (result, variables) => {
-      queryClient.setQueryData<ListCardType[]>(
+      queryClient.setQueryData<CardType[]>(
         queryKeys.cards(variables.listId),
         (cache = []) => [...cache, result.data[0]],
       );
@@ -66,15 +66,15 @@ export function useUpdateCardMutation() {
         },
       }),
     onSuccess: (_result, variables) => {
-      queryClient.setQueryData<ListCardType>(
+      queryClient.setQueryData<CardType>(
         queryKeys.card(variables.id),
-        (cache = {} as ListCardType) => ({
+        (cache = {} as CardType) => ({
           ...cache,
           cardDescription: variables.cardDescription,
           cardTitle: variables.cardTitle,
         }),
       );
-      queryClient.setQueryData<ListCardType[]>(
+      queryClient.setQueryData<CardType[]>(
         queryKeys.cards(variables.listId),
         (cache = []) =>
           cache.map((item) =>
@@ -99,7 +99,7 @@ export function useDeleteCardMutation() {
     mutationFn: ({ id }: DeleteCardArgs) =>
       deleteCard({ data: { cardId: id, userId: userId ?? '' } }),
     onSuccess: (_result, variables) => {
-      queryClient.setQueryData<ListCardType[]>(
+      queryClient.setQueryData<CardType[]>(
         queryKeys.cards(variables.listId),
         (cache = []) => cache.filter((item) => item.id !== variables.id),
       );
@@ -110,11 +110,11 @@ export function useDeleteCardMutation() {
 }
 
 export const reorderCards = (
-  item: ListCardType,
+  item: CardType,
   listId: string,
   droppedId: string,
 ) =>
-  queryClient.setQueryData<ListCardType[]>(
+  queryClient.setQueryData<CardType[]>(
     queryKeys.cards(listId),
     (cache = []) => {
       const cacheArray = [...cache];

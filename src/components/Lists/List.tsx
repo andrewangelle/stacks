@@ -1,4 +1,4 @@
-import type { List } from '@prisma/client';
+import type { List as ListType } from '@prisma/client';
 import { useParams } from '@tanstack/react-router';
 import { useState } from 'react';
 import { CardModal } from '~/components/Cards/CardModal';
@@ -13,16 +13,17 @@ import {
   ListName,
 } from '~/components/Lists/List.styled';
 import { useCreateCardMutation, useGetCardsQuery } from '~/query/cards';
-import { useUpdateListMutation } from '~/query/lists';
+import { useGetListByIdQuery, useUpdateListMutation } from '~/query/lists';
 import { Flex } from '~/styles/Page.styled';
 import { useOutsideClick } from '~/utils/useOutsideClick';
 
-export function ListCard({ id, listTitle }: List) {
+export function List({ id }: Pick<ListType, 'id'>) {
+  const { data } = useGetListByIdQuery({ id });
   const params = useParams({ strict: false });
   const [isEditing, setEditing] = useState(false);
   const [isEditingName, setIsEditingName] = useState(false);
   const [cardTitle, setCardTitle] = useState('');
-  const [editedListTitle, setEditedListTitle] = useState(listTitle);
+  const [editedListTitle, setEditedListTitle] = useState('');
   const { data: cards } = useGetCardsQuery({ listId: id });
   const outsideClickRef = useOutsideClick(
     onOutsideNameEditClick,
@@ -34,7 +35,7 @@ export function ListCard({ id, listTitle }: List) {
   function onOutsideNameEditClick() {
     setIsEditingName(false);
 
-    if (editedListTitle !== listTitle) {
+    if (editedListTitle !== data?.listTitle) {
       updateList({
         id,
         boardId: params.id ?? '',
@@ -52,15 +53,19 @@ export function ListCard({ id, listTitle }: List) {
     setCardTitle('');
   }
 
+  console.log(data);
   return (
     <ListContainer data-testid="ListContainer" key={id}>
       <div ref={outsideClickRef}>
         {!isEditingName && (
           <ListName
             data-testid="ListName"
-            onClick={() => setIsEditingName(true)}
+            onClick={() => {
+              setIsEditingName(true);
+              setEditedListTitle(data?.listTitle ?? '');
+            }}
           >
-            {listTitle}
+            {data?.listTitle}
           </ListName>
         )}
 
@@ -68,6 +73,7 @@ export function ListCard({ id, listTitle }: List) {
           <AddCardInput
             data-testid="AddCardInput"
             value={editedListTitle}
+            autoFocus
             onChange={(event) =>
               setEditedListTitle((_prevState) => event.target.value)
             }
@@ -75,7 +81,9 @@ export function ListCard({ id, listTitle }: List) {
         )}
       </div>
 
-      {!isEditingName && <DeleteListPopover id={id} listTitle={listTitle} />}
+      {!isEditingName && (
+        <DeleteListPopover id={id} listTitle={data?.listTitle ?? ''} />
+      )}
 
       {cards?.map((card) => (
         <DragDropCard
@@ -84,7 +92,7 @@ export function ListCard({ id, listTitle }: List) {
           listId={id}
           cardTitle={card.cardTitle}
         >
-          <CardModal {...card} listName={listTitle} listId={id} />
+          <CardModal id={card.id} listTitle={data?.listTitle ?? ''} />
         </DragDropCard>
       ))}
 
@@ -93,6 +101,7 @@ export function ListCard({ id, listTitle }: List) {
           data-testid="AddCardInput"
           value={cardTitle}
           placeholder="Enter a title"
+          autoFocus
           onChange={(event) => setCardTitle((_prevState) => event.target.value)}
         />
       )}

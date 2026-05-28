@@ -1,7 +1,7 @@
 import { createFileRoute, redirect } from '@tanstack/react-router';
 import { AddLists } from '~/components/Lists/AddList';
 import { DragDropList } from '~/components/Lists/DragDropList';
-import { ListCard } from '~/components/Lists/ListCard';
+import { List } from '~/components/Lists/List';
 import { BoardPageBackground } from '~/components/Nav/Nav.styled';
 import { NavBar } from '~/components/Nav/NavBar';
 import { fetchUserId } from '~/middleware/auth';
@@ -38,7 +38,7 @@ export const Route = createFileRoute('/board/$id')({
                   id={list.id}
                   listTitle={list.listTitle}
                 >
-                  <ListCard {...list} />
+                  <List id={list.id} />
                 </DragDropList>
               ))}
               {board?.id && <AddLists boardId={board?.id} />}

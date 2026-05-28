@@ -15,8 +15,8 @@ import {
   useGetChecklistQuery,
 } from '~/query/checklists';
 
-export function DeleteChecklistPopover(props: { id: string }) {
-  const { data: checklist } = useGetChecklistQuery({ id: props.id });
+export function DeleteChecklistPopover({ id }: { id: string }) {
+  const { data: checklist } = useGetChecklistQuery({ id });
   const [deleteChecklist] = useDeleteChecklistMutation();
   if (!checklist) return null;
   return (
@@ -41,7 +41,7 @@ export function DeleteChecklistPopover(props: { id: string }) {
           data-testid="DeleteChecklistPopoverButton"
           onClick={() =>
             deleteChecklist({
-              id: props.id,
+              id,
               cardId: checklist.cardId,
             })
           }

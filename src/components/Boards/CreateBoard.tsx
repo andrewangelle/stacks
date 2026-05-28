@@ -105,6 +105,7 @@ export function CreateBoard({ userId }: CreateBoardProps) {
           data-testid="CreateBoardTitleInput"
           onChange={(event) => setBoardTitle(event.target.value)}
           value={boardTitle}
+          autoFocus
         />
 
         <CreateBoardButton

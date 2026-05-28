@@ -81,8 +81,7 @@ export const ListCardContainer = styled.div`
 
 export const DeleteListIcon = styled(Ti.TiDelete)` 
   position: absolute;
-  top: 0;
-  right: 0;
-  padding: 15px 10px 12px;
+  top: 15px;
+  right: 10px;
   cursor: pointer;
 `;

@@ -41,6 +41,7 @@ export function AddLists({ boardId }: AddListsProps) {
           <AddListInput
             data-testid="AddListInput"
             value={listName}
+            autoFocus
             onChange={(event) => setListName(event.target.value)}
           />
           <Flex data-testid="Flex" style={{ margin: '0' }}>

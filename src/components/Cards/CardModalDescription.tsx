@@ -73,6 +73,7 @@ export function CardModalDescription({
             value={description}
             onChange={(event) => setDescription(event.target.value)}
             placeholder={placeHolderText}
+            autoFocus
           />
 
           <Flex data-testid="Flex">
