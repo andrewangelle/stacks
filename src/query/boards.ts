@@ -1,61 +1,67 @@
-import { useAuth } from '@clerk/tanstack-react-start';
 import type { Stack } from '@prisma/client';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { useParams } from '@tanstack/react-router';
-import { createBoard, getBoardById, getBoards, updateBoard } from '~/db/boards';
+import {
+  createBoard,
+  getBoardById,
+  getBoards,
+  updateBoard,
+} from '~/db/boards/boards.functions';
 import { queryKeys } from '~/query/queryKeys';
+import { useCurrentBoardId } from '~/utils/useCurrentBoardId';
 
 export type Board = Omit<Stack, 'createdAt' | 'updatedAt'>;
-export type CreateBoardArgs = Pick<
-  Stack,
-  'boardTitle' | 'boardColor' | 'userId'
->;
+export type CreateBoardArgs = Pick<Stack, 'boardTitle' | 'boardColor'>;
 
 export function useGetBoardsQuery() {
-  const { userId, isSignedIn } = useAuth();
   return useQuery({
-    queryKey: queryKeys.boards(userId ?? ''),
-    enabled: isSignedIn,
-    queryFn: () => getBoards({ data: { userId: userId ?? '' } }),
+    queryKey: queryKeys.boards(),
+    queryFn() {
+      return getBoards({ data: {} });
+    },
   });
 }
 
 export function useGetBoardQuery() {
-  const params = useParams({ strict: false });
-  const boardId = params.id ?? '';
-  const { userId } = useAuth();
+  const boardId = useCurrentBoardId();
   return useQuery({
     queryKey: queryKeys.board(boardId),
     enabled: !!boardId,
-    queryFn: () => getBoardById({ data: { boardId, userId: userId ?? '' } }),
+    queryFn() {
+      return getBoardById({ data: { boardId } });
+    },
   });
 }
 
 export function useCreateBoardMutation() {
   const queryClient = useQueryClient();
-  const { userId } = useAuth();
 
   const mutation = useMutation({
-    mutationFn: ({ boardTitle, boardColor }: CreateBoardArgs) =>
-      createBoard({ data: { userId: userId ?? '', boardTitle, boardColor } }),
-    onSuccess: (result, variables) => {
-      queryClient.setQueryData<Board[]>(
-        queryKeys.boards(variables.userId),
-        (cache = []) => [...cache, result.data[0]],
-      );
+    mutationFn({ boardTitle, boardColor }: CreateBoardArgs) {
+      return createBoard({
+        data: { boardTitle, boardColor },
+      });
+    },
+
+    onSuccess(result) {
+      queryClient.setQueryData<Board[]>(queryKeys.boards(), (cache = []) => [
+        ...cache,
+        result.data[0],
+      ]);
     },
   });
 
-  return [mutation.mutate] as const;
+  return mutation.mutate;
 }
 
 export function useUpdateBoardMutation() {
   const queryClient = useQueryClient();
-  const { userId } = useAuth();
   const mutation = useMutation({
-    mutationFn: ({ id, boardTitle }: Pick<Board, 'id' | 'boardTitle'>) =>
-      updateBoard({ data: { boardId: id, userId: userId ?? '', boardTitle } }),
-    onSuccess: (_result, variables) => {
+    mutationFn({ id, boardTitle }: Pick<Board, 'id' | 'boardTitle'>) {
+      return updateBoard({
+        data: { boardId: id, boardTitle },
+      });
+    },
+    onSuccess(_result, variables) {
       queryClient.setQueryData<Board>(
         queryKeys.board(variables.id),
         (cache = {} as Board) => ({
@@ -66,5 +72,5 @@ export function useUpdateBoardMutation() {
     },
   });
 
-  return [mutation.mutate] as const;
+  return mutation.mutate;
 }

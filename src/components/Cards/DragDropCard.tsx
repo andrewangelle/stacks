@@ -1,6 +1,7 @@
+import type { Card } from '@prisma/client';
 import { type ReactNode, type RefObject, useRef } from 'react';
 import { useDrag, useDrop } from 'react-dnd';
-import { type ListCardType, reorderCards } from '~/query/cards';
+import { reorderCards } from '~/query/cards';
 
 type DragDropCardProps = {
   id: string;
@@ -25,7 +26,7 @@ export function DragDropCard({
 
   const [, dropRef] = useDrop({
     accept: 'listCard',
-    drop: (item) => reorderCards(item as ListCardType, listId, id),
+    drop: (item: Card) => reorderCards(item, listId, id),
     collect: (monitor) => ({
       isOver: monitor.isOver(),
     }),

@@ -15,7 +15,7 @@ type AddListsProps = {
 export function AddLists({ boardId }: AddListsProps) {
   const [isEditing, setEditing] = useState(false);
   const [listName, setListName] = useState('');
-  const [createList] = useCreateListMutation();
+  const createList = useCreateListMutation();
 
   function onListCreate() {
     createList({

@@ -1,8 +1,8 @@
 import type { List } from '@prisma/client';
-import { useParams } from '@tanstack/react-router';
 import { type ReactNode, type RefObject, useRef } from 'react';
 import { useDrag, useDrop } from 'react-dnd';
 import { reorderLists } from '~/query/lists';
+import { useCurrentBoardId } from '~/utils/useCurrentBoardId';
 
 type DragDropListProps = {
   id: string;
@@ -11,7 +11,7 @@ type DragDropListProps = {
 };
 
 export function DragDropList({ id, listTitle, children }: DragDropListProps) {
-  const params = useParams({ strict: false });
+  const boardId = useCurrentBoardId();
   const [{ isDragging }, dragRef] = useDrag({
     type: 'list',
     item: { id, name: listTitle },
@@ -22,7 +22,7 @@ export function DragDropList({ id, listTitle, children }: DragDropListProps) {
 
   const [, dropRef] = useDrop<List>({
     accept: 'list',
-    drop: (item, ..._args) => reorderLists(item, params.id ?? '', id),
+    drop: (item, ..._args) => reorderLists(item, boardId, id),
     collect: (monitor) => ({
       isOver: monitor.isOver(),
     }),

@@ -26,8 +26,6 @@ export const Route = createFileRoute('/boards')({
   component() {
     const { isLoading, data: boards = [], isSuccess } = useGetBoardsQuery();
     const navigate = useNavigate();
-    const { userId } = Route.useLoaderData();
-
     return (
       <>
         <NavBar />
@@ -51,7 +49,7 @@ export const Route = createFileRoute('/boards')({
                   </BoardCardTitle>
                 </BoardCardContainer>
               ))}
-            {!isLoading && <CreateBoard userId={userId} />}
+            {!isLoading && <CreateBoard />}
           </BoardsContainer>
         </Padding>
       </>

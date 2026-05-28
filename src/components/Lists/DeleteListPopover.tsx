@@ -1,5 +1,4 @@
 import * as Popover from '@radix-ui/react-popover';
-import { useParams } from '@tanstack/react-router';
 import {
   CreateBoardCloseBorder,
   PopoverClose,
@@ -12,6 +11,7 @@ import {
 } from '~/components/Checklists/Checklists.styled';
 import { DeleteListIcon } from '~/components/Lists/List.styled';
 import { useDeleteListMutation } from '~/query/lists';
+import { useCurrentBoardId } from '~/utils/useCurrentBoardId';
 
 type DeleteListPopoverProps = {
   id: string;
@@ -19,8 +19,8 @@ type DeleteListPopoverProps = {
 };
 
 export function DeleteListPopover({ id, listTitle }: DeleteListPopoverProps) {
-  const params = useParams({ strict: false });
-  const [deleteList] = useDeleteListMutation();
+  const boardId = useCurrentBoardId();
+  const deleteList = useDeleteListMutation();
   return (
     <Popover.Root>
       <DeleteCardPopoverTrigger data-testid="DeleteCardPopoverTrigger" asChild>
@@ -39,7 +39,7 @@ export function DeleteListPopover({ id, listTitle }: DeleteListPopoverProps) {
           onClick={() => {
             deleteList({
               id,
-              boardId: params.id ?? '',
+              boardId,
             });
           }}
         >

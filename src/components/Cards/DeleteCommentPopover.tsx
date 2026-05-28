@@ -13,7 +13,7 @@ import {
 import { useDeleteActivityMutation } from '~/query/activity';
 
 export function DeleteCommentPopover(props: Activity) {
-  const [deleteActivity] = useDeleteActivityMutation();
+  const deleteActivity = useDeleteActivityMutation();
   return (
     <Popover.Root>
       <DeleteChecklistPopoverTrigger data-testid="DeleteChecklistPopoverTrigger">

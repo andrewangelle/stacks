@@ -19,7 +19,7 @@ export function ActivityComment(props: Activity) {
   const profile = useGetProfileQuery();
   const [isEditing, setIsEditing] = useState(false);
   const [editedComment, setEditedComment] = useState(props.content);
-  const [updateActivity] = useUpdateActivityMutation();
+  const updateActivity = useUpdateActivityMutation();
   const commentTime = formatRelative(
     new Date(props.createdAt),
     new Date(props.createdAt),

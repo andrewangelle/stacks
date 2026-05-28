@@ -32,7 +32,7 @@ function Checklist({ id }: { id: string }) {
   const { data } = useGetChecklistItemsQuery({ checklistId: id });
   const [isEditing, setIsEditing] = useState(false);
   const [label, setLabel] = useState('');
-  const [createChecklistItem] = useCreateChecklistItemMutation();
+  const createChecklistItem = useCreateChecklistItemMutation();
 
   const completedItems = data?.filter((item) => item.isCompleted);
   const progressPercent = getPercent(data?.length, completedItems?.length);

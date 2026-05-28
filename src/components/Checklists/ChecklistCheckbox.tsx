@@ -1,6 +1,5 @@
 import * as Popover from '@radix-ui/react-popover';
-import { useParams } from '@tanstack/react-router';
-import { type CSSProperties, useEffect, useState } from 'react';
+import { type CSSProperties, useState } from 'react';
 import * as AiIcons from 'react-icons/ai';
 import { useOutsideClick } from '~/utils/useOutsideClick';
 
@@ -31,17 +30,18 @@ import {
   useUpdateChecklistItemMutation,
 } from '~/query/checklistItems';
 import { Flex } from '~/styles/Page.styled';
+import { useCurrentBoardId } from '~/utils/useCurrentBoardId';
 
 export function ChecklistCheckbox({ id }: { id: string }) {
-  const params = useParams({ strict: false });
+  const boardId = useCurrentBoardId();
   const { data: checklistItem } = useGetChecklistItemQuery({ id });
-  const [updateItem] = useUpdateChecklistItemMutation();
-  const [deleteChecklistItem] = useDeleteChecklistItemMutation();
+  const updateItem = useUpdateChecklistItemMutation();
+  const deleteChecklistItem = useDeleteChecklistItemMutation();
   const [editedLabel, setEditedLabel] = useState(checklistItem?.label);
   const [isEditingLabel, setIsEditingLabel] = useState(false);
   const [isHovering, setHovering] = useState(false);
   const [isDeleteOpen, setDeleteOpen] = useState(false);
-  const [createActivity] = useCreateActivityMutation();
+  const createActivity = useCreateActivityMutation();
 
   const clickOutsideDeletePopoverRef = useOutsideClick(
     () => setDeleteOpen(false),
@@ -71,7 +71,7 @@ export function ChecklistCheckbox({ id }: { id: string }) {
       createActivity({
         cardId: checklistItem.cardId,
         listId: checklistItem.listId,
-        boardId: params.id ?? '',
+        boardId,
         type: 'feed',
         content: `marked ${editedLabel} ${contentNextState} on this card`,
       });
@@ -90,12 +90,6 @@ export function ChecklistCheckbox({ id }: { id: string }) {
       setIsEditingLabel(false);
     }
   }
-
-  useEffect(() => {
-    if (checklistItem?.label && !editedLabel) {
-      setEditedLabel(checklistItem.label);
-    }
-  }, [editedLabel, checklistItem?.label]);
 
   if (!checklistItem) return null;
 
@@ -126,7 +120,10 @@ export function ChecklistCheckbox({ id }: { id: string }) {
         <CheckboxLabel
           data-testid="CheckboxLabel"
           checked={checklistItem.isCompleted}
-          onClick={() => setIsEditingLabel(true)}
+          onClick={() => {
+            setIsEditingLabel(true);
+            setEditedLabel(checklistItem.label);
+          }}
         >
           {checklistItem.label}
         </CheckboxLabel>

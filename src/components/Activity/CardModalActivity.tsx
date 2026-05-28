@@ -1,4 +1,3 @@
-import { useParams } from '@tanstack/react-router';
 import { formatRelative } from 'date-fns';
 import { useState } from 'react';
 import * as Md from 'react-icons/md';
@@ -19,6 +18,7 @@ import {
 } from '~/query/activity';
 import { useGetProfileQuery } from '~/query/profile';
 import { Flex } from '~/styles/Page.styled';
+import { useCurrentBoardId } from '~/utils/useCurrentBoardId';
 
 type CardModalActivityProps = {
   listId: string;
@@ -27,15 +27,15 @@ type CardModalActivityProps = {
 
 export function CardModalActivity({ listId, cardId }: CardModalActivityProps) {
   const [showActivity, setShowActivity] = useState(false);
-  const params = useParams({ strict: false });
+  const boardId = useCurrentBoardId();
   const { data } = useGetActivityQuery({ cardId });
   const [comment, setComment] = useState<string>('');
   const profile = useGetProfileQuery();
-  const [createActivity] = useCreateActivityMutation();
+  const createActivity = useCreateActivityMutation();
 
   function createComment() {
     createActivity({
-      boardId: params.id ?? '',
+      boardId,
       cardId,
       listId,
       type: 'comment',

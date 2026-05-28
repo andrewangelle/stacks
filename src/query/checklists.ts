@@ -1,4 +1,3 @@
-import { useAuth } from '@clerk/tanstack-react-start';
 import type { Checklist } from '@prisma/client';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import {
@@ -6,7 +5,7 @@ import {
   deleteChecklist,
   getChecklistById,
   getChecklists,
-} from '~/db/checklists';
+} from '~/db/checklists/checklists.functions';
 import { queryClient } from '~/query/queryClient';
 import { queryKeys } from '~/query/queryKeys';
 
@@ -21,33 +20,35 @@ export type CreateChecklistArgs = Pick<
 export type DeleteChecklistArgs = Pick<Checklist, 'id' | 'cardId'>;
 
 export function useGetChecklistQuery(args: { id: string }) {
-  const { userId } = useAuth();
   return useQuery({
     queryKey: queryKeys.checklist(args.id),
-    queryFn: () =>
-      getChecklistById({
-        data: { checklistId: args.id, userId: userId ?? '' },
-      }),
+    queryFn() {
+      return getChecklistById({
+        data: { checklistId: args.id },
+      });
+    },
   });
 }
 
 export function useGetChecklistsQuery(args: ChecklistArgs) {
-  const { userId } = useAuth();
   return useQuery({
     queryKey: queryKeys.checklists(args.cardId),
-    queryFn: () =>
-      getChecklists({ data: { cardId: args.cardId, userId: userId ?? '' } }),
+    queryFn() {
+      return getChecklists({
+        data: { cardId: args.cardId },
+      });
+    },
   });
 }
 
 export function useCreateChecklistMutation() {
-  const { userId } = useAuth();
   const mutation = useMutation({
     mutationFn({ checklistTitle, cardId, listId }: CreateChecklistArgs) {
       return createChecklist({
-        data: { checklistTitle, cardId, listId, userId: userId ?? '' },
+        data: { checklistTitle, cardId, listId },
       });
     },
+
     onSuccess(result, variables) {
       queryClient.setQueryData<ChecklistType[]>(
         queryKeys.checklists(variables.cardId),
@@ -56,14 +57,17 @@ export function useCreateChecklistMutation() {
     },
   });
 
-  return [mutation.mutate] as const;
+  return mutation.mutate;
 }
 
 export function useDeleteChecklistMutation() {
-  const { userId } = useAuth();
   const mutation = useMutation({
-    mutationFn: ({ id }: DeleteChecklistArgs) =>
-      deleteChecklist({ data: { checklistId: id, userId: userId ?? '' } }),
+    mutationFn({ id }: DeleteChecklistArgs) {
+      return deleteChecklist({
+        data: { checklistId: id },
+      });
+    },
+
     onSuccess(_result, variables) {
       queryClient.setQueryData<ChecklistType[]>(
         queryKeys.checklists(variables.id),
@@ -72,5 +76,5 @@ export function useDeleteChecklistMutation() {
     },
   });
 
-  return [mutation.mutate] as const;
+  return mutation.mutate;
 }

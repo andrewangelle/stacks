@@ -14,7 +14,7 @@ export function BoardBar() {
   const [isEditing, setEditing] = useState(false);
   const [editedBoardTitle, setEditedBoardTitle] = useState(' ');
   const outsideClickRef = useOutsideClick(onOutsideNameEditClick, isEditing);
-  const [updateBoard] = useUpdateBoardMutation();
+  const updateBoard = useUpdateBoardMutation();
 
   function onOutsideNameEditClick() {
     setEditing(false);

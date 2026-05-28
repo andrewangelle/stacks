@@ -84,4 +84,9 @@ export const DeleteListIcon = styled(Ti.TiDelete)`
   top: 15px;
   right: 10px;
   cursor: pointer;
+
+  &:hover {
+    background: rgba(0,0,0, 0.3);
+    border-radius: 15px;
+  }
 `;

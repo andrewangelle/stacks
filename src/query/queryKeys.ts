@@ -1,5 +1,5 @@
 export const queryKeys = {
-  boards: (userId: string) => ['boards', userId] as const,
+  boards: () => ['boards'] as const,
   board: (boardId: string) => ['board', boardId] as const,
   lists: (boardId: string) => ['lists', boardId] as const,
   list: (id: string) => ['list', id] as const,
@@ -12,5 +12,5 @@ export const queryKeys = {
   checklistItem: (checklistItemId: string) =>
     ['checklistItem', checklistItemId] as const,
   activity: (cardId: string) => ['activity', cardId] as const,
-  profile: (userId: string) => ['profile', userId] as const,
+  profile: () => ['profile'] as const,
 };

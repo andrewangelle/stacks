@@ -136,14 +136,15 @@ export const PopoverClose = styled(Popover.Close)`
   background: transparent;
   border: none;
   color: inherit;
-  width: 25px;
+  /* width: 25px; */
   cursor: pointer;
   position: absolute;
-  right: 4px;
+  right: 8px;
+  margin: 0px 4px 4px 4px;
 
   &:hover {
     background: rgba(0,0,0, 0.1);
-    border-radius: 24px;
+    border-radius: 4px;
   }
 `;
 

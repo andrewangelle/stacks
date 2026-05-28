@@ -20,7 +20,7 @@ export const userIdMiddleware = createMiddleware().server(async ({ next }) => {
   });
 });
 
-export const authResourceRouteMiddleware = createMiddleware()
+export const authMiddleware = createMiddleware()
   .middleware([userIdMiddleware])
   .server(async ({ next, context }) => {
     if (!context.uid) {

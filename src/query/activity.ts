@@ -1,4 +1,3 @@
-import { useAuth } from '@clerk/tanstack-react-start';
 import type { Activity } from '@prisma/client';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import {
@@ -6,7 +5,7 @@ import {
   deleteActivity,
   getActivity,
   updateActivity,
-} from '~/db/activity';
+} from '~/db/activity/activity.functions';
 import { queryClient } from '~/query/queryClient';
 import { queryKeys } from '~/query/queryKeys';
 
@@ -19,21 +18,23 @@ export type UpdateActivityArgs = Pick<Activity, 'id' | 'cardId' | 'content'>;
 export type DeleteActivityArgs = Pick<Activity, 'id' | 'cardId'>;
 
 export function useGetActivityQuery(args: ActivityArgs) {
-  const { userId } = useAuth();
   return useQuery({
     queryKey: queryKeys.activity(args.cardId),
-    queryFn: () =>
-      getActivity({ data: { cardId: args.cardId, userId: userId ?? '' } }),
+    queryFn() {
+      return getActivity({
+        data: { cardId: args.cardId },
+      });
+    },
   });
 }
 
 export function useCreateActivityMutation() {
-  const { userId } = useAuth();
   const mutation = useMutation({
-    mutationFn: (args: CreateActivityArgs) =>
-      createActivity({ data: { ...args, userId: userId ?? '' } }),
+    mutationFn(args: CreateActivityArgs) {
+      return createActivity({ data: args });
+    },
 
-    onSuccess: (result, variables) => {
+    onSuccess(result, variables) {
       queryClient.setQueryData<Activity[]>(
         queryKeys.activity(variables.cardId),
         (cache = []) => [...cache, result.data[0]],
@@ -41,22 +42,21 @@ export function useCreateActivityMutation() {
     },
   });
 
-  return [mutation.mutate] as const;
+  return mutation.mutate;
 }
 
 export function useUpdateActivityMutation() {
-  const { userId } = useAuth();
   const mutation = useMutation({
-    mutationFn: (args: UpdateActivityArgs) =>
-      updateActivity({
+    mutationFn(args: UpdateActivityArgs) {
+      return updateActivity({
         data: {
           activityId: args.id,
-          userId: userId ?? '',
           content: args.content,
         },
-      }),
+      });
+    },
 
-    onSuccess: (_result, variables) => {
+    onSuccess(_result, variables) {
       queryClient.setQueryData<Activity[]>(
         queryKeys.activity(variables.cardId),
         (cache = []) =>
@@ -69,15 +69,16 @@ export function useUpdateActivityMutation() {
     },
   });
 
-  return [mutation.mutate] as const;
+  return mutation.mutate;
 }
 
 export function useDeleteActivityMutation() {
-  const { userId } = useAuth();
   const mutation = useMutation({
-    mutationFn: ({ id }: DeleteActivityArgs) =>
-      deleteActivity({ data: { activityId: id, userId: userId ?? '' } }),
-    onSuccess: (_result, variables) => {
+    mutationFn({ id }: DeleteActivityArgs) {
+      return deleteActivity({ data: { activityId: id } });
+    },
+
+    onSuccess(_result, variables) {
       queryClient.setQueryData<Activity[]>(
         queryKeys.activity(variables.cardId),
         (cache = []) => cache.filter((item) => item.id !== variables.id),
@@ -85,5 +86,5 @@ export function useDeleteActivityMutation() {
     },
   });
 
-  return [mutation.mutate] as const;
+  return mutation.mutate;
 }

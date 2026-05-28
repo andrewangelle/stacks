@@ -1,3 +1,4 @@
+import type { Card } from '@prisma/client';
 import * as Popover from '@radix-ui/react-popover';
 import {
   CreateBoardCloseBorder,
@@ -13,11 +14,10 @@ import {
   DeleteChecklistPopoverButton,
   DeleteChecklistPopoverContent,
 } from '~/components/Checklists/Checklists.styled';
-import { type ListCardType, useDeleteCardMutation } from '~/query/cards';
+import { useDeleteCardMutation } from '~/query/cards';
 
-type DeleteCardPopoverProps = ListCardType & {
+type DeleteCardPopoverProps = Pick<Card, 'id' | 'cardTitle'> & {
   listId: string;
-  listName: string;
 };
 
 export function DeleteCardPopover({
@@ -25,7 +25,7 @@ export function DeleteCardPopover({
   listId,
   cardTitle,
 }: DeleteCardPopoverProps) {
-  const [deleteCard] = useDeleteCardMutation();
+  const deleteCard = useDeleteCardMutation();
   return (
     <Popover.Root>
       <DeleteCardPopoverTrigger data-testid="DeleteCardPopoverTrigger">

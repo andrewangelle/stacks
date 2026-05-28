@@ -1,4 +1,3 @@
-import type { List as ListType } from '@prisma/client';
 import { useState } from 'react';
 import { CardModalActivity } from '~/components/Activity/CardModalActivity';
 import {
@@ -27,9 +26,9 @@ import { CreateChecklist } from '~/components/Checklists/CreateChecklist';
 import { ListCardContainer } from '~/components/Lists/List.styled';
 import { type CardType, useGetCardByIdQuery } from '~/query/cards';
 
-type CardModalProps = Pick<CardType, 'id'> & Pick<ListType, 'listTitle'>;
+type CardModalProps = Pick<CardType, 'id'>;
 
-export function CardModal({ id, listTitle }: CardModalProps) {
+export function CardModal({ id }: CardModalProps) {
   const { data } = useGetCardByIdQuery({ id });
   const [columnWidth, setColumnWidth] = useState(ACTIVITY_COLUMN_DEFAULT_WIDTH);
   const [isWideLayout, setIsWideLayout] = useState(() =>
@@ -69,10 +68,6 @@ export function CardModal({ id, listTitle }: CardModalProps) {
                     id={id}
                     listId={data?.listId ?? ''}
                     cardTitle={data?.cardTitle ?? ''}
-                    cardDescription={data?.cardDescription ?? ''}
-                    createdAt={data?.createdAt ?? ''}
-                    userId={data?.userId ?? ''}
-                    listTitle={listTitle ?? ''}
                   />
                 </CardModalActionsContainer>
 
