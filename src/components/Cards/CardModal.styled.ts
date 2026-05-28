@@ -46,6 +46,11 @@ export const DeleteCardPopoverTrigger = styled(Popover.Trigger)`
   background: transparent;
   cursor: pointer;
   width: auto;
+
+  &:hover {
+    background: rgba(0,0,0, 0.3);
+    border-radius: 15px;
+  }
 `;
 
 export const CardModalRoot = styled(Dialog.Root)``;

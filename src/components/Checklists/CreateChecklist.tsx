@@ -74,6 +74,7 @@ export function CreateChecklist({ listId, cardId }: CreateChecklistProps) {
         <CreateChecklistInput
           data-testid="CreateChecklistInput"
           value={checklistTitle}
+          autoFocus
           onChange={(event) => setChecklistTitle(event.target.value)}
         />
 

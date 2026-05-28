@@ -68,6 +68,7 @@ export function CardModalActivity({ listId, cardId }: CardModalActivityProps) {
             value={comment}
             onChange={(event) => setComment(event.target.value)}
             placeholder="Write a comment..."
+            autoFocus
           />
         </Flex>
         <SaveCommentButton

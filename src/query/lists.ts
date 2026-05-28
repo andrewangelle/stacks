@@ -1,62 +1,52 @@
+import { useAuth } from '@clerk/tanstack-react-start';
+import type { List } from '@prisma/client';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import { useParams } from '@tanstack/react-router';
+import {
+  createList,
+  deleteList,
+  getListById,
+  getLists,
+  updateList,
+} from '~/db/lists';
 import { queryClient } from '~/query/queryClient';
 import { queryKeys } from '~/query/queryKeys';
-import { resourceRequest } from '~/query/resourceClient';
 
-export type List = {
-  boardId: string;
-  id: string;
-  listTitle: string;
-  userId: string;
-};
-
-type UpdateListArgs = {
-  boardId: string;
-  listId: string;
-  listTitle: string;
-};
-
-type CreateListArgs = {
-  listTitle: string;
-  boardId: string;
-};
-
-type DeleteListArgs = {
-  id: string;
-  boardId: string;
-};
+export type UpdateListArgs = Pick<List, 'id' | 'boardId' | 'listTitle'>;
+export type CreateListArgs = Pick<List, 'listTitle' | 'boardId'>;
+export type DeleteListArgs = Pick<List, 'id' | 'boardId'>;
 
 export function useGetListsQuery() {
   const params = useParams({ strict: false });
   const boardId = params.id ?? '';
+  const { userId } = useAuth();
   return useQuery({
     queryKey: queryKeys.lists(boardId),
     enabled: !!boardId,
-    queryFn: () =>
-      resourceRequest<List[]>('lists', {
-        method: 'GET',
-        searchParams: { boardId },
-      }),
+    queryFn: () => getLists({ data: { boardId, userId: userId ?? '' } }),
+  });
+}
+
+export function useGetListByIdQuery({ id }: { id: string }) {
+  const { userId } = useAuth();
+  return useQuery({
+    queryKey: queryKeys.list(id),
+    enabled: !!id && !!userId,
+    queryFn: () => getListById({ data: { id, userId: userId ?? '' } }),
   });
 }
 
 export function useUpdateListMutation() {
+  const { userId } = useAuth();
   const mutation = useMutation({
-    mutationFn: ({ listId, listTitle }: UpdateListArgs) =>
-      resourceRequest<void>(
-        `lists/${listId}`,
-        { method: 'PUT' },
-        {
-          listTitle,
-        },
-      ),
+    mutationFn: ({ id, listTitle }: UpdateListArgs) =>
+      updateList({ data: { listId: id, userId: userId ?? '', listTitle } }),
     onSuccess: (_result, variables) => {
       queryClient.setQueryData<List[]>(
         queryKeys.lists(variables.boardId),
         (cache = []) =>
           cache.map((item) =>
-            item.id === variables.listId
+            item.id === variables.id
               ? { ...item, listTitle: variables.listTitle }
               : item,
           ),
@@ -68,9 +58,10 @@ export function useUpdateListMutation() {
 }
 
 export function useCreateListMutation() {
+  const { userId } = useAuth();
   const mutation = useMutation({
     mutationFn: (args: CreateListArgs) =>
-      resourceRequest<{ data: List[] }>('lists', { method: 'POST' }, args),
+      createList({ data: { ...args, userId: userId ?? '' } }),
     onSuccess: (result, variables) => {
       queryClient.setQueryData<List[]>(
         queryKeys.lists(variables.boardId),
@@ -83,16 +74,10 @@ export function useCreateListMutation() {
 }
 
 export function useDeleteListMutation() {
+  const { userId } = useAuth();
   const mutation = useMutation({
-    mutationFn: ({ id, boardId }: DeleteListArgs) =>
-      resourceRequest<{ data: List[] }>(
-        `lists/${id}`,
-        { method: 'DELETE' },
-        {
-          id,
-          boardId,
-        },
-      ),
+    mutationFn: ({ id }: DeleteListArgs) =>
+      deleteList({ data: { listId: id, userId: userId ?? '' } }),
     onSuccess: (_result, variables) => {
       queryClient.setQueryData<List[]>(
         queryKeys.lists(variables.boardId),

@@ -1,71 +1,49 @@
+import { useAuth } from '@clerk/tanstack-react-start';
+import type { Card } from '@prisma/client';
 import { useMutation, useQuery } from '@tanstack/react-query';
+import {
+  createCard,
+  deleteCard,
+  getCardById,
+  getCards,
+  updateCard,
+} from '~/db/cards';
 import { queryClient } from '~/query/queryClient';
 import { queryKeys } from '~/query/queryKeys';
-import { resourceRequest } from '~/query/resourceClient';
 
-export type ListCardType = {
-  id: string;
-  createdAt: string;
-  listId: string;
-  userId: string;
-  cardTitle: string;
-  cardDescription: string;
-};
+export type CardType = Omit<Card, 'updatedAt'>;
+export type CreateCardArgs = Pick<Card, 'cardTitle' | 'listId'>;
+export type UpdateCardArgs = Pick<
+  Card,
+  'id' | 'cardDescription' | 'cardTitle' | 'listId'
+>;
+export type DeleteCardArgs = Pick<Card, 'id' | 'listId'>;
 
-type CardArgs = { listId: string };
-
-type CreateCardArgs = {
-  cardTitle: string;
-  listId: string;
-};
-
-type UpdateCardArgs = {
-  listId: string;
-  cardId: string;
-  cardDescription: string;
-  cardTitle: string;
-};
-
-type DeleteCardArgs = {
-  id: string;
-  listId: string;
-};
-
-export function useGetCardsQuery(args: CardArgs) {
+export function useGetCardsQuery(args: { listId: string }) {
+  const { userId } = useAuth();
   return useQuery({
     queryKey: queryKeys.cards(args.listId),
     queryFn: () =>
-      resourceRequest<ListCardType[]>('cards', {
-        method: 'GET',
-        searchParams: { listId: args.listId },
-      }),
+      getCards({ data: { listId: args.listId, userId: userId ?? '' } }),
   });
 }
 
 export function useGetCardByIdQuery(args: { id: string }) {
+  const { userId } = useAuth();
   return useQuery({
     queryKey: queryKeys.card(args.id),
-    queryFn() {
-      return resourceRequest<ListCardType>(`cards/${args.id}`, {
-        method: 'GET',
-      });
-    },
+    queryFn: () =>
+      getCardById({ data: { cardId: args.id, userId: userId ?? '' } }),
   });
 }
 
 export function useCreateCardMutation() {
+  const { userId } = useAuth();
   const mutation = useMutation({
     mutationFn: ({ cardTitle, listId }: CreateCardArgs) =>
-      resourceRequest<{ data: ListCardType[] }>(
-        'cards',
-        { method: 'POST' },
-        {
-          cardTitle,
-          listId,
-        },
-      ),
+      createCard({ data: { userId: userId ?? '', cardTitle, listId } }),
     onSuccess: (result, variables) => {
-      queryClient.setQueryData<ListCardType[]>(
+      queryClient.setQueryData<CardType[]>(
         queryKeys.cards(variables.listId),
         (cache = []) => [...cache, result.data[0]],
       );
@@ -76,30 +54,31 @@ export function useCreateCardMutation() {
 }
 
 export function useUpdateCardMutation() {
+  const { userId } = useAuth();
   const mutation = useMutation({
-    mutationFn: ({ cardId, cardDescription, cardTitle }: UpdateCardArgs) =>
-      resourceRequest<void>(
-        `cards/${cardId}`,
-        { method: 'PUT' },
-        {
+    mutationFn: ({ id, cardDescription, cardTitle }: UpdateCardArgs) =>
+      updateCard({
+        data: {
+          cardId: id,
+          userId: userId ?? '',
           cardDescription,
           cardTitle,
         },
-      ),
+      }),
     onSuccess: (_result, variables) => {
-      queryClient.setQueryData<ListCardType>(
-        queryKeys.card(variables.cardId),
-        (cache = {} as ListCardType) => ({
+      queryClient.setQueryData<CardType>(
+        queryKeys.card(variables.id),
+        (cache = {} as CardType) => ({
           ...cache,
           cardDescription: variables.cardDescription,
           cardTitle: variables.cardTitle,
         }),
       );
-      queryClient.setQueryData<ListCardType[]>(
+      queryClient.setQueryData<CardType[]>(
         queryKeys.cards(variables.listId),
         (cache = []) =>
           cache.map((item) =>
-            item.id === variables.cardId
+            item.id === variables.id
               ? {
                   ...item,
                   cardDescription: variables.cardDescription,
@@ -115,17 +94,12 @@ export function useUpdateCardMutation() {
 }
 
 export function useDeleteCardMutation() {
+  const { userId } = useAuth();
   const mutation = useMutation({
     mutationFn: ({ id }: DeleteCardArgs) =>
-      resourceRequest<void>(
-        `cards/${id}`,
-        { method: 'DELETE' },
-        {
-          id,
-        },
-      ),
+      deleteCard({ data: { cardId: id, userId: userId ?? '' } }),
     onSuccess: (_result, variables) => {
-      queryClient.setQueryData<ListCardType[]>(
+      queryClient.setQueryData<CardType[]>(
         queryKeys.cards(variables.listId),
         (cache = []) => cache.filter((item) => item.id !== variables.id),
       );
@@ -136,11 +110,11 @@ export function useDeleteCardMutation() {
 }
 
 export const reorderCards = (
-  item: ListCardType,
+  item: CardType,
   listId: string,
   droppedId: string,
 ) =>
-  queryClient.setQueryData<ListCardType[]>(
+  queryClient.setQueryData<CardType[]>(
     queryKeys.cards(listId),
     (cache = []) => {
       const cacheArray = [...cache];

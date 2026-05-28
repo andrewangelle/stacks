@@ -11,12 +11,14 @@ import {
   DeleteChecklistPopoverTrigger,
 } from '~/components/Checklists/Checklists.styled';
 import {
-  type ChecklistType,
   useDeleteChecklistMutation,
+  useGetChecklistQuery,
 } from '~/query/checklists';
 
-export function DeleteChecklistPopover(props: ChecklistType) {
+export function DeleteChecklistPopover({ id }: { id: string }) {
+  const { data: checklist } = useGetChecklistQuery({ id });
   const [deleteChecklist] = useDeleteChecklistMutation();
+  if (!checklist) return null;
   return (
     <Popover.Root>
       <DeleteChecklistPopoverTrigger
@@ -30,7 +32,7 @@ export function DeleteChecklistPopover(props: ChecklistType) {
 
       <DeleteChecklistPopoverContent data-testid="DeleteChecklistPopoverContent">
         <ChecklistPopoverHeader data-testid="ChecklistPopoverHeader">
-          {`Delete ${props.checklistTitle}`}
+          {`Delete ${checklist.checklistTitle}`}
           <PopoverClose data-testid="PopoverClose">X</PopoverClose>
         </ChecklistPopoverHeader>
         <CreateBoardCloseBorder data-testid="CreateBoardCloseBorder" />
@@ -39,8 +41,8 @@ export function DeleteChecklistPopover(props: ChecklistType) {
           data-testid="DeleteChecklistPopoverButton"
           onClick={() =>
             deleteChecklist({
-              id: props.id,
-              cardId: props.cardId,
+              id,
+              cardId: checklist.cardId,
             })
           }
         >

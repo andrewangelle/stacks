@@ -12,7 +12,7 @@ export function BoardBar() {
   const board = useGetBoardQuery();
   const background = useBoardBackgroundColor();
   const [isEditing, setEditing] = useState(false);
-  const [editedBoardTitle, setEditedBoardTitle] = useState('');
+  const [editedBoardTitle, setEditedBoardTitle] = useState(' ');
   const outsideClickRef = useOutsideClick(onOutsideNameEditClick, isEditing);
   const [updateBoard] = useUpdateBoardMutation();
 
@@ -22,7 +22,7 @@ export function BoardBar() {
     if (editedBoardTitle !== board.data?.boardTitle) {
       updateBoard({
         id: board.data?.id ?? '',
-        boardTitle: editedBoardTitle,
+        boardTitle: editedBoardTitle ?? board.data?.boardTitle,
       });
     }
   }
@@ -30,7 +30,13 @@ export function BoardBar() {
   return (
     <BoardBarContainer background={background} data-testid="BoardBarContainer">
       {!isEditing && (
-        <BoardTitle data-testid="BoardTitle" onClick={() => setEditing(true)}>
+        <BoardTitle
+          data-testid="BoardTitle"
+          onClick={() => {
+            setEditing(true);
+            setEditedBoardTitle(board.data?.boardTitle ?? '');
+          }}
+        >
           {board.data?.boardTitle}
         </BoardTitle>
       )}
@@ -50,6 +56,7 @@ export function BoardBar() {
             data-testid="EditBoardTitleInput"
             value={editedBoardTitle}
             placeholder={board.data?.boardTitle}
+            autoFocus
             onChange={(event) => setEditedBoardTitle(event.target.value)}
           />
         </form>

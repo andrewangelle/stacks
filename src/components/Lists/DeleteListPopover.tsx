@@ -23,7 +23,7 @@ export function DeleteListPopover({ id, listTitle }: DeleteListPopoverProps) {
   const [deleteList] = useDeleteListMutation();
   return (
     <Popover.Root>
-      <DeleteCardPopoverTrigger data-testid="DeleteCardPopoverTrigger">
+      <DeleteCardPopoverTrigger data-testid="DeleteCardPopoverTrigger" asChild>
         <DeleteListIcon data-testid="DeleteListIcon" />
       </DeleteCardPopoverTrigger>
 

@@ -1,3 +1,4 @@
+import type { List as ListType } from '@prisma/client';
 import { useState } from 'react';
 import { CardModalActivity } from '~/components/Activity/CardModalActivity';
 import {
@@ -24,22 +25,12 @@ import { DeleteCardPopover } from '~/components/Cards/DeleteCardPopover';
 import { CardModalChecklists } from '~/components/Checklists/CardModalChecklists';
 import { CreateChecklist } from '~/components/Checklists/CreateChecklist';
 import { ListCardContainer } from '~/components/Lists/List.styled';
-import type { ListCardType } from '~/query/cards';
+import { type CardType, useGetCardByIdQuery } from '~/query/cards';
 
-type CardModalProps = ListCardType & {
-  listId: string;
-  listName: string;
-};
+type CardModalProps = Pick<CardType, 'id'> & Pick<ListType, 'listTitle'>;
 
-export function CardModal({
-  id,
-  listId,
-  listName,
-  cardTitle,
-  cardDescription,
-  createdAt,
-  userId,
-}: CardModalProps) {
+export function CardModal({ id, listTitle }: CardModalProps) {
+  const { data } = useGetCardByIdQuery({ id });
   const [columnWidth, setColumnWidth] = useState(ACTIVITY_COLUMN_DEFAULT_WIDTH);
   const [isWideLayout, setIsWideLayout] = useState(() =>
     typeof window !== 'undefined'
@@ -53,7 +44,7 @@ export function CardModal({
     <CardModalRoot data-testid="CardModalRoot">
       <CardModalTrigger data-testid="CardModalTrigger">
         <ListCardContainer data-testid="ListCardContainer">
-          {cardTitle}
+          {data?.cardTitle}
         </ListCardContainer>
       </CardModalTrigger>
 
@@ -69,27 +60,27 @@ export function CardModal({
               style={cardModalBodyStyle}
             >
               <CardModalMainColumn data-testid="CardModalMainColumn">
-                <CardModalEditableTitle id={id} listId={listId} />
+                <CardModalEditableTitle id={id} listId={data?.listId ?? ''} />
 
                 <CardModalActionsContainer data-testid="CardModalActionsContainer">
-                  <CreateChecklist listId={listId} cardId={id} />
+                  <CreateChecklist listId={data?.listId ?? ''} cardId={id} />
 
                   <DeleteCardPopover
                     id={id}
-                    listId={listId}
-                    cardTitle={cardTitle}
-                    cardDescription={cardDescription}
-                    createdAt={createdAt}
-                    userId={userId}
-                    listName={listName}
+                    listId={data?.listId ?? ''}
+                    cardTitle={data?.cardTitle ?? ''}
+                    cardDescription={data?.cardDescription ?? ''}
+                    createdAt={data?.createdAt ?? ''}
+                    userId={data?.userId ?? ''}
+                    listTitle={listTitle ?? ''}
                   />
                 </CardModalActionsContainer>
 
                 <CardModalDescription
-                  listId={listId}
+                  listId={data?.listId ?? ''}
                   cardId={id}
-                  cardTitle={cardTitle}
-                  cardDescription={cardDescription}
+                  cardTitle={data?.cardTitle ?? ''}
+                  cardDescription={data?.cardDescription ?? ''}
                 />
 
                 <CardModalChecklists cardId={id} />
@@ -102,7 +93,7 @@ export function CardModal({
               />
 
               <CardModalActivityColumn data-testid="CardModalActivityColumn">
-                <CardModalActivity listId={listId} cardId={id} />
+                <CardModalActivity listId={data?.listId ?? ''} cardId={id} />
               </CardModalActivityColumn>
             </CardModalBody>
           </CardModalContent>

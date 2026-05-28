@@ -1,3 +1,4 @@
+import type { Activity } from '@prisma/client';
 import { formatRelative } from 'date-fns';
 import { useState } from 'react';
 import {
@@ -10,11 +11,11 @@ import {
 import { ActivityLogo } from '~/components/Activity/ActivityLogo';
 import { DeleteCommentPopover } from '~/components/Cards/DeleteCommentPopover';
 import { CloseAddCardButton } from '~/components/Lists/List.styled';
-import { type ActivityType, useUpdateActivityMutation } from '~/query/activity';
+import { useUpdateActivityMutation } from '~/query/activity';
 import { useGetProfileQuery } from '~/query/profile';
 import { Flex } from '~/styles/Page.styled';
 
-export function ActivityComment(props: ActivityType) {
+export function ActivityComment(props: Activity) {
   const profile = useGetProfileQuery();
   const [isEditing, setIsEditing] = useState(false);
   const [editedComment, setEditedComment] = useState(props.content);
@@ -43,6 +44,7 @@ export function ActivityComment(props: ActivityType) {
                 value={editedComment}
                 onChange={(event) => setEditedComment(event.target.value)}
                 placeholder={props.content}
+                autoFocus
               />
 
               <Flex data-testid="Flex">

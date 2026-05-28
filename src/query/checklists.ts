@@ -1,53 +1,52 @@
+import { useAuth } from '@clerk/tanstack-react-start';
+import type { Checklist } from '@prisma/client';
 import { useMutation, useQuery } from '@tanstack/react-query';
+import {
+  createChecklist,
+  deleteChecklist,
+  getChecklistById,
+  getChecklists,
+} from '~/db/checklists';
 import { queryClient } from '~/query/queryClient';
 import { queryKeys } from '~/query/queryKeys';
-import { resourceRequest } from '~/query/resourceClient';
 
-export type ChecklistType = {
-  id: string;
-  createdAt: string;
-  checklistTitle: string;
-  cardId: string;
-  userId: string;
-  listId: string;
-};
+export type ChecklistType = Omit<Checklist, 'createdAt' | 'updatedAt'>;
 
-type ChecklistArgs = { cardId: string };
+type ChecklistArgs = Pick<Checklist, 'cardId'>;
+export type CreateChecklistArgs = Pick<
+  Checklist,
+  'checklistTitle' | 'cardId' | 'listId'
+>;
 
-type CreateChecklistArgs = {
-  checklistTitle: string;
-  cardId: string;
-  listId: string;
-};
+export type DeleteChecklistArgs = Pick<Checklist, 'id' | 'cardId'>;
 
-type DeleteChecklistArgs = {
-  id: string;
-  cardId: string;
-};
-
-export function useGetChecklistsQuery(args: ChecklistArgs) {
+export function useGetChecklistQuery(args: { id: string }) {
+  const { userId } = useAuth();
   return useQuery({
-    queryKey: queryKeys.checklists(args.cardId),
+    queryKey: queryKeys.checklist(args.id),
     queryFn: () =>
-      resourceRequest<ChecklistType[]>('checklists', {
-        method: 'GET',
-        searchParams: { cardId: args.cardId },
+      getChecklistById({
+        data: { checklistId: args.id, userId: userId ?? '' },
       }),
   });
 }
 
+export function useGetChecklistsQuery(args: ChecklistArgs) {
+  const { userId } = useAuth();
+  return useQuery({
+    queryKey: queryKeys.checklists(args.cardId),
+    queryFn: () =>
+      getChecklists({ data: { cardId: args.cardId, userId: userId ?? '' } }),
+  });
+}
+
 export function useCreateChecklistMutation() {
+  const { userId } = useAuth();
   const mutation = useMutation({
     mutationFn({ checklistTitle, cardId, listId }: CreateChecklistArgs) {
-      return resourceRequest<{ data: ChecklistType[] }>(
-        'checklists',
-        { method: 'POST' },
-        {
-          checklistTitle,
-          cardId,
-          listId,
-        },
-      );
+      return createChecklist({
+        data: { checklistTitle, cardId, listId, userId: userId ?? '' },
+      });
     },
     onSuccess(result, variables) {
       queryClient.setQueryData<ChecklistType[]>(
@@ -61,14 +60,13 @@ export function useCreateChecklistMutation() {
 }
 
 export function useDeleteChecklistMutation() {
+  const { userId } = useAuth();
   const mutation = useMutation({
     mutationFn: ({ id }: DeleteChecklistArgs) =>
-      resourceRequest<{ data: ChecklistType[] }>(`checklists/${id}`, {
-        method: 'DELETE',
-      }),
+      deleteChecklist({ data: { checklistId: id, userId: userId ?? '' } }),
     onSuccess(_result, variables) {
       queryClient.setQueryData<ChecklistType[]>(
-        queryKeys.checklists(variables.cardId),
+        queryKeys.checklists(variables.id),
         (cache = []) => cache.filter((item) => item.id !== variables.id),
       );
     },

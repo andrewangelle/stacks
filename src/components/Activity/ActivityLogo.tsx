@@ -1,9 +1,10 @@
+import type { Profile } from '@prisma/client';
 import { ActivityNameCircle } from '~/components/Activity/Activity.styled';
 import { useGetProfileQuery } from '~/query/profile';
 import { Center } from '~/styles/Page.styled';
 
 export function getInitials(
-  data: { firstName: string; lastName: string } | null,
+  data: Pick<Profile, 'firstName' | 'lastName'> | null,
 ) {
   if (data === null || !data.firstName) {
     return 'Anon';
@@ -11,7 +12,7 @@ export function getInitials(
 
   const { firstName, lastName } = data;
   const firstInitial = firstName.charAt(0).toUpperCase();
-  const lastInitial = lastName.charAt(0).toUpperCase();
+  const lastInitial = lastName?.charAt(0).toUpperCase() ?? '';
 
   return `${firstInitial}${lastInitial}`;
 }

@@ -24,7 +24,7 @@ export const Route = createFileRoute('/boards')({
     return { userId: context.userId };
   },
   component() {
-    const { isLoading, data: boards = [] } = useGetBoardsQuery();
+    const { isLoading, data: boards = [], isSuccess } = useGetBoardsQuery();
     const navigate = useNavigate();
     const { userId } = Route.useLoaderData();
 
@@ -38,7 +38,7 @@ export const Route = createFileRoute('/boards')({
                 <BoardCardSkeleton data-testid="BoardCardSkeleton" key={id} />
               ))}
 
-            {!isLoading &&
+            {isSuccess &&
               boards.map((board) => (
                 <BoardCardContainer
                   data-testid="BoardCardContainer"

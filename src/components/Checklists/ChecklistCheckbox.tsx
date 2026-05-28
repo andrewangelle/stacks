@@ -1,6 +1,6 @@
 import * as Popover from '@radix-ui/react-popover';
 import { useParams } from '@tanstack/react-router';
-import { type CSSProperties, useState } from 'react';
+import { type CSSProperties, useEffect, useState } from 'react';
 import * as AiIcons from 'react-icons/ai';
 import { useOutsideClick } from '~/utils/useOutsideClick';
 
@@ -25,24 +25,25 @@ import {
   DeleteChecklistPopoverTrigger,
 } from '~/components/Checklists/Checklists.styled';
 import { useCreateActivityMutation } from '~/query/activity';
-import type { ChecklistItemType } from '~/query/checklistItems';
 import {
   useDeleteChecklistItemMutation,
+  useGetChecklistItemQuery,
   useUpdateChecklistItemMutation,
 } from '~/query/checklistItems';
 import { Flex } from '~/styles/Page.styled';
 
-export function ChecklistCheckbox(props: ChecklistItemType) {
+export function ChecklistCheckbox({ id }: { id: string }) {
   const params = useParams({ strict: false });
+  const { data: checklistItem } = useGetChecklistItemQuery({ id });
   const [updateItem] = useUpdateChecklistItemMutation();
   const [deleteChecklistItem] = useDeleteChecklistItemMutation();
-  const [editedLabel, setEditedLabel] = useState(props.label);
+  const [editedLabel, setEditedLabel] = useState(checklistItem?.label);
   const [isEditingLabel, setIsEditingLabel] = useState(false);
   const [isHovering, setHovering] = useState(false);
   const [isDeleteOpen, setDeleteOpen] = useState(false);
   const [createActivity] = useCreateActivityMutation();
 
-  const outsideClickRef = useOutsideClick(
+  const clickOutsideDeletePopoverRef = useOutsideClick(
     () => setDeleteOpen(false),
     isDeleteOpen,
   );
@@ -53,38 +54,68 @@ export function ChecklistCheckbox(props: ChecklistItemType) {
     left: '0px',
   };
 
+  function toggleCheckbox() {
+    if (checklistItem) {
+      updateItem({
+        id,
+        cardId: checklistItem.cardId,
+        label: editedLabel ?? checklistItem.label,
+        checklistId: checklistItem.checklistId,
+        isCompleted: !checklistItem.isCompleted,
+      });
+
+      const contentNextState = checklistItem.isCompleted
+        ? 'incomplete'
+        : 'complete';
+
+      createActivity({
+        cardId: checklistItem.cardId,
+        listId: checklistItem.listId,
+        boardId: params.id ?? '',
+        type: 'feed',
+        content: `marked ${editedLabel} ${contentNextState} on this card`,
+      });
+    }
+  }
+
+  function addChecklistItem() {
+    if (checklistItem) {
+      updateItem({
+        id,
+        cardId: checklistItem.cardId,
+        label: editedLabel ?? checklistItem.label,
+        checklistId: checklistItem.checklistId,
+        isCompleted: checklistItem.isCompleted,
+      });
+      setIsEditingLabel(false);
+    }
+  }
+
+  useEffect(() => {
+    if (checklistItem?.label && !editedLabel) {
+      setEditedLabel(checklistItem.label);
+    }
+  }, [editedLabel, checklistItem?.label]);
+
+  if (!checklistItem) return null;
+
   return (
     <ChecklistCheckboxContainer
       data-testid="ChecklistCheckboxContainer"
-      isHovering={isHovering}
+      isHovering={isHovering && !isEditingLabel}
       onMouseOver={() => setHovering(true)}
       onMouseOut={() => setHovering(false)}
     >
       <CheckboxRoot
         data-testid="CheckboxRoot"
-        checked={props.isCompleted}
+        checked={checklistItem.isCompleted}
         style={{
           height: 16,
           width: 16,
           borderColor: 'rgb(223 225, padding: 25 230)',
           verticalAlign: 'top',
         }}
-        onClick={() => {
-          updateItem({
-            id: props.id,
-            cardId: props.cardId,
-            label: editedLabel,
-            checklistId: props.checklistId,
-            isCompleted: !props.isCompleted,
-          });
-          createActivity({
-            cardId: props.cardId,
-            listId: props.listId,
-            boardId: params.id ?? '',
-            type: 'feed',
-            content: `marked ${editedLabel} ${props.isCompleted ? 'incomplete' : 'complete'} on this card`,
-          });
-        }}
+        onClick={toggleCheckbox}
       >
         <CheckboxIndicator data-testid="CheckboxIndicator">
           <AiOutlineCheck style={checkIconStyles} />
@@ -94,10 +125,10 @@ export function ChecklistCheckbox(props: ChecklistItemType) {
       {!isEditingLabel && (
         <CheckboxLabel
           data-testid="CheckboxLabel"
-          checked={props.isCompleted}
+          checked={checklistItem.isCompleted}
           onClick={() => setIsEditingLabel(true)}
         >
-          {props.label}
+          {checklistItem.label}
         </CheckboxLabel>
       )}
 
@@ -106,23 +137,14 @@ export function ChecklistCheckbox(props: ChecklistItemType) {
           <AddChecklistItemInput
             data-testid="AddChecklistItemInput"
             value={editedLabel}
-            onChange={(event) => setEditedLabel(event.target.value)}
             placeholder={editedLabel}
+            autoFocus
+            onChange={(event) => setEditedLabel(event.target.value)}
           />
           <Flex data-testid="Flex" style={{ marginLeft: '20px' }}>
             <AddChecklistButton
               data-testid="AddChecklistButton"
-              onClick={() => {
-                updateItem({
-                  id: props.id,
-                  cardId: props.cardId,
-                  label: editedLabel,
-                  checklistId: props.checklistId,
-                  isCompleted: props.isCompleted,
-                });
-                setIsEditingLabel(false);
-                setEditedLabel('');
-              }}
+              onClick={addChecklistItem}
             >
               Save
             </AddChecklistButton>
@@ -137,7 +159,7 @@ export function ChecklistCheckbox(props: ChecklistItemType) {
         </>
       )}
 
-      <span ref={outsideClickRef}>
+      <span ref={clickOutsideDeletePopoverRef}>
         <Popover.Root open={isDeleteOpen}>
           <DeleteChecklistPopoverTrigger data-testid="DeleteChecklistPopoverTrigger">
             <AiOutlineEllipsis
@@ -166,8 +188,8 @@ export function ChecklistCheckbox(props: ChecklistItemType) {
               data-testid="DeleteChecklistPopoverButton"
               onClick={() =>
                 deleteChecklistItem({
-                  id: props.id,
-                  checklistId: props.checklistId,
+                  id,
+                  checklistId: checklistItem.checklistId,
                 })
               }
             >
