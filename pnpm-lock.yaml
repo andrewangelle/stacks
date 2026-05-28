@@ -13,10 +13,10 @@ importers:
     dependencies:
       '@clerk/tanstack-react-start':
         specifier: ^1.2.3
-        version: 1.2.3(@tanstack/react-router@1.170.8(react-dom@19.2.5(react@19.2.5))(react@19.2.5))(@tanstack/react-start@1.168.14(crossws@0.4.5(srvx@0.11.15))(react-dom@19.2.5(react@19.2.5))(react@19.2.5)(vite@8.0.10(@types/node@25.6.2)(esbuild@0.27.7)(jiti@2.7.0)(yaml@2.8.3)))(react-dom@19.2.5(react@19.2.5))(react@19.2.5)
+        version: 1.2.3(@tanstack/react-router@1.170.8(react-dom@19.2.5(react@19.2.5))(react@19.2.5))(@tanstack/react-start@1.168.14(@vitejs/plugin-rsc@0.5.26(react-dom@19.2.5(react@19.2.5))(react@19.2.5)(vite@8.0.10(@types/node@25.6.2)(esbuild@0.27.7)(jiti@2.7.0)(yaml@2.8.3)))(crossws@0.4.5(srvx@0.11.15))(react-dom@19.2.5(react@19.2.5))(react@19.2.5)(vite@8.0.10(@types/node@25.6.2)(esbuild@0.27.7)(jiti@2.7.0)(yaml@2.8.3)))(react-dom@19.2.5(react@19.2.5))(react@19.2.5)
       '@neondatabase/neon-js':
         specifier: 0.6.0-beta
-        version: 0.6.0-beta(0f3dcc78d8fec2b90cace8d92f2cad05)
+        version: 0.6.0-beta(c654089f402530c1519f416c72563cb8)
       '@neondatabase/serverless':
         specifier: ^1.1.0
         version: 1.1.0
@@ -25,7 +25,7 @@ importers:
         version: 0.10.0
       '@netlify/vite-plugin-tanstack-start':
         specifier: ^1.1.0
-        version: 1.3.9(@tanstack/react-start@1.168.14(crossws@0.4.5(srvx@0.11.15))(react-dom@19.2.5(react@19.2.5))(react@19.2.5)(vite@8.0.10(@types/node@25.6.2)(esbuild@0.27.7)(jiti@2.7.0)(yaml@2.8.3)))(babel-plugin-macros@3.1.0)(rollup@4.60.2)(srvx@0.11.15)(vite@8.0.10(@types/node@25.6.2)(esbuild@0.27.7)(jiti@2.7.0)(yaml@2.8.3))
+        version: 1.3.9(@tanstack/react-start@1.168.14(@vitejs/plugin-rsc@0.5.26(react-dom@19.2.5(react@19.2.5))(react@19.2.5)(vite@8.0.10(@types/node@25.6.2)(esbuild@0.27.7)(jiti@2.7.0)(yaml@2.8.3)))(crossws@0.4.5(srvx@0.11.15))(react-dom@19.2.5(react@19.2.5))(react@19.2.5)(vite@8.0.10(@types/node@25.6.2)(esbuild@0.27.7)(jiti@2.7.0)(yaml@2.8.3)))(babel-plugin-macros@3.1.0)(rollup@4.60.2)(srvx@0.11.15)(vite@8.0.10(@types/node@25.6.2)(esbuild@0.27.7)(jiti@2.7.0)(yaml@2.8.3))
       '@pigment-css/react':
         specifier: ^0.0.30
         version: 0.0.30(@types/react@19.2.14)(react@19.2.5)(typescript@6.0.3)
@@ -61,7 +61,7 @@ importers:
         version: 1.167.0(@tanstack/react-router@1.170.8(react-dom@19.2.5(react@19.2.5))(react@19.2.5))(@tanstack/router-core@1.171.6)(csstype@3.2.3)(react-dom@19.2.5(react@19.2.5))(react@19.2.5)
       '@tanstack/react-start':
         specifier: ^1.168.14
-        version: 1.168.14(crossws@0.4.5(srvx@0.11.15))(react-dom@19.2.5(react@19.2.5))(react@19.2.5)(vite@8.0.10(@types/node@25.6.2)(esbuild@0.27.7)(jiti@2.7.0)(yaml@2.8.3))
+        version: 1.168.14(@vitejs/plugin-rsc@0.5.26(react-dom@19.2.5(react@19.2.5))(react@19.2.5)(vite@8.0.10(@types/node@25.6.2)(esbuild@0.27.7)(jiti@2.7.0)(yaml@2.8.3)))(crossws@0.4.5(srvx@0.11.15))(react-dom@19.2.5(react@19.2.5))(react@19.2.5)(vite@8.0.10(@types/node@25.6.2)(esbuild@0.27.7)(jiti@2.7.0)(yaml@2.8.3))
       date-fns:
         specifier: ^2.28.0
         version: 2.30.0
@@ -120,6 +120,9 @@ importers:
       '@vitejs/plugin-react':
         specifier: ^6.0.1
         version: 6.0.1(vite@8.0.10(@types/node@25.6.2)(esbuild@0.27.7)(jiti@2.7.0)(yaml@2.8.3))
+      '@vitejs/plugin-rsc':
+        specifier: ^0.5.26
+        version: 0.5.26(react-dom@19.2.5(react@19.2.5))(react@19.2.5)(vite@8.0.10(@types/node@25.6.2)(esbuild@0.27.7)(jiti@2.7.0)(yaml@2.8.3))
       cross-env:
         specifier: ^7.0.3
         version: 7.0.3
@@ -9756,14 +9759,14 @@ snapshots:
       nanostores: 1.3.0
       zod: 4.4.1
 
-  '@better-auth/passkey@1.4.9(@better-auth/core@1.4.9(@better-auth/utils@0.3.0)(@better-fetch/fetch@1.1.21)(better-call@1.1.7(zod@3.25.76))(jose@6.2.3)(kysely@0.28.17)(nanostores@1.3.0))(@better-auth/utils@0.3.0)(@better-fetch/fetch@1.1.21)(better-auth@1.4.9(@prisma/client@7.8.0(prisma@7.8.0(@types/react-dom@19.2.3(@types/react@19.2.14))(@types/react@19.2.14)(react-dom@19.2.5(react@19.2.5))(react@19.2.5)(typescript@6.0.3))(typescript@6.0.3))(@tanstack/react-start@1.168.14(crossws@0.4.5(srvx@0.11.15))(react-dom@19.2.5(react@19.2.5))(react@19.2.5)(vite@8.0.10(@types/node@25.6.2)(esbuild@0.27.7)(jiti@2.7.0)(yaml@2.8.3)))(mysql2@3.15.3)(pg@8.20.0)(prisma@7.8.0(@types/react-dom@19.2.3(@types/react@19.2.14))(@types/react@19.2.14)(react-dom@19.2.5(react@19.2.5))(react@19.2.5)(typescript@6.0.3))(react-dom@19.2.5(react@19.2.5))(react@19.2.5))(better-call@1.1.7(zod@3.25.76))(nanostores@1.3.0)':
+  '@better-auth/passkey@1.4.9(af3adcef8b04594f18e932e33bad5bbd)':
     dependencies:
       '@better-auth/core': 1.4.9(@better-auth/utils@0.3.0)(@better-fetch/fetch@1.1.21)(better-call@1.1.7(zod@3.25.76))(jose@6.2.3)(kysely@0.28.17)(nanostores@1.3.0)
       '@better-auth/utils': 0.3.0
       '@better-fetch/fetch': 1.1.21
       '@simplewebauthn/browser': 13.3.0
       '@simplewebauthn/server': 13.3.0
-      better-auth: 1.4.9(@prisma/client@7.8.0(prisma@7.8.0(@types/react-dom@19.2.3(@types/react@19.2.14))(@types/react@19.2.14)(react-dom@19.2.5(react@19.2.5))(react@19.2.5)(typescript@6.0.3))(typescript@6.0.3))(@tanstack/react-start@1.168.14(crossws@0.4.5(srvx@0.11.15))(react-dom@19.2.5(react@19.2.5))(react@19.2.5)(vite@8.0.10(@types/node@25.6.2)(esbuild@0.27.7)(jiti@2.7.0)(yaml@2.8.3)))(mysql2@3.15.3)(pg@8.20.0)(prisma@7.8.0(@types/react-dom@19.2.3(@types/react@19.2.14))(@types/react@19.2.14)(react-dom@19.2.5(react@19.2.5))(react@19.2.5)(typescript@6.0.3))(react-dom@19.2.5(react@19.2.5))(react@19.2.5)
+      better-auth: 1.4.9(@prisma/client@7.8.0(prisma@7.8.0(@types/react-dom@19.2.3(@types/react@19.2.14))(@types/react@19.2.14)(react-dom@19.2.5(react@19.2.5))(react@19.2.5)(typescript@6.0.3))(typescript@6.0.3))(@tanstack/react-start@1.168.14(@vitejs/plugin-rsc@0.5.26(react-dom@19.2.5(react@19.2.5))(react@19.2.5)(vite@8.0.10(@types/node@25.6.2)(esbuild@0.27.7)(jiti@2.7.0)(yaml@2.8.3)))(crossws@0.4.5(srvx@0.11.15))(react-dom@19.2.5(react@19.2.5))(react@19.2.5)(vite@8.0.10(@types/node@25.6.2)(esbuild@0.27.7)(jiti@2.7.0)(yaml@2.8.3)))(mysql2@3.15.3)(pg@8.20.0)(prisma@7.8.0(@types/react-dom@19.2.3(@types/react@19.2.14))(@types/react@19.2.14)(react-dom@19.2.5(react@19.2.5))(react@19.2.5)(typescript@6.0.3))(react-dom@19.2.5(react@19.2.5))(react@19.2.5)
       better-call: 1.1.7(zod@3.25.76)
       nanostores: 1.3.0
       zod: 4.4.1
@@ -9884,13 +9887,13 @@ snapshots:
       react: 19.2.5
       react-dom: 19.2.5(react@19.2.5)
 
-  '@clerk/tanstack-react-start@1.2.3(@tanstack/react-router@1.170.8(react-dom@19.2.5(react@19.2.5))(react@19.2.5))(@tanstack/react-start@1.168.14(crossws@0.4.5(srvx@0.11.15))(react-dom@19.2.5(react@19.2.5))(react@19.2.5)(vite@8.0.10(@types/node@25.6.2)(esbuild@0.27.7)(jiti@2.7.0)(yaml@2.8.3)))(react-dom@19.2.5(react@19.2.5))(react@19.2.5)':
+  '@clerk/tanstack-react-start@1.2.3(@tanstack/react-router@1.170.8(react-dom@19.2.5(react@19.2.5))(react@19.2.5))(@tanstack/react-start@1.168.14(@vitejs/plugin-rsc@0.5.26(react-dom@19.2.5(react@19.2.5))(react@19.2.5)(vite@8.0.10(@types/node@25.6.2)(esbuild@0.27.7)(jiti@2.7.0)(yaml@2.8.3)))(crossws@0.4.5(srvx@0.11.15))(react-dom@19.2.5(react@19.2.5))(react@19.2.5)(vite@8.0.10(@types/node@25.6.2)(esbuild@0.27.7)(jiti@2.7.0)(yaml@2.8.3)))(react-dom@19.2.5(react@19.2.5))(react@19.2.5)':
     dependencies:
       '@clerk/backend': 3.4.7(react-dom@19.2.5(react@19.2.5))(react@19.2.5)
       '@clerk/react': 6.6.2(react-dom@19.2.5(react@19.2.5))(react@19.2.5)
       '@clerk/shared': 4.10.2(react-dom@19.2.5(react@19.2.5))(react@19.2.5)
       '@tanstack/react-router': 1.170.8(react-dom@19.2.5(react@19.2.5))(react@19.2.5)
-      '@tanstack/react-start': 1.168.14(crossws@0.4.5(srvx@0.11.15))(react-dom@19.2.5(react@19.2.5))(react@19.2.5)(vite@8.0.10(@types/node@25.6.2)(esbuild@0.27.7)(jiti@2.7.0)(yaml@2.8.3))
+      '@tanstack/react-start': 1.168.14(@vitejs/plugin-rsc@0.5.26(react-dom@19.2.5(react@19.2.5))(react@19.2.5)(vite@8.0.10(@types/node@25.6.2)(esbuild@0.27.7)(jiti@2.7.0)(yaml@2.8.3)))(crossws@0.4.5(srvx@0.11.15))(react-dom@19.2.5(react@19.2.5))(react@19.2.5)(vite@8.0.10(@types/node@25.6.2)(esbuild@0.27.7)(jiti@2.7.0)(yaml@2.8.3))
       react: 19.2.5
       react-dom: 19.2.5(react@19.2.5)
       tslib: 2.8.1
@@ -9907,20 +9910,20 @@ snapshots:
       enabled: 2.0.0
       kuler: 2.0.0
 
-  '@daveyplate/better-auth-tanstack@1.3.6(@tanstack/query-core@5.100.7)(@tanstack/react-query@5.100.7(react@19.2.5))(better-auth@1.4.9(@prisma/client@7.8.0(prisma@7.8.0(@types/react-dom@19.2.3(@types/react@19.2.14))(@types/react@19.2.14)(react-dom@19.2.5(react@19.2.5))(react@19.2.5)(typescript@6.0.3))(typescript@6.0.3))(@tanstack/react-start@1.168.14(crossws@0.4.5(srvx@0.11.15))(react-dom@19.2.5(react@19.2.5))(react@19.2.5)(vite@8.0.10(@types/node@25.6.2)(esbuild@0.27.7)(jiti@2.7.0)(yaml@2.8.3)))(mysql2@3.15.3)(pg@8.20.0)(prisma@7.8.0(@types/react-dom@19.2.3(@types/react@19.2.14))(@types/react@19.2.14)(react-dom@19.2.5(react@19.2.5))(react@19.2.5)(typescript@6.0.3))(react-dom@19.2.5(react@19.2.5))(react@19.2.5))(react-dom@19.2.5(react@19.2.5))(react@19.2.5)':
+  '@daveyplate/better-auth-tanstack@1.3.6(@tanstack/query-core@5.100.7)(@tanstack/react-query@5.100.7(react@19.2.5))(better-auth@1.4.9(@prisma/client@7.8.0(prisma@7.8.0(@types/react-dom@19.2.3(@types/react@19.2.14))(@types/react@19.2.14)(react-dom@19.2.5(react@19.2.5))(react@19.2.5)(typescript@6.0.3))(typescript@6.0.3))(@tanstack/react-start@1.168.14(@vitejs/plugin-rsc@0.5.26(react-dom@19.2.5(react@19.2.5))(react@19.2.5)(vite@8.0.10(@types/node@25.6.2)(esbuild@0.27.7)(jiti@2.7.0)(yaml@2.8.3)))(crossws@0.4.5(srvx@0.11.15))(react-dom@19.2.5(react@19.2.5))(react@19.2.5)(vite@8.0.10(@types/node@25.6.2)(esbuild@0.27.7)(jiti@2.7.0)(yaml@2.8.3)))(mysql2@3.15.3)(pg@8.20.0)(prisma@7.8.0(@types/react-dom@19.2.3(@types/react@19.2.14))(@types/react@19.2.14)(react-dom@19.2.5(react@19.2.5))(react@19.2.5)(typescript@6.0.3))(react-dom@19.2.5(react@19.2.5))(react@19.2.5))(react-dom@19.2.5(react@19.2.5))(react@19.2.5)':
     dependencies:
       '@tanstack/query-core': 5.100.7
       '@tanstack/react-query': 5.100.7(react@19.2.5)
-      better-auth: 1.4.9(@prisma/client@7.8.0(prisma@7.8.0(@types/react-dom@19.2.3(@types/react@19.2.14))(@types/react@19.2.14)(react-dom@19.2.5(react@19.2.5))(react@19.2.5)(typescript@6.0.3))(typescript@6.0.3))(@tanstack/react-start@1.168.14(crossws@0.4.5(srvx@0.11.15))(react-dom@19.2.5(react@19.2.5))(react@19.2.5)(vite@8.0.10(@types/node@25.6.2)(esbuild@0.27.7)(jiti@2.7.0)(yaml@2.8.3)))(mysql2@3.15.3)(pg@8.20.0)(prisma@7.8.0(@types/react-dom@19.2.3(@types/react@19.2.14))(@types/react@19.2.14)(react-dom@19.2.5(react@19.2.5))(react@19.2.5)(typescript@6.0.3))(react-dom@19.2.5(react@19.2.5))(react@19.2.5)
+      better-auth: 1.4.9(@prisma/client@7.8.0(prisma@7.8.0(@types/react-dom@19.2.3(@types/react@19.2.14))(@types/react@19.2.14)(react-dom@19.2.5(react@19.2.5))(react@19.2.5)(typescript@6.0.3))(typescript@6.0.3))(@tanstack/react-start@1.168.14(@vitejs/plugin-rsc@0.5.26(react-dom@19.2.5(react@19.2.5))(react@19.2.5)(vite@8.0.10(@types/node@25.6.2)(esbuild@0.27.7)(jiti@2.7.0)(yaml@2.8.3)))(crossws@0.4.5(srvx@0.11.15))(react-dom@19.2.5(react@19.2.5))(react@19.2.5)(vite@8.0.10(@types/node@25.6.2)(esbuild@0.27.7)(jiti@2.7.0)(yaml@2.8.3)))(mysql2@3.15.3)(pg@8.20.0)(prisma@7.8.0(@types/react-dom@19.2.3(@types/react@19.2.14))(@types/react@19.2.14)(react-dom@19.2.5(react@19.2.5))(react@19.2.5)(typescript@6.0.3))(react-dom@19.2.5(react@19.2.5))(react@19.2.5)
       react: 19.2.5
       react-dom: 19.2.5(react@19.2.5)
 
-  '@daveyplate/better-auth-ui@3.3.9(5d9616280e4f2b01dc82a3f26cc7f69b)':
+  '@daveyplate/better-auth-ui@3.3.9(8a2a525e5fe4e6c8b1f7b44373c00578)':
     dependencies:
-      '@better-auth/passkey': 1.4.9(@better-auth/core@1.4.9(@better-auth/utils@0.3.0)(@better-fetch/fetch@1.1.21)(better-call@1.1.7(zod@3.25.76))(jose@6.2.3)(kysely@0.28.17)(nanostores@1.3.0))(@better-auth/utils@0.3.0)(@better-fetch/fetch@1.1.21)(better-auth@1.4.9(@prisma/client@7.8.0(prisma@7.8.0(@types/react-dom@19.2.3(@types/react@19.2.14))(@types/react@19.2.14)(react-dom@19.2.5(react@19.2.5))(react@19.2.5)(typescript@6.0.3))(typescript@6.0.3))(@tanstack/react-start@1.168.14(crossws@0.4.5(srvx@0.11.15))(react-dom@19.2.5(react@19.2.5))(react@19.2.5)(vite@8.0.10(@types/node@25.6.2)(esbuild@0.27.7)(jiti@2.7.0)(yaml@2.8.3)))(mysql2@3.15.3)(pg@8.20.0)(prisma@7.8.0(@types/react-dom@19.2.3(@types/react@19.2.14))(@types/react@19.2.14)(react-dom@19.2.5(react@19.2.5))(react@19.2.5)(typescript@6.0.3))(react-dom@19.2.5(react@19.2.5))(react@19.2.5))(better-call@1.1.7(zod@3.25.76))(nanostores@1.3.0)
+      '@better-auth/passkey': 1.4.9(af3adcef8b04594f18e932e33bad5bbd)
       '@better-fetch/fetch': 1.1.21
       '@captchafox/react': 1.12.0(react-dom@19.2.5(react@19.2.5))(react@19.2.5)
-      '@daveyplate/better-auth-tanstack': 1.3.6(@tanstack/query-core@5.100.7)(@tanstack/react-query@5.100.7(react@19.2.5))(better-auth@1.4.9(@prisma/client@7.8.0(prisma@7.8.0(@types/react-dom@19.2.3(@types/react@19.2.14))(@types/react@19.2.14)(react-dom@19.2.5(react@19.2.5))(react@19.2.5)(typescript@6.0.3))(typescript@6.0.3))(@tanstack/react-start@1.168.14(crossws@0.4.5(srvx@0.11.15))(react-dom@19.2.5(react@19.2.5))(react@19.2.5)(vite@8.0.10(@types/node@25.6.2)(esbuild@0.27.7)(jiti@2.7.0)(yaml@2.8.3)))(mysql2@3.15.3)(pg@8.20.0)(prisma@7.8.0(@types/react-dom@19.2.3(@types/react@19.2.14))(@types/react@19.2.14)(react-dom@19.2.5(react@19.2.5))(react@19.2.5)(typescript@6.0.3))(react-dom@19.2.5(react@19.2.5))(react@19.2.5))(react-dom@19.2.5(react@19.2.5))(react@19.2.5)
+      '@daveyplate/better-auth-tanstack': 1.3.6(@tanstack/query-core@5.100.7)(@tanstack/react-query@5.100.7(react@19.2.5))(better-auth@1.4.9(@prisma/client@7.8.0(prisma@7.8.0(@types/react-dom@19.2.3(@types/react@19.2.14))(@types/react@19.2.14)(react-dom@19.2.5(react@19.2.5))(react@19.2.5)(typescript@6.0.3))(typescript@6.0.3))(@tanstack/react-start@1.168.14(@vitejs/plugin-rsc@0.5.26(react-dom@19.2.5(react@19.2.5))(react@19.2.5)(vite@8.0.10(@types/node@25.6.2)(esbuild@0.27.7)(jiti@2.7.0)(yaml@2.8.3)))(crossws@0.4.5(srvx@0.11.15))(react-dom@19.2.5(react@19.2.5))(react@19.2.5)(vite@8.0.10(@types/node@25.6.2)(esbuild@0.27.7)(jiti@2.7.0)(yaml@2.8.3)))(mysql2@3.15.3)(pg@8.20.0)(prisma@7.8.0(@types/react-dom@19.2.3(@types/react@19.2.14))(@types/react@19.2.14)(react-dom@19.2.5(react@19.2.5))(react@19.2.5)(typescript@6.0.3))(react-dom@19.2.5(react@19.2.5))(react@19.2.5))(react-dom@19.2.5(react@19.2.5))(react@19.2.5)
       '@hcaptcha/react-hcaptcha': 1.17.4(react-dom@19.2.5(react@19.2.5))(react@19.2.5)
       '@hookform/resolvers': 5.2.2(react-hook-form@7.75.0(react@19.2.5))
       '@instantdb/react': 1.0.26(react@19.2.5)
@@ -9944,7 +9947,7 @@ snapshots:
       '@triplit/client': 1.0.50(typescript@6.0.3)
       '@triplit/react': 1.0.51(react@19.2.5)(typescript@6.0.3)
       '@wojtekmaj/react-recaptcha-v3': 0.1.4(@types/react@19.2.14)(react-dom@19.2.5(react@19.2.5))(react@19.2.5)
-      better-auth: 1.4.9(@prisma/client@7.8.0(prisma@7.8.0(@types/react-dom@19.2.3(@types/react@19.2.14))(@types/react@19.2.14)(react-dom@19.2.5(react@19.2.5))(react@19.2.5)(typescript@6.0.3))(typescript@6.0.3))(@tanstack/react-start@1.168.14(crossws@0.4.5(srvx@0.11.15))(react-dom@19.2.5(react@19.2.5))(react@19.2.5)(vite@8.0.10(@types/node@25.6.2)(esbuild@0.27.7)(jiti@2.7.0)(yaml@2.8.3)))(mysql2@3.15.3)(pg@8.20.0)(prisma@7.8.0(@types/react-dom@19.2.3(@types/react@19.2.14))(@types/react@19.2.14)(react-dom@19.2.5(react@19.2.5))(react@19.2.5)(typescript@6.0.3))(react-dom@19.2.5(react@19.2.5))(react@19.2.5)
+      better-auth: 1.4.9(@prisma/client@7.8.0(prisma@7.8.0(@types/react-dom@19.2.3(@types/react@19.2.14))(@types/react@19.2.14)(react-dom@19.2.5(react@19.2.5))(react@19.2.5)(typescript@6.0.3))(typescript@6.0.3))(@tanstack/react-start@1.168.14(@vitejs/plugin-rsc@0.5.26(react-dom@19.2.5(react@19.2.5))(react@19.2.5)(vite@8.0.10(@types/node@25.6.2)(esbuild@0.27.7)(jiti@2.7.0)(yaml@2.8.3)))(crossws@0.4.5(srvx@0.11.15))(react-dom@19.2.5(react@19.2.5))(react@19.2.5)(vite@8.0.10(@types/node@25.6.2)(esbuild@0.27.7)(jiti@2.7.0)(yaml@2.8.3)))(mysql2@3.15.3)(pg@8.20.0)(prisma@7.8.0(@types/react-dom@19.2.3(@types/react@19.2.14))(@types/react@19.2.14)(react-dom@19.2.5(react@19.2.5))(react@19.2.5)(typescript@6.0.3))(react-dom@19.2.5(react@19.2.5))(react@19.2.5)
       class-variance-authority: 0.7.1
       clsx: 2.1.1
       input-otp: 1.4.2(react-dom@19.2.5(react@19.2.5))(react@19.2.5)
@@ -10826,15 +10829,15 @@ snapshots:
       '@tybys/wasm-util': 0.10.1
     optional: true
 
-  '@neondatabase/auth-ui@0.2.0-beta(a65cfc4b89b1bbd292c4cd919d80673a)':
+  '@neondatabase/auth-ui@0.2.0-beta(2841272302381d063c346579c7d7abc3)':
     dependencies:
-      '@better-auth/passkey': 1.4.9(@better-auth/core@1.4.9(@better-auth/utils@0.3.0)(@better-fetch/fetch@1.1.21)(better-call@1.1.7(zod@3.25.76))(jose@6.2.3)(kysely@0.28.17)(nanostores@1.3.0))(@better-auth/utils@0.3.0)(@better-fetch/fetch@1.1.21)(better-auth@1.4.9(@prisma/client@7.8.0(prisma@7.8.0(@types/react-dom@19.2.3(@types/react@19.2.14))(@types/react@19.2.14)(react-dom@19.2.5(react@19.2.5))(react@19.2.5)(typescript@6.0.3))(typescript@6.0.3))(@tanstack/react-start@1.168.14(crossws@0.4.5(srvx@0.11.15))(react-dom@19.2.5(react@19.2.5))(react@19.2.5)(vite@8.0.10(@types/node@25.6.2)(esbuild@0.27.7)(jiti@2.7.0)(yaml@2.8.3)))(mysql2@3.15.3)(pg@8.20.0)(prisma@7.8.0(@types/react-dom@19.2.3(@types/react@19.2.14))(@types/react@19.2.14)(react-dom@19.2.5(react@19.2.5))(react@19.2.5)(typescript@6.0.3))(react-dom@19.2.5(react@19.2.5))(react@19.2.5))(better-call@1.1.7(zod@3.25.76))(nanostores@1.3.0)
+      '@better-auth/passkey': 1.4.9(af3adcef8b04594f18e932e33bad5bbd)
       '@captchafox/react': 1.12.0(react-dom@19.2.5(react@19.2.5))(react@19.2.5)
-      '@daveyplate/better-auth-ui': 3.3.9(5d9616280e4f2b01dc82a3f26cc7f69b)
+      '@daveyplate/better-auth-ui': 3.3.9(8a2a525e5fe4e6c8b1f7b44373c00578)
       '@hcaptcha/react-hcaptcha': 1.17.4(react-dom@19.2.5(react@19.2.5))(react@19.2.5)
       '@hookform/resolvers': 5.2.2(react-hook-form@7.75.0(react@19.2.5))
       '@marsidev/react-turnstile': 1.5.2(react-dom@19.2.5(react@19.2.5))(react@19.2.5)
-      '@neondatabase/auth': 0.4.0-beta(976976dec25a38c1ce3c97b42e20ba66)
+      '@neondatabase/auth': 0.4.0-beta(b002393e8a84f6833841b3be738fa42f)
       '@radix-ui/react-avatar': 1.1.11(@types/react-dom@19.2.3(@types/react@19.2.14))(@types/react@19.2.14)(react-dom@19.2.5(react@19.2.5))(react@19.2.5)
       '@radix-ui/react-checkbox': 1.3.3(@types/react-dom@19.2.3(@types/react@19.2.14))(@types/react@19.2.14)(react-dom@19.2.5(react@19.2.5))(react@19.2.5)
       '@radix-ui/react-context': 1.1.3(@types/react@19.2.14)(react@19.2.5)
@@ -10849,7 +10852,7 @@ snapshots:
       '@radix-ui/react-use-callback-ref': 1.1.1(@types/react@19.2.14)(react@19.2.5)
       '@radix-ui/react-use-layout-effect': 1.1.1(@types/react@19.2.14)(react@19.2.5)
       '@wojtekmaj/react-recaptcha-v3': 0.1.4(@types/react@19.2.14)(react-dom@19.2.5(react@19.2.5))(react@19.2.5)
-      better-auth: 1.4.9(@prisma/client@7.8.0(prisma@7.8.0(@types/react-dom@19.2.3(@types/react@19.2.14))(@types/react@19.2.14)(react-dom@19.2.5(react@19.2.5))(react@19.2.5)(typescript@6.0.3))(typescript@6.0.3))(@tanstack/react-start@1.168.14(crossws@0.4.5(srvx@0.11.15))(react-dom@19.2.5(react@19.2.5))(react@19.2.5)(vite@8.0.10(@types/node@25.6.2)(esbuild@0.27.7)(jiti@2.7.0)(yaml@2.8.3)))(mysql2@3.15.3)(pg@8.20.0)(prisma@7.8.0(@types/react-dom@19.2.3(@types/react@19.2.14))(@types/react@19.2.14)(react-dom@19.2.5(react@19.2.5))(react@19.2.5)(typescript@6.0.3))(react-dom@19.2.5(react@19.2.5))(react@19.2.5)
+      better-auth: 1.4.9(@prisma/client@7.8.0(prisma@7.8.0(@types/react-dom@19.2.3(@types/react@19.2.14))(@types/react@19.2.14)(react-dom@19.2.5(react@19.2.5))(react@19.2.5)(typescript@6.0.3))(typescript@6.0.3))(@tanstack/react-start@1.168.14(@vitejs/plugin-rsc@0.5.26(react-dom@19.2.5(react@19.2.5))(react@19.2.5)(vite@8.0.10(@types/node@25.6.2)(esbuild@0.27.7)(jiti@2.7.0)(yaml@2.8.3)))(crossws@0.4.5(srvx@0.11.15))(react-dom@19.2.5(react@19.2.5))(react@19.2.5)(vite@8.0.10(@types/node@25.6.2)(esbuild@0.27.7)(jiti@2.7.0)(yaml@2.8.3)))(mysql2@3.15.3)(pg@8.20.0)(prisma@7.8.0(@types/react-dom@19.2.3(@types/react@19.2.14))(@types/react@19.2.14)(react-dom@19.2.5(react@19.2.5))(react@19.2.5)(typescript@6.0.3))(react-dom@19.2.5(react@19.2.5))(react@19.2.5)
       class-variance-authority: 0.7.1
       clsx: 2.1.1
       input-otp: 1.4.2(react-dom@19.2.5(react@19.2.5))(react@19.2.5)
@@ -10897,12 +10900,12 @@ snapshots:
       - vitest
       - vue
 
-  '@neondatabase/auth@0.4.0-beta(976976dec25a38c1ce3c97b42e20ba66)':
+  '@neondatabase/auth@0.4.0-beta(b002393e8a84f6833841b3be738fa42f)':
     dependencies:
       '@better-fetch/fetch': 1.1.21
-      '@neondatabase/auth-ui': 0.2.0-beta(a65cfc4b89b1bbd292c4cd919d80673a)
+      '@neondatabase/auth-ui': 0.2.0-beta(2841272302381d063c346579c7d7abc3)
       '@supabase/auth-js': 2.79.0
-      better-auth: 1.4.18(@prisma/client@7.8.0(prisma@7.8.0(@types/react-dom@19.2.3(@types/react@19.2.14))(@types/react@19.2.14)(react-dom@19.2.5(react@19.2.5))(react@19.2.5)(typescript@6.0.3))(typescript@6.0.3))(@tanstack/react-start@1.168.14(crossws@0.4.5(srvx@0.11.15))(react-dom@19.2.5(react@19.2.5))(react@19.2.5)(vite@8.0.10(@types/node@25.6.2)(esbuild@0.27.7)(jiti@2.7.0)(yaml@2.8.3)))(mysql2@3.15.3)(pg@8.20.0)(prisma@7.8.0(@types/react-dom@19.2.3(@types/react@19.2.14))(@types/react@19.2.14)(react-dom@19.2.5(react@19.2.5))(react@19.2.5)(typescript@6.0.3))(react-dom@19.2.5(react@19.2.5))(react@19.2.5)
+      better-auth: 1.4.18(@prisma/client@7.8.0(prisma@7.8.0(@types/react-dom@19.2.3(@types/react@19.2.14))(@types/react@19.2.14)(react-dom@19.2.5(react@19.2.5))(react@19.2.5)(typescript@6.0.3))(typescript@6.0.3))(@tanstack/react-start@1.168.14(@vitejs/plugin-rsc@0.5.26(react-dom@19.2.5(react@19.2.5))(react@19.2.5)(vite@8.0.10(@types/node@25.6.2)(esbuild@0.27.7)(jiti@2.7.0)(yaml@2.8.3)))(crossws@0.4.5(srvx@0.11.15))(react-dom@19.2.5(react@19.2.5))(react@19.2.5)(vite@8.0.10(@types/node@25.6.2)(esbuild@0.27.7)(jiti@2.7.0)(yaml@2.8.3)))(mysql2@3.15.3)(pg@8.20.0)(prisma@7.8.0(@types/react-dom@19.2.3(@types/react@19.2.14))(@types/react@19.2.14)(react-dom@19.2.5(react@19.2.5))(react@19.2.5)(typescript@6.0.3))(react-dom@19.2.5(react@19.2.5))(react@19.2.5)
       jose: 6.1.2
       zod: 4.3.6
     optionalDependencies:
@@ -10937,9 +10940,9 @@ snapshots:
       - vitest
       - vue
 
-  '@neondatabase/neon-js@0.6.0-beta(0f3dcc78d8fec2b90cace8d92f2cad05)':
+  '@neondatabase/neon-js@0.6.0-beta(c654089f402530c1519f416c72563cb8)':
     dependencies:
-      '@neondatabase/auth': 0.4.0-beta(976976dec25a38c1ce3c97b42e20ba66)
+      '@neondatabase/auth': 0.4.0-beta(b002393e8a84f6833841b3be738fa42f)
       '@neondatabase/postgrest-js': 0.2.0-beta
       meow: 14.0.0
       pg: 8.20.0
@@ -11528,12 +11531,12 @@ snapshots:
 
   '@netlify/types@2.6.0': {}
 
-  '@netlify/vite-plugin-tanstack-start@1.3.9(@tanstack/react-start@1.168.14(crossws@0.4.5(srvx@0.11.15))(react-dom@19.2.5(react@19.2.5))(react@19.2.5)(vite@8.0.10(@types/node@25.6.2)(esbuild@0.27.7)(jiti@2.7.0)(yaml@2.8.3)))(babel-plugin-macros@3.1.0)(rollup@4.60.2)(srvx@0.11.15)(vite@8.0.10(@types/node@25.6.2)(esbuild@0.27.7)(jiti@2.7.0)(yaml@2.8.3))':
+  '@netlify/vite-plugin-tanstack-start@1.3.9(@tanstack/react-start@1.168.14(@vitejs/plugin-rsc@0.5.26(react-dom@19.2.5(react@19.2.5))(react@19.2.5)(vite@8.0.10(@types/node@25.6.2)(esbuild@0.27.7)(jiti@2.7.0)(yaml@2.8.3)))(crossws@0.4.5(srvx@0.11.15))(react-dom@19.2.5(react@19.2.5))(react@19.2.5)(vite@8.0.10(@types/node@25.6.2)(esbuild@0.27.7)(jiti@2.7.0)(yaml@2.8.3)))(babel-plugin-macros@3.1.0)(rollup@4.60.2)(srvx@0.11.15)(vite@8.0.10(@types/node@25.6.2)(esbuild@0.27.7)(jiti@2.7.0)(yaml@2.8.3))':
     dependencies:
       '@netlify/vite-plugin': 2.12.1(babel-plugin-macros@3.1.0)(rollup@4.60.2)(srvx@0.11.15)(vite@8.0.10(@types/node@25.6.2)(esbuild@0.27.7)(jiti@2.7.0)(yaml@2.8.3))
       vite: 8.0.10(@types/node@25.6.2)(esbuild@0.27.7)(jiti@2.7.0)(yaml@2.8.3)
     optionalDependencies:
-      '@tanstack/react-start': 1.168.14(crossws@0.4.5(srvx@0.11.15))(react-dom@19.2.5(react@19.2.5))(react@19.2.5)(vite@8.0.10(@types/node@25.6.2)(esbuild@0.27.7)(jiti@2.7.0)(yaml@2.8.3))
+      '@tanstack/react-start': 1.168.14(@vitejs/plugin-rsc@0.5.26(react-dom@19.2.5(react@19.2.5))(react@19.2.5)(vite@8.0.10(@types/node@25.6.2)(esbuild@0.27.7)(jiti@2.7.0)(yaml@2.8.3)))(crossws@0.4.5(srvx@0.11.15))(react-dom@19.2.5(react@19.2.5))(react@19.2.5)(vite@8.0.10(@types/node@25.6.2)(esbuild@0.27.7)(jiti@2.7.0)(yaml@2.8.3))
     transitivePeerDependencies:
       - '@azure/app-configuration'
       - '@azure/cosmos'
@@ -13431,7 +13434,7 @@ snapshots:
       react: 19.2.5
       react-dom: 19.2.5(react@19.2.5)
 
-  '@tanstack/react-start-rsc@0.1.13(crossws@0.4.5(srvx@0.11.15))(react-dom@19.2.5(react@19.2.5))(react@19.2.5)(vite@8.0.10(@types/node@25.6.2)(esbuild@0.27.7)(jiti@2.7.0)(yaml@2.8.3))':
+  '@tanstack/react-start-rsc@0.1.13(@vitejs/plugin-rsc@0.5.26(react-dom@19.2.5(react@19.2.5))(react@19.2.5)(vite@8.0.10(@types/node@25.6.2)(esbuild@0.27.7)(jiti@2.7.0)(yaml@2.8.3)))(crossws@0.4.5(srvx@0.11.15))(react-dom@19.2.5(react@19.2.5))(react@19.2.5)(vite@8.0.10(@types/node@25.6.2)(esbuild@0.27.7)(jiti@2.7.0)(yaml@2.8.3))':
     dependencies:
       '@tanstack/react-router': 1.170.8(react-dom@19.2.5(react@19.2.5))(react@19.2.5)
       '@tanstack/react-start-server': 1.167.9(crossws@0.4.5(srvx@0.11.15))(react-dom@19.2.5(react@19.2.5))(react@19.2.5)
@@ -13467,11 +13470,11 @@ snapshots:
     transitivePeerDependencies:
       - crossws
 
-  '@tanstack/react-start@1.168.14(crossws@0.4.5(srvx@0.11.15))(react-dom@19.2.5(react@19.2.5))(react@19.2.5)(vite@8.0.10(@types/node@25.6.2)(esbuild@0.27.7)(jiti@2.7.0)(yaml@2.8.3))':
+  '@tanstack/react-start@1.168.14(@vitejs/plugin-rsc@0.5.26(react-dom@19.2.5(react@19.2.5))(react@19.2.5)(vite@8.0.10(@types/node@25.6.2)(esbuild@0.27.7)(jiti@2.7.0)(yaml@2.8.3)))(crossws@0.4.5(srvx@0.11.15))(react-dom@19.2.5(react@19.2.5))(react@19.2.5)(vite@8.0.10(@types/node@25.6.2)(esbuild@0.27.7)(jiti@2.7.0)(yaml@2.8.3))':
     dependencies:
       '@tanstack/react-router': 1.170.8(react-dom@19.2.5(react@19.2.5))(react@19.2.5)
       '@tanstack/react-start-client': 1.168.5(react-dom@19.2.5(react@19.2.5))(react@19.2.5)
-      '@tanstack/react-start-rsc': 0.1.13(crossws@0.4.5(srvx@0.11.15))(react-dom@19.2.5(react@19.2.5))(react@19.2.5)(vite@8.0.10(@types/node@25.6.2)(esbuild@0.27.7)(jiti@2.7.0)(yaml@2.8.3))
+      '@tanstack/react-start-rsc': 0.1.13(@vitejs/plugin-rsc@0.5.26(react-dom@19.2.5(react@19.2.5))(react@19.2.5)(vite@8.0.10(@types/node@25.6.2)(esbuild@0.27.7)(jiti@2.7.0)(yaml@2.8.3)))(crossws@0.4.5(srvx@0.11.15))(react-dom@19.2.5(react@19.2.5))(react@19.2.5)(vite@8.0.10(@types/node@25.6.2)(esbuild@0.27.7)(jiti@2.7.0)(yaml@2.8.3))
       '@tanstack/react-start-server': 1.167.9(crossws@0.4.5(srvx@0.11.15))(react-dom@19.2.5(react@19.2.5))(react@19.2.5)
       '@tanstack/router-utils': 1.162.1
       '@tanstack/start-client-core': 1.170.4
@@ -13481,6 +13484,7 @@ snapshots:
       react: 19.2.5
       react-dom: 19.2.5(react@19.2.5)
     optionalDependencies:
+      '@vitejs/plugin-rsc': 0.5.26(react-dom@19.2.5(react@19.2.5))(react@19.2.5)(vite@8.0.10(@types/node@25.6.2)(esbuild@0.27.7)(jiti@2.7.0)(yaml@2.8.3))
       vite: 8.0.10(@types/node@25.6.2)(esbuild@0.27.7)(jiti@2.7.0)(yaml@2.8.3)
     transitivePeerDependencies:
       - '@rspack/core'
@@ -13906,6 +13910,20 @@ snapshots:
     dependencies:
       '@rolldown/pluginutils': 1.0.0-rc.7
       vite: 8.0.10(@types/node@25.6.2)(esbuild@0.27.7)(jiti@2.7.0)(yaml@2.8.3)
+
+  '@vitejs/plugin-rsc@0.5.26(react-dom@19.2.5(react@19.2.5))(react@19.2.5)(vite@8.0.10(@types/node@25.6.2)(esbuild@0.27.7)(jiti@2.7.0)(yaml@2.8.3))':
+    dependencies:
+      '@rolldown/pluginutils': 1.0.0-rc.18
+      es-module-lexer: 2.1.0
+      estree-walker: 3.0.3
+      magic-string: 0.30.21
+      react: 19.2.5
+      react-dom: 19.2.5(react@19.2.5)
+      srvx: 0.11.15
+      strip-literal: 3.1.0
+      turbo-stream: 3.2.0
+      vite: 8.0.10(@types/node@25.6.2)(esbuild@0.27.7)(jiti@2.7.0)(yaml@2.8.3)
+      vitefu: 1.1.3(vite@8.0.10(@types/node@25.6.2)(esbuild@0.27.7)(jiti@2.7.0)(yaml@2.8.3))
 
   '@vue/compiler-core@3.5.33':
     dependencies:
@@ -14433,7 +14451,7 @@ snapshots:
       jsonpointer: 5.0.1
       leven: 3.1.0
 
-  better-auth@1.4.18(@prisma/client@7.8.0(prisma@7.8.0(@types/react-dom@19.2.3(@types/react@19.2.14))(@types/react@19.2.14)(react-dom@19.2.5(react@19.2.5))(react@19.2.5)(typescript@6.0.3))(typescript@6.0.3))(@tanstack/react-start@1.168.14(crossws@0.4.5(srvx@0.11.15))(react-dom@19.2.5(react@19.2.5))(react@19.2.5)(vite@8.0.10(@types/node@25.6.2)(esbuild@0.27.7)(jiti@2.7.0)(yaml@2.8.3)))(mysql2@3.15.3)(pg@8.20.0)(prisma@7.8.0(@types/react-dom@19.2.3(@types/react@19.2.14))(@types/react@19.2.14)(react-dom@19.2.5(react@19.2.5))(react@19.2.5)(typescript@6.0.3))(react-dom@19.2.5(react@19.2.5))(react@19.2.5):
+  better-auth@1.4.18(@prisma/client@7.8.0(prisma@7.8.0(@types/react-dom@19.2.3(@types/react@19.2.14))(@types/react@19.2.14)(react-dom@19.2.5(react@19.2.5))(react@19.2.5)(typescript@6.0.3))(typescript@6.0.3))(@tanstack/react-start@1.168.14(@vitejs/plugin-rsc@0.5.26(react-dom@19.2.5(react@19.2.5))(react@19.2.5)(vite@8.0.10(@types/node@25.6.2)(esbuild@0.27.7)(jiti@2.7.0)(yaml@2.8.3)))(crossws@0.4.5(srvx@0.11.15))(react-dom@19.2.5(react@19.2.5))(react@19.2.5)(vite@8.0.10(@types/node@25.6.2)(esbuild@0.27.7)(jiti@2.7.0)(yaml@2.8.3)))(mysql2@3.15.3)(pg@8.20.0)(prisma@7.8.0(@types/react-dom@19.2.3(@types/react@19.2.14))(@types/react@19.2.14)(react-dom@19.2.5(react@19.2.5))(react@19.2.5)(typescript@6.0.3))(react-dom@19.2.5(react@19.2.5))(react@19.2.5):
     dependencies:
       '@better-auth/core': 1.4.18(@better-auth/utils@0.3.0)(@better-fetch/fetch@1.1.21)(better-call@1.1.8(zod@4.4.1))(jose@6.2.3)(kysely@0.28.17)(nanostores@1.3.0)
       '@better-auth/telemetry': 1.4.18(@better-auth/core@1.4.18(@better-auth/utils@0.3.0)(@better-fetch/fetch@1.1.21)(better-call@1.1.8(zod@4.4.1))(jose@6.2.3)(kysely@0.28.17)(nanostores@1.3.0))
@@ -14449,14 +14467,14 @@ snapshots:
       zod: 4.4.1
     optionalDependencies:
       '@prisma/client': 7.8.0(prisma@7.8.0(@types/react-dom@19.2.3(@types/react@19.2.14))(@types/react@19.2.14)(react-dom@19.2.5(react@19.2.5))(react@19.2.5)(typescript@6.0.3))(typescript@6.0.3)
-      '@tanstack/react-start': 1.168.14(crossws@0.4.5(srvx@0.11.15))(react-dom@19.2.5(react@19.2.5))(react@19.2.5)(vite@8.0.10(@types/node@25.6.2)(esbuild@0.27.7)(jiti@2.7.0)(yaml@2.8.3))
+      '@tanstack/react-start': 1.168.14(@vitejs/plugin-rsc@0.5.26(react-dom@19.2.5(react@19.2.5))(react@19.2.5)(vite@8.0.10(@types/node@25.6.2)(esbuild@0.27.7)(jiti@2.7.0)(yaml@2.8.3)))(crossws@0.4.5(srvx@0.11.15))(react-dom@19.2.5(react@19.2.5))(react@19.2.5)(vite@8.0.10(@types/node@25.6.2)(esbuild@0.27.7)(jiti@2.7.0)(yaml@2.8.3))
       mysql2: 3.15.3
       pg: 8.20.0
       prisma: 7.8.0(@types/react-dom@19.2.3(@types/react@19.2.14))(@types/react@19.2.14)(react-dom@19.2.5(react@19.2.5))(react@19.2.5)(typescript@6.0.3)
       react: 19.2.5
       react-dom: 19.2.5(react@19.2.5)
 
-  better-auth@1.4.9(@prisma/client@7.8.0(prisma@7.8.0(@types/react-dom@19.2.3(@types/react@19.2.14))(@types/react@19.2.14)(react-dom@19.2.5(react@19.2.5))(react@19.2.5)(typescript@6.0.3))(typescript@6.0.3))(@tanstack/react-start@1.168.14(crossws@0.4.5(srvx@0.11.15))(react-dom@19.2.5(react@19.2.5))(react@19.2.5)(vite@8.0.10(@types/node@25.6.2)(esbuild@0.27.7)(jiti@2.7.0)(yaml@2.8.3)))(mysql2@3.15.3)(pg@8.20.0)(prisma@7.8.0(@types/react-dom@19.2.3(@types/react@19.2.14))(@types/react@19.2.14)(react-dom@19.2.5(react@19.2.5))(react@19.2.5)(typescript@6.0.3))(react-dom@19.2.5(react@19.2.5))(react@19.2.5):
+  better-auth@1.4.9(@prisma/client@7.8.0(prisma@7.8.0(@types/react-dom@19.2.3(@types/react@19.2.14))(@types/react@19.2.14)(react-dom@19.2.5(react@19.2.5))(react@19.2.5)(typescript@6.0.3))(typescript@6.0.3))(@tanstack/react-start@1.168.14(@vitejs/plugin-rsc@0.5.26(react-dom@19.2.5(react@19.2.5))(react@19.2.5)(vite@8.0.10(@types/node@25.6.2)(esbuild@0.27.7)(jiti@2.7.0)(yaml@2.8.3)))(crossws@0.4.5(srvx@0.11.15))(react-dom@19.2.5(react@19.2.5))(react@19.2.5)(vite@8.0.10(@types/node@25.6.2)(esbuild@0.27.7)(jiti@2.7.0)(yaml@2.8.3)))(mysql2@3.15.3)(pg@8.20.0)(prisma@7.8.0(@types/react-dom@19.2.3(@types/react@19.2.14))(@types/react@19.2.14)(react-dom@19.2.5(react@19.2.5))(react@19.2.5)(typescript@6.0.3))(react-dom@19.2.5(react@19.2.5))(react@19.2.5):
     dependencies:
       '@better-auth/core': 1.4.9(@better-auth/utils@0.3.0)(@better-fetch/fetch@1.1.21)(better-call@1.1.7(zod@3.25.76))(jose@6.2.3)(kysely@0.28.17)(nanostores@1.3.0)
       '@better-auth/telemetry': 1.4.9(@better-auth/core@1.4.9(@better-auth/utils@0.3.0)(@better-fetch/fetch@1.1.21)(better-call@1.1.7(zod@3.25.76))(jose@6.2.3)(kysely@0.28.17)(nanostores@1.3.0))
@@ -14472,7 +14490,7 @@ snapshots:
       zod: 4.4.1
     optionalDependencies:
       '@prisma/client': 7.8.0(prisma@7.8.0(@types/react-dom@19.2.3(@types/react@19.2.14))(@types/react@19.2.14)(react-dom@19.2.5(react@19.2.5))(react@19.2.5)(typescript@6.0.3))(typescript@6.0.3)
-      '@tanstack/react-start': 1.168.14(crossws@0.4.5(srvx@0.11.15))(react-dom@19.2.5(react@19.2.5))(react@19.2.5)(vite@8.0.10(@types/node@25.6.2)(esbuild@0.27.7)(jiti@2.7.0)(yaml@2.8.3))
+      '@tanstack/react-start': 1.168.14(@vitejs/plugin-rsc@0.5.26(react-dom@19.2.5(react@19.2.5))(react@19.2.5)(vite@8.0.10(@types/node@25.6.2)(esbuild@0.27.7)(jiti@2.7.0)(yaml@2.8.3)))(crossws@0.4.5(srvx@0.11.15))(react-dom@19.2.5(react@19.2.5))(react@19.2.5)(vite@8.0.10(@types/node@25.6.2)(esbuild@0.27.7)(jiti@2.7.0)(yaml@2.8.3))
       mysql2: 3.15.3
       pg: 8.20.0
       prisma: 7.8.0(@types/react-dom@19.2.3(@types/react@19.2.14))(@types/react@19.2.14)(react-dom@19.2.5(react@19.2.5))(react@19.2.5)(typescript@6.0.3)
