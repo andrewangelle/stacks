@@ -1,47 +1,50 @@
-import { useAuth } from '@clerk/tanstack-react-start';
 import type { List } from '@prisma/client';
 import { useMutation, useQuery } from '@tanstack/react-query';
-import { useParams } from '@tanstack/react-router';
 import {
   createList,
   deleteList,
   getListById,
   getLists,
   updateList,
-} from '~/db/lists';
+} from '~/db/lists/lists.functions';
 import { queryClient } from '~/query/queryClient';
 import { queryKeys } from '~/query/queryKeys';
+import { useCurrentBoardId } from '~/utils/useCurrentBoardId';
 
 export type UpdateListArgs = Pick<List, 'id' | 'boardId' | 'listTitle'>;
 export type CreateListArgs = Pick<List, 'listTitle' | 'boardId'>;
 export type DeleteListArgs = Pick<List, 'id' | 'boardId'>;
 
 export function useGetListsQuery() {
-  const params = useParams({ strict: false });
-  const boardId = params.id ?? '';
-  const { userId } = useAuth();
+  const boardId = useCurrentBoardId();
   return useQuery({
     queryKey: queryKeys.lists(boardId),
     enabled: !!boardId,
-    queryFn: () => getLists({ data: { boardId, userId: userId ?? '' } }),
+    queryFn() {
+      return getLists({ data: { boardId } });
+    },
   });
 }
 
 export function useGetListByIdQuery({ id }: { id: string }) {
-  const { userId } = useAuth();
   return useQuery({
     queryKey: queryKeys.list(id),
-    enabled: !!id && !!userId,
-    queryFn: () => getListById({ data: { id, userId: userId ?? '' } }),
+    enabled: !!id,
+    queryFn() {
+      return getListById({ data: { id } });
+    },
   });
 }
 
 export function useUpdateListMutation() {
-  const { userId } = useAuth();
   const mutation = useMutation({
-    mutationFn: ({ id, listTitle }: UpdateListArgs) =>
-      updateList({ data: { listId: id, userId: userId ?? '', listTitle } }),
-    onSuccess: (_result, variables) => {
+    mutationFn({ id, listTitle }: UpdateListArgs) {
+      return updateList({
+        data: { listId: id, listTitle },
+      });
+    },
+
+    onSuccess(_result, variables) {
       queryClient.setQueryData<List[]>(
         queryKeys.lists(variables.boardId),
         (cache = []) =>
@@ -54,15 +57,15 @@ export function useUpdateListMutation() {
     },
   });
 
-  return [mutation.mutate] as const;
+  return mutation.mutate;
 }
 
 export function useCreateListMutation() {
-  const { userId } = useAuth();
   const mutation = useMutation({
-    mutationFn: (args: CreateListArgs) =>
-      createList({ data: { ...args, userId: userId ?? '' } }),
-    onSuccess: (result, variables) => {
+    mutationFn(args: CreateListArgs) {
+      return createList({ data: args });
+    },
+    onSuccess(result, variables) {
       queryClient.setQueryData<List[]>(
         queryKeys.lists(variables.boardId),
         (cache = []) => [...cache, result.data[0]],
@@ -70,15 +73,16 @@ export function useCreateListMutation() {
     },
   });
 
-  return [mutation.mutate] as const;
+  return mutation.mutate;
 }
 
 export function useDeleteListMutation() {
-  const { userId } = useAuth();
   const mutation = useMutation({
-    mutationFn: ({ id }: DeleteListArgs) =>
-      deleteList({ data: { listId: id, userId: userId ?? '' } }),
-    onSuccess: (_result, variables) => {
+    mutationFn({ id }: DeleteListArgs) {
+      return deleteList({ data: { listId: id } });
+    },
+
+    onSuccess(_result, variables) {
       queryClient.setQueryData<List[]>(
         queryKeys.lists(variables.boardId),
         (cache = []) => cache.filter((item) => item.id !== variables.id),
@@ -86,7 +90,7 @@ export function useDeleteListMutation() {
     },
   });
 
-  return [mutation.mutate] as const;
+  return mutation.mutate;
 }
 
 export const reorderLists = (item: List, boardId: string, droppedId: string) =>

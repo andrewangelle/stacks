@@ -162,12 +162,15 @@ export const CardModalCloseContainer = styled.div`
 export const CardModalClose = styled(Dialog.Close)` 
   border: none;
   right: 0;
-  padding: 12px;
+  padding: 8px;
+
   cursor: pointer;
   background: white;
-  margin-right: 12px;
+  margin: 4px 12px 4px 4px;
+
   &:hover {
     background: rgba(0,0,0, 0.1);
+    border-radius: 5px;
   }
 `;
 

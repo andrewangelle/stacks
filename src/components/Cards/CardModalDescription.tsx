@@ -28,7 +28,7 @@ export function CardModalDescription({
 }: CardModalDescriptionProps) {
   const [isEditing, setEditing] = useState(false);
   const [description, setDescription] = useState(cardDescription);
-  const [updateCard] = useUpdateCardMutation();
+  const updateCard = useUpdateCardMutation();
 
   const placeHolderText = 'Add a more detailed description...';
   return (

@@ -17,7 +17,7 @@ import {
 
 export function DeleteChecklistPopover({ id }: { id: string }) {
   const { data: checklist } = useGetChecklistQuery({ id });
-  const [deleteChecklist] = useDeleteChecklistMutation();
+  const deleteChecklist = useDeleteChecklistMutation();
   if (!checklist) return null;
   return (
     <Popover.Root>

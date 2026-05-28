@@ -27,25 +27,20 @@ const backgroundChoices: BoardBackground[] = [
   'red',
 ];
 
-type CreateBoardProps = {
-  userId: string;
-};
-
-export function CreateBoard({ userId }: CreateBoardProps) {
+export function CreateBoard() {
   const [isCreateOpen, setCreateOpen] = useState(false);
   const [selectedColor, setSelectedColor] = useState('blue');
   const [boardTitle, setBoardTitle] = useState('');
-  const [createBoard] = useCreateBoardMutation();
+  const createBoard = useCreateBoardMutation();
 
   function onBoardCreate() {
-    if (!boardTitle || !userId) {
+    if (!boardTitle) {
       return;
     }
 
     createBoard({
       boardColor: selectedColor,
       boardTitle,
-      userId,
     });
   }
 

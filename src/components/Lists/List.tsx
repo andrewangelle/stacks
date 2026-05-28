@@ -1,5 +1,4 @@
 import type { List as ListType } from '@prisma/client';
-import { useParams } from '@tanstack/react-router';
 import { useState } from 'react';
 import { CardModal } from '~/components/Cards/CardModal';
 import { DragDropCard } from '~/components/Cards/DragDropCard';
@@ -15,11 +14,12 @@ import {
 import { useCreateCardMutation, useGetCardsQuery } from '~/query/cards';
 import { useGetListByIdQuery, useUpdateListMutation } from '~/query/lists';
 import { Flex } from '~/styles/Page.styled';
+import { useCurrentBoardId } from '~/utils/useCurrentBoardId';
 import { useOutsideClick } from '~/utils/useOutsideClick';
 
 export function List({ id }: Pick<ListType, 'id'>) {
   const { data } = useGetListByIdQuery({ id });
-  const params = useParams({ strict: false });
+  const boardId = useCurrentBoardId();
   const [isEditing, setEditing] = useState(false);
   const [isEditingName, setIsEditingName] = useState(false);
   const [cardTitle, setCardTitle] = useState('');
@@ -29,8 +29,8 @@ export function List({ id }: Pick<ListType, 'id'>) {
     onOutsideNameEditClick,
     isEditingName,
   );
-  const [updateList] = useUpdateListMutation();
-  const [createCard] = useCreateCardMutation();
+  const updateList = useUpdateListMutation();
+  const createCard = useCreateCardMutation();
 
   function onOutsideNameEditClick() {
     setIsEditingName(false);
@@ -38,7 +38,7 @@ export function List({ id }: Pick<ListType, 'id'>) {
     if (editedListTitle !== data?.listTitle) {
       updateList({
         id,
-        boardId: params.id ?? '',
+        boardId,
         listTitle: editedListTitle,
       });
     }
@@ -92,7 +92,7 @@ export function List({ id }: Pick<ListType, 'id'>) {
           listId={id}
           cardTitle={card.cardTitle}
         >
-          <CardModal id={card.id} listTitle={data?.listTitle ?? ''} />
+          <CardModal id={card.id} />
         </DragDropCard>
       ))}
 

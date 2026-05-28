@@ -1,13 +1,12 @@
-import { useAuth } from '@clerk/tanstack-react-start';
 import type { Card } from '@prisma/client';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import {
   createCard,
   deleteCard,
   getCardById,
-  getCards,
+  getCardsByListId,
   updateCard,
-} from '~/db/cards';
+} from '~/db/cards/cards.functions';
 import { queryClient } from '~/query/queryClient';
 import { queryKeys } from '~/query/queryKeys';
 
@@ -20,29 +19,32 @@ export type UpdateCardArgs = Pick<
 export type DeleteCardArgs = Pick<Card, 'id' | 'listId'>;
 
 export function useGetCardsQuery(args: { listId: string }) {
-  const { userId } = useAuth();
   return useQuery({
     queryKey: queryKeys.cards(args.listId),
-    queryFn: () =>
-      getCards({ data: { listId: args.listId, userId: userId ?? '' } }),
+    queryFn() {
+      return getCardsByListId({
+        data: { listId: args.listId },
+      });
+    },
   });
 }
 
 export function useGetCardByIdQuery(args: { id: string }) {
-  const { userId } = useAuth();
   return useQuery({
     queryKey: queryKeys.card(args.id),
-    queryFn: () =>
-      getCardById({ data: { cardId: args.id, userId: userId ?? '' } }),
+    queryFn() {
+      return getCardById({ data: { cardId: args.id } });
+    },
   });
 }
 
 export function useCreateCardMutation() {
-  const { userId } = useAuth();
   const mutation = useMutation({
-    mutationFn: ({ cardTitle, listId }: CreateCardArgs) =>
-      createCard({ data: { userId: userId ?? '', cardTitle, listId } }),
-    onSuccess: (result, variables) => {
+    mutationFn({ cardTitle, listId }: CreateCardArgs) {
+      return createCard({ data: { cardTitle, listId } });
+    },
+
+    onSuccess(result, variables) {
       queryClient.setQueryData<CardType[]>(
         queryKeys.cards(variables.listId),
         (cache = []) => [...cache, result.data[0]],
@@ -50,22 +52,21 @@ export function useCreateCardMutation() {
     },
   });
 
-  return [mutation.mutate] as const;
+  return mutation.mutate;
 }
 
 export function useUpdateCardMutation() {
-  const { userId } = useAuth();
   const mutation = useMutation({
-    mutationFn: ({ id, cardDescription, cardTitle }: UpdateCardArgs) =>
-      updateCard({
+    mutationFn({ id, cardDescription, cardTitle }: UpdateCardArgs) {
+      return updateCard({
         data: {
           cardId: id,
-          userId: userId ?? '',
           cardDescription,
           cardTitle,
         },
-      }),
-    onSuccess: (_result, variables) => {
+      });
+    },
+    onSuccess(_result, variables) {
       queryClient.setQueryData<CardType>(
         queryKeys.card(variables.id),
         (cache = {} as CardType) => ({
@@ -90,15 +91,15 @@ export function useUpdateCardMutation() {
     },
   });
 
-  return [mutation.mutate] as const;
+  return mutation.mutate;
 }
 
 export function useDeleteCardMutation() {
-  const { userId } = useAuth();
   const mutation = useMutation({
-    mutationFn: ({ id }: DeleteCardArgs) =>
-      deleteCard({ data: { cardId: id, userId: userId ?? '' } }),
-    onSuccess: (_result, variables) => {
+    mutationFn({ id }: DeleteCardArgs) {
+      return deleteCard({ data: { cardId: id } });
+    },
+    onSuccess(_result, variables) {
       queryClient.setQueryData<CardType[]>(
         queryKeys.cards(variables.listId),
         (cache = []) => cache.filter((item) => item.id !== variables.id),
@@ -106,15 +107,11 @@ export function useDeleteCardMutation() {
     },
   });
 
-  return [mutation.mutate] as const;
+  return mutation.mutate;
 }
 
-export const reorderCards = (
-  item: CardType,
-  listId: string,
-  droppedId: string,
-) =>
-  queryClient.setQueryData<CardType[]>(
+export function reorderCards(item: Card, listId: string, droppedId: string) {
+  return queryClient.setQueryData<CardType[]>(
     queryKeys.cards(listId),
     (cache = []) => {
       const cacheArray = [...cache];
@@ -130,3 +127,4 @@ export const reorderCards = (
       return cacheArray;
     },
   );
+}

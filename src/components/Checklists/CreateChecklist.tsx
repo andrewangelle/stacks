@@ -1,5 +1,4 @@
 import * as Popover from '@radix-ui/react-popover';
-import { useParams } from '@tanstack/react-router';
 import { useState } from 'react';
 import * as Bs from 'react-icons/bs';
 import {
@@ -20,6 +19,7 @@ import {
 } from '~/components/Checklists/Checklists.styled';
 import { useCreateActivityMutation } from '~/query/activity';
 import { useCreateChecklistMutation } from '~/query/checklists';
+import { useCurrentBoardId } from '~/utils/useCurrentBoardId';
 
 type CreateChecklistProps = {
   listId: string;
@@ -27,10 +27,10 @@ type CreateChecklistProps = {
 };
 
 export function CreateChecklist({ listId, cardId }: CreateChecklistProps) {
-  const params = useParams({ strict: false });
+  const boardId = useCurrentBoardId();
   const [checklistTitle, setChecklistTitle] = useState('');
-  const [createChecklist] = useCreateChecklistMutation();
-  const [createActivity] = useCreateActivityMutation();
+  const createChecklist = useCreateChecklistMutation();
+  const createActivity = useCreateActivityMutation();
 
   function addChecklist() {
     createChecklist({
@@ -42,7 +42,7 @@ export function CreateChecklist({ listId, cardId }: CreateChecklistProps) {
     createActivity({
       cardId,
       listId,
-      boardId: params.id ?? '',
+      boardId,
       type: 'feed',
       content: `added ${checklistTitle} to this card`,
     });

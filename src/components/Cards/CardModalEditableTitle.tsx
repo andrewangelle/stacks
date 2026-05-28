@@ -22,7 +22,7 @@ export function CardModalEditableTitle({
   const [isEditingTitle, setEditingTitle] = useState(false);
   const { data: card } = useGetCardByIdQuery({ id });
   const [editedTitle, setEditedTitle] = useState(card?.cardTitle ?? '');
-  const [updateCard] = useUpdateCardMutation();
+  const updateCard = useUpdateCardMutation();
 
   function onSave() {
     updateCard({

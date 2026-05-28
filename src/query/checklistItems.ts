@@ -1,4 +1,3 @@
-import { useAuth } from '@clerk/tanstack-react-start';
 import type { ChecklistItem } from '@prisma/client';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import {
@@ -7,7 +6,7 @@ import {
   getChecklistItemById,
   getChecklistItems,
   updateChecklistItem,
-} from '~/db/checklistItems';
+} from '~/db/checklistItems/checklistItems.functions';
 import { queryClient } from '~/query/queryClient';
 import { queryKeys } from '~/query/queryKeys';
 
@@ -28,40 +27,41 @@ export type UpdateChecklistItemArgs = Pick<
 export type DeleteChecklistItemArgs = Pick<ChecklistItem, 'id' | 'checklistId'>;
 
 export function useGetChecklistItemQuery(args: { id: string }) {
-  const { userId } = useAuth();
   return useQuery({
     queryKey: queryKeys.checklistItem(args.id),
-    queryFn: () =>
-      getChecklistItemById({
-        data: { itemId: args.id, userId: userId ?? '' },
-      }),
+    queryFn() {
+      return getChecklistItemById({
+        data: { itemId: args.id },
+      });
+    },
   });
 }
 
 export function useGetChecklistItemsQuery(args: ChecklistItemsArgs) {
-  const { userId } = useAuth();
   return useQuery({
     queryKey: queryKeys.checklistItems(args.checklistId),
-    queryFn: () =>
-      getChecklistItems({
-        data: { checklistId: args.checklistId, userId: userId ?? '' },
-      }),
+    queryFn() {
+      return getChecklistItems({
+        data: { checklistId: args.checklistId },
+      });
+    },
   });
 }
 
 export function useCreateChecklistItemMutation() {
-  const { userId } = useAuth();
   const mutation = useMutation({
-    mutationFn: ({
+    mutationFn({
       label,
       cardId,
       checklistId,
       listId,
-    }: CreateChecklistItemArgs) =>
-      createChecklistItem({
-        data: { label, cardId, checklistId, listId, userId: userId ?? '' },
-      }),
-    onSuccess: (result, variables) => {
+    }: CreateChecklistItemArgs) {
+      return createChecklistItem({
+        data: { label, cardId, checklistId, listId },
+      });
+    },
+
+    onSuccess(result, variables) {
       queryClient.setQueryData<ChecklistItemType[]>(
         queryKeys.checklistItems(variables.checklistId),
         (cache = []) => [...cache, result.data[0]],
@@ -69,17 +69,17 @@ export function useCreateChecklistItemMutation() {
     },
   });
 
-  return [mutation.mutate] as const;
+  return mutation.mutate;
 }
 
 export function useUpdateChecklistItemMutation() {
-  const { userId } = useAuth();
   const mutation = useMutation({
-    mutationFn: ({ id, isCompleted, label }: UpdateChecklistItemArgs) =>
-      updateChecklistItem({
-        data: { itemId: id, userId: userId ?? '', isCompleted, label },
-      }),
-    onSuccess: (_result, variables) => {
+    mutationFn({ id, isCompleted, label }: UpdateChecklistItemArgs) {
+      return updateChecklistItem({
+        data: { itemId: id, isCompleted, label },
+      });
+    },
+    onSuccess(_result, variables) {
       queryClient.setQueryData<ChecklistItemType[]>(
         queryKeys.checklistItems(variables.checklistId),
         (cache = [] as ChecklistItemType[]) =>
@@ -106,15 +106,17 @@ export function useUpdateChecklistItemMutation() {
     },
   });
 
-  return [mutation.mutate] as const;
+  return mutation.mutate;
 }
 
 export function useDeleteChecklistItemMutation() {
-  const { userId } = useAuth();
   const mutation = useMutation({
-    mutationFn: ({ id }: DeleteChecklistItemArgs) =>
-      deleteChecklistItem({ data: { itemId: id, userId: userId ?? '' } }),
-    onSuccess: (_result, variables) => {
+    mutationFn({ id }: DeleteChecklistItemArgs) {
+      return deleteChecklistItem({
+        data: { itemId: id },
+      });
+    },
+    onSuccess(_result, variables) {
       queryClient.setQueryData<ChecklistItemType[]>(
         queryKeys.checklistItems(variables.id),
         (cache = []) => cache.filter((item) => item.id !== variables.id),
@@ -122,7 +124,7 @@ export function useDeleteChecklistItemMutation() {
     },
   });
 
-  return [mutation.mutate] as const;
+  return mutation.mutate;
 }
 
 export const reorderChecklistItems = (
