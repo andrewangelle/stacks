@@ -15,7 +15,7 @@ import {
   CreateBoardTitleInput,
   PopoverClose,
 } from '~/components/Boards/Boards.styled';
-import { useCreateBoardMutation } from '~/query/boards';
+import { useCreateBoard } from '~/query/boards';
 
 import { Center } from '~/styles/Page.styled';
 
@@ -31,7 +31,7 @@ export function CreateBoard() {
   const [isCreateOpen, setCreateOpen] = useState(false);
   const [selectedColor, setSelectedColor] = useState('blue');
   const [boardTitle, setBoardTitle] = useState('');
-  const createBoard = useCreateBoardMutation();
+  const createBoard = useCreateBoard();
 
   function onBoardCreate() {
     if (!boardTitle) {

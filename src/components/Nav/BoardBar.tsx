@@ -4,17 +4,17 @@ import {
   BoardTitle,
   EditBoardTitleInput,
 } from '~/components/Nav/Nav.styled';
-import { useGetBoardQuery, useUpdateBoardMutation } from '~/query/boards';
+import { useGetBoard, useUpdateBoard } from '~/query/boards';
 import { useBoardBackgroundColor } from '~/utils/useBoardBackgroundColor';
 import { useOutsideClick } from '~/utils/useOutsideClick';
 
 export function BoardBar() {
-  const board = useGetBoardQuery();
+  const board = useGetBoard();
   const background = useBoardBackgroundColor();
   const [isEditing, setEditing] = useState(false);
   const [editedBoardTitle, setEditedBoardTitle] = useState(' ');
   const outsideClickRef = useOutsideClick(onOutsideNameEditClick, isEditing);
-  const updateBoard = useUpdateBoardMutation();
+  const updateBoard = useUpdateBoard();
 
   function onOutsideNameEditClick() {
     setEditing(false);

@@ -12,7 +12,7 @@ import { useCurrentBoardId } from '~/utils/useCurrentBoardId';
 export type Board = Omit<Stack, 'createdAt' | 'updatedAt'>;
 export type CreateBoardArgs = Pick<Stack, 'boardTitle' | 'boardColor'>;
 
-export function useGetBoardsQuery() {
+export function useGetBoards() {
   return useQuery({
     queryKey: queryKeys.boards(),
     queryFn() {
@@ -21,7 +21,7 @@ export function useGetBoardsQuery() {
   });
 }
 
-export function useGetBoardQuery() {
+export function useGetBoard() {
   const boardId = useCurrentBoardId();
   return useQuery({
     queryKey: queryKeys.board(boardId),
@@ -32,7 +32,7 @@ export function useGetBoardQuery() {
   });
 }
 
-export function useCreateBoardMutation() {
+export function useCreateBoard() {
   const queryClient = useQueryClient();
 
   const mutation = useMutation({
@@ -53,7 +53,7 @@ export function useCreateBoardMutation() {
   return mutation.mutate;
 }
 
-export function useUpdateBoardMutation() {
+export function useUpdateBoard() {
   const queryClient = useQueryClient();
   const mutation = useMutation({
     mutationFn({ id, boardTitle }: Pick<Board, 'id' | 'boardTitle'>) {

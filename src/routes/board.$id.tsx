@@ -5,7 +5,7 @@ import { List } from '~/components/Lists/List';
 import { BoardPageBackground } from '~/components/Nav/Nav.styled';
 import { NavBar } from '~/components/Nav/NavBar';
 import { fetchUserId } from '~/middleware/auth';
-import { useGetBoardQuery } from '~/query/boards';
+import { useGetBoard } from '~/query/boards';
 import { useGetListsQuery } from '~/query/lists';
 import { Flex, Padding } from '~/styles/Page.styled';
 
@@ -20,7 +20,7 @@ export const Route = createFileRoute('/board/$id')({
     }
   },
   component() {
-    const { data: board } = useGetBoardQuery();
+    const { data: board } = useGetBoard();
     const { data: lists = [] } = useGetListsQuery();
 
     return (
