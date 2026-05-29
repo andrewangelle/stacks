@@ -12,10 +12,7 @@ import {
 import { ActivityComment } from '~/components/Activity/ActivityComment';
 import { ActivityLogo } from '~/components/Activity/ActivityLogo';
 import { CardModalTitle } from '~/components/Cards/CardModal.styled';
-import {
-  useCreateActivityMutation,
-  useGetActivityQuery,
-} from '~/query/activity';
+import { useCreateActivity, useGetActivity } from '~/query/activity';
 import { useGetProfileQuery } from '~/query/profile';
 import { Flex } from '~/styles/Page.styled';
 import { useCurrentBoardId } from '~/utils/useCurrentBoardId';
@@ -28,10 +25,10 @@ type CardModalActivityProps = {
 export function CardModalActivity({ listId, cardId }: CardModalActivityProps) {
   const [showActivity, setShowActivity] = useState(false);
   const boardId = useCurrentBoardId();
-  const { data } = useGetActivityQuery({ cardId });
+  const { data } = useGetActivity({ cardId });
   const [comment, setComment] = useState<string>('');
   const profile = useGetProfileQuery();
-  const createActivity = useCreateActivityMutation();
+  const createActivity = useCreateActivity();
 
   function createComment() {
     createActivity({

@@ -15,7 +15,7 @@ import type {
 import { queryClient } from '~/query/queryClient';
 import { queryKeys } from '~/query/queryKeys';
 
-export function useGetActivityQuery(data: GetActivityArgs) {
+export function useGetActivity(data: GetActivityArgs) {
   return useQuery({
     queryKey: queryKeys.activity(data.cardId),
     queryFn() {
@@ -26,10 +26,10 @@ export function useGetActivityQuery(data: GetActivityArgs) {
   });
 }
 
-export function useCreateActivityMutation() {
+export function useCreateActivity() {
   const mutation = useMutation({
-    mutationFn(args: CreateActivityArgs) {
-      return createActivity({ data: args });
+    mutationFn(data: CreateActivityArgs) {
+      return createActivity({ data });
     },
 
     onSuccess(result, variables) {
@@ -43,7 +43,7 @@ export function useCreateActivityMutation() {
   return mutation.mutate;
 }
 
-export function useUpdateActivityMutation() {
+export function useUpdateActivity() {
   function updateActivityInCache(
     cache: Activity[],
     variables: UpdateActivityArgs,
@@ -74,7 +74,7 @@ export function useUpdateActivityMutation() {
   return mutation.mutate;
 }
 
-export function useDeleteActivityMutation() {
+export function useDeleteActivity() {
   const mutation = useMutation({
     mutationFn(data: DeleteActivityArgs) {
       return deleteActivity({ data });

@@ -18,7 +18,7 @@ import {
   DeleteChecklistPopoverContent,
   DeleteChecklistPopoverTrigger,
 } from '~/components/Checklists/Checklists.styled';
-import { useCreateActivityMutation } from '~/query/activity';
+import { useCreateActivity } from '~/query/activity';
 import {
   useDeleteChecklistItemMutation,
   useGetChecklistItemQuery,
@@ -40,7 +40,7 @@ export function Checkbox({ id }: { id: string }) {
   const [isEditingLabel, setIsEditingLabel] = useState(false);
   const [isHovering, setHovering] = useState(false);
   const [isDeleteOpen, setDeleteOpen] = useState(false);
-  const createActivity = useCreateActivityMutation();
+  const createActivity = useCreateActivity();
 
   const clickOutsideDeletePopoverRef = useOutsideClick(
     () => setDeleteOpen(false),
