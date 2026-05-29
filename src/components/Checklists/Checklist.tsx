@@ -18,18 +18,18 @@ import {
 import { DeleteChecklist } from '~/components/Checklists/DeleteChecklist';
 import { DragDropChecklistItem } from '~/components/Checklists/DragDropChecklistItems';
 import {
-  useCreateChecklistItemMutation,
-  useGetChecklistItemsQuery,
+  useCreateChecklistItem,
+  useGetChecklistItems,
 } from '~/query/checklistItems';
 import { useGetChecklistQuery } from '~/query/checklists';
 import { Flex } from '~/styles/Page.styled';
 
 export function Checklist({ id }: { id: string }) {
   const { data: checklist } = useGetChecklistQuery({ checklistId: id });
-  const { data } = useGetChecklistItemsQuery({ checklistId: id });
+  const { data } = useGetChecklistItems({ checklistId: id });
   const [isEditing, setIsEditing] = useState(false);
   const [label, setLabel] = useState('');
-  const createChecklistItem = useCreateChecklistItemMutation();
+  const createChecklistItem = useCreateChecklistItem();
 
   const completedItems = data?.filter((item) => item.isCompleted);
   const progressPercent = getPercent(data?.length, completedItems?.length);

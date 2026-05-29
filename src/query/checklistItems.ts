@@ -17,7 +17,7 @@ import type {
 import { queryClient } from '~/query/queryClient';
 import { queryKeys } from '~/query/queryKeys';
 
-export function useGetChecklistItemQuery(data: GetChecklistItemByIdArgs) {
+export function useGetChecklistItem(data: GetChecklistItemByIdArgs) {
   return useQuery({
     queryKey: queryKeys.checklistItem(data.itemId),
     queryFn() {
@@ -28,7 +28,7 @@ export function useGetChecklistItemQuery(data: GetChecklistItemByIdArgs) {
   });
 }
 
-export function useGetChecklistItemsQuery(data: GetChecklistItemsArgs) {
+export function useGetChecklistItems(data: GetChecklistItemsArgs) {
   return useQuery({
     queryKey: queryKeys.checklistItems(data.checklistId),
     queryFn() {
@@ -39,7 +39,7 @@ export function useGetChecklistItemsQuery(data: GetChecklistItemsArgs) {
   });
 }
 
-export function useCreateChecklistItemMutation() {
+export function useCreateChecklistItem() {
   const mutation = useMutation({
     mutationFn(data: CreateChecklistItemArgs) {
       return createChecklistItem({
@@ -58,7 +58,7 @@ export function useCreateChecklistItemMutation() {
   return mutation.mutate;
 }
 
-export function useUpdateChecklistItemMutation() {
+export function useUpdateChecklistItem() {
   const mutation = useMutation({
     mutationFn(data: UpdateChecklistItemArgs) {
       return updateChecklistItem({
@@ -101,7 +101,7 @@ export function useUpdateChecklistItemMutation() {
   return mutation.mutate;
 }
 
-export function useDeleteChecklistItemMutation() {
+export function useDeleteChecklistItem() {
   const mutation = useMutation({
     mutationFn(data: DeleteChecklistItemArgs) {
       return deleteChecklistItem({

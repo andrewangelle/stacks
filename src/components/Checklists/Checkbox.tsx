@@ -20,9 +20,9 @@ import {
 } from '~/components/Checklists/Checklists.styled';
 import { useCreateActivity } from '~/query/activity';
 import {
-  useDeleteChecklistItemMutation,
-  useGetChecklistItemQuery,
-  useUpdateChecklistItemMutation,
+  useDeleteChecklistItem,
+  useGetChecklistItem,
+  useUpdateChecklistItem,
 } from '~/query/checklistItems';
 import { Flex } from '~/styles/Page.styled';
 import { useCurrentBoardId } from '~/utils/useCurrentBoardId';
@@ -33,9 +33,9 @@ const AiOutlineEllipsis = AiIcons.AiOutlineEllipsis;
 
 export function Checkbox({ id }: { id: string }) {
   const boardId = useCurrentBoardId();
-  const { data: checklistItem } = useGetChecklistItemQuery({ itemId: id });
-  const updateItem = useUpdateChecklistItemMutation();
-  const deleteChecklistItem = useDeleteChecklistItemMutation();
+  const { data: checklistItem } = useGetChecklistItem({ itemId: id });
+  const updateItem = useUpdateChecklistItem();
+  const deleteChecklistItem = useDeleteChecklistItem();
   const [editedLabel, setEditedLabel] = useState(checklistItem?.label);
   const [isEditingLabel, setIsEditingLabel] = useState(false);
   const [isHovering, setHovering] = useState(false);
