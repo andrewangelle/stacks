@@ -1,11 +1,6 @@
 import * as Popover from '@radix-ui/react-popover';
 import { type CSSProperties, useState } from 'react';
 import * as AiIcons from 'react-icons/ai';
-import { useOutsideClick } from '~/utils/useOutsideClick';
-
-const AiOutlineCheck = AiIcons.AiOutlineCheck;
-const AiOutlineEllipsis = AiIcons.AiOutlineEllipsis;
-
 import {
   CreateBoardCloseBorder,
   PopoverClose,
@@ -31,8 +26,12 @@ import {
 } from '~/query/checklistItems';
 import { Flex } from '~/styles/Page.styled';
 import { useCurrentBoardId } from '~/utils/useCurrentBoardId';
+import { useOutsideClick } from '~/utils/useOutsideClick';
 
-export function ChecklistCheckbox({ id }: { id: string }) {
+const AiOutlineCheck = AiIcons.AiOutlineCheck;
+const AiOutlineEllipsis = AiIcons.AiOutlineEllipsis;
+
+export function Checkbox({ id }: { id: string }) {
   const boardId = useCurrentBoardId();
   const { data: checklistItem } = useGetChecklistItemQuery({ itemId: id });
   const updateItem = useUpdateChecklistItemMutation();

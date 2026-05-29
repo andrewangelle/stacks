@@ -5,7 +5,7 @@ import {
   CardModalTitle,
   CloseDescriptionButton,
 } from '~/components/Cards/CardModal.styled';
-import { ChecklistCheckbox } from '~/components/Checklists/ChecklistCheckbox';
+import { Checkbox } from '~/components/Checklists/Checkbox';
 import {
   AddChecklistButton,
   AddChecklistItemButton,
@@ -15,19 +15,16 @@ import {
   ChecklistProgressPercentage,
   ChecklistProgressRoot,
 } from '~/components/Checklists/Checklists.styled';
-import { DeleteChecklistPopover } from '~/components/Checklists/DeleteChecklistPopover';
+import { DeleteChecklist } from '~/components/Checklists/DeleteChecklist';
 import { DragDropChecklistItem } from '~/components/Checklists/DragDropChecklistItems';
 import {
   useCreateChecklistItemMutation,
   useGetChecklistItemsQuery,
 } from '~/query/checklistItems';
-import {
-  useGetChecklistQuery,
-  useGetChecklistsQuery,
-} from '~/query/checklists';
+import { useGetChecklistQuery } from '~/query/checklists';
 import { Flex } from '~/styles/Page.styled';
 
-function Checklist({ id }: { id: string }) {
+export function Checklist({ id }: { id: string }) {
   const { data: checklist } = useGetChecklistQuery({ checklistId: id });
   const { data } = useGetChecklistItemsQuery({ checklistId: id });
   const [isEditing, setIsEditing] = useState(false);
@@ -48,7 +45,7 @@ function Checklist({ id }: { id: string }) {
             {checklist?.checklistTitle}
           </CardModalTitle>
         </Flex>
-        <DeleteChecklistPopover id={id} />
+        <DeleteChecklist id={id} />
       </ChecklistHeader>
 
       <Flex data-testid="Flex" style={{ position: 'relative' }}>
@@ -74,7 +71,7 @@ function Checklist({ id }: { id: string }) {
           label={item.label}
           checklistId={id}
         >
-          <ChecklistCheckbox id={item.id} />
+          <Checkbox id={item.id} />
         </DragDropChecklistItem>
       ))}
 
@@ -122,17 +119,6 @@ function Checklist({ id }: { id: string }) {
           </Flex>
         </>
       )}
-    </div>
-  );
-}
-
-export function CardModalChecklists({ cardId }: { cardId: string }) {
-  const { data } = useGetChecklistsQuery({ cardId });
-  return (
-    <div style={{ margin: '30px 12px 0px' }}>
-      {data?.map((checklist) => (
-        <Checklist key={checklist.id} id={checklist.id} />
-      ))}
     </div>
   );
 }
