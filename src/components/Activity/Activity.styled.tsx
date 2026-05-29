@@ -11,7 +11,6 @@ export const ActivityHeader = styled.div`
 export const HideActivityButton = styled(Button)` 
   border: none;
   padding: 8px 10px;
-  color: black;
   margin: 0;
 `;
 

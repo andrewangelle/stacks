@@ -67,7 +67,6 @@ export const DeleteChecklistButton = styled(Button)`
 export const AddChecklistItemButton = styled(Button)` 
   border: none;
   padding: 8px 10px;
-  color: black;
   margin: 12px 0px 0px;
 `;
 
