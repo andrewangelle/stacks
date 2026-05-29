@@ -34,7 +34,7 @@ import { useCurrentBoardId } from '~/utils/useCurrentBoardId';
 
 export function ChecklistCheckbox({ id }: { id: string }) {
   const boardId = useCurrentBoardId();
-  const { data: checklistItem } = useGetChecklistItemQuery({ id });
+  const { data: checklistItem } = useGetChecklistItemQuery({ itemId: id });
   const updateItem = useUpdateChecklistItemMutation();
   const deleteChecklistItem = useDeleteChecklistItemMutation();
   const [editedLabel, setEditedLabel] = useState(checklistItem?.label);
@@ -57,10 +57,8 @@ export function ChecklistCheckbox({ id }: { id: string }) {
   function toggleCheckbox() {
     if (checklistItem) {
       updateItem({
-        id,
-        cardId: checklistItem.cardId,
+        itemId: id,
         label: editedLabel ?? checklistItem.label,
-        checklistId: checklistItem.checklistId,
         isCompleted: !checklistItem.isCompleted,
       });
 
@@ -81,10 +79,8 @@ export function ChecklistCheckbox({ id }: { id: string }) {
   function addChecklistItem() {
     if (checklistItem) {
       updateItem({
-        id,
-        cardId: checklistItem.cardId,
+        itemId: id,
         label: editedLabel ?? checklistItem.label,
-        checklistId: checklistItem.checklistId,
         isCompleted: checklistItem.isCompleted,
       });
       setIsEditingLabel(false);
@@ -185,8 +181,7 @@ export function ChecklistCheckbox({ id }: { id: string }) {
               data-testid="DeleteChecklistPopoverButton"
               onClick={() =>
                 deleteChecklistItem({
-                  id,
-                  checklistId: checklistItem.checklistId,
+                  itemId: id,
                 })
               }
             >

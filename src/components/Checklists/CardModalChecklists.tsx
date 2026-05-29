@@ -1,3 +1,4 @@
+import type { ChecklistItem } from '@prisma/client';
 import { useState } from 'react';
 import * as Bs from 'react-icons/bs';
 import {
@@ -17,7 +18,6 @@ import {
 import { DeleteChecklistPopover } from '~/components/Checklists/DeleteChecklistPopover';
 import { DragDropChecklistItem } from '~/components/Checklists/DragDropChecklistItems';
 import {
-  type ChecklistItemType,
   useCreateChecklistItemMutation,
   useGetChecklistItemsQuery,
 } from '~/query/checklistItems';
@@ -28,7 +28,7 @@ import {
 import { Flex } from '~/styles/Page.styled';
 
 function Checklist({ id }: { id: string }) {
-  const { data: checklist } = useGetChecklistQuery({ id });
+  const { data: checklist } = useGetChecklistQuery({ checklistId: id });
   const { data } = useGetChecklistItemsQuery({ checklistId: id });
   const [isEditing, setIsEditing] = useState(false);
   const [label, setLabel] = useState('');
@@ -67,7 +67,7 @@ function Checklist({ id }: { id: string }) {
         </ChecklistProgressRoot>
       </Flex>
 
-      {data?.map((item: ChecklistItemType) => (
+      {data?.map((item: ChecklistItem) => (
         <DragDropChecklistItem
           key={item.id}
           id={item.id}
