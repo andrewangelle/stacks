@@ -21,11 +21,11 @@ import {
   useCreateChecklistItem,
   useGetChecklistItems,
 } from '~/query/checklistItems';
-import { useGetChecklistQuery } from '~/query/checklists';
+import { useGetChecklist } from '~/query/checklists';
 import { Flex } from '~/styles/Page.styled';
 
 export function Checklist({ id }: { id: string }) {
-  const { data: checklist } = useGetChecklistQuery({ checklistId: id });
+  const { data: checklist } = useGetChecklist({ checklistId: id });
   const { data } = useGetChecklistItems({ checklistId: id });
   const [isEditing, setIsEditing] = useState(false);
   const [label, setLabel] = useState('');

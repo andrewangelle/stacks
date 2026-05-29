@@ -15,7 +15,7 @@ import type {
 import { queryClient } from '~/query/queryClient';
 import { queryKeys } from '~/query/queryKeys';
 
-export function useGetChecklistQuery(data: GetChecklistByIdArgs) {
+export function useGetChecklist(data: GetChecklistByIdArgs) {
   return useQuery({
     queryKey: queryKeys.checklist(data.checklistId),
     queryFn() {
@@ -26,7 +26,7 @@ export function useGetChecklistQuery(data: GetChecklistByIdArgs) {
   });
 }
 
-export function useGetChecklistsQuery(data: GetChecklistsArgs) {
+export function useGetChecklists(data: GetChecklistsArgs) {
   return useQuery({
     queryKey: queryKeys.checklists(data.cardId),
     queryFn() {
@@ -37,7 +37,7 @@ export function useGetChecklistsQuery(data: GetChecklistsArgs) {
   });
 }
 
-export function useCreateChecklistMutation() {
+export function useCreateChecklist() {
   const mutation = useMutation({
     mutationFn(data: CreateChecklistArgs) {
       return createChecklist({
@@ -56,7 +56,7 @@ export function useCreateChecklistMutation() {
   return mutation.mutate;
 }
 
-export function useDeleteChecklistMutation() {
+export function useDeleteChecklist() {
   const mutation = useMutation({
     mutationFn(data: DeleteChecklistArgs) {
       return deleteChecklist({

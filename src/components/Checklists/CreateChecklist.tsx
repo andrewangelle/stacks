@@ -18,7 +18,7 @@ import {
   CreateChecklistTitle,
 } from '~/components/Checklists/Checklists.styled';
 import { useCreateActivity } from '~/query/activity';
-import { useCreateChecklistMutation } from '~/query/checklists';
+import { useCreateChecklist } from '~/query/checklists';
 import { useCurrentBoardId } from '~/utils/useCurrentBoardId';
 
 type CreateChecklistProps = {
@@ -29,7 +29,7 @@ type CreateChecklistProps = {
 export function CreateChecklist({ listId, cardId }: CreateChecklistProps) {
   const boardId = useCurrentBoardId();
   const [checklistTitle, setChecklistTitle] = useState('');
-  const createChecklist = useCreateChecklistMutation();
+  const createChecklist = useCreateChecklist();
   const createActivity = useCreateActivity();
 
   function addChecklist() {
