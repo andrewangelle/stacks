@@ -6,6 +6,10 @@ import { fontFamily, red } from '~/components/Boards/Boards.styled';
 import { Button } from '~/styles/Page.styled';
 import { checklistProgressBlue } from '~/styles/tokens';
 
+export const ChecklistsContainer = styled.div`
+  margin: 30px 12px 0px;
+`;
+
 export const ChecklistPopoverContent = styled(Popover.Content)` 
   height: 227px;
   width: 304px;
@@ -67,7 +71,6 @@ export const DeleteChecklistButton = styled(Button)`
 export const AddChecklistItemButton = styled(Button)` 
   border: none;
   padding: 8px 10px;
-  color: black;
   margin: 12px 0px 0px;
 `;
 

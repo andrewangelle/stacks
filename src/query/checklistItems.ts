@@ -7,42 +7,33 @@ import {
   getChecklistItems,
   updateChecklistItem,
 } from '~/db/checklistItems/checklistItems.functions';
+import type {
+  CreateChecklistItemArgs,
+  DeleteChecklistItemArgs,
+  GetChecklistItemByIdArgs,
+  GetChecklistItemsArgs,
+  UpdateChecklistItemArgs,
+} from '~/db/checklistItems/checklistItems.schemas';
 import { queryClient } from '~/query/queryClient';
 import { queryKeys } from '~/query/queryKeys';
 
-export type ChecklistItemType = Omit<ChecklistItem, 'createdAt' | 'updatedAt'>;
-
-export type ChecklistItemsArgs = { checklistId: string };
-
-export type CreateChecklistItemArgs = Pick<
-  ChecklistItem,
-  'label' | 'cardId' | 'checklistId' | 'listId'
->;
-
-export type UpdateChecklistItemArgs = Pick<
-  ChecklistItem,
-  'id' | 'isCompleted' | 'label' | 'cardId' | 'checklistId'
->;
-
-export type DeleteChecklistItemArgs = Pick<ChecklistItem, 'id' | 'checklistId'>;
-
-export function useGetChecklistItemQuery(args: { id: string }) {
+export function useGetChecklistItemQuery(data: GetChecklistItemByIdArgs) {
   return useQuery({
-    queryKey: queryKeys.checklistItem(args.id),
+    queryKey: queryKeys.checklistItem(data.itemId),
     queryFn() {
       return getChecklistItemById({
-        data: { itemId: args.id },
+        data,
       });
     },
   });
 }
 
-export function useGetChecklistItemsQuery(args: ChecklistItemsArgs) {
+export function useGetChecklistItemsQuery(data: GetChecklistItemsArgs) {
   return useQuery({
-    queryKey: queryKeys.checklistItems(args.checklistId),
+    queryKey: queryKeys.checklistItems(data.checklistId),
     queryFn() {
       return getChecklistItems({
-        data: { checklistId: args.checklistId },
+        data,
       });
     },
   });
@@ -50,19 +41,14 @@ export function useGetChecklistItemsQuery(args: ChecklistItemsArgs) {
 
 export function useCreateChecklistItemMutation() {
   const mutation = useMutation({
-    mutationFn({
-      label,
-      cardId,
-      checklistId,
-      listId,
-    }: CreateChecklistItemArgs) {
+    mutationFn(data: CreateChecklistItemArgs) {
       return createChecklistItem({
-        data: { label, cardId, checklistId, listId },
+        data,
       });
     },
 
     onSuccess(result, variables) {
-      queryClient.setQueryData<ChecklistItemType[]>(
+      queryClient.setQueryData<ChecklistItem[]>(
         queryKeys.checklistItems(variables.checklistId),
         (cache = []) => [...cache, result.data[0]],
       );
@@ -74,33 +60,39 @@ export function useCreateChecklistItemMutation() {
 
 export function useUpdateChecklistItemMutation() {
   const mutation = useMutation({
-    mutationFn({ id, isCompleted, label }: UpdateChecklistItemArgs) {
+    mutationFn(data: UpdateChecklistItemArgs) {
       return updateChecklistItem({
-        data: { itemId: id, isCompleted, label },
+        data,
       });
     },
     onSuccess(_result, variables) {
-      queryClient.setQueryData<ChecklistItemType[]>(
-        queryKeys.checklistItems(variables.checklistId),
-        (cache = [] as ChecklistItemType[]) =>
-          cache.map((item) => {
-            if (item.id === variables.id) {
-              return {
-                ...item,
-                isCompleted: variables.isCompleted,
-                label: variables.label,
-              };
-            }
-            return item;
-          }),
-      );
+      const checklistId = queryClient.getQueryData<ChecklistItem>(
+        queryKeys.checklistItem(variables.itemId),
+      )?.checklistId;
 
-      queryClient.setQueryData<ChecklistItemType>(
-        queryKeys.checklistItem(variables.id),
-        (cache = {} as ChecklistItemType) => ({
+      if (checklistId) {
+        queryClient.setQueryData<ChecklistItem[]>(
+          queryKeys.checklistItems(checklistId),
+          (cache = [] as ChecklistItem[]) =>
+            cache.map((item) => {
+              if (item.id === variables.itemId) {
+                return {
+                  ...item,
+                  isCompleted: variables.isCompleted ?? item.isCompleted,
+                  label: variables.label ?? item.label,
+                };
+              }
+              return item;
+            }),
+        );
+      }
+
+      queryClient.setQueryData<ChecklistItem>(
+        queryKeys.checklistItem(variables.itemId),
+        (cache = {} as ChecklistItem) => ({
           ...cache,
-          isCompleted: variables.isCompleted,
-          label: variables.label,
+          isCompleted: variables.isCompleted ?? cache.isCompleted,
+          label: variables.label ?? cache.label,
         }),
       );
     },
@@ -111,16 +103,24 @@ export function useUpdateChecklistItemMutation() {
 
 export function useDeleteChecklistItemMutation() {
   const mutation = useMutation({
-    mutationFn({ id }: DeleteChecklistItemArgs) {
+    mutationFn(data: DeleteChecklistItemArgs) {
       return deleteChecklistItem({
-        data: { itemId: id },
+        data,
       });
     },
-    onSuccess(_result, variables) {
-      queryClient.setQueryData<ChecklistItemType[]>(
-        queryKeys.checklistItems(variables.id),
-        (cache = []) => cache.filter((item) => item.id !== variables.id),
-      );
+    onSuccess(result, variables) {
+      const checklistId =
+        result.data[0]?.checklistId ??
+        queryClient.getQueryData<ChecklistItem>(
+          queryKeys.checklistItem(variables.itemId),
+        )?.checklistId;
+
+      if (checklistId) {
+        queryClient.setQueryData<ChecklistItem[]>(
+          queryKeys.checklistItems(checklistId),
+          (cache = []) => cache.filter((item) => item.id !== variables.itemId),
+        );
+      }
     },
   });
 
@@ -128,11 +128,11 @@ export function useDeleteChecklistItemMutation() {
 }
 
 export const reorderChecklistItems = (
-  item: ChecklistItemType,
+  item: ChecklistItem,
   checklistId: string,
   droppedId: string,
 ) =>
-  queryClient.setQueryData<ChecklistItemType[]>(
+  queryClient.setQueryData<ChecklistItem[]>(
     queryKeys.checklistItems(checklistId),
     (cache = []) => {
       const cacheArray = [...cache];

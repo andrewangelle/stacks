@@ -39,7 +39,7 @@ export function DeleteCommentPopover(props: Activity) {
           data-testid="DeleteChecklistPopoverButton"
           onClick={() =>
             deleteActivity({
-              id: props.id,
+              activityId: props.id,
               cardId: props.cardId,
             })
           }

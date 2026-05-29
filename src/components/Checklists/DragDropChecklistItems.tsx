@@ -1,9 +1,7 @@
+import type { ChecklistItem } from '@prisma/client';
 import { type ReactNode, useRef } from 'react';
 import { useDrag, useDrop } from 'react-dnd';
-import {
-  type ChecklistItemType,
-  reorderChecklistItems,
-} from '~/query/checklistItems';
+import { reorderChecklistItems } from '~/query/checklistItems';
 
 type DragDropChecklistItemProps = {
   id: string;
@@ -29,7 +27,7 @@ export function DragDropChecklistItem({
   const [, dropRef] = useDrop({
     accept: 'checklistItem',
     drop: (item, ..._args) =>
-      reorderChecklistItems(item as ChecklistItemType, checklistId, id),
+      reorderChecklistItems(item as ChecklistItem, checklistId, id),
     collect: (monitor) => ({
       isOver: monitor.isOver(),
     }),

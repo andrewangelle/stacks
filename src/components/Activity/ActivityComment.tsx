@@ -53,7 +53,7 @@ export function ActivityComment(props: Activity) {
                   style={{ margin: 0 }}
                   onClick={() => {
                     updateActivity({
-                      id: props.id,
+                      activityId: props.id,
                       cardId: props.cardId,
                       content: editedComment,
                     });

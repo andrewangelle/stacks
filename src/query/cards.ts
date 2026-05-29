@@ -7,23 +7,21 @@ import {
   getCardsByListId,
   updateCard,
 } from '~/db/cards/cards.functions';
+import type {
+  CreateCardArgs,
+  DeleteCardArgs,
+  GetCardsByListIdArgs,
+  UpdateCardArgs,
+} from '~/db/cards/cards.schemas';
 import { queryClient } from '~/query/queryClient';
 import { queryKeys } from '~/query/queryKeys';
 
-export type CardType = Omit<Card, 'updatedAt'>;
-export type CreateCardArgs = Pick<Card, 'cardTitle' | 'listId'>;
-export type UpdateCardArgs = Pick<
-  Card,
-  'id' | 'cardDescription' | 'cardTitle' | 'listId'
->;
-export type DeleteCardArgs = Pick<Card, 'id' | 'listId'>;
-
-export function useGetCardsQuery(args: { listId: string }) {
+export function useGetCardsQuery(data: GetCardsByListIdArgs) {
   return useQuery({
-    queryKey: queryKeys.cards(args.listId),
+    queryKey: queryKeys.cards(data.listId),
     queryFn() {
       return getCardsByListId({
-        data: { listId: args.listId },
+        data,
       });
     },
   });
@@ -45,7 +43,7 @@ export function useCreateCardMutation() {
     },
 
     onSuccess(result, variables) {
-      queryClient.setQueryData<CardType[]>(
+      queryClient.setQueryData<Card[]>(
         queryKeys.cards(variables.listId),
         (cache = []) => [...cache, result.data[0]],
       );
@@ -57,33 +55,30 @@ export function useCreateCardMutation() {
 
 export function useUpdateCardMutation() {
   const mutation = useMutation({
-    mutationFn({ id, cardDescription, cardTitle }: UpdateCardArgs) {
+    mutationFn(data: UpdateCardArgs) {
       return updateCard({
-        data: {
-          cardId: id,
-          cardDescription,
-          cardTitle,
-        },
+        data,
       });
     },
     onSuccess(_result, variables) {
-      queryClient.setQueryData<CardType>(
-        queryKeys.card(variables.id),
-        (cache = {} as CardType) => ({
+      queryClient.setQueryData<Card>(
+        queryKeys.card(variables.cardId),
+        (cache = {} as Card) => ({
           ...cache,
-          cardDescription: variables.cardDescription,
-          cardTitle: variables.cardTitle,
+          cardDescription: variables.cardDescription ?? cache.cardDescription,
+          cardTitle: variables.cardTitle ?? cache.cardTitle,
         }),
       );
-      queryClient.setQueryData<CardType[]>(
+      queryClient.setQueryData<Card[]>(
         queryKeys.cards(variables.listId),
         (cache = []) =>
           cache.map((item) =>
-            item.id === variables.id
+            item.id === variables.cardId
               ? {
                   ...item,
-                  cardDescription: variables.cardDescription,
-                  cardTitle: variables.cardTitle,
+                  cardDescription:
+                    variables.cardDescription ?? item.cardDescription,
+                  cardTitle: variables.cardTitle ?? item.cardTitle,
                 }
               : item,
           ),
@@ -96,13 +91,13 @@ export function useUpdateCardMutation() {
 
 export function useDeleteCardMutation() {
   const mutation = useMutation({
-    mutationFn({ id }: DeleteCardArgs) {
-      return deleteCard({ data: { cardId: id } });
+    mutationFn(data: DeleteCardArgs) {
+      return deleteCard({ data });
     },
     onSuccess(_result, variables) {
-      queryClient.setQueryData<CardType[]>(
+      queryClient.setQueryData<Card[]>(
         queryKeys.cards(variables.listId),
-        (cache = []) => cache.filter((item) => item.id !== variables.id),
+        (cache = []) => cache.filter((item) => item.id !== variables.cardId),
       );
     },
   });
@@ -111,7 +106,7 @@ export function useDeleteCardMutation() {
 }
 
 export function reorderCards(item: Card, listId: string, droppedId: string) {
-  return queryClient.setQueryData<CardType[]>(
+  return queryClient.setQueryData<Card[]>(
     queryKeys.cards(listId),
     (cache = []) => {
       const cacheArray = [...cache];
