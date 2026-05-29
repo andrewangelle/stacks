@@ -5,7 +5,7 @@ import { queryKeys } from '~/query/queryKeys';
 
 export type ProfileType = Omit<Profile, 'createdAt' | 'updatedAt'>;
 
-export function useGetProfileQuery() {
+export function useGetProfile() {
   return useQuery({
     queryKey: queryKeys.profile(),
     queryFn() {

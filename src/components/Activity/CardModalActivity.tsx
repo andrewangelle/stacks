@@ -13,7 +13,7 @@ import { ActivityComment } from '~/components/Activity/ActivityComment';
 import { ActivityLogo } from '~/components/Activity/ActivityLogo';
 import { CardModalTitle } from '~/components/Cards/CardModal.styled';
 import { useCreateActivity, useGetActivity } from '~/query/activity';
-import { useGetProfileQuery } from '~/query/profile';
+import { useGetProfile } from '~/query/profile';
 import { Flex } from '~/styles/Page.styled';
 import { useCurrentBoardId } from '~/utils/useCurrentBoardId';
 
@@ -27,7 +27,7 @@ export function CardModalActivity({ listId, cardId }: CardModalActivityProps) {
   const boardId = useCurrentBoardId();
   const { data } = useGetActivity({ cardId });
   const [comment, setComment] = useState<string>('');
-  const profile = useGetProfileQuery();
+  const profile = useGetProfile();
   const createActivity = useCreateActivity();
 
   function createComment() {
