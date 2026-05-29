@@ -24,10 +24,10 @@ import { DeleteCardPopover } from '~/components/Cards/DeleteCardPopover';
 import { CardModalChecklists } from '~/components/Checklists/Checklists';
 import { CreateChecklist } from '~/components/Checklists/CreateChecklist';
 import { ListCardContainer } from '~/components/Lists/List.styled';
-import { useGetCardByIdQuery } from '~/query/cards';
+import { useGetCardById } from '~/query/cards';
 
 export function CardModal({ id }: { id: string }) {
-  const { data } = useGetCardByIdQuery({ id });
+  const { data } = useGetCardById({ id });
   const [columnWidth, setColumnWidth] = useState(ACTIVITY_COLUMN_DEFAULT_WIDTH);
   const [isWideLayout, setIsWideLayout] = useState(() =>
     typeof window !== 'undefined'

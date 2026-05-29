@@ -11,7 +11,7 @@ import {
   ListContainer,
   ListName,
 } from '~/components/Lists/List.styled';
-import { useCreateCardMutation, useGetCardsQuery } from '~/query/cards';
+import { useCreateCard, useGetCards } from '~/query/cards';
 import { useGetListByIdQuery, useUpdateListMutation } from '~/query/lists';
 import { Flex } from '~/styles/Page.styled';
 import { useCurrentBoardId } from '~/utils/useCurrentBoardId';
@@ -24,13 +24,13 @@ export function List({ id }: Pick<ListType, 'id'>) {
   const [isEditingName, setIsEditingName] = useState(false);
   const [cardTitle, setCardTitle] = useState('');
   const [editedListTitle, setEditedListTitle] = useState('');
-  const { data: cards } = useGetCardsQuery({ listId: id });
+  const { data: cards } = useGetCards({ listId: id });
   const outsideClickRef = useOutsideClick(
     onOutsideNameEditClick,
     isEditingName,
   );
   const updateList = useUpdateListMutation();
-  const createCard = useCreateCardMutation();
+  const createCard = useCreateCard();
 
   function onOutsideNameEditClick() {
     setIsEditingName(false);

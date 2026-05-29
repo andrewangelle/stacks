@@ -10,7 +10,7 @@ import {
   EditDescriptionButton,
   SaveDescriptionButton,
 } from '~/components/Cards/CardModal.styled';
-import { useUpdateCardMutation } from '~/query/cards';
+import { useUpdateCard } from '~/query/cards';
 import { Flex } from '~/styles/Page.styled';
 
 type CardModalDescriptionProps = {
@@ -28,7 +28,7 @@ export function CardModalDescription({
 }: CardModalDescriptionProps) {
   const [isEditing, setEditing] = useState(false);
   const [description, setDescription] = useState(cardDescription);
-  const updateCard = useUpdateCardMutation();
+  const updateCard = useUpdateCard();
 
   const placeHolderText = 'Add a more detailed description...';
   return (

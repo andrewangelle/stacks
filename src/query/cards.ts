@@ -16,7 +16,7 @@ import type {
 import { queryClient } from '~/query/queryClient';
 import { queryKeys } from '~/query/queryKeys';
 
-export function useGetCardsQuery(data: GetCardsByListIdArgs) {
+export function useGetCards(data: GetCardsByListIdArgs) {
   return useQuery({
     queryKey: queryKeys.cards(data.listId),
     queryFn() {
@@ -27,7 +27,7 @@ export function useGetCardsQuery(data: GetCardsByListIdArgs) {
   });
 }
 
-export function useGetCardByIdQuery(args: { id: string }) {
+export function useGetCardById(args: { id: string }) {
   return useQuery({
     queryKey: queryKeys.card(args.id),
     queryFn() {
@@ -36,7 +36,7 @@ export function useGetCardByIdQuery(args: { id: string }) {
   });
 }
 
-export function useCreateCardMutation() {
+export function useCreateCard() {
   const mutation = useMutation({
     mutationFn({ cardTitle, listId }: CreateCardArgs) {
       return createCard({ data: { cardTitle, listId } });
@@ -53,7 +53,7 @@ export function useCreateCardMutation() {
   return mutation.mutate;
 }
 
-export function useUpdateCardMutation() {
+export function useUpdateCard() {
   const mutation = useMutation({
     mutationFn(data: UpdateCardArgs) {
       return updateCard({
@@ -89,7 +89,7 @@ export function useUpdateCardMutation() {
   return mutation.mutate;
 }
 
-export function useDeleteCardMutation() {
+export function useDeleteCard() {
   const mutation = useMutation({
     mutationFn(data: DeleteCardArgs) {
       return deleteCard({ data });

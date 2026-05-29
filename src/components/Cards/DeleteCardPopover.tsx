@@ -14,7 +14,7 @@ import {
   DeleteChecklistPopoverButton,
   DeleteChecklistPopoverContent,
 } from '~/components/Checklists/Checklists.styled';
-import { useDeleteCardMutation } from '~/query/cards';
+import { useDeleteCard } from '~/query/cards';
 
 type DeleteCardPopoverProps = Pick<Card, 'id' | 'cardTitle'> & {
   listId: string;
@@ -25,7 +25,7 @@ export function DeleteCardPopover({
   listId,
   cardTitle,
 }: DeleteCardPopoverProps) {
-  const deleteCard = useDeleteCardMutation();
+  const deleteCard = useDeleteCard();
   return (
     <Popover.Root>
       <DeleteCardPopoverTrigger data-testid="DeleteCardPopoverTrigger">

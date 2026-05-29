@@ -1,11 +1,12 @@
 import type { Stack } from '@prisma/client';
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { useMutation, useQuery } from '@tanstack/react-query';
 import {
   createBoard,
   getBoardById,
   getBoards,
   updateBoard,
 } from '~/db/boards/boards.functions';
+import { queryClient } from '~/query/queryClient';
 import { queryKeys } from '~/query/queryKeys';
 import { useCurrentBoardId } from '~/utils/useCurrentBoardId';
 
@@ -33,8 +34,6 @@ export function useGetBoard() {
 }
 
 export function useCreateBoard() {
-  const queryClient = useQueryClient();
-
   const mutation = useMutation({
     mutationFn({ boardTitle, boardColor }: CreateBoardArgs) {
       return createBoard({
@@ -54,7 +53,6 @@ export function useCreateBoard() {
 }
 
 export function useUpdateBoard() {
-  const queryClient = useQueryClient();
   const mutation = useMutation({
     mutationFn({ id, boardTitle }: Pick<Board, 'id' | 'boardTitle'>) {
       return updateBoard({
