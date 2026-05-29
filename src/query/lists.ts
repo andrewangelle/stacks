@@ -15,7 +15,7 @@ export type UpdateListArgs = Pick<List, 'id' | 'boardId' | 'listTitle'>;
 export type CreateListArgs = Pick<List, 'listTitle' | 'boardId'>;
 export type DeleteListArgs = Pick<List, 'id' | 'boardId'>;
 
-export function useGetListsQuery() {
+export function useGetLists() {
   const boardId = useCurrentBoardId();
   return useQuery({
     queryKey: queryKeys.lists(boardId),
@@ -26,7 +26,7 @@ export function useGetListsQuery() {
   });
 }
 
-export function useGetListByIdQuery({ id }: { id: string }) {
+export function useGetListById({ id }: { id: string }) {
   return useQuery({
     queryKey: queryKeys.list(id),
     enabled: !!id,
@@ -36,7 +36,7 @@ export function useGetListByIdQuery({ id }: { id: string }) {
   });
 }
 
-export function useUpdateListMutation() {
+export function useUpdateList() {
   const mutation = useMutation({
     mutationFn({ id, listTitle }: UpdateListArgs) {
       return updateList({
@@ -60,7 +60,7 @@ export function useUpdateListMutation() {
   return mutation.mutate;
 }
 
-export function useCreateListMutation() {
+export function useCreateList() {
   const mutation = useMutation({
     mutationFn(args: CreateListArgs) {
       return createList({ data: args });
@@ -76,7 +76,7 @@ export function useCreateListMutation() {
   return mutation.mutate;
 }
 
-export function useDeleteListMutation() {
+export function useDeleteList() {
   const mutation = useMutation({
     mutationFn({ id }: DeleteListArgs) {
       return deleteList({ data: { listId: id } });

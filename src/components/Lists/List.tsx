@@ -12,13 +12,13 @@ import {
   ListName,
 } from '~/components/Lists/List.styled';
 import { useCreateCard, useGetCards } from '~/query/cards';
-import { useGetListByIdQuery, useUpdateListMutation } from '~/query/lists';
+import { useGetListById, useUpdateList } from '~/query/lists';
 import { Flex } from '~/styles/Page.styled';
 import { useCurrentBoardId } from '~/utils/useCurrentBoardId';
 import { useOutsideClick } from '~/utils/useOutsideClick';
 
 export function List({ id }: Pick<ListType, 'id'>) {
-  const { data } = useGetListByIdQuery({ id });
+  const { data } = useGetListById({ id });
   const boardId = useCurrentBoardId();
   const [isEditing, setEditing] = useState(false);
   const [isEditingName, setIsEditingName] = useState(false);
@@ -29,7 +29,7 @@ export function List({ id }: Pick<ListType, 'id'>) {
     onOutsideNameEditClick,
     isEditingName,
   );
-  const updateList = useUpdateListMutation();
+  const updateList = useUpdateList();
   const createCard = useCreateCard();
 
   function onOutsideNameEditClick() {
