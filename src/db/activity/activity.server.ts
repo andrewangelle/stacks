@@ -39,11 +39,14 @@ export async function createActivityQuery(
     },
   });
 
-  return {
-    code: 'activity:create:success',
-    message: 'success',
-    data: [result],
-  };
+  /** @todo: log this */
+  // return {
+  //   code: 'activity:create:success',
+  //   message: 'success',
+  //   data: [result],
+  // };
+
+  return result;
 }
 
 export async function updateActivityQuery(

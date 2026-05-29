@@ -13,11 +13,13 @@ export const CreateActivitySchema = z.object({
 });
 
 export const UpdateActivitySchema = z.object({
+  cardId: z.string(),
   activityId: z.string(),
   content: z.string(),
 });
 
 export const DeleteActivitySchema = z.object({
+  cardId: z.string(),
   activityId: z.string(),
 });
 
