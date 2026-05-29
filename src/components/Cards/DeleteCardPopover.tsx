@@ -47,7 +47,7 @@ export function DeleteCardPopover({
           data-testid="DeleteChecklistPopoverButton"
           onClick={() => {
             deleteCard({
-              id,
+              cardId: id,
               listId,
             });
           }}

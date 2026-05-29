@@ -81,7 +81,7 @@ export function CardModalDescription({
               data-testid="SaveDescriptionButton"
               onClick={() => {
                 updateCard({
-                  id: cardId,
+                  cardId,
                   cardTitle,
                   cardDescription: description,
                   listId,

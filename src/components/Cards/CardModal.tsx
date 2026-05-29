@@ -24,11 +24,9 @@ import { DeleteCardPopover } from '~/components/Cards/DeleteCardPopover';
 import { CardModalChecklists } from '~/components/Checklists/CardModalChecklists';
 import { CreateChecklist } from '~/components/Checklists/CreateChecklist';
 import { ListCardContainer } from '~/components/Lists/List.styled';
-import { type CardType, useGetCardByIdQuery } from '~/query/cards';
+import { useGetCardByIdQuery } from '~/query/cards';
 
-type CardModalProps = Pick<CardType, 'id'>;
-
-export function CardModal({ id }: CardModalProps) {
+export function CardModal({ id }: { id: string }) {
   const { data } = useGetCardByIdQuery({ id });
   const [columnWidth, setColumnWidth] = useState(ACTIVITY_COLUMN_DEFAULT_WIDTH);
   const [isWideLayout, setIsWideLayout] = useState(() =>

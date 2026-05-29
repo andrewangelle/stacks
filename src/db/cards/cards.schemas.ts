@@ -14,6 +14,7 @@ export const CreateCardSchema = z.object({
 });
 
 export const UpdateCardSchema = z.object({
+  listId: z.string(),
   cardId: z.string(),
   cardDescription: z.string().optional(),
   cardTitle: z.string().optional(),
@@ -21,6 +22,7 @@ export const UpdateCardSchema = z.object({
 
 export const DeleteCardSchema = z.object({
   cardId: z.string(),
+  listId: z.string(),
 });
 
 export type GetCardsByListIdArgs = z.infer<typeof GetCardsByListIdSchema>;

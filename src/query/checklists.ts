@@ -66,7 +66,7 @@ export function useDeleteChecklistMutation() {
 
     onSuccess(_result, variables) {
       queryClient.setQueryData<Checklist[]>(
-        queryKeys.checklists(variables.checklistId),
+        queryKeys.checklists(variables.cardId),
         (cache = []) =>
           cache.filter((item) => item.id !== variables.checklistId),
       );
