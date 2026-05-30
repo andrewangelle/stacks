@@ -20,7 +20,7 @@ export const queryKeys = {
   detail: (cardId: string) => ['card', cardId] as const,
 };
 
-export function useGetCards(data: GetCardsByListIdArgs) {
+export function useGetCardsByListId(data: GetCardsByListIdArgs) {
   return useQuery({
     queryKey: queryKeys.list(data.listId),
     queryFn() {

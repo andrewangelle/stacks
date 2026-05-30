@@ -10,15 +10,15 @@ import {
   DeleteChecklistPopoverContent,
 } from '~/components/Checklists/Checklists.styled';
 import { DeleteListIcon } from '~/components/Lists/List.styled';
-import { useDeleteList } from '~/query/lists';
+import { useDeleteList, useGetListById } from '~/query/lists';
 import { useCurrentBoardId } from '~/utils/useCurrentBoardId';
 
-type DeleteListPopoverProps = {
+type DeleteListProps = {
   id: string;
-  listTitle: string;
 };
 
-export function DeleteListPopover({ id, listTitle }: DeleteListPopoverProps) {
+export function DeleteList({ id }: DeleteListProps) {
+  const { data: list } = useGetListById({ id });
   const boardId = useCurrentBoardId();
   const deleteList = useDeleteList();
   return (
@@ -29,7 +29,7 @@ export function DeleteListPopover({ id, listTitle }: DeleteListPopoverProps) {
 
       <DeleteChecklistPopoverContent data-testid="DeleteChecklistPopoverContent">
         <ChecklistPopoverHeader data-testid="ChecklistPopoverHeader">
-          {`Delete ${listTitle}`}
+          {`Delete ${list?.listTitle}`}
           <PopoverClose data-testid="PopoverClose">X</PopoverClose>
         </ChecklistPopoverHeader>
         <CreateBoardCloseBorder data-testid="CreateBoardCloseBorder" />
@@ -38,7 +38,7 @@ export function DeleteListPopover({ id, listTitle }: DeleteListPopoverProps) {
           data-testid="DeleteChecklistPopoverButton"
           onClick={() => {
             deleteList({
-              id,
+              listId: id,
               boardId,
             });
           }}
