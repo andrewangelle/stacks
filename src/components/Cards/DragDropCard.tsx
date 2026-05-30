@@ -1,24 +1,20 @@
 import type { Card } from '@prisma/client';
 import { type ReactNode, type RefObject, useRef } from 'react';
 import { useDrag, useDrop } from 'react-dnd';
-import { reorderCards } from '~/query/cards';
+import { ListCardSkeleton } from '~/components/Lists/List.styled';
+import { reorderCards, useGetCardById } from '~/query/cards';
 
 type DragDropCardProps = {
   id: string;
-  listId: string;
-  cardTitle: string;
   children: ReactNode;
 };
 
-export function DragDropCard({
-  id,
-  listId,
-  cardTitle,
-  children,
-}: DragDropCardProps) {
+export function DragDropCard({ id, children }: DragDropCardProps) {
+  const { data: card, isLoading } = useGetCardById({ id });
+
   const [{ isDragging }, dragRef] = useDrag({
     type: 'listCard',
-    item: { id, name: cardTitle },
+    item: { id, name: card?.cardTitle },
     collect: (monitor) => ({
       isDragging: monitor.isDragging(),
     }),
@@ -26,7 +22,7 @@ export function DragDropCard({
 
   const [, dropRef] = useDrop({
     accept: 'listCard',
-    drop: (item: Card) => reorderCards(item, listId, id),
+    drop: (item: Card) => reorderCards(item, card?.listId ?? '', id),
     collect: (monitor) => ({
       isOver: monitor.isOver(),
     }),
@@ -42,6 +38,10 @@ export function DragDropCard({
     dragDropRef.current?.firstChild) as HTMLElement;
 
   const rect = firstChild && (firstChild.getBoundingClientRect() as DOMRect);
+
+  if (isLoading) {
+    return <ListCardSkeleton />;
+  }
 
   return (
     <div ref={dragDropRef}>
