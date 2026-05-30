@@ -8,17 +8,21 @@ import {
   updateList,
 } from '~/db/lists/lists.functions';
 import { queryClient } from '~/query/queryClient';
-import { queryKeys } from '~/query/queryKeys';
 import { useCurrentBoardId } from '~/utils/useCurrentBoardId';
 
 export type UpdateListArgs = Pick<List, 'id' | 'boardId' | 'listTitle'>;
 export type CreateListArgs = Pick<List, 'listTitle' | 'boardId'>;
 export type DeleteListArgs = Pick<List, 'id' | 'boardId'>;
 
+const queryKeys = {
+  list: (boardId: string) => ['lists', boardId] as const,
+  detail: (id: string) => ['list', id] as const,
+};
+
 export function useGetLists() {
   const boardId = useCurrentBoardId();
   return useQuery({
-    queryKey: queryKeys.lists(boardId),
+    queryKey: queryKeys.list(boardId),
     enabled: !!boardId,
     queryFn() {
       return getLists({ data: { boardId } });
@@ -28,7 +32,7 @@ export function useGetLists() {
 
 export function useGetListById({ id }: { id: string }) {
   return useQuery({
-    queryKey: queryKeys.list(id),
+    queryKey: queryKeys.detail(id),
     enabled: !!id,
     queryFn() {
       return getListById({ data: { id } });
@@ -46,7 +50,7 @@ export function useUpdateList() {
 
     onSuccess(_result, variables) {
       queryClient.setQueryData<List[]>(
-        queryKeys.lists(variables.boardId),
+        queryKeys.list(variables.boardId),
         (cache = []) =>
           cache.map((item) =>
             item.id === variables.id
@@ -67,7 +71,7 @@ export function useCreateList() {
     },
     onSuccess(result, variables) {
       queryClient.setQueryData<List[]>(
-        queryKeys.lists(variables.boardId),
+        queryKeys.list(variables.boardId),
         (cache = []) => [...cache, result.data[0]],
       );
     },
@@ -84,7 +88,7 @@ export function useDeleteList() {
 
     onSuccess(_result, variables) {
       queryClient.setQueryData<List[]>(
-        queryKeys.lists(variables.boardId),
+        queryKeys.list(variables.boardId),
         (cache = []) => cache.filter((item) => item.id !== variables.id),
       );
     },
@@ -94,7 +98,7 @@ export function useDeleteList() {
 }
 
 export const reorderLists = (item: List, boardId: string, droppedId: string) =>
-  queryClient.setQueryData<List[]>(queryKeys.lists(boardId), (cache = []) => {
+  queryClient.setQueryData<List[]>(queryKeys.list(boardId), (cache = []) => {
     const cacheArray = [...cache];
 
     const draggedIndex = cacheArray.findIndex(

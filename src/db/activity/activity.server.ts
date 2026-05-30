@@ -30,29 +30,16 @@ export async function createActivityQuery(
 
   const result = await prisma.activity.create({
     data: {
-      listId: data.listId,
-      cardId: data.cardId,
-      boardId: data.boardId,
+      ...data,
       userId: data.userId,
-      content: data.content,
-      type: data.type,
     },
   });
-
-  /** @todo: log this */
-  // return {
-  //   code: 'activity:create:success',
-  //   message: 'success',
-  //   data: [result],
-  // };
 
   return result;
 }
 
-export async function updateActivityQuery(
-  data: WithUserId<UpdateActivityArgs>,
-) {
-  await prisma.activity.updateMany({
+export function updateActivityQuery(data: WithUserId<UpdateActivityArgs>) {
+  return prisma.activity.updateMany({
     where: {
       id: data.activityId,
       userId: data.userId,
@@ -61,33 +48,13 @@ export async function updateActivityQuery(
       content: data.content,
     },
   });
-
-  return prisma.activity.findMany({
-    where: { id: data.activityId },
-  });
 }
 
-export async function deleteActivityQuery(
-  data: WithUserId<DeleteActivityArgs>,
-) {
-  const result = await prisma.activity.findFirst({
+export function deleteActivityQuery(data: WithUserId<DeleteActivityArgs>) {
+  return prisma.activity.delete({
     where: {
       id: data.activityId,
       userId: data.userId,
     },
   });
-
-  if (!result) {
-    throw new Error('Activity Not found');
-  }
-
-  await prisma.activity.delete({
-    where: { id: result.id },
-  });
-
-  return {
-    code: 'activity:delete:success',
-    message: 'success',
-    data: [result],
-  };
 }

@@ -14,11 +14,15 @@ import type {
   UpdateCardArgs,
 } from '~/db/cards/cards.schemas';
 import { queryClient } from '~/query/queryClient';
-import { queryKeys } from '~/query/queryKeys';
+
+export const queryKeys = {
+  list: (listId: string) => ['cards', listId] as const,
+  detail: (cardId: string) => ['card', cardId] as const,
+};
 
 export function useGetCards(data: GetCardsByListIdArgs) {
   return useQuery({
-    queryKey: queryKeys.cards(data.listId),
+    queryKey: queryKeys.list(data.listId),
     queryFn() {
       return getCardsByListId({
         data,
@@ -29,7 +33,7 @@ export function useGetCards(data: GetCardsByListIdArgs) {
 
 export function useGetCardById(args: { id: string }) {
   return useQuery({
-    queryKey: queryKeys.card(args.id),
+    queryKey: queryKeys.detail(args.id),
     queryFn() {
       return getCardById({ data: { cardId: args.id } });
     },
@@ -44,7 +48,7 @@ export function useCreateCard() {
 
     onSuccess(result, variables) {
       queryClient.setQueryData<Card[]>(
-        queryKeys.cards(variables.listId),
+        queryKeys.list(variables.listId),
         (cache = []) => [...cache, result.data[0]],
       );
     },
@@ -62,26 +66,28 @@ export function useUpdateCard() {
     },
     onSuccess(_result, variables) {
       queryClient.setQueryData<Card>(
-        queryKeys.card(variables.cardId),
+        queryKeys.detail(variables.cardId),
         (cache = {} as Card) => ({
           ...cache,
           cardDescription: variables.cardDescription ?? cache.cardDescription,
           cardTitle: variables.cardTitle ?? cache.cardTitle,
         }),
       );
+
       queryClient.setQueryData<Card[]>(
-        queryKeys.cards(variables.listId),
+        queryKeys.list(variables.listId),
         (cache = []) =>
-          cache.map((item) =>
-            item.id === variables.cardId
-              ? {
-                  ...item,
-                  cardDescription:
-                    variables.cardDescription ?? item.cardDescription,
-                  cardTitle: variables.cardTitle ?? item.cardTitle,
-                }
-              : item,
-          ),
+          cache.map((item) => {
+            if (item.id === variables.cardId) {
+              return {
+                ...item,
+                cardDescription:
+                  variables.cardDescription ?? item.cardDescription,
+                cardTitle: variables.cardTitle ?? item.cardTitle,
+              };
+            }
+            return item;
+          }),
       );
     },
   });
@@ -96,7 +102,7 @@ export function useDeleteCard() {
     },
     onSuccess(_result, variables) {
       queryClient.setQueryData<Card[]>(
-        queryKeys.cards(variables.listId),
+        queryKeys.list(variables.listId),
         (cache = []) => cache.filter((item) => item.id !== variables.cardId),
       );
     },
@@ -107,7 +113,7 @@ export function useDeleteCard() {
 
 export function reorderCards(item: Card, listId: string, droppedId: string) {
   return queryClient.setQueryData<Card[]>(
-    queryKeys.cards(listId),
+    queryKeys.list(listId),
     (cache = []) => {
       const cacheArray = [...cache];
       const draggedIndex = cacheArray.findIndex(

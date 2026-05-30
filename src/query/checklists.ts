@@ -13,11 +13,15 @@ import type {
   GetChecklistsArgs,
 } from '~/db/checklists/checklists.schemas';
 import { queryClient } from '~/query/queryClient';
-import { queryKeys } from '~/query/queryKeys';
+
+const queryKeys = {
+  list: (cardId: string) => ['checklists', cardId] as const,
+  detail: (checklistId: string) => ['checklist', checklistId] as const,
+};
 
 export function useGetChecklist(data: GetChecklistByIdArgs) {
   return useQuery({
-    queryKey: queryKeys.checklist(data.checklistId),
+    queryKey: queryKeys.detail(data.checklistId),
     queryFn() {
       return getChecklistById({
         data,
@@ -28,7 +32,7 @@ export function useGetChecklist(data: GetChecklistByIdArgs) {
 
 export function useGetChecklists(data: GetChecklistsArgs) {
   return useQuery({
-    queryKey: queryKeys.checklists(data.cardId),
+    queryKey: queryKeys.list(data.cardId),
     queryFn() {
       return getChecklists({
         data,
@@ -47,7 +51,7 @@ export function useCreateChecklist() {
 
     onSuccess(result, variables) {
       queryClient.setQueryData<Checklist[]>(
-        queryKeys.checklists(variables.cardId),
+        queryKeys.list(variables.cardId),
         (cache = []) => [...cache, result.data[0]],
       );
     },
@@ -66,7 +70,7 @@ export function useDeleteChecklist() {
 
     onSuccess(_result, variables) {
       queryClient.setQueryData<Checklist[]>(
-        queryKeys.checklists(variables.cardId),
+        queryKeys.list(variables.cardId),
         (cache = []) =>
           cache.filter((item) => item.id !== variables.checklistId),
       );

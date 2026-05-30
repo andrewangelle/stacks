@@ -13,11 +13,14 @@ import type {
   UpdateActivityArgs,
 } from '~/db/activity/activity.schemas';
 import { queryClient } from '~/query/queryClient';
-import { queryKeys } from '~/query/queryKeys';
+
+const queryKeys = {
+  list: (cardId: string) => ['activity', cardId] as const,
+};
 
 export function useGetActivity(data: GetActivityArgs) {
   return useQuery({
-    queryKey: queryKeys.activity(data.cardId),
+    queryKey: queryKeys.list(data.cardId),
     queryFn() {
       return getActivity({
         data,
@@ -34,7 +37,7 @@ export function useCreateActivity() {
 
     onSuccess(result, variables) {
       queryClient.setQueryData<Activity[]>(
-        queryKeys.activity(variables.cardId),
+        queryKeys.list(variables.cardId),
         (cache = []) => [...cache, result],
       );
     },
@@ -65,7 +68,7 @@ export function useUpdateActivity() {
 
     onSuccess(_result, variables) {
       queryClient.setQueryData<Activity[]>(
-        queryKeys.activity(variables.cardId),
+        queryKeys.list(variables.cardId),
         (cache = []) => updateActivityInCache(cache, variables),
       );
     },
@@ -82,7 +85,7 @@ export function useDeleteActivity() {
 
     onSuccess(_result, variables) {
       queryClient.setQueryData<Activity[]>(
-        queryKeys.activity(variables.cardId),
+        queryKeys.list(variables.cardId),
         (cache = []) =>
           cache.filter((item) => item.id !== variables.activityId),
       );
