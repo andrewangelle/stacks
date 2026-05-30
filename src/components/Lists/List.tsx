@@ -39,13 +39,11 @@ export function List({ id: listId }: { id: string }) {
 
       {!isEditingListName && <DeleteList id={listId} />}
 
-      {cards?.map((card) => {
-        return (
-          <DragDropCard key={card.id} id={card.id}>
-            <CardModal id={card.id} />
-          </DragDropCard>
-        );
-      })}
+      {cards?.map((card) => (
+        <DragDropCard key={card.id} id={card.id}>
+          <CardModal id={card.id} />
+        </DragDropCard>
+      ))}
 
       <AddNewCard listId={listId} />
     </ListContainer>

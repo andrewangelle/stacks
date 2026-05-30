@@ -77,7 +77,7 @@ export const CardModalBody = styled.div`
 
 export const CardModalResizeHandle = styled.div`
   height: 100%;
-  cursor: grab;
+  cursor: ew-resize;
   touch-action: none;
   position: relative;
   user-select: none;
