@@ -1,6 +1,7 @@
 import type { List } from '@prisma/client';
 import { type ReactNode, type RefObject, useRef } from 'react';
 import { useDrag, useDrop } from 'react-dnd';
+import { DragListShadow } from '~/components/Lists/List.styled';
 import { reorderLists } from '~/query/lists';
 import { useCurrentBoardId } from '~/utils/useCurrentBoardId';
 
@@ -29,29 +30,37 @@ export function DragDropList({ id, listTitle, children }: DragDropListProps) {
   });
 
   const ref = useRef<HTMLDivElement | null>(null);
-  const dragDropRef = dragRef(
-    dropRef(ref),
-  ) as unknown as RefObject<HTMLDivElement | null>;
+  const dragDropRef = dragRef(dropRef(ref));
 
-  const firstChild = (Boolean(dragDropRef.current?.firstChild) &&
-    dragDropRef.current?.firstChild) as HTMLElement;
+  function isRef(el: unknown): el is RefObject<HTMLDivElement> {
+    return typeof el === 'object' && el !== null && 'current' in el;
+  }
 
-  const rect = firstChild && (firstChild.getBoundingClientRect() as DOMRect);
+  function getRect() {
+    if (isRef(dragDropRef) && dragDropRef.current) {
+      const child = dragDropRef.current.firstChild as HTMLElement;
+      const rect = child.getBoundingClientRect();
+      return rect;
+    }
+  }
 
-  return (
-    <div ref={dragDropRef}>
-      {!isDragging && children}
-      {isDragging && (
-        <div
-          style={{
-            height: rect.height,
-            width: rect.width,
-            background: 'rgba(0,0,0,0.1)',
-            margin: '0 15px',
-            borderRadius: '5px',
-          }}
-        />
-      )}
-    </div>
-  );
+  const rect = getRect();
+
+  if (isRef(dragDropRef)) {
+    return (
+      <div ref={dragDropRef}>
+        {!isDragging && children}
+        {isDragging && (
+          <DragListShadow
+            height={rect?.height}
+            width={rect?.width}
+            data-testid="DragListShadow"
+            key={id}
+          />
+        )}
+      </div>
+    );
+  }
+
+  return null;
 }
