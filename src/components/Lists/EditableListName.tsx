@@ -20,9 +20,7 @@ export function EditableListName({
   listId,
 }: EditableListNameProps) {
   const { data: list } = useGetListById({ id: listId });
-
   const boardId = useCurrentBoardId();
-
   const updateList = useUpdateList();
   const outsideClickRef = useOutsideClick(
     onOutsideNameEditClick,
@@ -42,7 +40,7 @@ export function EditableListName({
   }
 
   return (
-    <div>
+    <div data-testid="EditableListName">
       {!isEditingListName && (
         <ListName
           data-testid="ListName"
