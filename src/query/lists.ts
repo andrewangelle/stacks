@@ -7,12 +7,13 @@ import {
   getLists,
   updateList,
 } from '~/db/lists/lists.functions';
+import type {
+  CreateListArgs,
+  DeleteListArgs,
+  UpdateListArgs,
+} from '~/db/lists/lists.schemas';
 import { queryClient } from '~/query/queryClient';
 import { useCurrentBoardId } from '~/utils/useCurrentBoardId';
-
-export type UpdateListArgs = Pick<List, 'id' | 'boardId' | 'listTitle'>;
-export type CreateListArgs = Pick<List, 'listTitle' | 'boardId'>;
-export type DeleteListArgs = Pick<List, 'id' | 'boardId'>;
 
 const queryKeys = {
   list: (boardId: string) => ['lists', boardId] as const,
@@ -42,9 +43,9 @@ export function useGetListById({ id }: { id: string }) {
 
 export function useUpdateList() {
   const mutation = useMutation({
-    mutationFn({ id, listTitle }: UpdateListArgs) {
+    mutationFn(data: UpdateListArgs) {
       return updateList({
-        data: { listId: id, listTitle },
+        data,
       });
     },
 
@@ -53,7 +54,7 @@ export function useUpdateList() {
         queryKeys.list(variables.boardId),
         (cache = []) =>
           cache.map((item) =>
-            item.id === variables.id
+            item.id === variables.listId
               ? { ...item, listTitle: variables.listTitle }
               : item,
           ),
@@ -82,14 +83,14 @@ export function useCreateList() {
 
 export function useDeleteList() {
   const mutation = useMutation({
-    mutationFn({ id }: DeleteListArgs) {
-      return deleteList({ data: { listId: id } });
+    mutationFn(data: DeleteListArgs) {
+      return deleteList({ data });
     },
 
     onSuccess(_result, variables) {
       queryClient.setQueryData<List[]>(
         queryKeys.list(variables.boardId),
-        (cache = []) => cache.filter((item) => item.id !== variables.id),
+        (cache = []) => cache.filter((item) => item.id !== variables.listId),
       );
     },
   });

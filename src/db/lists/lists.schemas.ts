@@ -14,11 +14,13 @@ export const CreateListSchema = z.object({
 });
 
 export const UpdateListSchema = z.object({
+  boardId: z.string(),
   listId: z.string(),
   listTitle: z.string(),
 });
 
 export const DeleteListSchema = z.object({
+  boardId: z.string(),
   listId: z.string(),
 });
 
