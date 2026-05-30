@@ -8,6 +8,7 @@ import {
   AddCardInput,
   AddCardText,
   CloseAddCardButton,
+  ListCardSkeleton,
   ListContainer,
   ListName,
 } from '~/components/Lists/List.styled';
@@ -24,7 +25,7 @@ export function List({ id }: Pick<ListType, 'id'>) {
   const [isEditingName, setIsEditingName] = useState(false);
   const [cardTitle, setCardTitle] = useState('');
   const [editedListTitle, setEditedListTitle] = useState('');
-  const { data: cards } = useGetCards({ listId: id });
+  const { data: cards, isLoading } = useGetCards({ listId: id });
   const outsideClickRef = useOutsideClick(
     onOutsideNameEditClick,
     isEditingName,
@@ -84,16 +85,20 @@ export function List({ id }: Pick<ListType, 'id'>) {
         <DeleteListPopover id={id} listTitle={data?.listTitle ?? ''} />
       )}
 
-      {cards?.map((card) => (
-        <DragDropCard
-          key={card.id}
-          id={card.id}
-          listId={id}
-          cardTitle={card.cardTitle}
-        >
-          <CardModal id={card.id} />
-        </DragDropCard>
-      ))}
+      {cards?.map((card) =>
+        isLoading ? (
+          <ListCardSkeleton key={card.id} />
+        ) : (
+          <DragDropCard
+            key={card.id}
+            id={card.id}
+            listId={id}
+            cardTitle={card.cardTitle}
+          >
+            <CardModal id={card.id} />
+          </DragDropCard>
+        ),
+      )}
 
       {isEditing && (
         <AddCardInput

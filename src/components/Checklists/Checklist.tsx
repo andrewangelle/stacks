@@ -94,7 +94,7 @@ export function Checklist({ id }: { id: string }) {
             autoFocus
             onChange={(event) => setLabel(event.target.value)}
           />
-          <Flex data-testid="Flex">
+          <Flex data-testid="Flex" style={{ marginLeft: '8px' }}>
             <AddChecklistButton
               data-testid="AddChecklistButton"
               onClick={() => {
@@ -105,6 +105,7 @@ export function Checklist({ id }: { id: string }) {
                   listId: checklist?.listId,
                 });
                 setIsEditing(false);
+                setLabel('');
               }}
             >
               Add
