@@ -37,7 +37,7 @@ export function List({ id }: Pick<ListType, 'id'>) {
 
     if (editedListTitle !== data?.listTitle) {
       updateList({
-        id,
+        listId: id,
         boardId,
         listTitle: editedListTitle,
       });
@@ -53,7 +53,6 @@ export function List({ id }: Pick<ListType, 'id'>) {
     setCardTitle('');
   }
 
-  console.log(data);
   return (
     <ListContainer data-testid="ListContainer" key={id}>
       <div ref={outsideClickRef}>
