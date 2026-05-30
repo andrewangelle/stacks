@@ -10,7 +10,7 @@ import {
   DeleteChecklistPopoverContent,
 } from '~/components/Checklists/Checklists.styled';
 import { DeleteListIcon } from '~/components/Lists/List.styled';
-import { useDeleteListMutation } from '~/query/lists';
+import { useDeleteList } from '~/query/lists';
 import { useCurrentBoardId } from '~/utils/useCurrentBoardId';
 
 type DeleteListPopoverProps = {
@@ -20,7 +20,7 @@ type DeleteListPopoverProps = {
 
 export function DeleteListPopover({ id, listTitle }: DeleteListPopoverProps) {
   const boardId = useCurrentBoardId();
-  const deleteList = useDeleteListMutation();
+  const deleteList = useDeleteList();
   return (
     <Popover.Root>
       <DeleteCardPopoverTrigger data-testid="DeleteCardPopoverTrigger" asChild>

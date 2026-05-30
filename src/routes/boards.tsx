@@ -9,7 +9,7 @@ import {
 import { CreateBoard } from '~/components/Boards/CreateBoard';
 import { NavBar } from '~/components/Nav/NavBar';
 import { fetchUserId } from '~/middleware/auth';
-import { useGetBoardsQuery } from '~/query/boards';
+import { useGetBoards } from '~/query/boards';
 import { Padding } from '~/styles/Page.styled';
 
 export const Route = createFileRoute('/boards')({
@@ -24,7 +24,7 @@ export const Route = createFileRoute('/boards')({
     return { userId: context.userId };
   },
   component() {
-    const { isLoading, data: boards = [], isSuccess } = useGetBoardsQuery();
+    const { isLoading, data: boards = [], isSuccess } = useGetBoards();
     const navigate = useNavigate();
     return (
       <>

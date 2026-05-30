@@ -1,30 +1,33 @@
 import type { Stack } from '@prisma/client';
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { useMutation, useQuery } from '@tanstack/react-query';
 import {
   createBoard,
   getBoardById,
   getBoards,
   updateBoard,
 } from '~/db/boards/boards.functions';
-import { queryKeys } from '~/query/queryKeys';
+import type { CreateBoardArgs } from '~/db/boards/boards.schemas';
+import { queryClient } from '~/query/queryClient';
 import { useCurrentBoardId } from '~/utils/useCurrentBoardId';
 
-export type Board = Omit<Stack, 'createdAt' | 'updatedAt'>;
-export type CreateBoardArgs = Pick<Stack, 'boardTitle' | 'boardColor'>;
+const queryKeys = {
+  list: () => ['boards'] as const,
+  detail: (boardId: string) => ['board', boardId] as const,
+};
 
-export function useGetBoardsQuery() {
+export function useGetBoards() {
   return useQuery({
-    queryKey: queryKeys.boards(),
+    queryKey: queryKeys.list(),
     queryFn() {
-      return getBoards({ data: {} });
+      return getBoards();
     },
   });
 }
 
-export function useGetBoardQuery() {
+export function useGetBoard() {
   const boardId = useCurrentBoardId();
   return useQuery({
-    queryKey: queryKeys.board(boardId),
+    queryKey: queryKeys.detail(boardId),
     enabled: !!boardId,
     queryFn() {
       return getBoardById({ data: { boardId } });
@@ -32,39 +35,38 @@ export function useGetBoardQuery() {
   });
 }
 
-export function useCreateBoardMutation() {
-  const queryClient = useQueryClient();
-
+export function useCreateBoard() {
   const mutation = useMutation({
-    mutationFn({ boardTitle, boardColor }: CreateBoardArgs) {
+    mutationFn(data: CreateBoardArgs) {
       return createBoard({
-        data: { boardTitle, boardColor },
+        data,
       });
     },
 
     onSuccess(result) {
-      queryClient.setQueryData<Board[]>(queryKeys.boards(), (cache = []) => [
-        ...cache,
-        result.data[0],
-      ]);
+      queryClient.setQueryData<Stack[]>(queryKeys.list(), (cache = []) => {
+        if (result) {
+          return [...cache, result];
+        }
+        return cache;
+      });
     },
   });
 
   return mutation.mutate;
 }
 
-export function useUpdateBoardMutation() {
-  const queryClient = useQueryClient();
+export function useUpdateBoard() {
   const mutation = useMutation({
-    mutationFn({ id, boardTitle }: Pick<Board, 'id' | 'boardTitle'>) {
+    mutationFn({ id, boardTitle }: Pick<Stack, 'id' | 'boardTitle'>) {
       return updateBoard({
         data: { boardId: id, boardTitle },
       });
     },
     onSuccess(_result, variables) {
-      queryClient.setQueryData<Board>(
-        queryKeys.board(variables.id),
-        (cache = {} as Board) => ({
+      queryClient.setQueryData<Stack>(
+        queryKeys.detail(variables.id),
+        (cache = {} as Stack) => ({
           ...cache,
           boardTitle: variables.boardTitle,
         }),

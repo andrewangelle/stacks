@@ -1,6 +1,7 @@
 import { styled } from '@pigment-css/react';
 import * as Ti from 'react-icons/ti';
 import { fontFamily } from '~/components/Boards/Boards.styled';
+import { animationStyles } from '~/styles/animations';
 import { Button } from '~/styles/Page.styled';
 
 export const ListGridContainer = styled.div` 
@@ -78,6 +79,14 @@ export const ListCardContainer = styled.div`
   margin: 4px 0px;
   box-shadow: 0 1px 0 #091e4240;
 `;
+
+export const ListCardSkeleton = styled(ListCardContainer)({
+  background: 'rgba(9, 30, 66, 0.25)',
+  cursor: 'default',
+  pointerEvents: 'none',
+  minHeight: '16px',
+  ...animationStyles.pulse,
+});
 
 export const DeleteListIcon = styled(Ti.TiDelete)` 
   position: absolute;

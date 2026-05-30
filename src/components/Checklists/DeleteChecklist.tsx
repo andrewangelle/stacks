@@ -10,14 +10,11 @@ import {
   DeleteChecklistPopoverContent,
   DeleteChecklistPopoverTrigger,
 } from '~/components/Checklists/Checklists.styled';
-import {
-  useDeleteChecklistMutation,
-  useGetChecklistQuery,
-} from '~/query/checklists';
+import { useDeleteChecklist, useGetChecklist } from '~/query/checklists';
 
 export function DeleteChecklist({ id }: { id: string }) {
-  const { data: checklist } = useGetChecklistQuery({ checklistId: id });
-  const deleteChecklist = useDeleteChecklistMutation();
+  const { data: checklist } = useGetChecklist({ checklistId: id });
+  const deleteChecklist = useDeleteChecklist();
   if (!checklist) return null;
   return (
     <Popover.Root>

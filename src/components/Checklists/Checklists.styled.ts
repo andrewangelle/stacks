@@ -80,7 +80,7 @@ export const AddChecklistItemInput = styled.textarea`
   font-size: 14px;
   padding: 15px;
   border-radius: 5px;
-  margin: 0px 0px 8px 8px;
+  margin: 8px 0px 8px 8px;
   border: none;
   font-family: ${fontFamily};
   background-color: rgba(0, 0, 0, 0.03);

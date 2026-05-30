@@ -2,7 +2,6 @@ import { createServerFn } from '@tanstack/react-start';
 import {
   CreateBoardSchema,
   GetBoardByIdSchema,
-  GetBoardsSchema,
   UpdateBoardSchema,
 } from '~/db/boards/boards.schemas';
 import {
@@ -14,11 +13,8 @@ import {
 import { authMiddleware } from '~/middleware/auth';
 
 export const getBoards = createServerFn({ method: 'GET' })
-  .inputValidator(GetBoardsSchema)
   .middleware([authMiddleware])
-  .handler(async ({ data, context }) =>
-    getBoardsQuery({ ...data, userId: context.uid }),
-  );
+  .handler(async ({ context }) => getBoardsQuery({ userId: context.uid }));
 
 export const createBoard = createServerFn({ method: 'POST' })
   .inputValidator(CreateBoardSchema)

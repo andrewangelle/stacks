@@ -13,11 +13,14 @@ import type {
   UpdateActivityArgs,
 } from '~/db/activity/activity.schemas';
 import { queryClient } from '~/query/queryClient';
-import { queryKeys } from '~/query/queryKeys';
 
-export function useGetActivityQuery(data: GetActivityArgs) {
+const queryKeys = {
+  list: (cardId: string) => ['activity', cardId] as const,
+};
+
+export function useGetActivity(data: GetActivityArgs) {
   return useQuery({
-    queryKey: queryKeys.activity(data.cardId),
+    queryKey: queryKeys.list(data.cardId),
     queryFn() {
       return getActivity({
         data,
@@ -26,15 +29,15 @@ export function useGetActivityQuery(data: GetActivityArgs) {
   });
 }
 
-export function useCreateActivityMutation() {
+export function useCreateActivity() {
   const mutation = useMutation({
-    mutationFn(args: CreateActivityArgs) {
-      return createActivity({ data: args });
+    mutationFn(data: CreateActivityArgs) {
+      return createActivity({ data });
     },
 
     onSuccess(result, variables) {
       queryClient.setQueryData<Activity[]>(
-        queryKeys.activity(variables.cardId),
+        queryKeys.list(variables.cardId),
         (cache = []) => [...cache, result],
       );
     },
@@ -43,7 +46,7 @@ export function useCreateActivityMutation() {
   return mutation.mutate;
 }
 
-export function useUpdateActivityMutation() {
+export function useUpdateActivity() {
   function updateActivityInCache(
     cache: Activity[],
     variables: UpdateActivityArgs,
@@ -65,7 +68,7 @@ export function useUpdateActivityMutation() {
 
     onSuccess(_result, variables) {
       queryClient.setQueryData<Activity[]>(
-        queryKeys.activity(variables.cardId),
+        queryKeys.list(variables.cardId),
         (cache = []) => updateActivityInCache(cache, variables),
       );
     },
@@ -74,7 +77,7 @@ export function useUpdateActivityMutation() {
   return mutation.mutate;
 }
 
-export function useDeleteActivityMutation() {
+export function useDeleteActivity() {
   const mutation = useMutation({
     mutationFn(data: DeleteActivityArgs) {
       return deleteActivity({ data });
@@ -82,7 +85,7 @@ export function useDeleteActivityMutation() {
 
     onSuccess(_result, variables) {
       queryClient.setQueryData<Activity[]>(
-        queryKeys.activity(variables.cardId),
+        queryKeys.list(variables.cardId),
         (cache = []) =>
           cache.filter((item) => item.id !== variables.activityId),
       );

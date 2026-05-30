@@ -7,7 +7,7 @@ import {
   EditCardTitleInput,
   EditCardTitleSaveButton,
 } from '~/components/Cards/CardModal.styled';
-import { useGetCardByIdQuery, useUpdateCardMutation } from '~/query/cards';
+import { useGetCardById, useUpdateCard } from '~/query/cards';
 import { Flex } from '~/styles/Page.styled';
 
 type CardModalEditableTitleProps = {
@@ -20,9 +20,9 @@ export function CardModalEditableTitle({
   listId,
 }: CardModalEditableTitleProps) {
   const [isEditingTitle, setEditingTitle] = useState(false);
-  const { data: card } = useGetCardByIdQuery({ id });
+  const { data: card } = useGetCardById({ id });
   const [editedTitle, setEditedTitle] = useState(card?.cardTitle ?? '');
-  const updateCard = useUpdateCardMutation();
+  const updateCard = useUpdateCard();
 
   function onSave() {
     updateCard({

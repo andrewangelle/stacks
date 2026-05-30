@@ -1,10 +1,10 @@
 import { useLocation } from '@tanstack/react-router';
 import type { BoardBackground } from '~/components/Boards/Boards.styled';
-import { useGetBoardQuery } from '~/query/boards';
+import { useGetBoard } from '~/query/boards';
 
 export function useBoardBackgroundColor(): BoardBackground {
   const location = useLocation();
-  const board = useGetBoardQuery();
+  const board = useGetBoard();
 
   const boardBackground = board.data?.boardColor ?? 'blue';
   const onAuthPath = location.pathname.startsWith('/auth');

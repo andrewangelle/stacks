@@ -15,11 +15,16 @@ import type {
   UpdateChecklistItemArgs,
 } from '~/db/checklistItems/checklistItems.schemas';
 import { queryClient } from '~/query/queryClient';
-import { queryKeys } from '~/query/queryKeys';
 
-export function useGetChecklistItemQuery(data: GetChecklistItemByIdArgs) {
+const queryKeys = {
+  list: (checklistId: string) => ['checklistItems', checklistId] as const,
+  detail: (checklistItemId: string) =>
+    ['checklistItem', checklistItemId] as const,
+};
+
+export function useGetChecklistItem(data: GetChecklistItemByIdArgs) {
   return useQuery({
-    queryKey: queryKeys.checklistItem(data.itemId),
+    queryKey: queryKeys.detail(data.itemId),
     queryFn() {
       return getChecklistItemById({
         data,
@@ -28,9 +33,9 @@ export function useGetChecklistItemQuery(data: GetChecklistItemByIdArgs) {
   });
 }
 
-export function useGetChecklistItemsQuery(data: GetChecklistItemsArgs) {
+export function useGetChecklistItems(data: GetChecklistItemsArgs) {
   return useQuery({
-    queryKey: queryKeys.checklistItems(data.checklistId),
+    queryKey: queryKeys.list(data.checklistId),
     queryFn() {
       return getChecklistItems({
         data,
@@ -39,7 +44,7 @@ export function useGetChecklistItemsQuery(data: GetChecklistItemsArgs) {
   });
 }
 
-export function useCreateChecklistItemMutation() {
+export function useCreateChecklistItem() {
   const mutation = useMutation({
     mutationFn(data: CreateChecklistItemArgs) {
       return createChecklistItem({
@@ -49,7 +54,7 @@ export function useCreateChecklistItemMutation() {
 
     onSuccess(result, variables) {
       queryClient.setQueryData<ChecklistItem[]>(
-        queryKeys.checklistItems(variables.checklistId),
+        queryKeys.list(variables.checklistId),
         (cache = []) => [...cache, result.data[0]],
       );
     },
@@ -58,7 +63,7 @@ export function useCreateChecklistItemMutation() {
   return mutation.mutate;
 }
 
-export function useUpdateChecklistItemMutation() {
+export function useUpdateChecklistItem() {
   const mutation = useMutation({
     mutationFn(data: UpdateChecklistItemArgs) {
       return updateChecklistItem({
@@ -67,12 +72,12 @@ export function useUpdateChecklistItemMutation() {
     },
     onSuccess(_result, variables) {
       const checklistId = queryClient.getQueryData<ChecklistItem>(
-        queryKeys.checklistItem(variables.itemId),
+        queryKeys.detail(variables.itemId),
       )?.checklistId;
 
       if (checklistId) {
         queryClient.setQueryData<ChecklistItem[]>(
-          queryKeys.checklistItems(checklistId),
+          queryKeys.list(checklistId),
           (cache = [] as ChecklistItem[]) =>
             cache.map((item) => {
               if (item.id === variables.itemId) {
@@ -88,7 +93,7 @@ export function useUpdateChecklistItemMutation() {
       }
 
       queryClient.setQueryData<ChecklistItem>(
-        queryKeys.checklistItem(variables.itemId),
+        queryKeys.detail(variables.itemId),
         (cache = {} as ChecklistItem) => ({
           ...cache,
           isCompleted: variables.isCompleted ?? cache.isCompleted,
@@ -101,7 +106,7 @@ export function useUpdateChecklistItemMutation() {
   return mutation.mutate;
 }
 
-export function useDeleteChecklistItemMutation() {
+export function useDeleteChecklistItem() {
   const mutation = useMutation({
     mutationFn(data: DeleteChecklistItemArgs) {
       return deleteChecklistItem({
@@ -112,12 +117,12 @@ export function useDeleteChecklistItemMutation() {
       const checklistId =
         result.data[0]?.checklistId ??
         queryClient.getQueryData<ChecklistItem>(
-          queryKeys.checklistItem(variables.itemId),
+          queryKeys.detail(variables.itemId),
         )?.checklistId;
 
       if (checklistId) {
         queryClient.setQueryData<ChecklistItem[]>(
-          queryKeys.checklistItems(checklistId),
+          queryKeys.list(checklistId),
           (cache = []) => cache.filter((item) => item.id !== variables.itemId),
         );
       }
@@ -133,7 +138,7 @@ export const reorderChecklistItems = (
   droppedId: string,
 ) =>
   queryClient.setQueryData<ChecklistItem[]>(
-    queryKeys.checklistItems(checklistId),
+    queryKeys.list(checklistId),
     (cache = []) => {
       const cacheArray = [...cache];
       const draggedIndex = cacheArray.findIndex(

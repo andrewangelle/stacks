@@ -10,10 +10,10 @@ import {
   DeleteChecklistPopoverContent,
   DeleteChecklistPopoverTrigger,
 } from '~/components/Checklists/Checklists.styled';
-import { useDeleteActivityMutation } from '~/query/activity';
+import { useDeleteActivity } from '~/query/activity';
 
 export function DeleteCommentPopover(props: Activity) {
-  const deleteActivity = useDeleteActivityMutation();
+  const deleteActivity = useDeleteActivity();
   return (
     <Popover.Root>
       <DeleteChecklistPopoverTrigger data-testid="DeleteChecklistPopoverTrigger">

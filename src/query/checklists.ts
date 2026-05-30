@@ -13,11 +13,15 @@ import type {
   GetChecklistsArgs,
 } from '~/db/checklists/checklists.schemas';
 import { queryClient } from '~/query/queryClient';
-import { queryKeys } from '~/query/queryKeys';
 
-export function useGetChecklistQuery(data: GetChecklistByIdArgs) {
+const queryKeys = {
+  list: (cardId: string) => ['checklists', cardId] as const,
+  detail: (checklistId: string) => ['checklist', checklistId] as const,
+};
+
+export function useGetChecklist(data: GetChecklistByIdArgs) {
   return useQuery({
-    queryKey: queryKeys.checklist(data.checklistId),
+    queryKey: queryKeys.detail(data.checklistId),
     queryFn() {
       return getChecklistById({
         data,
@@ -26,9 +30,9 @@ export function useGetChecklistQuery(data: GetChecklistByIdArgs) {
   });
 }
 
-export function useGetChecklistsQuery(data: GetChecklistsArgs) {
+export function useGetChecklists(data: GetChecklistsArgs) {
   return useQuery({
-    queryKey: queryKeys.checklists(data.cardId),
+    queryKey: queryKeys.list(data.cardId),
     queryFn() {
       return getChecklists({
         data,
@@ -37,7 +41,7 @@ export function useGetChecklistsQuery(data: GetChecklistsArgs) {
   });
 }
 
-export function useCreateChecklistMutation() {
+export function useCreateChecklist() {
   const mutation = useMutation({
     mutationFn(data: CreateChecklistArgs) {
       return createChecklist({
@@ -47,7 +51,7 @@ export function useCreateChecklistMutation() {
 
     onSuccess(result, variables) {
       queryClient.setQueryData<Checklist[]>(
-        queryKeys.checklists(variables.cardId),
+        queryKeys.list(variables.cardId),
         (cache = []) => [...cache, result.data[0]],
       );
     },
@@ -56,7 +60,7 @@ export function useCreateChecklistMutation() {
   return mutation.mutate;
 }
 
-export function useDeleteChecklistMutation() {
+export function useDeleteChecklist() {
   const mutation = useMutation({
     mutationFn(data: DeleteChecklistArgs) {
       return deleteChecklist({
@@ -66,7 +70,7 @@ export function useDeleteChecklistMutation() {
 
     onSuccess(_result, variables) {
       queryClient.setQueryData<Checklist[]>(
-        queryKeys.checklists(variables.cardId),
+        queryKeys.list(variables.cardId),
         (cache = []) =>
           cache.filter((item) => item.id !== variables.checklistId),
       );

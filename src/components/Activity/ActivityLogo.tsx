@@ -1,6 +1,6 @@
 import type { Profile } from '@prisma/client';
 import { ActivityNameCircle } from '~/components/Activity/Activity.styled';
-import { useGetProfileQuery } from '~/query/profile';
+import { useGetProfile } from '~/query/profile';
 import { Center } from '~/styles/Page.styled';
 
 export function getInitials(
@@ -18,7 +18,7 @@ export function getInitials(
 }
 
 export function ActivityLogo() {
-  const profile = useGetProfileQuery();
+  const profile = useGetProfile();
   const initials = getInitials(profile.data ?? null);
   return (
     <ActivityNameCircle data-testid="ActivityNameCircle">

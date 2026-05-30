@@ -11,15 +11,15 @@ import {
 import { ActivityLogo } from '~/components/Activity/ActivityLogo';
 import { DeleteCommentPopover } from '~/components/Cards/DeleteCommentPopover';
 import { CloseAddCardButton } from '~/components/Lists/List.styled';
-import { useUpdateActivityMutation } from '~/query/activity';
-import { useGetProfileQuery } from '~/query/profile';
+import { useUpdateActivity } from '~/query/activity';
+import { useGetProfile } from '~/query/profile';
 import { Flex } from '~/styles/Page.styled';
 
 export function ActivityComment(props: Activity) {
-  const profile = useGetProfileQuery();
+  const profile = useGetProfile();
   const [isEditing, setIsEditing] = useState(false);
   const [editedComment, setEditedComment] = useState(props.content);
-  const updateActivity = useUpdateActivityMutation();
+  const updateActivity = useUpdateActivity();
   const commentTime = formatRelative(
     new Date(props.createdAt),
     new Date(props.createdAt),

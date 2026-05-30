@@ -5,7 +5,7 @@ import {
   AddListInput,
   CloseAddListButton,
 } from '~/components/Boards/Board.styled';
-import { useCreateListMutation } from '~/query/lists';
+import { useCreateList } from '~/query/lists';
 import { Flex } from '~/styles/Page.styled';
 
 type AddListsProps = {
@@ -15,7 +15,7 @@ type AddListsProps = {
 export function AddLists({ boardId }: AddListsProps) {
   const [isEditing, setEditing] = useState(false);
   const [listName, setListName] = useState('');
-  const createList = useCreateListMutation();
+  const createList = useCreateList();
 
   function onListCreate() {
     createList({

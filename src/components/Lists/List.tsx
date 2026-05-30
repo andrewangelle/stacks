@@ -8,36 +8,37 @@ import {
   AddCardInput,
   AddCardText,
   CloseAddCardButton,
+  ListCardSkeleton,
   ListContainer,
   ListName,
 } from '~/components/Lists/List.styled';
-import { useCreateCardMutation, useGetCardsQuery } from '~/query/cards';
-import { useGetListByIdQuery, useUpdateListMutation } from '~/query/lists';
+import { useCreateCard, useGetCards } from '~/query/cards';
+import { useGetListById, useUpdateList } from '~/query/lists';
 import { Flex } from '~/styles/Page.styled';
 import { useCurrentBoardId } from '~/utils/useCurrentBoardId';
 import { useOutsideClick } from '~/utils/useOutsideClick';
 
 export function List({ id }: Pick<ListType, 'id'>) {
-  const { data } = useGetListByIdQuery({ id });
+  const { data } = useGetListById({ id });
   const boardId = useCurrentBoardId();
   const [isEditing, setEditing] = useState(false);
   const [isEditingName, setIsEditingName] = useState(false);
   const [cardTitle, setCardTitle] = useState('');
   const [editedListTitle, setEditedListTitle] = useState('');
-  const { data: cards } = useGetCardsQuery({ listId: id });
+  const { data: cards, isLoading } = useGetCards({ listId: id });
   const outsideClickRef = useOutsideClick(
     onOutsideNameEditClick,
     isEditingName,
   );
-  const updateList = useUpdateListMutation();
-  const createCard = useCreateCardMutation();
+  const updateList = useUpdateList();
+  const createCard = useCreateCard();
 
   function onOutsideNameEditClick() {
     setIsEditingName(false);
 
     if (editedListTitle !== data?.listTitle) {
       updateList({
-        id,
+        listId: id,
         boardId,
         listTitle: editedListTitle,
       });
@@ -53,7 +54,6 @@ export function List({ id }: Pick<ListType, 'id'>) {
     setCardTitle('');
   }
 
-  console.log(data);
   return (
     <ListContainer data-testid="ListContainer" key={id}>
       <div ref={outsideClickRef}>
@@ -85,16 +85,20 @@ export function List({ id }: Pick<ListType, 'id'>) {
         <DeleteListPopover id={id} listTitle={data?.listTitle ?? ''} />
       )}
 
-      {cards?.map((card) => (
-        <DragDropCard
-          key={card.id}
-          id={card.id}
-          listId={id}
-          cardTitle={card.cardTitle}
-        >
-          <CardModal id={card.id} />
-        </DragDropCard>
-      ))}
+      {cards?.map((card) =>
+        isLoading ? (
+          <ListCardSkeleton key={card.id} />
+        ) : (
+          <DragDropCard
+            key={card.id}
+            id={card.id}
+            listId={id}
+            cardTitle={card.cardTitle}
+          >
+            <CardModal id={card.id} />
+          </DragDropCard>
+        ),
+      )}
 
       {isEditing && (
         <AddCardInput
