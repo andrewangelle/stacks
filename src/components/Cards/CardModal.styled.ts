@@ -8,6 +8,12 @@ import { focusRingBlue, red } from '~/styles/tokens';
 
 const cardModalBreakpoint = '@media (max-width: 850px)';
 
+/** Section icon width (description list icon, checklist icon, etc.). */
+export const cardModalSectionIconSize = '24px';
+
+/** Left edge of description body, checklist labels, inputs, and action rows (icon + 16px gap). */
+export const cardModalContentIndent = '40px';
+
 export const CardModalActionsContainer = styled.div`
   display: flex;
   flex-wrap: wrap;
@@ -191,7 +197,7 @@ export const DescriptionContainer = styled.div`
 export const DescriptionPlaceholder = styled.div` 
   background: rgba(0,0,0, 0.03);
   height: 30px;
-  margin-left: 40px;
+  margin-left: ${cardModalContentIndent};
   font-size: 14px;
   padding: 15px;
   border-radius: 5px;
@@ -205,7 +211,7 @@ export const DescriptionPlaceholder = styled.div`
 export const DescriptionInput = styled.textarea` 
   height: 60px;
   width: 80%;
-  margin-left: 40px;
+  margin-left: ${cardModalContentIndent};
   font-size: 14px;
   padding: 15px;
   border-radius: 5px;
@@ -215,7 +221,7 @@ export const DescriptionInput = styled.textarea`
 
 export const SaveDescriptionButton = styled(Button)` 
   padding: 8px 10px;
-  margin: 0 10px 0 40px;
+  margin: 0 10px 0 ${cardModalContentIndent};
 `;
 
 export const CloseDescriptionButton = styled(Button)`
@@ -227,7 +233,7 @@ export const CloseDescriptionButton = styled(Button)`
 
 export const CardDescriptionText = styled.div` 
   font-family: ${fontFamily};
-  margin-left: 40px;
+  margin-left: ${cardModalContentIndent};
   font-size: 14px;
   margin-top: 15px;
 `;
