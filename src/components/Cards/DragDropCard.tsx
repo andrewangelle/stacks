@@ -1,6 +1,7 @@
 import type { Card } from '@prisma/client';
 import { type ReactNode, type RefObject, useRef } from 'react';
 import { useDrag, useDrop } from 'react-dnd';
+import { DragCardShadow } from '~/components/Cards/CardModal.styled';
 import { ListCardSkeleton } from '~/components/Lists/List.styled';
 import { reorderCards, useGetCardById } from '~/query/cards';
 
@@ -29,34 +30,41 @@ export function DragDropCard({ id, children }: DragDropCardProps) {
   });
 
   const ref = useRef<HTMLDivElement | null>(null);
+  const dragDropRef = dragRef(dropRef(ref));
 
-  const dragDropRef = dragRef(
-    dropRef(ref),
-  ) as unknown as RefObject<HTMLDivElement | null>;
+  function isRef(el: unknown): el is RefObject<HTMLDivElement> {
+    return typeof el === 'object' && el !== null && 'current' in el;
+  }
 
-  const firstChild = (Boolean(dragDropRef.current?.firstChild) &&
-    dragDropRef.current?.firstChild) as HTMLElement;
+  function getRect() {
+    if (isRef(dragDropRef) && dragDropRef.current) {
+      const child = dragDropRef.current.firstChild as HTMLElement;
+      const rect = child.getBoundingClientRect();
+      return rect;
+    }
+  }
 
-  const rect = firstChild && (firstChild.getBoundingClientRect() as DOMRect);
+  const rect = getRect();
 
   if (isLoading) {
     return <ListCardSkeleton />;
   }
 
-  return (
-    <div ref={dragDropRef}>
-      {!isDragging && children}
-      {isDragging && (
-        <div
-          style={{
-            height: rect.height,
-            width: rect.width,
-            background: 'rgba(0,0,0,0.1)',
-            margin: '4px auto',
-            borderRadius: '5px',
-          }}
-        />
-      )}
-    </div>
-  );
+  if (isRef(dragDropRef)) {
+    return (
+      <div ref={dragDropRef}>
+        {!isDragging && children}
+        {isDragging && (
+          <DragCardShadow
+            height={rect?.height}
+            width={rect?.width}
+            data-testid="DragCardShadow"
+            key={id}
+          />
+        )}
+      </div>
+    );
+  }
+
+  return null;
 }

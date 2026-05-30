@@ -1,13 +1,11 @@
-import { useState } from 'react';
 import { CardModal } from '~/components/Cards/CardModal';
 import { DragDropCard } from '~/components/Cards/DragDropCard';
 import { AddNewCard } from '~/components/Lists/AddNewCard';
-import { DeleteList } from '~/components/Lists/DeleteList';
-import { EditableListName } from '~/components/Lists/EditableListName';
 import {
   ListCardSkeleton,
   ListContainer,
 } from '~/components/Lists/List.styled';
+import { ListHeader } from '~/components/Lists/ListHeader';
 import { useGetCardsByListId } from '~/query/cards';
 import { useGetListById } from '~/query/lists';
 
@@ -16,8 +14,6 @@ export function List({ id: listId }: { id: string }) {
   const { data: cards } = useGetCardsByListId({
     listId,
   });
-  const [isEditingListName, setIsEditingListName] = useState(false);
-  const [editedListTitle, setEditedListTitle] = useState('');
 
   if (isLoading) {
     return (
@@ -29,15 +25,7 @@ export function List({ id: listId }: { id: string }) {
 
   return (
     <ListContainer data-testid="ListContainer" key={listId}>
-      <EditableListName
-        listId={listId}
-        isEditingListName={isEditingListName}
-        setIsEditingListName={setIsEditingListName}
-        editedListTitle={editedListTitle}
-        setEditedListTitle={setEditedListTitle}
-      />
-
-      {!isEditingListName && <DeleteList id={listId} />}
+      <ListHeader id={listId} />
 
       {cards?.map((card) => (
         <DragDropCard key={card.id} id={card.id}>

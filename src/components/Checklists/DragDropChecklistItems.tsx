@@ -1,6 +1,7 @@
 import type { ChecklistItem } from '@prisma/client';
-import { type ReactNode, useRef } from 'react';
+import { type ReactNode, type RefObject, useRef } from 'react';
 import { useDrag, useDrop } from 'react-dnd';
+import { DragChecklistItemShadow } from '~/components/Checklists/Checklists.styled';
 import { reorderChecklistItems } from '~/query/checklistItems';
 
 type DragDropChecklistItemProps = {
@@ -34,26 +35,37 @@ export function DragDropChecklistItem({
   });
 
   const ref = useRef<HTMLDivElement | null>(null);
-  const dragDropRef = dragRef(
-    dropRef(ref),
-  ) as unknown as React.MutableRefObject<HTMLDivElement | null>;
-  const firstChild = (Boolean(dragDropRef.current?.firstChild) &&
-    dragDropRef.current?.firstChild) as HTMLElement;
-  const rect = firstChild && (firstChild.getBoundingClientRect() as DOMRect);
+  const dragDropRef = dragRef(dropRef(ref));
 
-  return (
-    <div ref={dragDropRef}>
-      {!isDragging && children}
-      {isDragging && (
-        <div
-          style={{
-            height: rect.height,
-            width: rect.width,
-            background: 'rgba(0,0,0,0.1)',
-            borderRadius: '5px',
-          }}
-        />
-      )}
-    </div>
-  );
+  function isRef(el: unknown): el is RefObject<HTMLDivElement> {
+    return typeof el === 'object' && el !== null && 'current' in el;
+  }
+
+  function getRect() {
+    if (isRef(dragDropRef) && dragDropRef.current) {
+      const child = dragDropRef.current.firstChild as HTMLElement;
+      const rect = child.getBoundingClientRect();
+      return rect;
+    }
+  }
+
+  const rect = getRect();
+
+  if (isRef(dragDropRef)) {
+    return (
+      <div ref={dragDropRef}>
+        {!isDragging && children}
+        {isDragging && (
+          <DragChecklistItemShadow
+            height={rect?.height}
+            width={rect?.width}
+            data-testid="DragChecklistItemShadow"
+            key={id}
+          />
+        )}
+      </div>
+    );
+  }
+
+  return null;
 }
