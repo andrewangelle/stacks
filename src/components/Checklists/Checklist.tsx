@@ -9,11 +9,15 @@ import { Checkbox } from '~/components/Checklists/Checkbox';
 import {
   AddChecklistButton,
   AddChecklistItemButton,
-  AddChecklistItemInput,
+  AddChecklistItemInputIndented,
+  ChecklistContentColumn,
   ChecklistHeader,
+  ChecklistItemActionsIndented,
+  ChecklistLeadingColumn,
   ChecklistProgressIndicator,
   ChecklistProgressPercentage,
   ChecklistProgressRoot,
+  ChecklistProgressRow,
 } from '~/components/Checklists/Checklists.styled';
 import { DeleteChecklist } from '~/components/Checklists/DeleteChecklist';
 import { DragDropChecklistItem } from '~/components/Checklists/DragDropChecklistItems';
@@ -40,7 +44,7 @@ export function Checklist({ id }: { id: string }) {
     <div style={{ margin: '30px 0px' }}>
       <ChecklistHeader data-testid="ChecklistHeader" key={id}>
         <Flex data-testid="Flex">
-          <Bs.BsCheck2Square style={{ marginRight: '4px' }} />
+          <Bs.BsCheck2Square size={24} />
           <CardModalTitle data-testid="CardModalTitle">
             {checklist?.checklistTitle}
           </CardModalTitle>
@@ -48,21 +52,22 @@ export function Checklist({ id }: { id: string }) {
         <DeleteChecklist id={id} />
       </ChecklistHeader>
 
-      <Flex data-testid="Flex" style={{ position: 'relative' }}>
-        <ChecklistProgressPercentage data-testid="ChecklistProgressPercentage">
-          {`${progressPercent}%`}
-        </ChecklistProgressPercentage>
+      <ChecklistProgressRow data-testid="ChecklistProgressRow">
+        <ChecklistLeadingColumn data-testid="ChecklistLeadingColumn">
+          <ChecklistProgressPercentage data-testid="ChecklistProgressPercentage">
+            {`${progressPercent}%`}
+          </ChecklistProgressPercentage>
+        </ChecklistLeadingColumn>
 
-        <ChecklistProgressRoot
-          data-testid="ChecklistProgressRoot"
-          style={{ margin: '15px 0' }}
-        >
-          <ChecklistProgressIndicator
-            data-testid="ChecklistProgressIndicator"
-            style={{ width: `${progressPercent}%` }}
-          />
-        </ChecklistProgressRoot>
-      </Flex>
+        <ChecklistContentColumn data-testid="ChecklistContentColumn">
+          <ChecklistProgressRoot data-testid="ChecklistProgressRoot">
+            <ChecklistProgressIndicator
+              data-testid="ChecklistProgressIndicator"
+              style={{ width: `${progressPercent}%` }}
+            />
+          </ChecklistProgressRoot>
+        </ChecklistContentColumn>
+      </ChecklistProgressRow>
 
       {data?.map((item: ChecklistItem) => (
         <DragDropChecklistItem
@@ -87,14 +92,14 @@ export function Checklist({ id }: { id: string }) {
 
       {isEditing && (
         <>
-          <AddChecklistItemInput
+          <AddChecklistItemInputIndented
             data-testid="AddChecklistItemInput"
             value={label}
             placeholder={'Add an item'}
             autoFocus
             onChange={(event) => setLabel(event.target.value)}
           />
-          <Flex data-testid="Flex" style={{ marginLeft: '8px' }}>
+          <ChecklistItemActionsIndented data-testid="ChecklistItemActions">
             <AddChecklistButton
               data-testid="AddChecklistButton"
               onClick={() => {
@@ -117,7 +122,7 @@ export function Checklist({ id }: { id: string }) {
             >
               X
             </CloseDescriptionButton>
-          </Flex>
+          </ChecklistItemActionsIndented>
         </>
       )}
     </div>

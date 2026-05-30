@@ -3,8 +3,11 @@ import * as Checkbox from '@radix-ui/react-checkbox';
 import * as Popover from '@radix-ui/react-popover';
 import * as Progress from '@radix-ui/react-progress';
 import { fontFamily, red } from '~/components/Boards/Boards.styled';
+import { cardModalContentIndent } from '~/components/Cards/CardModal.styled';
 import { Button } from '~/styles/Page.styled';
 import { checklistProgressBlue } from '~/styles/tokens';
+
+const checklistRowColumns = `${cardModalContentIndent} minmax(0, 1fr)`;
 
 export const ChecklistsContainer = styled.div`
   margin: 30px 12px 0px;
@@ -71,7 +74,7 @@ export const DeleteChecklistButton = styled(Button)`
 export const AddChecklistItemButton = styled(Button)` 
   border: none;
   padding: 8px 10px;
-  margin: 12px 0px 0px;
+  margin: 12px 0px 0px ${cardModalContentIndent};
 `;
 
 export const AddChecklistItemInput = styled.textarea` 
@@ -80,7 +83,7 @@ export const AddChecklistItemInput = styled.textarea`
   font-size: 14px;
   padding: 15px;
   border-radius: 5px;
-  margin: 8px 0px 8px 8px;
+  margin: 8px 0px;
   border: none;
   font-family: ${fontFamily};
   background-color: rgba(0, 0, 0, 0.03);
@@ -88,6 +91,18 @@ export const AddChecklistItemInput = styled.textarea`
   &:focus {
     background-color: #fff;
   }
+`;
+
+export const AddChecklistItemInputIndented = styled(AddChecklistItemInput)` 
+  margin: 8px 0px 8px ${cardModalContentIndent};
+`;
+
+export const ChecklistItemActions = styled.div`
+  display: flex;
+`;
+
+export const ChecklistItemActionsIndented = styled(ChecklistItemActions)`
+  margin-left: ${cardModalContentIndent};
 `;
 
 export const AddChecklistButton = styled(Button)` 
@@ -107,6 +122,36 @@ export const ChecklistHeader = styled.div`
   justify-content: space-between;
 `;
 
+export const ChecklistProgressRow = styled.div`
+  display: grid;
+  grid-template-columns: ${checklistRowColumns};
+  align-items: flex-start;
+  position: relative;
+`;
+
+export const ChecklistLeadingColumn = styled.div`
+  display: flex;
+  justify-content: flex-start;
+`;
+
+export const ChecklistContentColumn = styled.div`
+  min-width: 0;
+`;
+
+export const ChecklistCheckboxContentColumn = styled(
+  ChecklistContentColumn,
+)<ChecklistCheckboxContainerProps>({
+  position: 'relative',
+  variants: [
+    {
+      props: { isHovering: true },
+      style: {
+        background: 'rgb(223 225 230)',
+      },
+    },
+  ],
+});
+
 export const ChecklistProgressPercentage = styled.span`
   color: #5e6c84;
   font-size: 11px;
@@ -121,6 +166,7 @@ export const ChecklistProgressRoot = styled(Progress.Root)`
   border-radius: 99999px;
   height: 8px;
   width: 100%;
+  margin: 15px 0;
 `;
 
 export const ChecklistProgressIndicator = styled(Progress.Indicator)` 
@@ -133,31 +179,36 @@ type ChecklistCheckboxContainerProps = {
   isHovering: boolean;
 };
 
-export const ChecklistCheckboxContainer = styled(
-  'div',
-)<ChecklistCheckboxContainerProps>({
+export const ChecklistCheckboxContainer = styled('div')({
+  display: 'grid',
+  gridTemplateColumns: checklistRowColumns,
   padding: '10px 0px',
   position: 'relative',
   cursor: 'pointer',
-  variants: [
-    {
-      props: { isHovering: true },
-      style: {
-        background: 'rgb(223 225 230)',
-      },
-    },
-  ],
 });
 
-export const CheckboxRoot = styled(Checkbox.Root)({
-  width: 16,
-  height: 16,
+type CheckboxRootProps = {
+  isEditing: boolean;
+};
+
+export const CheckboxRoot = styled(Checkbox.Root)<CheckboxRootProps>({
+  width: '16px',
+  height: '16px',
+  borderColor: 'rgb(223 225, padding: 25 230)',
+  verticalAlign: 'top',
+  top: '2px',
   position: 'relative',
   variants: [
     {
       props: { checked: true },
       style: {
         backgroundColor: checklistProgressBlue,
+      },
+    },
+    {
+      props: { isEditing: true },
+      style: {
+        top: '10px',
       },
     },
   ],
@@ -174,7 +225,7 @@ type CheckboxLabelProps = {
 };
 
 export const CheckboxLabel = styled('label')<CheckboxLabelProps>({
-  margin: '0 0 0 8px',
+  margin: 0,
   fontFamily: fontFamily,
   fontSize: '14px',
   textDecoration: (props) => (props.checked ? 'line-through' : 'none'),
