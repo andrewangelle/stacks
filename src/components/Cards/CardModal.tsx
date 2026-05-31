@@ -1,4 +1,3 @@
-import { useState } from 'react';
 import { CardModalActivity } from '~/components/Activity/CardModalActivity';
 import {
   CardModalActionsContainer,
@@ -14,29 +13,31 @@ import {
   CardModalTrigger,
 } from '~/components/Cards/CardModal.styled';
 import {
-  ACTIVITY_COLUMN_DEFAULT_WIDTH,
-  CARD_MODAL_WIDE_LAYOUT_QUERY,
   CardModalColumnResize,
+  useCardColumnWidth,
 } from '~/components/Cards/CardModalColumnResize';
 import { CardModalDescription } from '~/components/Cards/CardModalDescription';
 import { CardModalEditableTitle } from '~/components/Cards/CardModalEditableTitle';
 import { DeleteCardPopover } from '~/components/Cards/DeleteCardPopover';
 import { CardModalChecklists } from '~/components/Checklists/Checklists';
 import { CreateChecklist } from '~/components/Checklists/CreateChecklist';
-import { ListCardContainer } from '~/components/Lists/List.styled';
+import {
+  ListCardContainer,
+  ListCardSkeleton,
+} from '~/components/Lists/List.styled';
 import { useGetCardById } from '~/query/cards';
 
 export function CardModal({ id }: { id: string }) {
-  const { data } = useGetCardById({ id });
-  const [columnWidth, setColumnWidth] = useState(ACTIVITY_COLUMN_DEFAULT_WIDTH);
-  const [isWideLayout, setIsWideLayout] = useState(() =>
-    typeof window !== 'undefined'
-      ? window.matchMedia(CARD_MODAL_WIDE_LAYOUT_QUERY).matches
-      : true,
-  );
+  const { data, isLoading } = useGetCardById({ id });
+  const { columnWidth, setColumnWidth, isWideLayout } = useCardColumnWidth();
 
   const gridTemplateColumns = `minmax(0, 1fr) 8px ${columnWidth}px`;
   const cardModalBodyStyle = isWideLayout ? { gridTemplateColumns } : undefined;
+
+  if (isLoading) {
+    return <ListCardSkeleton />;
+  }
+
   return (
     <CardModalRoot data-testid="CardModalRoot">
       <CardModalTrigger data-testid="CardModalTrigger">
@@ -57,24 +58,14 @@ export function CardModal({ id }: { id: string }) {
               style={cardModalBodyStyle}
             >
               <CardModalMainColumn data-testid="CardModalMainColumn">
-                <CardModalEditableTitle id={id} listId={data?.listId ?? ''} />
+                <CardModalEditableTitle id={id} />
 
                 <CardModalActionsContainer data-testid="CardModalActionsContainer">
-                  <CreateChecklist listId={data?.listId ?? ''} cardId={id} />
-
-                  <DeleteCardPopover
-                    id={id}
-                    listId={data?.listId ?? ''}
-                    cardTitle={data?.cardTitle ?? ''}
-                  />
+                  <CreateChecklist cardId={id} />
+                  <DeleteCardPopover id={id} />
                 </CardModalActionsContainer>
 
-                <CardModalDescription
-                  listId={data?.listId ?? ''}
-                  cardId={id}
-                  cardTitle={data?.cardTitle ?? ''}
-                  cardDescription={data?.cardDescription ?? ''}
-                />
+                <CardModalDescription cardId={id} />
 
                 <CardModalChecklists cardId={id} />
               </CardModalMainColumn>
@@ -82,11 +73,10 @@ export function CardModal({ id }: { id: string }) {
               <CardModalColumnResize
                 columnWidth={columnWidth}
                 setColumnWidth={setColumnWidth}
-                setIsWideLayout={setIsWideLayout}
               />
 
               <CardModalActivityColumn data-testid="CardModalActivityColumn">
-                <CardModalActivity listId={data?.listId ?? ''} cardId={id} />
+                <CardModalActivity cardId={id} />
               </CardModalActivityColumn>
             </CardModalBody>
           </CardModalContent>

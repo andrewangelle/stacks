@@ -4,9 +4,9 @@ import {
   PopoverClose,
 } from '~/components/Boards/Boards.styled';
 import { DeleteCardPopoverTrigger } from '~/components/Cards/CardModal.styled';
+import { DeleteChecklistPopoverButton } from '~/components/ChecklistItem/ChecklistItem.styled';
 import {
   ChecklistPopoverHeader,
-  DeleteChecklistPopoverButton,
   DeleteChecklistPopoverContent,
 } from '~/components/Checklists/Checklists.styled';
 import { DeleteListIcon } from '~/components/Lists/List.styled';

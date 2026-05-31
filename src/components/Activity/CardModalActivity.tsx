@@ -13,16 +13,18 @@ import { ActivityComment } from '~/components/Activity/ActivityComment';
 import { ActivityLogo } from '~/components/Activity/ActivityLogo';
 import { CardModalTitle } from '~/components/Cards/CardModal.styled';
 import { useCreateActivity, useGetActivity } from '~/query/activity';
+import { useGetCardById } from '~/query/cards';
 import { useGetProfile } from '~/query/profile';
 import { Flex } from '~/styles/Page.styled';
 import { useCurrentBoardId } from '~/utils/useCurrentBoardId';
 
 type CardModalActivityProps = {
-  listId: string;
   cardId: string;
 };
 
-export function CardModalActivity({ listId, cardId }: CardModalActivityProps) {
+export function CardModalActivity({ cardId }: CardModalActivityProps) {
+  const { data: cardData } = useGetCardById({ id: cardId });
+
   const [showActivity, setShowActivity] = useState(false);
   const boardId = useCurrentBoardId();
   const { data } = useGetActivity({ cardId });
@@ -34,7 +36,7 @@ export function CardModalActivity({ listId, cardId }: CardModalActivityProps) {
     createActivity({
       boardId,
       cardId,
-      listId,
+      listId: cardData?.listId ?? '',
       type: 'comment',
       content: comment,
     });

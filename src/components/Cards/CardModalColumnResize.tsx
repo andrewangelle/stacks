@@ -1,4 +1,4 @@
-import { type PointerEvent, useEffect, useRef } from 'react';
+import { type PointerEvent, useEffect, useRef, useState } from 'react';
 import { CardModalResizeHandle } from '~/components/Cards/CardModal.styled';
 
 export const ACTIVITY_COLUMN_DEFAULT_WIDTH = 350;
@@ -9,13 +9,11 @@ const ACTIVITY_COLUMN_MAX_WIDTH = 480;
 type CardModalColumnResizeProps = {
   columnWidth: number;
   setColumnWidth: (width: number) => void;
-  setIsWideLayout: (isWideLayout: boolean) => void;
 };
 
 export function CardModalColumnResize({
   columnWidth,
   setColumnWidth,
-  setIsWideLayout,
 }: CardModalColumnResizeProps) {
   const isResizingRef = useRef(false);
   const resizeStartXRef = useRef(0);
@@ -51,13 +49,6 @@ export function CardModalColumnResize({
     );
   }
 
-  useEffect(() => {
-    const mediaQuery = window.matchMedia(CARD_MODAL_WIDE_LAYOUT_QUERY);
-    const onChange = () => setIsWideLayout(mediaQuery.matches);
-    mediaQuery.addEventListener('change', onChange);
-    return () => mediaQuery.removeEventListener('change', onChange);
-  }, [setIsWideLayout]);
-
   return (
     <CardModalResizeHandle
       data-testid="CardModalResizeHandle"
@@ -67,4 +58,23 @@ export function CardModalColumnResize({
       onPointerCancel={releasePointer}
     />
   );
+}
+
+export function useCardColumnWidth() {
+  const [columnWidth, setColumnWidth] = useState(ACTIVITY_COLUMN_DEFAULT_WIDTH);
+  const [isWideLayout, setIsWideLayout] = useState(() =>
+    typeof window !== 'undefined'
+      ? window.matchMedia(CARD_MODAL_WIDE_LAYOUT_QUERY).matches
+      : false,
+  );
+
+  useEffect(() => {
+    const mediaQuery = window.matchMedia(CARD_MODAL_WIDE_LAYOUT_QUERY);
+    const syncWideLayout = () => setIsWideLayout(mediaQuery.matches);
+    syncWideLayout();
+    mediaQuery.addEventListener('change', syncWideLayout);
+    return () => mediaQuery.removeEventListener('change', syncWideLayout);
+  }, []);
+
+  return { columnWidth, setColumnWidth, isWideLayout };
 }

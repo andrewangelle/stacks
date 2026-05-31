@@ -18,16 +18,18 @@ import {
   CreateChecklistTitle,
 } from '~/components/Checklists/Checklists.styled';
 import { useCreateActivity } from '~/query/activity';
+import { useGetCardById } from '~/query/cards';
 import { useCreateChecklist } from '~/query/checklists';
 import { useCurrentBoardId } from '~/utils/useCurrentBoardId';
 
 type CreateChecklistProps = {
-  listId: string;
   cardId: string;
 };
 
-export function CreateChecklist({ listId, cardId }: CreateChecklistProps) {
+export function CreateChecklist({ cardId }: CreateChecklistProps) {
   const boardId = useCurrentBoardId();
+  const { data } = useGetCardById({ id: cardId });
+
   const [checklistTitle, setChecklistTitle] = useState('');
   const createChecklist = useCreateChecklist();
   const createActivity = useCreateActivity();
@@ -36,12 +38,12 @@ export function CreateChecklist({ listId, cardId }: CreateChecklistProps) {
     createChecklist({
       checklistTitle,
       cardId,
-      listId,
+      listId: data?.listId ?? '',
     });
 
     createActivity({
       cardId,
-      listId,
+      listId: data?.listId ?? '',
       boardId,
       type: 'feed',
       content: `added ${checklistTitle} to this card`,

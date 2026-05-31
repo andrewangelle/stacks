@@ -4,11 +4,13 @@ import {
   PopoverClose,
 } from '~/components/Boards/Boards.styled';
 import {
+  DeleteChecklistPopoverButton,
+  DeleteChecklistPopoverTrigger,
+} from '~/components/ChecklistItem/ChecklistItem.styled';
+import {
   ChecklistPopoverHeader,
   DeleteChecklistButton,
-  DeleteChecklistPopoverButton,
   DeleteChecklistPopoverContent,
-  DeleteChecklistPopoverTrigger,
 } from '~/components/Checklists/Checklists.styled';
 import { useDeleteChecklist, useGetChecklist } from '~/query/checklists';
 

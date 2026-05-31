@@ -16,10 +16,13 @@ import {
   ChecklistCheckboxContentColumn,
   ChecklistItemActions,
   ChecklistLeadingColumn,
-  ChecklistPopoverHeader,
   DeleteChecklistPopoverButton,
-  DeleteChecklistPopoverContent,
   DeleteChecklistPopoverTrigger,
+  EditChecklistItemContainer,
+} from '~/components/ChecklistItem/ChecklistItem.styled';
+import {
+  ChecklistPopoverHeader,
+  DeleteChecklistPopoverContent,
 } from '~/components/Checklists/Checklists.styled';
 import { useCreateActivity } from '~/query/activity';
 import {
@@ -33,7 +36,7 @@ import { useOutsideClick } from '~/utils/useOutsideClick';
 const AiOutlineCheck = AiIcons.AiOutlineCheck;
 const AiOutlineEllipsis = AiIcons.AiOutlineEllipsis;
 
-export function Checkbox({ id }: { id: string }) {
+export function ChecklistItem({ id }: { id: string }) {
   const boardId = useCurrentBoardId();
   const { data: checklistItem } = useGetChecklistItem({ itemId: id });
   const updateItem = useUpdateChecklistItem();
@@ -113,11 +116,18 @@ export function Checkbox({ id }: { id: string }) {
       >
         {!isEditingLabel && (
           <CheckboxLabel
+            tabIndex={0}
             data-testid="CheckboxLabel"
             checked={checklistItem.isCompleted}
             onClick={() => {
               setIsEditingLabel(true);
               setEditedLabel(checklistItem.label);
+            }}
+            onKeyDown={(event) => {
+              if (event.key === 'Enter' || event.key === ' ') {
+                setIsEditingLabel(true);
+                setEditedLabel(checklistItem.label);
+              }
             }}
           >
             {checklistItem.label}
@@ -125,7 +135,7 @@ export function Checkbox({ id }: { id: string }) {
         )}
 
         {isEditingLabel && (
-          <>
+          <EditChecklistItemContainer data-testid="EditChecklistItemContainer">
             <AddChecklistItemInput
               data-testid="AddChecklistItemInput"
               value={editedLabel}
@@ -148,47 +158,46 @@ export function Checkbox({ id }: { id: string }) {
                 X
               </CloseDescriptionButton>
             </ChecklistItemActions>
-          </>
+          </EditChecklistItemContainer>
         )}
 
-        <div ref={clickOutsideDeletePopoverRef}>
-          <Popover.Root open={isDeleteOpen}>
-            <DeleteChecklistPopoverTrigger data-testid="DeleteChecklistPopoverTrigger">
-              <AiOutlineEllipsis
-                onClick={() => setDeleteOpen(true)}
-                style={{ position: 'absolute', right: 5, top: 15 }}
-              />
-            </DeleteChecklistPopoverTrigger>
+        {!isEditingLabel && (
+          <div ref={clickOutsideDeletePopoverRef}>
+            <Popover.Root open={isDeleteOpen}>
+              <DeleteChecklistPopoverTrigger data-testid="DeleteChecklistPopoverTrigger">
+                <AiOutlineEllipsis onClick={() => setDeleteOpen(true)} />
+              </DeleteChecklistPopoverTrigger>
 
-            <DeleteChecklistPopoverContent
-              data-testid="DeleteChecklistPopoverContent"
-              side="right"
-            >
-              <ChecklistPopoverHeader data-testid="ChecklistPopoverHeader">
-                Item actions
-                <PopoverClose
-                  data-testid="PopoverClose"
-                  onClick={() => setDeleteOpen(false)}
-                >
-                  X
-                </PopoverClose>
-              </ChecklistPopoverHeader>
-
-              <CreateBoardCloseBorder data-testid="CreateBoardCloseBorder" />
-
-              <DeleteChecklistPopoverButton
-                data-testid="DeleteChecklistPopoverButton"
-                onClick={() =>
-                  deleteChecklistItem({
-                    itemId: id,
-                  })
-                }
+              <DeleteChecklistPopoverContent
+                data-testid="DeleteChecklistPopoverContent"
+                side="right"
               >
-                Delete
-              </DeleteChecklistPopoverButton>
-            </DeleteChecklistPopoverContent>
-          </Popover.Root>
-        </div>
+                <ChecklistPopoverHeader data-testid="ChecklistPopoverHeader">
+                  Item actions
+                  <PopoverClose
+                    data-testid="PopoverClose"
+                    onClick={() => setDeleteOpen(false)}
+                  >
+                    X
+                  </PopoverClose>
+                </ChecklistPopoverHeader>
+
+                <CreateBoardCloseBorder data-testid="CreateBoardCloseBorder" />
+
+                <DeleteChecklistPopoverButton
+                  data-testid="DeleteChecklistPopoverButton"
+                  onClick={() =>
+                    deleteChecklistItem({
+                      itemId: id,
+                    })
+                  }
+                >
+                  Delete
+                </DeleteChecklistPopoverButton>
+              </DeleteChecklistPopoverContent>
+            </Popover.Root>
+          </div>
+        )}
       </ChecklistCheckboxContentColumn>
     </ChecklistCheckboxContainer>
   );
