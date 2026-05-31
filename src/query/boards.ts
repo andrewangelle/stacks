@@ -15,24 +15,30 @@ const queryKeys = {
   detail: (boardId: string) => ['board', boardId] as const,
 };
 
+export const boardsQueryOptions = {
+  queryKey: queryKeys.list(),
+  queryFn() {
+    return getBoards();
+  },
+};
+
 export function useGetBoards() {
-  return useQuery({
-    queryKey: queryKeys.list(),
-    queryFn() {
-      return getBoards();
-    },
-  });
+  return useQuery<Stack[]>(boardsQueryOptions);
 }
 
-export function useGetBoard() {
-  const boardId = useCurrentBoardId();
-  return useQuery({
+export function boardByIdQueryOptions(boardId: string) {
+  return {
     queryKey: queryKeys.detail(boardId),
     enabled: !!boardId,
     queryFn() {
       return getBoardById({ data: { boardId } });
     },
-  });
+  };
+}
+
+export function useGetBoard() {
+  const boardId = useCurrentBoardId();
+  return useQuery(boardByIdQueryOptions(boardId));
 }
 
 export function useCreateBoard() {

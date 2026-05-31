@@ -1,10 +1,10 @@
-import { QueryClientProvider } from '@tanstack/react-query';
+import { type QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import '~/styles/animations.css';
 import '~/styles/board-gradient.css';
 import '@pigment-css/react/styles.css';
 import { ClerkProvider } from '@clerk/tanstack-react-start';
 import {
-  createRootRoute,
+  createRootRouteWithContext,
   HeadContent,
   Outlet,
   Scripts,
@@ -12,10 +12,15 @@ import {
 import type { ReactNode } from 'react';
 import { DndProvider } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
+import { DevTools } from '~/components/DevTools';
 import { queryClient } from '~/query/queryClient';
 import GlobalFonts from '~/styles/GlobalFonts';
 
-export const Route = createRootRoute({
+type RouterContext = {
+  queryClient: QueryClient;
+};
+
+export const Route = createRootRouteWithContext<RouterContext>()({
   head() {
     return {
       meta: [
@@ -49,6 +54,7 @@ function RootDocument({ children }: { children: ReactNode }) {
             {children}
             <Scripts />
             <GlobalFonts />
+            <DevTools />
           </DndProvider>
         </QueryClientProvider>
       </body>

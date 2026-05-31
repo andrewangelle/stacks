@@ -1,6 +1,8 @@
 import { createRouter } from '@tanstack/react-router';
+import { setupRouterSsrQueryIntegration } from '@tanstack/react-router-ssr-query';
 import { AppError } from '~/components/AppError';
 import { NotFound } from '~/components/NotFound';
+import { queryClient } from '~/query/queryClient';
 import { initSentry } from '~/sentry.config';
 import { boardIDMask } from '~/utils/routeMasks';
 import { routeTree } from './routeTree.gen';
@@ -12,11 +14,20 @@ export function getRouter() {
     defaultNotFoundComponent: NotFound,
     scrollRestoration: true,
     routeMasks: [boardIDMask],
+    context: {
+      queryClient,
+    },
+    defaultPreloadStaleTime: 0,
   });
 
   if (!router.isServer) {
     initSentry(router);
   }
+
+  setupRouterSsrQueryIntegration({
+    router,
+    queryClient,
+  });
 
   return router;
 }

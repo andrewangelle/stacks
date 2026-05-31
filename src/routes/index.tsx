@@ -10,6 +10,8 @@ export const Route = createFileRoute('/')({
     if (context.userId) {
       throw redirect({ to: '/boards' });
     }
+
+    context.queryClient.clear();
     throw redirect({ to: '/auth/sign-in' });
   },
 });
