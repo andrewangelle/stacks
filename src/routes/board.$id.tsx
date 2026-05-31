@@ -7,7 +7,7 @@ import { BoardPageBackground } from '~/components/Nav/Nav.styled';
 import { NavBar } from '~/components/Nav/NavBar';
 import { fetchUserId } from '~/middleware/auth';
 import { boardByIdQueryOptions, useGetBoard } from '~/query/boards';
-import { reorderLists, useGetLists } from '~/query/lists';
+import { listsQueryOptions, reorderLists, useGetLists } from '~/query/lists';
 import { Flex, Padding } from '~/styles/Page.styled';
 import { useCurrentBoardId } from '~/utils/useCurrentBoardId';
 
@@ -22,6 +22,7 @@ export const Route = createFileRoute('/board/$id')({
       throw redirect({ to: '/auth/sign-in' });
     }
     await context.queryClient.ensureQueryData(boardByIdQueryOptions(params.id));
+    await context.queryClient.ensureQueryData(listsQueryOptions(params.id));
   },
   component() {
     const { data: board } = useGetBoard();

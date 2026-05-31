@@ -20,15 +20,19 @@ const queryKeys = {
   detail: (id: string) => ['list', id] as const,
 };
 
-export function useGetLists() {
-  const boardId = useCurrentBoardId();
-  return useQuery({
+export function listsQueryOptions(boardId: string) {
+  return {
     queryKey: queryKeys.list(boardId),
     enabled: !!boardId,
     queryFn() {
       return getLists({ data: { boardId } });
     },
-  });
+  };
+}
+
+export function useGetLists() {
+  const boardId = useCurrentBoardId();
+  return useQuery(listsQueryOptions(boardId));
 }
 
 export function useGetListById({ id }: { id: string }) {
