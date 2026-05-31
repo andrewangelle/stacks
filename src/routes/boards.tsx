@@ -9,7 +9,7 @@ import {
 import { CreateBoard } from '~/components/Boards/CreateBoard';
 import { NavBar } from '~/components/Nav/NavBar';
 import { fetchUserId } from '~/middleware/auth';
-import { useGetBoards } from '~/query/boards';
+import { boardsQueryOptions, useGetBoards } from '~/query/boards';
 import { Padding } from '~/styles/Page.styled';
 
 export const Route = createFileRoute('/boards')({
@@ -17,10 +17,13 @@ export const Route = createFileRoute('/boards')({
     const { userId } = await fetchUserId();
     return { userId };
   },
-  loader({ context }) {
+  async loader({ context }) {
     if (!context.userId) {
+      context.queryClient.clear();
       throw redirect({ to: '/auth/sign-in' });
     }
+
+    await context.queryClient.ensureQueryData(boardsQueryOptions);
     return { userId: context.userId };
   },
   component() {
