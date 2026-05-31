@@ -8,13 +8,13 @@ import {
   ChecklistLeadingColumn,
 } from '~/components/ChecklistItem/ChecklistItem.styled';
 import { DeleteChecklistItem } from '~/components/ChecklistItem/DeleteChecklistItem';
+import { EditableChecklistLabel } from '~/components/ChecklistItem/EditableChecklistLabel';
 import { useCreateActivity } from '~/query/activity';
 import {
   useGetChecklistItem,
   useUpdateChecklistItem,
 } from '~/query/checklistItems';
 import { useCurrentBoardId } from '~/utils/useCurrentBoardId';
-import { EditableChecklistLabel } from './EditableChecklistLabel';
 
 const AiOutlineCheck = AiIcons.AiOutlineCheck;
 
