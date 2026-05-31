@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import * as Io from 'react-icons/io';
 import {
   CardDescriptionText,
@@ -10,27 +10,27 @@ import {
   EditDescriptionButton,
   SaveDescriptionButton,
 } from '~/components/Cards/CardModal.styled';
-import { useUpdateCard } from '~/query/cards';
+import { useGetCardById, useUpdateCard } from '~/query/cards';
 import { Flex } from '~/styles/Page.styled';
 
 type CardModalDescriptionProps = {
-  listId: string;
   cardId: string;
-  cardTitle: string;
-  cardDescription: string;
 };
 
-export function CardModalDescription({
-  listId,
-  cardId,
-  cardTitle,
-  cardDescription,
-}: CardModalDescriptionProps) {
+export function CardModalDescription({ cardId }: CardModalDescriptionProps) {
+  const { data, isSuccess } = useGetCardById({ id: cardId });
   const [isEditing, setEditing] = useState(false);
-  const [description, setDescription] = useState(cardDescription);
+  const [description, setDescription] = useState('');
   const updateCard = useUpdateCard();
 
   const placeHolderText = 'Add a more detailed description...';
+
+  useEffect(() => {
+    if (isSuccess) {
+      setDescription(data?.cardDescription ?? '');
+    }
+  }, [isSuccess, data?.cardDescription]);
+
   return (
     <DescriptionContainer data-testid="DescriptionContainer">
       <Flex data-testid="Flex">
@@ -40,7 +40,7 @@ export function CardModalDescription({
           Description
         </CardModalTitle>
 
-        {cardDescription && !isEditing && (
+        {data?.cardDescription && !isEditing && (
           <EditDescriptionButton
             data-testid="EditDescriptionButton"
             secondary
@@ -51,13 +51,13 @@ export function CardModalDescription({
         )}
       </Flex>
 
-      {cardDescription && !isEditing && (
+      {data?.cardDescription && !isEditing && (
         <CardDescriptionText data-testid="CardDescriptionText">
-          {cardDescription}
+          {data?.cardDescription}
         </CardDescriptionText>
       )}
 
-      {!isEditing && !cardDescription && (
+      {!isEditing && !data?.cardDescription && (
         <DescriptionPlaceholder
           data-testid="DescriptionPlaceholder"
           onClick={() => setEditing(true)}
@@ -82,9 +82,9 @@ export function CardModalDescription({
               onClick={() => {
                 updateCard({
                   cardId,
-                  cardTitle,
+                  cardTitle: data?.cardTitle ?? '',
                   cardDescription: description,
-                  listId,
+                  listId: data?.listId ?? '',
                 });
                 setEditing(false);
               }}

@@ -9,22 +9,17 @@ import {
   CardModalSiderButtonText,
   DeleteCardPopoverTrigger,
 } from '~/components/Cards/CardModal.styled';
+import { DeleteChecklistPopoverButton } from '~/components/ChecklistItem/ChecklistItem.styled';
 import {
   ChecklistPopoverHeader,
-  DeleteChecklistPopoverButton,
   DeleteChecklistPopoverContent,
 } from '~/components/Checklists/Checklists.styled';
-import { useDeleteCard } from '~/query/cards';
+import { useDeleteCard, useGetCardById } from '~/query/cards';
 
-type DeleteCardPopoverProps = Pick<Card, 'id' | 'cardTitle'> & {
-  listId: string;
-};
+type DeleteCardPopoverProps = Pick<Card, 'id'>;
 
-export function DeleteCardPopover({
-  id,
-  listId,
-  cardTitle,
-}: DeleteCardPopoverProps) {
+export function DeleteCardPopover({ id }: DeleteCardPopoverProps) {
+  const { data } = useGetCardById({ id });
   const deleteCard = useDeleteCard();
   return (
     <Popover.Root>
@@ -38,7 +33,7 @@ export function DeleteCardPopover({
 
       <DeleteChecklistPopoverContent data-testid="DeleteChecklistPopoverContent">
         <ChecklistPopoverHeader data-testid="ChecklistPopoverHeader">
-          {`Delete ${cardTitle}`}
+          {`Delete ${data?.cardTitle ?? ''}`}
           <PopoverClose data-testid="PopoverClose">X</PopoverClose>
         </ChecklistPopoverHeader>
         <CreateBoardCloseBorder data-testid="CreateBoardCloseBorder" />
@@ -48,7 +43,7 @@ export function DeleteCardPopover({
           onClick={() => {
             deleteCard({
               cardId: id,
-              listId,
+              listId: data?.listId ?? '',
             });
           }}
         >

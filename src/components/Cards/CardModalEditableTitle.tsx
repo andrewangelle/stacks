@@ -12,13 +12,9 @@ import { Flex } from '~/styles/Page.styled';
 
 type CardModalEditableTitleProps = {
   id: string;
-  listId: string;
 };
 
-export function CardModalEditableTitle({
-  id,
-  listId,
-}: CardModalEditableTitleProps) {
+export function CardModalEditableTitle({ id }: CardModalEditableTitleProps) {
   const [isEditingTitle, setEditingTitle] = useState(false);
   const { data: card } = useGetCardById({ id });
   const [editedTitle, setEditedTitle] = useState(card?.cardTitle ?? '');
@@ -29,7 +25,7 @@ export function CardModalEditableTitle({
       cardDescription: card?.cardDescription ?? '',
       cardTitle: editedTitle,
       cardId: id,
-      listId: listId,
+      listId: card?.listId ?? '',
     });
     setEditingTitle(false);
   }

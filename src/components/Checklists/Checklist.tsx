@@ -1,29 +1,14 @@
-import type { ChecklistItem } from '@prisma/client';
-import { useState } from 'react';
+import type { ChecklistItem as ChecklistItemType } from '@prisma/client';
 import * as Bs from 'react-icons/bs';
-import {
-  CardModalTitle,
-  CloseDescriptionButton,
-} from '~/components/Cards/CardModal.styled';
-import { Checkbox } from '~/components/Checklists/Checkbox';
-import {
-  AddChecklistButton,
-  AddChecklistItemButton,
-  AddChecklistItemInputIndented,
-  ChecklistContentColumn,
-  ChecklistHeader,
-  ChecklistItemActionsIndented,
-  ChecklistLeadingColumn,
-  ChecklistProgressIndicator,
-  ChecklistProgressPercentage,
-  ChecklistProgressRoot,
-  ChecklistProgressRow,
-} from '~/components/Checklists/Checklists.styled';
+import { CardModalTitle } from '~/components/Cards/CardModal.styled';
+import { AddChecklistItem } from '~/components/ChecklistItem/AddChecklistItem';
+import { ChecklistItem } from '~/components/ChecklistItem/ChecklistItem';
+import { ChecklistProgress } from '~/components/Checklists/ChecklistProgress';
+import { ChecklistHeader } from '~/components/Checklists/Checklists.styled';
 import { DeleteChecklist } from '~/components/Checklists/DeleteChecklist';
 import { Draggable } from '~/components/Draggable';
 import {
   reorderChecklistItems,
-  useCreateChecklistItem,
   useGetChecklistItems,
 } from '~/query/checklistItems';
 import { useGetChecklist } from '~/query/checklists';
@@ -32,12 +17,6 @@ import { Flex } from '~/styles/Page.styled';
 export function Checklist({ id }: { id: string }) {
   const { data: checklist } = useGetChecklist({ checklistId: id });
   const { data } = useGetChecklistItems({ checklistId: id });
-  const [isEditing, setIsEditing] = useState(false);
-  const [label, setLabel] = useState('');
-  const createChecklistItem = useCreateChecklistItem();
-
-  const completedItems = data?.filter((item) => item.isCompleted);
-  const progressPercent = getPercent(data?.length, completedItems?.length);
 
   if (!checklist) return null;
 
@@ -53,89 +32,23 @@ export function Checklist({ id }: { id: string }) {
         <DeleteChecklist id={id} />
       </ChecklistHeader>
 
-      <ChecklistProgressRow data-testid="ChecklistProgressRow">
-        <ChecklistLeadingColumn data-testid="ChecklistLeadingColumn">
-          <ChecklistProgressPercentage data-testid="ChecklistProgressPercentage">
-            {`${progressPercent}%`}
-          </ChecklistProgressPercentage>
-        </ChecklistLeadingColumn>
+      <ChecklistProgress checklistId={id} />
 
-        <ChecklistContentColumn data-testid="ChecklistContentColumn">
-          <ChecklistProgressRoot data-testid="ChecklistProgressRoot">
-            <ChecklistProgressIndicator
-              data-testid="ChecklistProgressIndicator"
-              style={{ width: `${progressPercent}%` }}
-            />
-          </ChecklistProgressRoot>
-        </ChecklistContentColumn>
-      </ChecklistProgressRow>
-
-      {data?.map((checklistItem: ChecklistItem) => (
+      {data?.map((checklistItem: ChecklistItemType) => (
         <Draggable
           key={checklistItem.id}
           id={checklistItem.id}
           name={checklistItem.label}
           type="checklistItem"
-          onDrop={(item: ChecklistItem) =>
+          onDrop={(item: ChecklistItemType) =>
             reorderChecklistItems(item, id, checklistItem.id)
           }
         >
-          <Checkbox id={checklistItem.id} />
+          <ChecklistItem id={checklistItem.id} />
         </Draggable>
       ))}
 
-      {!isEditing && (
-        <AddChecklistItemButton
-          data-testid="AddChecklistItemButton"
-          secondary
-          onClick={() => setIsEditing(true)}
-        >
-          Add an item
-        </AddChecklistItemButton>
-      )}
-
-      {isEditing && (
-        <>
-          <AddChecklistItemInputIndented
-            data-testid="AddChecklistItemInput"
-            value={label}
-            placeholder={'Add an item'}
-            autoFocus
-            onChange={(event) => setLabel(event.target.value)}
-          />
-
-          <ChecklistItemActionsIndented data-testid="ChecklistItemActions">
-            <AddChecklistButton
-              data-testid="AddChecklistButton"
-              onClick={() => {
-                createChecklistItem({
-                  label,
-                  cardId: checklist?.cardId,
-                  checklistId: id,
-                  listId: checklist?.listId,
-                });
-                setIsEditing(false);
-                setLabel('');
-              }}
-            >
-              Add
-            </AddChecklistButton>
-
-            <CloseDescriptionButton
-              data-testid="CloseDescriptionButton"
-              secondary
-              onClick={() => setIsEditing(false)}
-            >
-              X
-            </CloseDescriptionButton>
-          </ChecklistItemActionsIndented>
-        </>
-      )}
+      <AddChecklistItem checklistId={id} />
     </div>
   );
-}
-
-function getPercent(total?: number, completed?: number) {
-  const value = (completed || 0) / (total || 0);
-  return Math.round((Number.isNaN(value) ? 0 : value) * 100);
 }

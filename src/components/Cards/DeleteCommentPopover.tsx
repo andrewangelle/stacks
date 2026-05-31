@@ -5,10 +5,12 @@ import {
   PopoverClose,
 } from '~/components/Boards/Boards.styled';
 import {
-  ChecklistPopoverHeader,
   DeleteChecklistPopoverButton,
-  DeleteChecklistPopoverContent,
   DeleteChecklistPopoverTrigger,
+} from '~/components/ChecklistItem/ChecklistItem.styled';
+import {
+  ChecklistPopoverHeader,
+  DeleteChecklistPopoverContent,
 } from '~/components/Checklists/Checklists.styled';
 import { useDeleteActivity } from '~/query/activity';
 
