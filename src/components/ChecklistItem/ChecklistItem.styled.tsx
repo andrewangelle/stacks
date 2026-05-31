@@ -133,7 +133,7 @@ export const CheckboxRoot = styled(Checkbox.Root)<CheckboxRootProps>({
   width: '16px',
   height: '16px',
   verticalAlign: 'top',
-  top: '10px',
+  top: '11px',
   position: 'relative',
   cursor: 'pointer',
   variants: [
@@ -163,7 +163,8 @@ export const DeleteChecklistPopoverTrigger = styled(Popover.Trigger)`
   height: 100%;
 
   &:hover {
+    position: relative;
     background: rgba(0,0,0,0.3);
-    border-radius: 50%;
+    border-radius: 4px 
   }
 `;
