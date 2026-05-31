@@ -12,9 +12,7 @@ import { useGetChecklistItems } from '~/query/checklistItems';
 
 export function ChecklistProgress({ checklistId }: { checklistId: string }) {
   const { data } = useGetChecklistItems({ checklistId });
-
   const completedItems = data?.filter((item) => item.isCompleted);
-
   const progressPercent = getPercent(data?.length, completedItems?.length);
 
   return (
