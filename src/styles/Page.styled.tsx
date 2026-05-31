@@ -131,3 +131,13 @@ export const LogoLink = styled(Link)({
   gap: '8px',
   minHeight: 'unset',
 });
+
+export const DraggingItemShadow = styled.div<{
+  height?: number;
+  width?: number;
+}>({
+  height: ({ height }) => `${height ?? 0}px`,
+  width: ({ width }) => `${width ?? 0}px`,
+  background: 'rgba(0,0,0,0.1)',
+  borderRadius: '5px',
+});

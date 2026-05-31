@@ -20,8 +20,9 @@ import {
   ChecklistProgressRow,
 } from '~/components/Checklists/Checklists.styled';
 import { DeleteChecklist } from '~/components/Checklists/DeleteChecklist';
-import { DragDropChecklistItem } from '~/components/Checklists/DragDropChecklistItems';
+import { Draggable } from '~/components/Draggable';
 import {
+  reorderChecklistItems,
   useCreateChecklistItem,
   useGetChecklistItems,
 } from '~/query/checklistItems';
@@ -69,15 +70,18 @@ export function Checklist({ id }: { id: string }) {
         </ChecklistContentColumn>
       </ChecklistProgressRow>
 
-      {data?.map((item: ChecklistItem) => (
-        <DragDropChecklistItem
-          key={item.id}
-          id={item.id}
-          label={item.label}
-          checklistId={id}
+      {data?.map((checklistItem: ChecklistItem) => (
+        <Draggable
+          key={checklistItem.id}
+          id={checklistItem.id}
+          name={checklistItem.label}
+          type="checklistItem"
+          onDrop={(item: ChecklistItem) =>
+            reorderChecklistItems(item, id, checklistItem.id)
+          }
         >
-          <Checkbox id={item.id} />
-        </DragDropChecklistItem>
+          <Checkbox id={checklistItem.id} />
+        </Draggable>
       ))}
 
       {!isEditing && (
@@ -99,6 +103,7 @@ export function Checklist({ id }: { id: string }) {
             autoFocus
             onChange={(event) => setLabel(event.target.value)}
           />
+
           <ChecklistItemActionsIndented data-testid="ChecklistItemActions">
             <AddChecklistButton
               data-testid="AddChecklistButton"
@@ -115,6 +120,7 @@ export function Checklist({ id }: { id: string }) {
             >
               Add
             </AddChecklistButton>
+
             <CloseDescriptionButton
               data-testid="CloseDescriptionButton"
               secondary
