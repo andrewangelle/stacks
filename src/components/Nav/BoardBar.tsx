@@ -2,6 +2,7 @@ import { useState } from 'react';
 import {
   BoardBarContainer,
   BoardTitle,
+  EditBoardTitleForm,
   EditBoardTitleInput,
 } from '~/components/Nav/Nav.styled';
 import { useGetBoard, useUpdateBoard } from '~/query/boards';
@@ -15,6 +16,11 @@ export function BoardBar() {
   const [editedBoardTitle, setEditedBoardTitle] = useState(' ');
   const outsideClickRef = useOutsideClick(onOutsideNameEditClick, isEditing);
   const updateBoard = useUpdateBoard();
+
+  function toggleEditBoardTitleForm() {
+    setEditing(true);
+    setEditedBoardTitle(board.data?.boardTitle ?? '');
+  }
 
   function onOutsideNameEditClick() {
     setEditing(false);
@@ -30,27 +36,13 @@ export function BoardBar() {
   return (
     <BoardBarContainer background={background} data-testid="BoardBarContainer">
       {!isEditing && (
-        <BoardTitle
-          data-testid="BoardTitle"
-          onClick={() => {
-            setEditing(true);
-            setEditedBoardTitle(board.data?.boardTitle ?? '');
-          }}
-        >
+        <BoardTitle data-testid="BoardTitle" onClick={toggleEditBoardTitleForm}>
           {board.data?.boardTitle}
         </BoardTitle>
       )}
 
       {isEditing && (
-        <form
-          ref={outsideClickRef}
-          style={{
-            width: 'max-content',
-            height: '40px',
-            position: 'relative',
-            top: '-5px',
-          }}
-        >
+        <EditBoardTitleForm ref={outsideClickRef}>
           <EditBoardTitleInput
             name="boardTitle"
             data-testid="EditBoardTitleInput"
@@ -59,7 +51,7 @@ export function BoardBar() {
             autoFocus
             onChange={(event) => setEditedBoardTitle(event.target.value)}
           />
-        </form>
+        </EditBoardTitleForm>
       )}
     </BoardBarContainer>
   );

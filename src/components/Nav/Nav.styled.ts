@@ -140,6 +140,13 @@ export const BoardTitle = styled.div`
   }
 `;
 
+export const EditBoardTitleForm = styled.form`
+  width: max-content;
+  height: 40px;
+  position: relative;
+  top: -5px;
+`;
+
 export const EditBoardTitleInput = styled.input` 
   border-radius: 5px;
   border: none;
