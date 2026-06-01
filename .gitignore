@@ -10,3 +10,6 @@ RISKS.md
 src/generated
 .pnpm-store
 .understand-anything
+/test-results/
+/playwright-report/
+/playwright/.cache/

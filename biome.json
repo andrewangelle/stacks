@@ -11,6 +11,7 @@
       "**/*.json",
       "**/server/**",
       "**/src/**",
+      "**/tests/**",
       "!**/src/routeTree.gen.ts",
       "**/.vscode/**",
       "!**/.react-router",
