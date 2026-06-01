@@ -34,7 +34,7 @@ export function List({ id: listId }: { id: string }) {
           id={card.id}
           name={card.cardTitle}
           type="card"
-          onDrop={(item: Card) => reorderCards(item, card.listId, card.id)}
+          onDrop={(item: Card) => reorderCards(item, listId, card.id)}
         >
           <CardModal id={card.id} />
         </Draggable>

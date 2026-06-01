@@ -15,6 +15,18 @@ export function AddChecklistItem({ checklistId }: { checklistId: string }) {
   const [isEditing, setIsEditing] = useState(false);
   const [label, setLabel] = useState('');
   const createChecklistItem = useCreateChecklistItem();
+
+  function createItem() {
+    createChecklistItem({
+      label,
+      cardId: checklist?.cardId ?? '',
+      checklistId,
+      listId: checklist?.listId ?? '',
+    });
+    setIsEditing(false);
+    setLabel('');
+  }
+
   return (
     <>
       {!isEditing && (
@@ -40,16 +52,7 @@ export function AddChecklistItem({ checklistId }: { checklistId: string }) {
           <ChecklistItemActionsIndented data-testid="ChecklistItemActions">
             <AddChecklistButton
               data-testid="AddChecklistButton"
-              onClick={() => {
-                createChecklistItem({
-                  label,
-                  cardId: checklist?.cardId ?? '',
-                  checklistId,
-                  listId: checklist?.listId ?? '',
-                });
-                setIsEditing(false);
-                setLabel('');
-              }}
+              onClick={createItem}
             >
               Add
             </AddChecklistButton>
