@@ -4,7 +4,10 @@ import { CardModalTitle } from '~/components/Cards/CardModal.styled';
 import { AddChecklistItem } from '~/components/ChecklistItem/AddChecklistItem';
 import { ChecklistItem } from '~/components/ChecklistItem/ChecklistItem';
 import { ChecklistProgress } from '~/components/Checklists/ChecklistProgress';
-import { ChecklistHeader } from '~/components/Checklists/Checklists.styled';
+import {
+  ChecklistContainer,
+  ChecklistHeader,
+} from '~/components/Checklists/Checklists.styled';
 import { DeleteChecklist } from '~/components/Checklists/DeleteChecklist';
 import { Draggable } from '~/components/Draggable';
 import {
@@ -21,14 +24,16 @@ export function Checklist({ id }: { id: string }) {
   if (!checklist) return null;
 
   return (
-    <div style={{ margin: '30px 0px' }}>
+    <ChecklistContainer data-testid="ChecklistContainer">
       <ChecklistHeader data-testid="ChecklistHeader" key={id}>
         <Flex data-testid="Flex">
           <Bs.BsCheck2Square size={24} />
+
           <CardModalTitle data-testid="CardModalTitle">
             {checklist?.checklistTitle}
           </CardModalTitle>
         </Flex>
+
         <DeleteChecklist id={id} />
       </ChecklistHeader>
 
@@ -49,6 +54,6 @@ export function Checklist({ id }: { id: string }) {
       ))}
 
       <AddChecklistItem checklistId={id} />
-    </div>
+    </ChecklistContainer>
   );
 }

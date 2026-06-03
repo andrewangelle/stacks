@@ -70,10 +70,12 @@ export function CardModal({ id }: { id: string }) {
                 <CardModalChecklists cardId={id} />
               </CardModalMainColumn>
 
-              <CardModalColumnResize
-                columnWidth={columnWidth}
-                setColumnWidth={setColumnWidth}
-              />
+              {isWideLayout ? (
+                <CardModalColumnResize
+                  columnWidth={columnWidth}
+                  setColumnWidth={setColumnWidth}
+                />
+              ) : null}
 
               <CardModalActivityColumn data-testid="CardModalActivityColumn">
                 <CardModalActivity cardId={id} />
