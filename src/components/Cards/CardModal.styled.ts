@@ -14,6 +14,40 @@ export const cardModalSectionIconSize = '24px';
 /** Left edge of description body, checklist labels, inputs, and action rows (icon + 16px gap). */
 export const cardModalContentIndent = '40px';
 
+export const CardModalRoot = styled(Dialog.Root)``;
+export const CardModalPortal = styled(Dialog.Portal)``;
+export const CardModalOverlay = styled(Dialog.Overlay)` 
+  background: rgba(0 0 0 / 0.5);
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: grid;
+  place-items: center;
+  overflow-y: auto;
+  z-index: 2;
+`;
+
+export const CardModalBody = styled.div`
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 8px minmax(200px, 280px);
+  grid-template-rows: minmax(0, 1fr);
+  gap: 0;
+  align-items: stretch;
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow: hidden;
+
+  ${cardModalBreakpoint} {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    overflow-y: auto;
+    overflow-x: hidden;
+  }
+`;
+
 export const CardModalActionsContainer = styled.div`
   display: flex;
   flex-wrap: wrap;
@@ -54,33 +88,6 @@ export const DeleteCardPopoverTrigger = styled(Popover.Trigger)`
   width: auto;
 `;
 
-export const CardModalRoot = styled(Dialog.Root)``;
-export const CardModalPortal = styled(Dialog.Portal)``;
-export const CardModalOverlay = styled(Dialog.Overlay)` 
-  background: rgba(0 0 0 / 0.5);
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  display: grid;
-  place-items: center;
-  overflow-y: auto;
-  z-index: 2;
-`;
-
-export const CardModalBody = styled.div`
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) 8px minmax(200px, 280px);
-  gap: 0;
-  align-items: start;
-
-  ${cardModalBreakpoint} {
-    grid-template-columns: 1fr;
-    gap: 24px;
-  }
-`;
-
 export const CardModalResizeHandle = styled.div`
   height: 100%;
   cursor: ew-resize;
@@ -110,39 +117,50 @@ export const CardModalResizeHandle = styled.div`
 
 export const CardModalMainColumn = styled.div`
   min-width: 0;
+  min-height: 0;
+  overflow-y: auto;
 
   ${cardModalBreakpoint} {
     padding-right: 0;
+    flex-shrink: 0;
+    min-height: unset;
+    overflow: visible;
   }
 `;
 
 export const CardModalActivityColumn = styled.div`
   min-width: 0;
+  min-height: 0;
   padding: 12px;
   background: #ebecf0;
-  height: 100%;
+  overflow-y: auto;
 
   ${cardModalBreakpoint} {
     background: white;
+    flex-shrink: 0;
+    min-height: unset;
+    overflow: visible;
   }
 `;
 
 export const CardModalContent = styled(Dialog.Content)`
   position: relative;
   font-family: ${fontFamily};
-  min-width: 700px;
-  max-width: 88%;
-  max-height: 95%;
+  display: flex;
+  flex-direction: column;
+  max-width: 88vw;
+  height: 95vh;
   width: 100%;
   margin: 0 30px;
-  height: max-content;
-  overflow: scroll;
+  overflow: hidden;
   background: white;
   border-radius: 5px;
 
   ${cardModalBreakpoint} {
     min-width: unset;
-    max-width: calc(100% - 60px);
+    max-width: calc(100% - 30px);
+    height: auto;
+    max-height: 99vh;
   }
 `;
 
@@ -155,6 +173,7 @@ export const CardModalTrigger = styled(Dialog.Trigger)`
 
 export const CardModalCloseContainer = styled.div` 
   display: flex;
+  flex-shrink: 0;
   justify-content: flex-end;
   align-items: center;
   border-bottom: 1px solid rgba(0,0,0, 0.2);

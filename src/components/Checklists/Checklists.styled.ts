@@ -12,6 +12,10 @@ export const ChecklistsContainer = styled.div`
   margin: 30px 12px 0px;
 `;
 
+export const ChecklistContainer = styled.div`
+  margin: 30px 0px;
+`;
+
 export const ChecklistPopoverContent = styled(Popover.Content)` 
   height: 227px;
   width: 304px;

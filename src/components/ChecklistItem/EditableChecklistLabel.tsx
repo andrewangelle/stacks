@@ -71,6 +71,7 @@ export function EditableChecklistLabel({
         autoFocus
         onChange={(event) => setEditedLabel(event.target.value)}
       />
+
       <ChecklistItemActions data-testid="ChecklistItemActions">
         <AddChecklistButton
           data-testid="AddChecklistButton"
@@ -78,6 +79,7 @@ export function EditableChecklistLabel({
         >
           Save
         </AddChecklistButton>
+
         <CloseDescriptionButton
           data-testid="CloseDescriptionButton"
           secondary
