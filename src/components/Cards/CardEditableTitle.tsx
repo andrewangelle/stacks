@@ -1,14 +1,13 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import * as Bs from 'react-icons/bs';
 import {
   CardModalTitle,
   CardModalTitleContainer,
-  EditCardTitleCancelButton,
+  EditCardTitleForm,
   EditCardTitleInput,
-  EditCardTitleSaveButton,
 } from '~/components/Cards/Card.styled';
 import { useGetCardById, useUpdateCard } from '~/query/cards';
-import { Flex } from '~/styles/Page.styled';
+import { useOutsideClick } from '~/utils/useOutsideClick';
 
 type CardEditableTitleProps = {
   id: string;
@@ -17,68 +16,52 @@ type CardEditableTitleProps = {
 export function CardEditableTitle({ id }: CardEditableTitleProps) {
   const [isEditingTitle, setEditingTitle] = useState(false);
   const { data: card } = useGetCardById({ id });
-  const [editedTitle, setEditedTitle] = useState(card?.cardTitle ?? '');
+  const [editedTitle, setEditedTitle] = useState('');
   const updateCard = useUpdateCard();
+  const outsideClickRef = useOutsideClick(
+    onOutsideTitleEditClick,
+    isEditingTitle,
+  );
 
-  function onSave() {
-    updateCard({
-      cardDescription: card?.cardDescription ?? '',
-      cardTitle: editedTitle,
-      cardId: id,
-      listId: card?.listId ?? '',
-    });
-    setEditingTitle(false);
+  function openEditTitle() {
+    setEditingTitle(true);
+    setEditedTitle(card?.cardTitle ?? '');
   }
 
-  useEffect(() => {
-    if (card?.cardTitle && editedTitle === '') {
-      setEditedTitle(card.cardTitle);
+  function onOutsideTitleEditClick() {
+    setEditingTitle(false);
+
+    if (editedTitle !== card?.cardTitle) {
+      updateCard({
+        cardDescription: card?.cardDescription ?? '',
+        cardTitle: editedTitle,
+        cardId: id,
+        listId: card?.listId ?? '',
+      });
     }
-  }, [card?.cardTitle, editedTitle]);
+  }
 
   return (
     <CardModalTitleContainer data-testid="CardModalTitleContainer">
       <Bs.BsCardHeading size={24} />
 
       {!isEditingTitle && (
-        <CardModalTitle
-          data-testid="CardModalTitle"
-          onClick={() => {
-            setEditingTitle(true);
-          }}
-        >
+        <CardModalTitle data-testid="CardModalTitle" onClick={openEditTitle}>
           {card?.cardTitle}
         </CardModalTitle>
       )}
 
       {isEditingTitle && (
-        <div style={{ position: 'relative' }}>
-          <Flex data-testid="Flex">
-            <EditCardTitleInput
-              data-testid="EditCardTitleInput"
-              value={editedTitle}
-              autoFocus
-              onChange={(event) =>
-                setEditedTitle((_prevState) => event.target.value)
-              }
-            />
-
-            <EditCardTitleSaveButton
-              data-testid="EditCardTitleSaveButton"
-              onClick={onSave}
-            >
-              Save
-            </EditCardTitleSaveButton>
-
-            <EditCardTitleCancelButton
-              data-testid="EditCardTitleCancelButton"
-              secondary
-              onClick={() => setEditingTitle(false)}
-            >
-              Cancel
-            </EditCardTitleCancelButton>
-          </Flex>
-        </div>
+        <EditCardTitleForm ref={outsideClickRef}>
+          <EditCardTitleInput
+            data-testid="EditCardTitleInput"
+            value={editedTitle}
+            autoFocus
+            onChange={(event) =>
+              setEditedTitle((_prevState) => event.target.value)
+            }
+          />
+        </EditCardTitleForm>
       )}
     </CardModalTitleContainer>
   );

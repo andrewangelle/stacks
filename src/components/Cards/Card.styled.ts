@@ -2,9 +2,8 @@ import { styled } from '@pigment-css/react';
 import * as Dialog from '@radix-ui/react-dialog';
 import * as Popover from '@radix-ui/react-popover';
 import { fontFamily } from '~/components/Boards/Boards.styled';
-import { AddCardInput } from '~/components/Lists/List.styled';
 import { Button } from '~/styles/Page.styled';
-import { focusRingBlue, red } from '~/styles/tokens';
+import { focusRingBlue } from '~/styles/tokens';
 
 const cardModalBreakpoint = '@media (max-width: 850px)';
 
@@ -264,18 +263,18 @@ export const EditDescriptionButton = styled(Button)`
   margin: -4px 0px 0px 0px;
 `;
 
-export const EditCardTitleInput = styled(AddCardInput)` 
-  width: 60%;
-  margin: 0px 8px;
+export const EditCardTitleForm = styled.form`
+  position: relative;
+  top: -1px;
+  left: -2px;
 `;
 
-export const EditCardTitleSaveButton = styled(Button)` 
-  margin: 0 4px 0 0;
-`;
-
-export const EditCardTitleCancelButton = styled(EditCardTitleSaveButton)` 
-  border-color: ${red};
-  color: ${red};
+export const EditCardTitleInput = styled.input` 
+  border: none;
+  margin: 0 16px;
+  font-size: 18px;
+  font-weight: 700;
+  font-family: ${fontFamily};
 `;
 
 export const DragCardShadow = styled.div<{ height?: number; width?: number }>({
