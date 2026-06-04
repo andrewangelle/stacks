@@ -1,25 +1,25 @@
-import { CardModalActivity } from '~/components/Activity/CardModalActivity';
+import { CardActivity } from '~/components/Activity/CardActivity';
 import {
-  CardModalActionsContainer,
-  CardModalActivityColumn,
+  CardActionsContainer,
+  CardActivityColumn,
+  CardMainColumn,
   CardModalBody,
   CardModalClose,
   CardModalCloseContainer,
   CardModalContent,
-  CardModalMainColumn,
   CardModalOverlay,
   CardModalPortal,
   CardModalRoot,
   CardModalTrigger,
 } from '~/components/Cards/Card.styled';
 import {
-  CardModalColumnResize,
+  CardColumnResize,
   useCardColumnWidth,
 } from '~/components/Cards/CardColumnResize';
-import { CardModalDescription } from '~/components/Cards/CardDescription';
-import { CardModalEditableTitle } from '~/components/Cards/CardEditableTitle';
+import { CardDescription } from '~/components/Cards/CardDescription';
+import { CardEditableTitle } from '~/components/Cards/CardEditableTitle';
 import { DeleteCardPopover } from '~/components/Cards/DeleteCardPopover';
-import { CardModalChecklists } from '~/components/Checklists/Checklists';
+import { CardChecklists } from '~/components/Checklists/Checklists';
 import { CreateChecklist } from '~/components/Checklists/CreateChecklist';
 import {
   ListCardContainer,
@@ -27,7 +27,7 @@ import {
 } from '~/components/Lists/List.styled';
 import { useGetCardById } from '~/query/cards';
 
-export function CardModal({ id }: { id: string }) {
+export function Card({ id }: { id: string }) {
   const { data, isLoading } = useGetCardById({ id });
   const { columnWidth, setColumnWidth, isWideLayout } = useCardColumnWidth();
 
@@ -57,29 +57,29 @@ export function CardModal({ id }: { id: string }) {
               data-testid="CardModalBody"
               style={cardModalBodyStyle}
             >
-              <CardModalMainColumn data-testid="CardModalMainColumn">
-                <CardModalEditableTitle id={id} />
+              <CardMainColumn data-testid="CardMainColumn">
+                <CardEditableTitle id={id} />
 
-                <CardModalActionsContainer data-testid="CardModalActionsContainer">
+                <CardActionsContainer data-testid="CardActionsContainer">
                   <CreateChecklist cardId={id} />
                   <DeleteCardPopover id={id} />
-                </CardModalActionsContainer>
+                </CardActionsContainer>
 
-                <CardModalDescription cardId={id} />
+                <CardDescription cardId={id} />
 
-                <CardModalChecklists cardId={id} />
-              </CardModalMainColumn>
+                <CardChecklists cardId={id} />
+              </CardMainColumn>
 
               {isWideLayout && (
-                <CardModalColumnResize
+                <CardColumnResize
                   columnWidth={columnWidth}
                   setColumnWidth={setColumnWidth}
                 />
               )}
 
-              <CardModalActivityColumn data-testid="CardModalActivityColumn">
-                <CardModalActivity cardId={id} />
-              </CardModalActivityColumn>
+              <CardActivityColumn data-testid="CardActivityColumn">
+                <CardActivity cardId={id} />
+              </CardActivityColumn>
             </CardModalBody>
           </CardModalContent>
         </CardModalOverlay>

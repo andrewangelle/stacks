@@ -18,11 +18,11 @@ import { useGetProfile } from '~/query/profile';
 import { Flex } from '~/styles/Page.styled';
 import { useCurrentBoardId } from '~/utils/useCurrentBoardId';
 
-type CardModalActivityProps = {
+type CardActivityProps = {
   cardId: string;
 };
 
-export function CardModalActivity({ cardId }: CardModalActivityProps) {
+export function CardActivity({ cardId }: CardActivityProps) {
   const { data: cardData } = useGetCardById({ id: cardId });
 
   const [showActivity, setShowActivity] = useState(false);

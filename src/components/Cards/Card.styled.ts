@@ -48,7 +48,7 @@ export const CardModalBody = styled.div`
   }
 `;
 
-export const CardModalActionsContainer = styled.div`
+export const CardActionsContainer = styled.div`
   display: flex;
   flex-wrap: wrap;
   gap: 12px;
@@ -88,7 +88,7 @@ export const DeleteCardPopoverTrigger = styled(Popover.Trigger)`
   width: auto;
 `;
 
-export const CardModalResizeHandle = styled.div`
+export const ResizeableCardColumn = styled.div`
   height: 100%;
   cursor: ew-resize;
   touch-action: none;
@@ -115,7 +115,7 @@ export const CardModalResizeHandle = styled.div`
   }
 `;
 
-export const CardModalMainColumn = styled.div`
+export const CardMainColumn = styled.div`
   min-width: 0;
   min-height: 0;
   overflow-y: auto;
@@ -128,7 +128,7 @@ export const CardModalMainColumn = styled.div`
   }
 `;
 
-export const CardModalActivityColumn = styled.div`
+export const CardActivityColumn = styled.div`
   min-width: 0;
   min-height: 0;
   padding: 12px;

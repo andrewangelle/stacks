@@ -1,20 +1,20 @@
 import { type PointerEvent, useEffect, useRef, useState } from 'react';
-import { CardModalResizeHandle } from '~/components/Cards/Card.styled';
+import { ResizeableCardColumn } from '~/components/Cards/Card.styled';
 
 export const ACTIVITY_COLUMN_DEFAULT_WIDTH = 350;
 export const CARD_MODAL_WIDE_LAYOUT_QUERY = '(min-width: 851px)';
 const ACTIVITY_COLUMN_MIN_WIDTH = 300;
 const ACTIVITY_COLUMN_MAX_WIDTH = 480;
 
-type CardModalColumnResizeProps = {
+type CardColumnResizeProps = {
   columnWidth: number;
   setColumnWidth: (width: number) => void;
 };
 
-export function CardModalColumnResize({
+export function CardColumnResize({
   columnWidth,
   setColumnWidth,
-}: CardModalColumnResizeProps) {
+}: CardColumnResizeProps) {
   const isResizingRef = useRef(false);
   const resizeStartXRef = useRef(0);
   const resizeStartWidthRef = useRef(columnWidth);
@@ -50,8 +50,8 @@ export function CardModalColumnResize({
   }
 
   return (
-    <CardModalResizeHandle
-      data-testid="CardModalResizeHandle"
+    <ResizeableCardColumn
+      data-testid="ResizeableCardColumn"
       onPointerDown={initializePointer}
       onPointerMove={resizeColumnWidth}
       onPointerUp={releasePointer}

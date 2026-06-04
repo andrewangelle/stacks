@@ -10,11 +10,11 @@ import {
 import { useGetCardById, useUpdateCard } from '~/query/cards';
 import { Flex } from '~/styles/Page.styled';
 
-type CardModalEditableTitleProps = {
+type CardEditableTitleProps = {
   id: string;
 };
 
-export function CardModalEditableTitle({ id }: CardModalEditableTitleProps) {
+export function CardEditableTitle({ id }: CardEditableTitleProps) {
   const [isEditingTitle, setEditingTitle] = useState(false);
   const { data: card } = useGetCardById({ id });
   const [editedTitle, setEditedTitle] = useState(card?.cardTitle ?? '');
