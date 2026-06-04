@@ -9,7 +9,7 @@ import {
   CardModalActionButton,
   CardModalSiderButtonText,
   CreateChecklistPopoverTrigger,
-} from '~/components/Cards/CardModal.styled';
+} from '~/components/Cards/Card.styled';
 import {
   ChecklistPopoverContent,
   ChecklistPopoverHeader,

@@ -1,6 +1,6 @@
 import type { ChecklistItem as ChecklistItemType } from '@prisma/client';
 import * as Bs from 'react-icons/bs';
-import { CardModalTitle } from '~/components/Cards/CardModal.styled';
+import { CardModalTitle } from '~/components/Cards/Card.styled';
 import { AddChecklistItem } from '~/components/ChecklistItem/AddChecklistItem';
 import { ChecklistItem } from '~/components/ChecklistItem/ChecklistItem';
 import { ChecklistProgress } from '~/components/Checklists/ChecklistProgress';

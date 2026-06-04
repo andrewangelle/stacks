@@ -1,5 +1,5 @@
 import type { Card } from '@prisma/client';
-import { CardModal } from '~/components/Cards/CardModal';
+import { CardModal } from '~/components/Cards/Card';
 import { Draggable } from '~/components/Draggable';
 import { AddNewCard } from '~/components/Lists/AddNewCard';
 import {

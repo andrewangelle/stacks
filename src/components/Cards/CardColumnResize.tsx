@@ -1,5 +1,5 @@
 import { type PointerEvent, useEffect, useRef, useState } from 'react';
-import { CardModalResizeHandle } from '~/components/Cards/CardModal.styled';
+import { CardModalResizeHandle } from '~/components/Cards/Card.styled';
 
 export const ACTIVITY_COLUMN_DEFAULT_WIDTH = 350;
 export const CARD_MODAL_WIDE_LAYOUT_QUERY = '(min-width: 851px)';

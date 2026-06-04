@@ -2,7 +2,7 @@ import { styled } from '@pigment-css/react';
 import * as Checkbox from '@radix-ui/react-checkbox';
 import * as Popover from '@radix-ui/react-popover';
 import { fontFamily, red } from '~/components/Boards/Boards.styled';
-import { cardModalContentIndent } from '~/components/Cards/CardModal.styled';
+import { cardModalContentIndent } from '~/components/Cards/Card.styled';
 import { Button } from '~/styles/Page.styled';
 import { checklistProgressBlue } from '~/styles/tokens';
 

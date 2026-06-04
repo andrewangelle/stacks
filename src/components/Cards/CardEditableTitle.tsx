@@ -6,7 +6,7 @@ import {
   EditCardTitleCancelButton,
   EditCardTitleInput,
   EditCardTitleSaveButton,
-} from '~/components/Cards/CardModal.styled';
+} from '~/components/Cards/Card.styled';
 import { useGetCardById, useUpdateCard } from '~/query/cards';
 import { Flex } from '~/styles/Page.styled';
 

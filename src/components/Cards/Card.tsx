@@ -11,13 +11,13 @@ import {
   CardModalPortal,
   CardModalRoot,
   CardModalTrigger,
-} from '~/components/Cards/CardModal.styled';
+} from '~/components/Cards/Card.styled';
 import {
   CardModalColumnResize,
   useCardColumnWidth,
-} from '~/components/Cards/CardModalColumnResize';
-import { CardModalDescription } from '~/components/Cards/CardModalDescription';
-import { CardModalEditableTitle } from '~/components/Cards/CardModalEditableTitle';
+} from '~/components/Cards/CardColumnResize';
+import { CardModalDescription } from '~/components/Cards/CardDescription';
+import { CardModalEditableTitle } from '~/components/Cards/CardEditableTitle';
 import { DeleteCardPopover } from '~/components/Cards/DeleteCardPopover';
 import { CardModalChecklists } from '~/components/Checklists/Checklists';
 import { CreateChecklist } from '~/components/Checklists/CreateChecklist';
@@ -70,12 +70,12 @@ export function CardModal({ id }: { id: string }) {
                 <CardModalChecklists cardId={id} />
               </CardModalMainColumn>
 
-              {isWideLayout ? (
+              {isWideLayout && (
                 <CardModalColumnResize
                   columnWidth={columnWidth}
                   setColumnWidth={setColumnWidth}
                 />
-              ) : null}
+              )}
 
               <CardModalActivityColumn data-testid="CardModalActivityColumn">
                 <CardModalActivity cardId={id} />

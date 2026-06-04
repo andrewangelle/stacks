@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { CloseDescriptionButton } from '~/components/Cards/CardModal.styled';
+import { CloseDescriptionButton } from '~/components/Cards/Card.styled';
 import {
   AddChecklistButton,
   AddChecklistItemButton,

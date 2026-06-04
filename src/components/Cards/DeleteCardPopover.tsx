@@ -8,7 +8,7 @@ import {
   CardModalActionButton,
   CardModalSiderButtonText,
   DeleteCardPopoverTrigger,
-} from '~/components/Cards/CardModal.styled';
+} from '~/components/Cards/Card.styled';
 import { DeleteChecklistPopoverButton } from '~/components/ChecklistItem/ChecklistItem.styled';
 import {
   ChecklistPopoverHeader,

@@ -3,7 +3,7 @@ import {
   CreateBoardCloseBorder,
   PopoverClose,
 } from '~/components/Boards/Boards.styled';
-import { DeleteCardPopoverTrigger } from '~/components/Cards/CardModal.styled';
+import { DeleteCardPopoverTrigger } from '~/components/Cards/Card.styled';
 import { DeleteChecklistPopoverButton } from '~/components/ChecklistItem/ChecklistItem.styled';
 import {
   ChecklistPopoverHeader,
