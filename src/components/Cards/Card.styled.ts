@@ -88,7 +88,7 @@ export const DeleteCardPopoverTrigger = styled(Popover.Trigger)`
   width: auto;
 `;
 
-export const ResizeableCardColumn = styled.div`
+export const ResizeableCardColumnHandle = styled.div`
   height: 100%;
   cursor: ew-resize;
   touch-action: none;

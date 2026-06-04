@@ -12,10 +12,7 @@ import {
   CardModalRoot,
   CardModalTrigger,
 } from '~/components/Cards/Card.styled';
-import {
-  CardColumnResize,
-  useCardColumnWidth,
-} from '~/components/Cards/CardColumnResize';
+import { CardColumnResize } from '~/components/Cards/CardColumnResize';
 import { CardDescription } from '~/components/Cards/CardDescription';
 import { CardEditableTitle } from '~/components/Cards/CardEditableTitle';
 import { DeleteCardPopover } from '~/components/Cards/DeleteCardPopover';
@@ -26,6 +23,7 @@ import {
   ListCardSkeleton,
 } from '~/components/Lists/List.styled';
 import { useGetCardById } from '~/query/cards';
+import { useCardColumnWidth } from '~/utils/useCardColumnWidth';
 
 export function Card({ id }: { id: string }) {
   const { data, isLoading } = useGetCardById({ id });
