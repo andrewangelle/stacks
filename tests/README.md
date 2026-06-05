@@ -1,86 +1,67 @@
-# Playwright Tests
+# Playwright E2E Tests
 
-This directory contains end-to-end tests for the website using Playwright with TypeScript.
+End-to-end tests drive the real app in a browser and assert what a user sees and can do. This is the primary test layer for this repo—reach for E2E first; isolated unit tests are only for cases that cannot reasonably be exercised through the UI.
 
-## Running Tests
+Tests run against `pnpm dev:e2e`, which starts Vite on **port 3100** with mocked Prisma and Clerk (no `.env` or live database required). Production `pnpm dev` on port 3000 is unchanged.
 
-### Basic Commands
+## Running tests
 
 ```bash
-# Run all tests
+# Run all tests (starts dev:e2e on :3100 automatically)
 pnpm test
 
-# Run tests with UI mode (interactive)
+# Chromium only (matches CI)
+pnpm test --project=chromium
+
+# Interactive / debug
 pnpm test:ui
-
-# Run tests in headed mode (see browser)
 pnpm test:headed
-
-# Run tests in debug mode
 pnpm test:debug
-
-# Show test report
 pnpm test:report
 ```
 
-### Running Specific Tests
+### Specific files or patterns
 
 ```bash
-# Run a specific test file
-pnpm test tests/home.spec.ts
-
-# Run tests matching a pattern
-pnpm test --grep "home page"
-
-# Run tests in a specific browser
-pnpm test --project=chromium
+pnpm test tests/boards.test.ts
+pnpm test --grep "creates a board"
 ```
 
-## Test Structure
+## Verified incrementally (run one file at a time while developing)
 
-- `example.spec.ts` - Basic example tests
-- `home.spec.ts` - Home page functionality tests
-
-## Writing Tests
-
-Tests are written in TypeScript and use Playwright's testing framework. Each test file should:
-
-1. Import `test` and `expect` from `@playwright/test`
-2. Use descriptive test names
-3. Include proper assertions
-4. Handle async operations correctly
-
-### Example Test Structure
-
-```typescript
-import { test, expect } from '@playwright/test';
-
-test.describe('Feature Name', () => {
-  test.beforeEach(async ({ page }) => {
-    await page.goto('/');
-  });
-
-  test('should do something', async ({ page }) => {
-    // Test implementation
-    await expect(page.locator('selector')).toBeVisible();
-  });
-});
+```bash
+pnpm dev:e2e   # optional: start server yourself on :3100
+pnpm exec playwright test tests/index.test.ts --project=chromium   # ~1s with warm server
+pnpm exec playwright test tests/boards.test.ts --project=chromium  # ~20s cold start
 ```
+
+CI currently runs `index` + `boards` only. `board.test.ts` is skipped until the Add List UI flow is confirmed in headed mode.
+
+## Test layout
+
+| Path | Status | Purpose |
+|------|--------|---------|
+| `index.test.ts` | Passing | Auth redirect to boards |
+| `boards.test.ts` | Passing | Seeded board appears on boards page |
+| `board.test.ts` | Skipped | Add list and card on a board (next increment) |
+| `helpers/resetDb.ts` | Clears in-memory DB between tests |
+| `mocks/` | Prisma + Clerk doubles (wired via `vite.config.e2e.ts`) |
+
+Each test calls `resetDb()` in `beforeEach` so journeys stay independent. Tests run with **one worker** because the in-memory database is shared on the dev server.
+
+## Adding a user-journey test
+
+1. Add or extend support in `tests/mocks/memoryPrisma.ts` if the flow hits new Prisma calls.
+2. Create `tests/<feature>.test.ts` with `resetDb` in `beforeEach`.
+3. Prefer existing `data-testid`s, roles, and visible text—avoid asserting implementation details.
+4. Run `pnpm test --project=chromium` locally before opening a PR.
 
 ## Configuration
 
-The Playwright configuration is in `playwright.config.ts` at the root of the project. It includes:
+- Playwright: `playwright.config.ts` (base URL `http://localhost:3100`, `webServer.command`: `pnpm dev:e2e`)
+- E2E Vite aliases: `vite.config.e2e.ts`
+- DB reset endpoint (e2e only): `POST /__test/reset`
 
-- Test directory: `./tests`
-- Base URL: `http://localhost:3000`
-- Browser configurations for Chromium, Firefox, and WebKit
-- Web server setup to start the dev server before tests
+## CI
 
-## Best Practices
-
-1. Use semantic selectors (data-testid, role, etc.) when possible
-2. Write tests that are independent and can run in any order
-3. Use descriptive test names that explain what is being tested
-4. Group related tests using `test.describe()`
-5. Use `test.beforeEach()` for common setup
-6. Keep tests focused and avoid testing multiple things in one test 
+GitHub Actions runs `pnpm lint:check`, `pnpm test:types`, and `pnpm test --project=chromium`. No secrets are required for the test job.

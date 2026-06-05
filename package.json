@@ -8,6 +8,7 @@
   "scripts": {
     "build": "vite build",
     "dev": "vite dev",
+    "dev:e2e": "vite dev --config vite.config.e2e.ts",
     "netlify:dev": "netlify dev",
     "start": "node .output/server/index.mjs",
     "lint:fix": "pnpm exec biome check . --write --unsafe",
@@ -60,6 +61,7 @@
   "devDependencies": {
     "@biomejs/biome": "^2.4.13",
     "@clerk/testing": "^2.0.34",
+    "@faker-js/faker": "^10.4.0",
     "@pigment-css/vite-plugin": "^0.0.30",
     "@playwright/test": "^1.60.0",
     "@types/node": "^25.6.2",
@@ -76,7 +78,8 @@
     "netlify-cli": "^17.38.1",
     "prisma": "^7.8.0",
     "typescript": "^6.0.3",
-    "vite": "^8.0.10"
+    "vite": "^8.0.10",
+    "vite-tsconfig-paths": "^6.1.1"
   },
   "engines": {
     "node": ">=22.0.0"
@@ -91,6 +94,9 @@
   "pnpm": {
     "overrides": {
       "react-is": "18.3.1"
-    }
+    },
+    "onlyBuiltDependencies": [
+      "@clerk/shared"
+    ]
   }
 }
