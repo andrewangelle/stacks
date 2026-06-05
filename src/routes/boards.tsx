@@ -18,6 +18,7 @@ export const Route = createFileRoute('/boards')({
     const { userId } = await fetchUserId();
     return { userId };
   },
+
   async loader({ context }) {
     if (!context.userId) {
       context.queryClient.clear();
@@ -27,6 +28,7 @@ export const Route = createFileRoute('/boards')({
     await context.queryClient.ensureQueryData(boardsQueryOptions);
     return { userId: context.userId };
   },
+
   pendingComponent() {
     return (
       <BoardsContainer data-testid="BoardsContainer">
@@ -36,6 +38,7 @@ export const Route = createFileRoute('/boards')({
       </BoardsContainer>
     );
   },
+
   component() {
     const { data: boards = [] } = useSuspenseQuery(boardsQueryOptions);
     const navigate = useNavigate();
