@@ -13,6 +13,7 @@ import type { ReactNode } from 'react';
 import { DndProvider } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
 import { DevTools } from '~/components/DevTools';
+import { NavBar } from '~/components/Nav/NavBar';
 import { queryClient } from '~/query/queryClient';
 import GlobalFonts from '~/styles/GlobalFonts';
 
@@ -54,6 +55,7 @@ function RootDocument({ children }: { children: ReactNode }) {
       <body>
         <QueryClientProvider client={queryClient}>
           <DndProvider backend={HTML5Backend}>
+            <NavBar />
             {children}
             <Scripts />
             <GlobalFonts />
