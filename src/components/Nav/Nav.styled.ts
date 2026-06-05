@@ -100,10 +100,11 @@ export const BoardPageBackground = styled('div')<BoardPageBackgroundProps>({
   height: '100vh',
   width: 'max-content',
   minWidth: '100vw',
-  display: 'flex',
   background: 'transparent',
   position: 'relative',
   top: 66,
+  display: 'flex',
+  padding: '50px 30px 30px',
   variants: [
     {
       props: { background: 'blue' },
@@ -155,5 +156,5 @@ export const EditBoardTitleInput = styled.input`
   border-radius: 0px;
   border: none;
   margin: 8px 0px 12px;
-  padding: 8px 6px;
+  padding: 10px;
 `;

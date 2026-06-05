@@ -1,3 +1,4 @@
+import { useSuspenseQuery } from '@tanstack/react-query';
 import { createFileRoute, redirect, useNavigate } from '@tanstack/react-router';
 import {
   type BoardBackground,
@@ -7,12 +8,12 @@ import {
   BoardsContainer,
 } from '~/components/Boards/Boards.styled';
 import { CreateBoard } from '~/components/Boards/CreateBoard';
-import { NavBar } from '~/components/Nav/NavBar';
 import { fetchUserId } from '~/middleware/auth';
-import { boardsQueryOptions, useGetBoards } from '~/query/boards';
-import { Padding } from '~/styles/Page.styled';
+import { boardsQueryOptions } from '~/query/boards';
 
 export const Route = createFileRoute('/boards')({
+  wrapInSuspense: true,
+
   async beforeLoad() {
     const { userId } = await fetchUserId();
     return { userId };
@@ -26,36 +27,35 @@ export const Route = createFileRoute('/boards')({
     await context.queryClient.ensureQueryData(boardsQueryOptions);
     return { userId: context.userId };
   },
+  pendingComponent() {
+    return (
+      <BoardsContainer data-testid="BoardsContainer">
+        {(['one', 'two', 'three'] as const).map((id) => (
+          <BoardCardSkeleton data-testid="BoardCardSkeleton" key={id} />
+        ))}
+      </BoardsContainer>
+    );
+  },
   component() {
-    const { isLoading, data: boards = [], isSuccess } = useGetBoards();
+    const { data: boards = [] } = useSuspenseQuery(boardsQueryOptions);
     const navigate = useNavigate();
     return (
-      <>
-        <NavBar />
-        <Padding padding="50px 30px 30px">
-          <BoardsContainer data-testid="BoardsContainer">
-            {isLoading &&
-              (['one', 'two', 'three'] as const).map((id) => (
-                <BoardCardSkeleton data-testid="BoardCardSkeleton" key={id} />
-              ))}
+      <BoardsContainer data-testid="BoardsContainer">
+        {boards.map((board) => (
+          <BoardCardContainer
+            data-testid="BoardCardContainer"
+            key={board.id}
+            background={board.boardColor as BoardBackground}
+            onClick={() => navigate({ to: `/board/${board.id}` })}
+          >
+            <BoardCardTitle data-testid="BoardCardTitle">
+              {board.boardTitle}
+            </BoardCardTitle>
+          </BoardCardContainer>
+        ))}
 
-            {isSuccess &&
-              boards.map((board) => (
-                <BoardCardContainer
-                  data-testid="BoardCardContainer"
-                  key={board.id}
-                  background={board.boardColor as BoardBackground}
-                  onClick={() => navigate({ to: `/board/${board.id}` })}
-                >
-                  <BoardCardTitle data-testid="BoardCardTitle">
-                    {board.boardTitle}
-                  </BoardCardTitle>
-                </BoardCardContainer>
-              ))}
-            {!isLoading && <CreateBoard />}
-          </BoardsContainer>
-        </Padding>
-      </>
+        <CreateBoard />
+      </BoardsContainer>
     );
   },
 });

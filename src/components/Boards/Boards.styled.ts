@@ -32,6 +32,7 @@ export const BoardsContainer = styled.div`
   display: flex;
   flex-wrap: wrap;
   justify-content: flex-start;
+  padding: 50px 30px 30px;
 `;
 
 export const BoardCardContainer = styled('div')<BackgroundProps>({
