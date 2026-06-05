@@ -8,11 +8,13 @@ export const Route = createFileRoute('/auth/sign-in')({
     const { userId } = await fetchUserId();
     return { userId };
   },
+
   loader({ context }) {
     if (context.userId) {
       throw redirect({ to: '/boards' });
     }
   },
+
   component() {
     return (
       <FlexCenter data-testid="FlexCenter">

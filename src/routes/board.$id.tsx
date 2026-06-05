@@ -30,6 +30,7 @@ export const Route = createFileRoute('/board/$id')({
   pendingComponent() {
     return <BoardPageBackground data-testid="BoardPageBackground" />;
   },
+
   component() {
     const boardId = useCurrentBoardId();
     const { data: board } = useSuspenseQuery(boardByIdQueryOptions(boardId));
