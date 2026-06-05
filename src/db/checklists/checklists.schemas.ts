@@ -19,7 +19,14 @@ export const DeleteChecklistSchema = z.object({
   cardId: z.string(),
 });
 
+export const UpdateChecklistSchema = z.object({
+  checklistId: z.string(),
+  checklistTitle: z.string(),
+  cardId: z.string(),
+});
+
 export type GetChecklistsArgs = z.infer<typeof GetChecklistsSchema>;
 export type GetChecklistByIdArgs = z.infer<typeof GetChecklistByIdSchema>;
 export type CreateChecklistArgs = z.infer<typeof CreateChecklistSchema>;
 export type DeleteChecklistArgs = z.infer<typeof DeleteChecklistSchema>;
+export type UpdateChecklistArgs = z.infer<typeof UpdateChecklistSchema>;

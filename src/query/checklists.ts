@@ -5,12 +5,14 @@ import {
   deleteChecklist,
   getChecklistById,
   getChecklists,
+  updateChecklist,
 } from '~/db/checklists/checklists.functions';
 import type {
   CreateChecklistArgs,
   DeleteChecklistArgs,
   GetChecklistByIdArgs,
   GetChecklistsArgs,
+  UpdateChecklistArgs,
 } from '~/db/checklists/checklists.schemas';
 import { queryClient } from '~/query/queryClient';
 
@@ -73,6 +75,38 @@ export function useDeleteChecklist() {
         queryKeys.list(variables.cardId),
         (cache = []) =>
           cache.filter((item) => item.id !== variables.checklistId),
+      );
+    },
+  });
+
+  return mutation.mutate;
+}
+
+export function useUpdateChecklist() {
+  const mutation = useMutation({
+    mutationFn(data: UpdateChecklistArgs) {
+      return updateChecklist({
+        data,
+      });
+    },
+
+    onSuccess(_result, variables) {
+      queryClient.setQueryData<Checklist>(
+        queryKeys.detail(variables.checklistId),
+        (cache = {} as Checklist) => ({
+          ...cache,
+          checklistTitle: variables.checklistTitle,
+        }),
+      );
+
+      queryClient.setQueryData<Checklist[]>(
+        queryKeys.list(variables.cardId),
+        (cache = []) =>
+          cache.map((item) =>
+            item.id === variables.checklistId
+              ? { ...item, checklistTitle: variables.checklistTitle }
+              : item,
+          ),
       );
     },
   });

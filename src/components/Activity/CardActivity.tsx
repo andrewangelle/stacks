@@ -11,18 +11,18 @@ import {
 } from '~/components/Activity/Activity.styled';
 import { ActivityComment } from '~/components/Activity/ActivityComment';
 import { ActivityLogo } from '~/components/Activity/ActivityLogo';
-import { CardModalTitle } from '~/components/Cards/CardModal.styled';
+import { CardModalTitle } from '~/components/Cards/Card.styled';
 import { useCreateActivity, useGetActivity } from '~/query/activity';
 import { useGetCardById } from '~/query/cards';
 import { useGetProfile } from '~/query/profile';
 import { Flex } from '~/styles/Page.styled';
 import { useCurrentBoardId } from '~/utils/useCurrentBoardId';
 
-type CardModalActivityProps = {
+type CardActivityProps = {
   cardId: string;
 };
 
-export function CardModalActivity({ cardId }: CardModalActivityProps) {
+export function CardActivity({ cardId }: CardActivityProps) {
   const { data: cardData } = useGetCardById({ id: cardId });
 
   const [showActivity, setShowActivity] = useState(false);

@@ -9,7 +9,7 @@ import {
   SaveCommentButton,
 } from '~/components/Activity/Activity.styled';
 import { ActivityLogo } from '~/components/Activity/ActivityLogo';
-import { DeleteCommentPopover } from '~/components/Cards/DeleteCommentPopover';
+import { DeleteCommentPopover } from '~/components/Activity/DeleteCommentPopover';
 import { CloseAddCardButton } from '~/components/Lists/List.styled';
 import { useUpdateActivity } from '~/query/activity';
 import { useGetProfile } from '~/query/profile';

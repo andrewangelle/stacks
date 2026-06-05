@@ -1,8 +1,7 @@
 import type { ChecklistItem as ChecklistItemType } from '@prisma/client';
-import * as Bs from 'react-icons/bs';
-import { CardModalTitle } from '~/components/Cards/CardModal.styled';
 import { AddChecklistItem } from '~/components/ChecklistItem/AddChecklistItem';
 import { ChecklistItem } from '~/components/ChecklistItem/ChecklistItem';
+import { ChecklistEditableTitle } from '~/components/Checklists/ChecklistEditableTitle';
 import { ChecklistProgress } from '~/components/Checklists/ChecklistProgress';
 import {
   ChecklistContainer,
@@ -15,7 +14,6 @@ import {
   useGetChecklistItems,
 } from '~/query/checklistItems';
 import { useGetChecklist } from '~/query/checklists';
-import { Flex } from '~/styles/Page.styled';
 
 export function Checklist({ id }: { id: string }) {
   const { data: checklist } = useGetChecklist({ checklistId: id });
@@ -26,14 +24,7 @@ export function Checklist({ id }: { id: string }) {
   return (
     <ChecklistContainer data-testid="ChecklistContainer">
       <ChecklistHeader data-testid="ChecklistHeader" key={id}>
-        <Flex data-testid="Flex">
-          <Bs.BsCheck2Square size={24} />
-
-          <CardModalTitle data-testid="CardModalTitle">
-            {checklist?.checklistTitle}
-          </CardModalTitle>
-        </Flex>
-
+        <ChecklistEditableTitle id={id} />
         <DeleteChecklist id={id} />
       </ChecklistHeader>
 

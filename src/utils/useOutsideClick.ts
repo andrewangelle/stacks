@@ -32,10 +32,14 @@ export function useOutsideClick<ElementType = HTMLDivElement>(
   }, []);
 
   useEffect(() => {
+    let timeoutId: NodeJS.Timeout;
     if (when) {
-      document.addEventListener('click', memoizedCallback);
+      timeoutId = setTimeout(() => {
+        document.addEventListener('click', memoizedCallback);
+      }, 0);
     }
     return () => {
+      clearTimeout(timeoutId);
       document.removeEventListener('click', memoizedCallback);
     };
   }, [when, memoizedCallback]);

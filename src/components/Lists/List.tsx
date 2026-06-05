@@ -1,5 +1,5 @@
-import type { Card } from '@prisma/client';
-import { CardModal } from '~/components/Cards/CardModal';
+import type { Card as CardType } from '@prisma/client';
+import { Card } from '~/components/Cards/Card';
 import { Draggable } from '~/components/Draggable';
 import { AddNewCard } from '~/components/Lists/AddNewCard';
 import {
@@ -34,9 +34,9 @@ export function List({ id: listId }: { id: string }) {
           id={card.id}
           name={card.cardTitle}
           type="card"
-          onDrop={(item: Card) => reorderCards(item, listId, card.id)}
+          onDrop={(item: CardType) => reorderCards(item, listId, card.id)}
         >
-          <CardModal id={card.id} />
+          <Card id={card.id} />
         </Draggable>
       ))}
 
