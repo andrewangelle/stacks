@@ -1,6 +1,6 @@
 import { styled } from '@pigment-css/react';
 import type { BackgroundProps } from '~/components/Boards/Boards.styled';
-import { boardGradientVars, tokenShades } from '~/styles/tokens';
+import { boardGradientVars, fontFamily, tokenShades } from '~/styles/tokens';
 
 export const NavBarContainer = styled('div')({
   width: '100%',
@@ -134,6 +134,7 @@ export const BoardTitle = styled.div`
   display: inline-block;
   width: max-content;
   border-radius: 8px;
+  font-weight: 500;
 
   &:hover {
     background-color: rgba(255, 255, 255, 0.1);
@@ -148,9 +149,11 @@ export const EditBoardTitleForm = styled.form`
 `;
 
 export const EditBoardTitleInput = styled.input` 
-  border-radius: 5px;
+  font-family: ${fontFamily};
+  font-weight: 500;
+  font-size: 16px;
+  border-radius: 0px;
   border: none;
-  padding: 9px;
   margin: 8px 0px 12px;
-  box-shadow: 0 1px 0 #091e4240;
+  padding: 8px 6px;
 `;
