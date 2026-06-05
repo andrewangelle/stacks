@@ -1,7 +1,11 @@
 {
   "extends": "../tsconfig.json",
   "compilerOptions": {
-    "types": ["@types/node", "@playwright/test"]
+    "types": ["@types/node", "@playwright/test"],
+    "paths": {
+      "~/*": ["../src/*"],
+      "~test/*": ["./*"]
+    }
   },
   "include": ["**/*.ts", "**/*.tsx"]
 }

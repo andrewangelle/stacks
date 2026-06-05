@@ -5,28 +5,26 @@ import { defineConfig, devices } from '@playwright/test';
  */
 export default defineConfig({
   testDir: './tests',
-  fullyParallel: true,
+  tsconfig: './tests/tsconfig.json',
+  // Shared in-memory DB via dev:e2e — one worker avoids cross-test races.
+  fullyParallel: false,
   /* Fail the build on CI if you accidentally left test.only in the source code. */
   forbidOnly: !!process.env.CI,
   /* Retry on CI only */
-  retries: process.env.CI ? 2 : 0,
+  // Avoid long retry loops while the suite is still growing incrementally.
+  retries: 0,
   /* Opt out of parallel tests on CI. */
-  workers: process.env.CI ? 1 : undefined,
+  workers: 1,
   reporter: 'html',
   
   /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
   use: {
-    baseURL: 'http://localhost:3000',
+    baseURL: 'http://localhost:3100',
 
     /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
     trace: 'on-first-retry',
 
-    video: process.env.CI ? 'retain-on-failure' : 'on',
-
-    // Slow down in CI to catch race conditions
-    launchOptions: {
-      slowMo: process.env.CI ? 100 : 0,
-    },
+    video: 'retain-on-failure',
   },
 
     // Longer timeouts for slower CI runners
@@ -73,8 +71,9 @@ export default defineConfig({
 
   /* Run your local dev server before starting the tests */
   webServer: {
-    command: 'pnpm dev',
-    url: 'http://localhost:3000',
+    command: 'pnpm dev:e2e',
+    url: 'http://localhost:3100/__test/health',
     reuseExistingServer: !process.env.CI,
+    timeout: 120_000,
   },
 }); 

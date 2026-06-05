@@ -13,6 +13,7 @@
       "**/src/**",
       "**/tests/**",
       "!**/src/routeTree.gen.ts",
+      "!**/src/generated",
       "**/.vscode/**",
       "!**/.react-router",
       "!**/build",
