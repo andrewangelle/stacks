@@ -4,12 +4,14 @@ import {
   DeleteChecklistSchema,
   GetChecklistByIdSchema,
   GetChecklistsSchema,
+  UpdateChecklistSchema,
 } from '~/db/checklists/checklists.schemas';
 import {
   createChecklistQuery,
   deleteChecklistQuery,
   getChecklistByIdQuery,
   getChecklistsQuery,
+  updateChecklistQuery,
 } from '~/db/checklists/checklists.server';
 import { authMiddleware } from '~/middleware/auth';
 
@@ -39,4 +41,11 @@ export const deleteChecklist = createServerFn({ method: 'POST' })
   .middleware([authMiddleware])
   .handler(async ({ data, context }) =>
     deleteChecklistQuery({ ...data, userId: context.uid }),
+  );
+
+export const updateChecklist = createServerFn({ method: 'POST' })
+  .inputValidator(UpdateChecklistSchema)
+  .middleware([authMiddleware])
+  .handler(async ({ data, context }) =>
+    updateChecklistQuery({ ...data, userId: context.uid }),
   );

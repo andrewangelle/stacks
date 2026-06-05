@@ -3,6 +3,7 @@ import type {
   DeleteChecklistArgs,
   GetChecklistByIdArgs,
   GetChecklistsArgs,
+  UpdateChecklistArgs,
 } from '~/db/checklists/checklists.schemas';
 import { prisma } from '~/db/prisma';
 import type { WithUserId } from '~/db/withUserId';
@@ -80,4 +81,19 @@ export async function deleteChecklistQuery(
     message: 'success',
     data: [result],
   };
+}
+
+export async function updateChecklistQuery(
+  data: WithUserId<UpdateChecklistArgs>,
+) {
+  const patch: { checklistTitle?: string } = {};
+
+  if (typeof data.checklistTitle === 'string') {
+    patch.checklistTitle = data.checklistTitle;
+  }
+
+  return prisma.checklist.update({
+    where: { id: data.checklistId, userId: data.userId },
+    data: patch,
+  });
 }
