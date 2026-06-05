@@ -11,6 +11,8 @@ import { listsQueryOptions, reorderLists } from '~/query/lists';
 import { useCurrentBoardId } from '~/utils/useCurrentBoardId';
 
 export const Route = createFileRoute('/board/$id')({
+  wrapInSuspense: true,
+
   async beforeLoad() {
     const { userId } = await fetchUserId();
     return { userId };
@@ -28,7 +30,6 @@ export const Route = createFileRoute('/board/$id')({
   pendingComponent() {
     return <BoardPageBackground data-testid="BoardPageBackground" />;
   },
-  wrapInSuspense: true,
   component() {
     const boardId = useCurrentBoardId();
     const { data: board } = useSuspenseQuery(boardByIdQueryOptions(boardId));
