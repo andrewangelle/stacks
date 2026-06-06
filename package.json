@@ -78,8 +78,7 @@
     "netlify-cli": "^17.38.1",
     "prisma": "^7.8.0",
     "typescript": "^6.0.3",
-    "vite": "^8.0.10",
-    "vite-tsconfig-paths": "^6.1.1"
+    "vite": "^8.0.10"
   },
   "engines": {
     "node": ">=22.0.0"
