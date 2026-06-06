@@ -54,6 +54,7 @@ export function CardTitleDetails({ id }: { id: string }) {
 
   function handleTriggerFocus() {
     setIsFocused(true);
+    pointerFocusedRef.current = true;
   }
 
   function handleTriggerBlur() {
@@ -84,6 +85,7 @@ export function CardTitleDetails({ id }: { id: string }) {
     <CardModalTrigger
       data-testid="CardModalTrigger"
       isHovered={isHovering || isFocused}
+      onPointerDown={handleTriggerFocus}
       onBlur={handleTriggerBlur}
       onFocus={handleTriggerFocus}
       ref={triggerRef}
