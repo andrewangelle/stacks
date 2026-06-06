@@ -32,7 +32,9 @@ export const ListName = styled.div`
   font-size: 14px;
 `;
 
-export const AddCardText = styled.div` 
+export const AddCardText = styled.button` 
+  border: none;
+  background: none;
   font-family: ${fontFamily};
   cursor: pointer;
   font-size: 14px;
@@ -40,7 +42,8 @@ export const AddCardText = styled.div`
   padding: 8px;
   margin-top: 4px;
   width: 100%;
-
+  text-align: left;
+  
   &:hover {
     background-color: rgba(0, 0, 0, .3);
   }
