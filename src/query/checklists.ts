@@ -2,6 +2,7 @@ import { useMutation, useQuery } from '@tanstack/react-query';
 import {
   createChecklist,
   deleteChecklist,
+  getCardChecklistView,
   getChecklistById,
   getChecklists,
   updateChecklist,
@@ -9,6 +10,7 @@ import {
 import type {
   CreateChecklistArgs,
   DeleteChecklistArgs,
+  GetCardChecklistViewArgs,
   GetChecklistByIdArgs,
   GetChecklistsArgs,
   UpdateChecklistArgs,
@@ -19,7 +21,10 @@ import { queryClient } from '~/query/queryClient';
 const queryKeys = {
   list: (cardId: string) => ['checklists', cardId] as const,
   detail: (checklistId: string) => ['checklist', checklistId] as const,
+  cardChecklistView: (cardId: string) => ['cardChecklistView', cardId] as const,
 };
+
+export const checklistQueryKeys = queryKeys;
 
 export function useGetChecklist(data: GetChecklistByIdArgs) {
   return useQuery({
@@ -112,4 +117,15 @@ export function useUpdateChecklist() {
   });
 
   return mutation.mutate;
+}
+
+export function useGetCardChecklistView(data: GetCardChecklistViewArgs) {
+  return useQuery({
+    queryKey: queryKeys.cardChecklistView(data.cardId),
+    queryFn() {
+      return getCardChecklistView({
+        data,
+      });
+    },
+  });
 }

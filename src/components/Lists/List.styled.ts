@@ -75,9 +75,13 @@ export const ListCardContainer = styled.div`
   background: #fff;
   font-family: ${fontFamily};
   font-size: 14px;
-  padding: 8px 0px;
+  padding: 8px;
   margin: 4px 0px;
   box-shadow: 0 1px 0 #091e4240;
+  display: flex;
+  flex-direction: column;
+  align-items: start;
+  gap: 8px;
 `;
 
 export const ListCardSkeleton = styled(ListCardContainer)({

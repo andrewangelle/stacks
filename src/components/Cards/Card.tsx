@@ -10,23 +10,20 @@ import {
   CardModalOverlay,
   CardModalPortal,
   CardModalRoot,
-  CardModalTrigger,
 } from '~/components/Cards/Card.styled';
 import { CardColumnResize } from '~/components/Cards/CardColumnResize';
 import { CardDescription } from '~/components/Cards/CardDescription';
 import { CardEditableTitle } from '~/components/Cards/CardEditableTitle';
+import { CardTitle } from '~/components/Cards/CardTitle';
 import { DeleteCardPopover } from '~/components/Cards/DeleteCardPopover';
 import { CardChecklists } from '~/components/Checklists/Checklists';
 import { CreateChecklist } from '~/components/Checklists/CreateChecklist';
-import {
-  ListCardContainer,
-  ListCardSkeleton,
-} from '~/components/Lists/List.styled';
+import { ListCardSkeleton } from '~/components/Lists/List.styled';
 import { useGetCardById } from '~/query/cards';
 import { useCardColumnWidth } from '~/utils/useCardColumnWidth';
 
 export function Card({ id }: { id: string }) {
-  const { data, isLoading } = useGetCardById({ id });
+  const { isLoading } = useGetCardById({ id });
   const { columnWidth, setColumnWidth, isWideLayout } = useCardColumnWidth();
 
   const gridTemplateColumns = `minmax(0, 1fr) 8px ${columnWidth}px`;
@@ -38,11 +35,7 @@ export function Card({ id }: { id: string }) {
 
   return (
     <CardModalRoot data-testid="CardModalRoot">
-      <CardModalTrigger data-testid="CardModalTrigger">
-        <ListCardContainer data-testid="ListCardContainer">
-          {data?.cardTitle}
-        </ListCardContainer>
-      </CardModalTrigger>
+      <CardTitle id={id} />
 
       <CardModalPortal data-testid="CardModalPortal">
         <CardModalOverlay data-testid="CardModalOverlay">
