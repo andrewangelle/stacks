@@ -85,6 +85,9 @@ export const ListCardContainer = styled.div`
   flex-direction: column;
   align-items: start;
   gap: 8px;
+  box-sizing: border-box;
+  width: 100%;
+  min-width: 0;
 `;
 
 export const ListCardSkeleton = styled(ListCardContainer)({

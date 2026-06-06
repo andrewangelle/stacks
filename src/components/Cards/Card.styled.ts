@@ -163,29 +163,20 @@ export const CardModalContent = styled(Dialog.Content)`
   }
 `;
 
-export const CardModalTrigger = styled(Dialog.Trigger)<{
-  isHovered?: boolean;
-}>({
+export const CardModalTrigger = styled(Dialog.Trigger)({
   border: 'none',
   padding: '0px',
   cursor: 'pointer',
   width: '100%',
+  minWidth: 0,
+  boxSizing: 'border-box',
   borderRadius: '5px',
+  textAlign: 'left',
 
-  '&:focus-visible': {
+  '&:focus': {
     outline: `2px solid ${focusRingBlue}`,
     outlineOffset: '-2px',
   },
-
-  variants: [
-    {
-      props: { isHovered: true },
-      style: {
-        outline: `2px solid ${focusRingBlue}`,
-        outlineOffset: '-2px',
-      },
-    },
-  ],
 });
 
 export const CardModalCloseContainer = styled.div` 

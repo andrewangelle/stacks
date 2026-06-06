@@ -1,7 +1,12 @@
-import type { ReactNode, RefObject } from 'react';
-import { useRef } from 'react';
-import { useDrag, useDrop } from 'react-dnd';
-import { DraggingItemShadow } from '~/styles/Page.styled';
+import type { DragEndEvent } from '@dnd-kit/react';
+import {
+  PointerSensor,
+  useDragDropMonitor,
+  useDraggable,
+  useDroppable,
+} from '@dnd-kit/react';
+import type { ReactNode } from 'react';
+import { useCallback, useMemo } from 'react';
 
 export type DraggableProps = {
   id: string;
@@ -11,6 +16,22 @@ export type DraggableProps = {
   children: ReactNode;
 };
 
+const cardPointerSensor = PointerSensor.configure({
+  preventActivation(event, source) {
+    const { target } = event;
+
+    if (target === source.element || target === source.handle) {
+      return false;
+    }
+
+    if (target instanceof Element && source.element?.contains(target)) {
+      return false;
+    }
+
+    return true;
+  },
+});
+
 export function Draggable({
   type,
   id,
@@ -18,53 +39,69 @@ export function Draggable({
   onDrop,
   children,
 }: DraggableProps) {
-  const [{ isDragging }, dragRef] = useDrag({
+  const itemData = useMemo(() => ({ id, name }), [id, name]);
+
+  const { ref: draggableRef } = useDraggable({
+    id,
     type,
-    item: { id, name },
-    collect: (monitor) => ({
-      isDragging: monitor.isDragging(),
-    }),
+    data: itemData,
+    sensors: type === 'card' ? [cardPointerSensor] : undefined,
   });
 
-  const [, dropRef] = useDrop({
+  const { ref: droppableRef } = useDroppable({
+    id,
+    type,
     accept: type,
-    drop: onDrop,
-    collect: (monitor) => ({
-      isOver: monitor.isOver(),
-    }),
   });
 
-  const ref = useRef<HTMLDivElement | null>(null);
-  const dragDropRef = dragRef(dropRef(ref));
+  const setRef = useCallback(
+    (node: HTMLDivElement | null) => {
+      draggableRef(node);
+      droppableRef(node);
+    },
+    [draggableRef, droppableRef],
+  );
 
-  function isRef(el: unknown): el is RefObject<HTMLDivElement> {
-    return typeof el === 'object' && el !== null && 'current' in el;
-  }
+  const handleDragEnd = useCallback(
+    (event: DragEndEvent) => {
+      if (event.canceled) return;
 
-  function getRect() {
-    if (isRef(dragDropRef) && dragDropRef.current) {
-      const child = dragDropRef.current.firstChild as HTMLElement;
-      const rect = child?.getBoundingClientRect();
-      return rect;
-    }
-  }
+      const { source, target } = event.operation;
+      if (!source || !target || target.id !== id) return;
+      if (source.id === id) return;
 
-  const rect = getRect();
+      onDrop(source.data);
+    },
+    [id, onDrop],
+  );
 
-  if (isRef(dragDropRef)) {
-    return (
-      <div ref={dragDropRef}>
-        {!isDragging && children}
-        {isDragging && (
-          <DraggingItemShadow
-            data-testid="DraggingItemShadow"
-            height={rect?.height}
-            width={rect?.width}
-          />
-        )}
-      </div>
-    );
-  }
+  useDragDropMonitor(
+    useMemo(() => ({ onDragEnd: handleDragEnd }), [handleDragEnd]),
+  );
 
-  return null;
+  // Cards/checklist items live in vertical columns and should fill the column
+  // width. Lists live in the board's horizontal row and must hug their own
+  // width, otherwise each list stretches to an equal flex share of the row and
+  // leaves large gaps between them.
+  const isColumnItem = type !== 'list';
+
+  return (
+    // tabIndex/role suppress @dnd-kit's keyboard-drag activator so the only
+    // focusable target per item is the content's own trigger.
+    //
+    // The dragged element itself is promoted to the top layer by @dnd-kit as
+    // the drag preview (so it keeps its real content), while a placeholder
+    // clone is left in place and styled as a shadow via global drag styles.
+    <div
+      ref={setRef}
+      role="presentation"
+      style={{
+        minWidth: 0,
+        width: isColumnItem ? '100%' : 'max-content',
+      }}
+      tabIndex={-1}
+    >
+      {children}
+    </div>
+  );
 }

@@ -30,6 +30,7 @@
   },
   "dependencies": {
     "@clerk/tanstack-react-start": "^1.2.3",
+    "@dnd-kit/react": "^0.4.0",
     "@neondatabase/neon-js": "0.6.0-beta",
     "@neondatabase/serverless": "^1.1.0",
     "@netlify/functions": "^0.10.0",
@@ -53,8 +54,6 @@
     "pg": "^8.20.0",
     "react": "^19.2.0",
     "react-beautiful-dnd": "^13.1.0",
-    "react-dnd": "^16.0.1",
-    "react-dnd-html5-backend": "^16.0.1",
     "react-dom": "^19.2.0",
     "react-icons": "^4.3.1",
     "zod": "^3.25.76"

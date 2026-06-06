@@ -1,8 +1,10 @@
 import { type QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import '~/styles/animations.css';
 import '~/styles/board-gradient.css';
+import '~/styles/drag.css';
 import '@pigment-css/react/styles.css';
 import { ClerkProvider } from '@clerk/tanstack-react-start';
+import { DragDropProvider } from '@dnd-kit/react';
 import {
   createRootRouteWithContext,
   HeadContent,
@@ -10,8 +12,6 @@ import {
   Scripts,
 } from '@tanstack/react-router';
 import type { ReactNode } from 'react';
-import { DndProvider } from 'react-dnd';
-import { HTML5Backend } from 'react-dnd-html5-backend';
 import { DevTools } from '~/components/DevTools';
 import { NavBar } from '~/components/Nav/NavBar';
 import { queryClient } from '~/query/queryClient';
@@ -54,13 +54,13 @@ function RootDocument({ children }: { children: ReactNode }) {
       </head>
       <body>
         <QueryClientProvider client={queryClient}>
-          <DndProvider backend={HTML5Backend}>
+          <DragDropProvider>
             <NavBar />
             {children}
             <Scripts />
             <GlobalFonts />
             <DevTools />
-          </DndProvider>
+          </DragDropProvider>
         </QueryClientProvider>
       </body>
     </html>
