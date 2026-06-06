@@ -2,7 +2,8 @@ name: Repo Tests
 
 on:
   pull_request:
-    - 'main'
+    branches:
+      - main
   workflow_dispatch:
 
 jobs:
