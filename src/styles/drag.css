@@ -1,0 +1,21 @@
+/*
+ * While dragging, @dnd-kit promotes the dragged element itself into the top
+ * layer as the drag preview (keeping its real content) and leaves a cloned
+ * placeholder in its original spot. By default that placeholder is hidden;
+ * we render it as a subtle shadow so the drop target is still visible.
+ */
+[data-dnd-placeholder] {
+  visibility: visible;
+  background: rgba(0, 0, 0, 0.1);
+  border-radius: 5px;
+  box-shadow: none;
+  /* Lists sit in a flex row with align-items: stretch, so their wrapper would
+     otherwise stretch to the full board height. A content-based height keeps
+     the shadow the same size as the dragged item. */
+  height: fit-content;
+}
+
+/* Hide the cloned content inside the placeholder; only the shadow box shows. */
+[data-dnd-placeholder] * {
+  visibility: hidden;
+}

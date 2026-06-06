@@ -1,4 +1,10 @@
-import { type MouseEvent, useRef, useState } from 'react';
+import {
+  type FocusEvent,
+  type KeyboardEvent,
+  type MouseEvent,
+  useRef,
+  useState,
+} from 'react';
 import { AiOutlineCheck } from 'react-icons/ai';
 import { CardModalTrigger } from '~/components/Cards/Card.styled';
 import { CardTitleChecklistDetails } from '~/components/Cards/CardTitleDetails/CardTitleChecklistsDetails';
@@ -15,7 +21,7 @@ import { useCurrentBoardId } from '~/utils/useCurrentBoardId';
 export function CardTitleDetails({ id }: { id: string }) {
   const [isHovering, setHovering] = useState(false);
   const [isFocused, setIsFocused] = useState(false);
-  const triggerRef = useRef<HTMLButtonElement>(null);
+  const triggerRef = useRef<HTMLDivElement>(null);
   const pointerFocusedRef = useRef(false);
   const { data } = useGetCardById({ id });
   const { isSuccess, data: checklistViews } = useGetCardChecklistView({
@@ -26,8 +32,9 @@ export function CardTitleDetails({ id }: { id: string }) {
   const boardId = useCurrentBoardId();
 
   const isCompleted = data?.isCompleted ?? false;
+  const isCircleVisible = isHovering || isFocused;
 
-  function toggleCardCompletion(event: MouseEvent<HTMLButtonElement>) {
+  function toggleCardCompletion(event: MouseEvent<HTMLElement>) {
     event.preventDefault();
     event.stopPropagation();
 
@@ -57,7 +64,11 @@ export function CardTitleDetails({ id }: { id: string }) {
     pointerFocusedRef.current = true;
   }
 
-  function handleTriggerBlur() {
+  function handleTriggerBlur(event: FocusEvent<HTMLDivElement>) {
+    if (event.currentTarget.contains(event.relatedTarget as Node | null)) {
+      return;
+    }
+
     setIsFocused(false);
     pointerFocusedRef.current = false;
   }
@@ -81,26 +92,37 @@ export function CardTitleDetails({ id }: { id: string }) {
     pointerFocusedRef.current = false;
   }
 
+  function handleTriggerKeyDown(event: KeyboardEvent<HTMLDivElement>) {
+    if (event.target !== event.currentTarget) {
+      return;
+    }
+
+    if (event.key === 'Enter' || event.key === ' ') {
+      event.preventDefault();
+      event.currentTarget.click();
+    }
+  }
+
   return (
-    <CardModalTrigger
-      data-testid="CardModalTrigger"
-      isHovered={isHovering || isFocused}
-      onPointerDown={handleTriggerFocus}
-      onBlur={handleTriggerBlur}
-      onFocus={handleTriggerFocus}
-      ref={triggerRef}
-    >
+    <CardModalTrigger asChild data-testid="CardModalTrigger">
       <ListCardContainer
         data-testid="ListCardContainer"
+        onBlur={handleTriggerBlur}
+        onFocus={handleTriggerFocus}
+        onKeyDown={handleTriggerKeyDown}
         onMouseEnter={handleListCardMouseEnter}
         onMouseLeave={handleListCardMouseLeave}
+        onPointerDown={handleTriggerFocus}
+        ref={triggerRef}
+        role="button"
+        tabIndex={0}
       >
         <CardTitleModalTriggerText data-testid="CardTitleModalTriggerText">
           <CardTitleModalTriggerCircle
             aria-label="Mark card complete"
+            data-completed={isCompleted ? '' : undefined}
             data-testid="CardTitleModalTriggerCircle"
-            isCompleted={isCompleted}
-            isVisible={isFocused || isCompleted}
+            data-visible={isCircleVisible ? '' : undefined}
             onClick={toggleCardCompletion}
             type="button"
           >

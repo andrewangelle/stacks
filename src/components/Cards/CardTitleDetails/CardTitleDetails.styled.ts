@@ -1,7 +1,12 @@
 import { styled } from '@pigment-css/react';
 import * as Accordion from '@radix-ui/react-accordion';
 import * as Checkbox from '@radix-ui/react-checkbox';
-import { checklistProgressBlue, darkGray, fontFamily } from '~/styles/tokens';
+import {
+  checklistProgressBlue,
+  darkGray,
+  focusRingBlue,
+  fontFamily,
+} from '~/styles/tokens';
 
 const cardCompleteGreen = '#1f845a';
 const circleSize = '15px';
@@ -9,16 +14,12 @@ const circleSize = '15px';
 export const CardTitleModalTriggerText = styled.div`
   display: inline-flex;
   align-items: center;
+  width: 100%;
+  min-width: 0;
+  word-break: break-word;
 `;
 
-type CardTitleModalTriggerCircleProps = {
-  isCompleted: boolean;
-  isVisible: boolean;
-};
-
-export const CardTitleModalTriggerCircle = styled(
-  'button',
-)<CardTitleModalTriggerCircleProps>({
+export const CardTitleModalTriggerCircle = styled('button')({
   display: 'inline-flex',
   flexShrink: 0,
   alignItems: 'center',
@@ -38,23 +39,26 @@ export const CardTitleModalTriggerCircle = styled(
   transition:
     'opacity 250ms ease, width 250ms ease, margin-right 250ms ease, background-color 250ms ease, border-color 250ms ease',
 
-  variants: [
-    {
-      props: { isVisible: true },
-      style: {
-        width: circleSize,
-        marginRight: '6px',
-        opacity: 1,
-      },
-    },
-    {
-      props: { isCompleted: true },
-      style: {
-        backgroundColor: cardCompleteGreen,
-        borderColor: cardCompleteGreen,
-      },
-    },
-  ],
+  // Reveal on hover/focus of the card (data-visible) or when this control
+  // itself receives keyboard focus.
+  '&[data-visible], &:focus-visible': {
+    width: circleSize,
+    marginRight: '6px',
+    opacity: 1,
+  },
+
+  '&:focus-visible': {
+    outline: `2px solid ${focusRingBlue}`,
+    outlineOffset: '1px',
+  },
+
+  '&[data-completed]': {
+    width: circleSize,
+    marginRight: '6px',
+    opacity: 1,
+    backgroundColor: cardCompleteGreen,
+    borderColor: cardCompleteGreen,
+  },
 });
 
 type ChecklistTotalsContainerProps = {
