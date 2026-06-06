@@ -1,4 +1,4 @@
-import { type MouseEvent, useState } from 'react';
+import { type MouseEvent, useRef, useState } from 'react';
 import { AiOutlineCheck } from 'react-icons/ai';
 import { CardModalTrigger } from '~/components/Cards/Card.styled';
 import { CardTitleChecklistDetails } from '~/components/Cards/CardTitleDetails/CardTitleChecklistsDetails';
@@ -14,6 +14,9 @@ import { useCurrentBoardId } from '~/utils/useCurrentBoardId';
 
 export function CardTitleDetails({ id }: { id: string }) {
   const [isHovering, setHovering] = useState(false);
+  const [isFocused, setIsFocused] = useState(false);
+  const triggerRef = useRef<HTMLButtonElement>(null);
+  const pointerFocusedRef = useRef(false);
   const { data } = useGetCardById({ id });
   const { isSuccess, data: checklistViews } = useGetCardChecklistView({
     cardId: id,
@@ -23,7 +26,6 @@ export function CardTitleDetails({ id }: { id: string }) {
   const boardId = useCurrentBoardId();
 
   const isCompleted = data?.isCompleted ?? false;
-  const isCircleVisible = isHovering || isCompleted;
 
   function toggleCardCompletion(event: MouseEvent<HTMLButtonElement>) {
     event.preventDefault();
@@ -50,24 +52,59 @@ export function CardTitleDetails({ id }: { id: string }) {
     });
   }
 
+  function handleTriggerFocus() {
+    setIsFocused(true);
+  }
+
+  function handleTriggerBlur() {
+    setIsFocused(false);
+    pointerFocusedRef.current = false;
+  }
+
+  function handleListCardMouseEnter() {
+    setHovering(true);
+    pointerFocusedRef.current = true;
+    triggerRef.current?.focus({ preventScroll: true });
+  }
+
+  function handleListCardMouseLeave() {
+    setHovering(false);
+
+    if (
+      pointerFocusedRef.current &&
+      triggerRef.current === document.activeElement
+    ) {
+      triggerRef.current?.blur();
+    }
+
+    pointerFocusedRef.current = false;
+  }
+
   return (
-    <CardModalTrigger data-testid="CardModalTrigger">
+    <CardModalTrigger
+      data-testid="CardModalTrigger"
+      isHovered={isHovering || isFocused}
+      onBlur={handleTriggerBlur}
+      onFocus={handleTriggerFocus}
+      ref={triggerRef}
+    >
       <ListCardContainer
         data-testid="ListCardContainer"
-        onMouseOver={() => setHovering(true)}
-        onMouseOut={() => setHovering(false)}
+        onMouseEnter={handleListCardMouseEnter}
+        onMouseLeave={handleListCardMouseLeave}
       >
         <CardTitleModalTriggerText data-testid="CardTitleModalTriggerText">
           <CardTitleModalTriggerCircle
             aria-label="Mark card complete"
             data-testid="CardTitleModalTriggerCircle"
             isCompleted={isCompleted}
-            isVisible={isCircleVisible}
+            isVisible={isFocused || isCompleted}
             onClick={toggleCardCompletion}
             type="button"
           >
             {isCompleted && <AiOutlineCheck size={10} />}
           </CardTitleModalTriggerCircle>
+
           {data?.cardTitle}
         </CardTitleModalTriggerText>
 
