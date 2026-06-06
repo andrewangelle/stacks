@@ -1,6 +1,7 @@
 import type {
   CreateChecklistArgs,
   DeleteChecklistArgs,
+  GetCardChecklistViewArgs,
   GetChecklistByIdArgs,
   GetChecklistsArgs,
   UpdateChecklistArgs,
@@ -25,6 +26,57 @@ export function getChecklistByIdQuery(data: WithUserId<GetChecklistByIdArgs>) {
       userId: data.userId,
     },
   });
+}
+
+export async function getCardChecklistViewQuery(
+  data: WithUserId<GetCardChecklistViewArgs>,
+) {
+  const checklists = await prisma.checklist.findMany({
+    where: {
+      cardId: data.cardId,
+      card: { list: { board: { userId: data.userId } } },
+      items: { some: { cardId: data.cardId } },
+    },
+    select: {
+      id: true,
+      checklistTitle: true,
+      items: {
+        where: { cardId: data.cardId },
+        select: {
+          label: true,
+          isCompleted: true,
+        },
+      },
+    },
+    orderBy: { createdAt: 'asc' },
+  });
+
+  let completedItemsForCard = 0;
+  let totalItemsForCard = 0;
+
+  const checklistsWithStats = checklists.map((checklist) => {
+    const completedItems = checklist.items.filter((item) => item.isCompleted);
+    const totalItems = checklist.items.length;
+
+    completedItemsForCard += completedItems.length;
+    totalItemsForCard += totalItems;
+
+    return {
+      id: checklist.id,
+      checklistTitle: checklist.checklistTitle,
+      completedItems: completedItems.length,
+      totalItems,
+      titles: completedItems.map((item) => item.label),
+    };
+  });
+
+  return {
+    completedItemsForCard,
+    totalItemsForCard,
+    checklists: checklistsWithStats.filter(
+      (checklist) => checklist.totalItems > 0,
+    ),
+  };
 }
 
 export async function createChecklistQuery(

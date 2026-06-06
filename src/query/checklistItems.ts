@@ -14,6 +14,7 @@ import type {
   UpdateChecklistItemArgs,
 } from '~/db/checklistItems/checklistItems.schemas';
 import type { ChecklistItem } from '~/generated/prisma/client';
+import { checklistQueryKeys } from '~/query/checklists';
 import { queryClient } from '~/query/queryClient';
 
 const queryKeys = {
@@ -21,6 +22,88 @@ const queryKeys = {
   detail: (checklistItemId: string) =>
     ['checklistItem', checklistItemId] as const,
 };
+
+export const checklistItemQueryKeys = queryKeys;
+
+type CardChecklistViewData = {
+  completedItemsForCard: number;
+  totalItemsForCard: number;
+  checklists: {
+    id: string;
+    checklistTitle: string;
+    completedItems: number;
+    totalItems: number;
+    titles: string[];
+  }[];
+};
+
+function getCachedChecklistItem(itemId: string, checklistId: string) {
+  return (
+    queryClient.getQueryData<ChecklistItem>(queryKeys.detail(itemId)) ??
+    queryClient
+      .getQueryData<ChecklistItem[]>(queryKeys.list(checklistId))
+      ?.find((cachedItem) => cachedItem.id === itemId)
+  );
+}
+
+function patchCardChecklistViewOnItemUpdate(item: ChecklistItem) {
+  const previousItem = getCachedChecklistItem(item.id, item.checklistId);
+
+  if (!previousItem || previousItem.isCompleted === item.isCompleted) {
+    return;
+  }
+
+  const delta = item.isCompleted ? 1 : -1;
+
+  queryClient.setQueryData<CardChecklistViewData>(
+    checklistQueryKeys.cardChecklistView(item.cardId),
+    (cache) => {
+      if (!cache) {
+        return cache;
+      }
+
+      return {
+        ...cache,
+        completedItemsForCard: cache.completedItemsForCard + delta,
+        checklists: cache.checklists.map((checklist) => {
+          if (checklist.id !== item.checklistId) {
+            return checklist;
+          }
+
+          return {
+            ...checklist,
+            completedItems: checklist.completedItems + delta,
+            titles: item.isCompleted
+              ? [...checklist.titles, item.label]
+              : checklist.titles.filter((title) => title !== item.label),
+          };
+        }),
+      };
+    },
+  );
+}
+
+function invalidateCardChecklistView(cardId: string) {
+  queryClient.invalidateQueries({
+    queryKey: checklistQueryKeys.cardChecklistView(cardId),
+  });
+}
+
+function updateChecklistItemCaches(item: ChecklistItem) {
+  patchCardChecklistViewOnItemUpdate(item);
+
+  queryClient.setQueryData<ChecklistItem>(queryKeys.detail(item.id), item);
+
+  queryClient.setQueryData<ChecklistItem[]>(
+    queryKeys.list(item.checklistId),
+    (cache = []) =>
+      cache.map((cachedItem) =>
+        cachedItem.id === item.id ? item : cachedItem,
+      ),
+  );
+
+  invalidateCardChecklistView(item.cardId);
+}
 
 export function useGetChecklistItem(data: GetChecklistItemByIdArgs) {
   return useQuery({
@@ -57,6 +140,8 @@ export function useCreateChecklistItem() {
         queryKeys.list(variables.checklistId),
         (cache = []) => [...cache, result.data[0]],
       );
+
+      invalidateCardChecklistView(variables.cardId);
     },
   });
 
@@ -70,26 +155,12 @@ export function useUpdateChecklistItem() {
         data,
       });
     },
-    onSuccess(_result, variables) {
-      const checklistId = queryClient.getQueryData<ChecklistItem>(
-        queryKeys.detail(variables.itemId),
-      )?.checklistId;
+    onSuccess(result, variables) {
+      const updatedItem = result[0];
 
-      if (checklistId) {
-        queryClient.setQueryData<ChecklistItem[]>(
-          queryKeys.list(checklistId),
-          (cache = [] as ChecklistItem[]) =>
-            cache.map((item) => {
-              if (item.id === variables.itemId) {
-                return {
-                  ...item,
-                  isCompleted: variables.isCompleted ?? item.isCompleted,
-                  label: variables.label ?? item.label,
-                };
-              }
-              return item;
-            }),
-        );
+      if (updatedItem) {
+        updateChecklistItemCaches(updatedItem);
+        return;
       }
 
       queryClient.setQueryData<ChecklistItem>(
@@ -114,17 +185,23 @@ export function useDeleteChecklistItem() {
       });
     },
     onSuccess(result, variables) {
-      const checklistId =
-        result.data[0]?.checklistId ??
+      const deletedItem =
+        result.data[0] ??
         queryClient.getQueryData<ChecklistItem>(
           queryKeys.detail(variables.itemId),
-        )?.checklistId;
+        );
+
+      const checklistId = deletedItem?.checklistId;
 
       if (checklistId) {
         queryClient.setQueryData<ChecklistItem[]>(
           queryKeys.list(checklistId),
           (cache = []) => cache.filter((item) => item.id !== variables.itemId),
         );
+      }
+
+      if (deletedItem) {
+        invalidateCardChecklistView(deletedItem.cardId);
       }
     },
   });
