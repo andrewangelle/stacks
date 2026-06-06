@@ -1,4 +1,3 @@
-import type { Activity } from '@prisma/client';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import {
   createActivity,
@@ -12,6 +11,7 @@ import type {
   GetActivityArgs,
   UpdateActivityArgs,
 } from '~/db/activity/activity.schemas';
+import type { Activity } from '~/generated/prisma/client';
 import { queryClient } from '~/query/queryClient';
 
 const queryKeys = {

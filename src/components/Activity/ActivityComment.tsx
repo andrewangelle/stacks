@@ -1,4 +1,3 @@
-import type { Activity } from '@prisma/client';
 import { formatRelative } from 'date-fns';
 import { useState } from 'react';
 import {
@@ -11,6 +10,7 @@ import {
 import { ActivityLogo } from '~/components/Activity/ActivityLogo';
 import { DeleteCommentPopover } from '~/components/Activity/DeleteCommentPopover';
 import { CloseAddCardButton } from '~/components/Lists/List.styled';
+import type { Activity } from '~/generated/prisma/client';
 import { useUpdateActivity } from '~/query/activity';
 import { useGetProfile } from '~/query/profile';
 import { Flex } from '~/styles/Page.styled';
