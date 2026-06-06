@@ -1,4 +1,3 @@
-import type { Stack } from '@prisma/client';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import {
   createBoard,
@@ -7,6 +6,7 @@ import {
   updateBoard,
 } from '~/db/boards/boards.functions';
 import type { CreateBoardArgs } from '~/db/boards/boards.schemas';
+import type { Stack } from '~/generated/prisma/client';
 import { queryClient } from '~/query/queryClient';
 import { useCurrentBoardId } from '~/utils/useCurrentBoardId';
 

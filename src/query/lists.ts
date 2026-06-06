@@ -1,4 +1,3 @@
-import type { List } from '@prisma/client';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import {
   createList,
@@ -12,6 +11,7 @@ import type {
   DeleteListArgs,
   UpdateListArgs,
 } from '~/db/lists/lists.schemas';
+import type { List } from '~/generated/prisma/client';
 import { queryClient } from '~/query/queryClient';
 import { useCurrentBoardId } from '~/utils/useCurrentBoardId';
 

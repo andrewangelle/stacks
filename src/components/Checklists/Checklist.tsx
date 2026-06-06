@@ -1,4 +1,3 @@
-import type { ChecklistItem as ChecklistItemType } from '@prisma/client';
 import { AddChecklistItem } from '~/components/ChecklistItem/AddChecklistItem';
 import { ChecklistItem } from '~/components/ChecklistItem/ChecklistItem';
 import { ChecklistEditableTitle } from '~/components/Checklists/ChecklistEditableTitle';
@@ -9,6 +8,7 @@ import {
 } from '~/components/Checklists/Checklists.styled';
 import { DeleteChecklist } from '~/components/Checklists/DeleteChecklist';
 import { Draggable } from '~/components/Draggable';
+import type { ChecklistItem as ChecklistItemType } from '~/generated/prisma/client';
 import {
   reorderChecklistItems,
   useGetChecklistItems,

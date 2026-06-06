@@ -1,4 +1,3 @@
-import type { Card } from '@prisma/client';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import {
   createCard,
@@ -13,6 +12,7 @@ import type {
   GetCardsByListIdArgs,
   UpdateCardArgs,
 } from '~/db/cards/cards.schemas';
+import type { Card } from '~/generated/prisma/client';
 import { queryClient } from '~/query/queryClient';
 
 export const queryKeys = {
