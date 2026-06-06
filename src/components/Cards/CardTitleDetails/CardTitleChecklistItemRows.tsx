@@ -6,11 +6,14 @@ import {
   CardTitleChecklistItemLabel,
   CardTitleChecklistItemRow,
   CardTitleChecklistItemsList,
-} from '~/components/Cards/Card.styled';
+} from '~/components/Cards/CardTitleDetails/CardTitleDetails.styled';
+import { useCreateActivity } from '~/query/activity';
 import {
   useGetChecklistItems,
   useUpdateChecklistItem,
 } from '~/query/checklistItems';
+import { useGetChecklist } from '~/query/checklists';
+import { useCurrentBoardId } from '~/utils/useCurrentBoardId';
 
 type CardTitleChecklistItemRowsProps = {
   checklistId: string;
@@ -19,24 +22,33 @@ type CardTitleChecklistItemRowsProps = {
 export function CardTitleChecklistItemRows({
   checklistId,
 }: CardTitleChecklistItemRowsProps) {
+  const { data: checklist } = useGetChecklist({ checklistId });
   const { data: items } = useGetChecklistItems({ checklistId });
   const updateItem = useUpdateChecklistItem();
+  const createActivity = useCreateActivity();
+  const boardId = useCurrentBoardId();
 
   const incompleteItems = items?.filter((item) => !item.isCompleted) ?? [];
 
-  function completeItem(
-    event: MouseEvent<HTMLButtonElement>,
-    itemId: string,
-    label: string,
-  ) {
-    event.preventDefault();
-    event.stopPropagation();
+  function completeItem({ itemId, label }: { itemId: string; label: string }) {
+    return (event: MouseEvent<HTMLButtonElement>) => {
+      event.preventDefault();
+      event.stopPropagation();
 
-    updateItem({
-      itemId,
-      label,
-      isCompleted: true,
-    });
+      updateItem({
+        itemId,
+        label,
+        isCompleted: true,
+      });
+
+      createActivity({
+        cardId: checklist?.cardId ?? '',
+        listId: checklist?.listId ?? '',
+        boardId,
+        type: 'feed',
+        content: `marked ${label} complete on this card`,
+      });
+    };
   }
 
   return (
@@ -49,7 +61,7 @@ export function CardTitleChecklistItemRows({
           <CardTitleChecklistCheckbox
             checked={false}
             data-testid="CardTitleChecklistCheckbox"
-            onClick={(event) => completeItem(event, item.id, item.label)}
+            onClick={completeItem({ itemId: item.id, label: item.label })}
           >
             <CardTitleChecklistCheckboxIndicator data-testid="CardTitleChecklistCheckboxIndicator">
               <AiOutlineCheck size={12} />

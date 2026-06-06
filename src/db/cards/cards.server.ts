@@ -52,12 +52,19 @@ export async function createCardQuery(data: WithUserId<CreateCardArgs>) {
 }
 
 export async function updateCardQuery(data: WithUserId<UpdateCardArgs>) {
-  const patch: { cardDescription?: string; cardTitle?: string } = {};
+  const patch: {
+    cardDescription?: string;
+    cardTitle?: string;
+    isCompleted?: boolean;
+  } = {};
   if (data.cardDescription) {
     patch.cardDescription = data.cardDescription;
   }
   if (data.cardTitle) {
     patch.cardTitle = data.cardTitle;
+  }
+  if (typeof data.isCompleted === 'boolean') {
+    patch.isCompleted = data.isCompleted;
   }
 
   await prisma.card.updateMany({

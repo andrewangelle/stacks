@@ -1,5 +1,6 @@
 import { type MouseEvent, useState } from 'react';
 import { RiArrowRightSLine, RiCheckboxLine } from 'react-icons/ri';
+import { CardTitleChecklistItemRows } from '~/components/Cards/CardTitleDetails/CardTitleChecklistItemRows';
 import {
   CardTitleChecklistAccordion,
   CardTitleChecklistAccordionChevron,
@@ -11,8 +12,7 @@ import {
   CardTitleChecklistAccordionTrigger,
   CardTitleChecklistDivider,
   CardTitleChecklistTotalsContainer,
-} from '~/components/Cards/Card.styled';
-import { CardTitleChecklistItemRows } from '~/components/Cards/CardTitleChecklistItemRows';
+} from '~/components/Cards/CardTitleDetails/CardTitleDetails.styled';
 import type { useGetCardChecklistView } from '~/query/checklists';
 
 type CardChecklistView = NonNullable<
@@ -73,7 +73,7 @@ export function CardTitleChecklistDetails({
             <CardTitleChecklistAccordion
               collapsible
               data-testid="CardTitleChecklistAccordion"
-              onValueChange={(value) => setOpenChecklistId(value)}
+              onValueChange={(value: string) => setOpenChecklistId(value)}
               type="single"
               value={accordionValue}
             >

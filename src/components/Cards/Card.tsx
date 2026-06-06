@@ -14,7 +14,7 @@ import {
 import { CardColumnResize } from '~/components/Cards/CardColumnResize';
 import { CardDescription } from '~/components/Cards/CardDescription';
 import { CardEditableTitle } from '~/components/Cards/CardEditableTitle';
-import { CardTitle } from '~/components/Cards/CardTitle';
+import { CardTitleDetails } from '~/components/Cards/CardTitleDetails/CardTitleDetails';
 import { DeleteCardPopover } from '~/components/Cards/DeleteCardPopover';
 import { CardChecklists } from '~/components/Checklists/Checklists';
 import { CreateChecklist } from '~/components/Checklists/CreateChecklist';
@@ -35,7 +35,7 @@ export function Card({ id }: { id: string }) {
 
   return (
     <CardModalRoot data-testid="CardModalRoot">
-      <CardTitle id={id} />
+      <CardTitleDetails id={id} />
 
       <CardModalPortal data-testid="CardModalPortal">
         <CardModalOverlay data-testid="CardModalOverlay">

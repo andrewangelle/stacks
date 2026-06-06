@@ -71,6 +71,7 @@ export function useUpdateCard() {
           ...cache,
           cardDescription: variables.cardDescription ?? cache.cardDescription,
           cardTitle: variables.cardTitle ?? cache.cardTitle,
+          isCompleted: variables.isCompleted ?? cache.isCompleted,
         }),
       );
 
@@ -84,6 +85,7 @@ export function useUpdateCard() {
                 cardDescription:
                   variables.cardDescription ?? item.cardDescription,
                 cardTitle: variables.cardTitle ?? item.cardTitle,
+                isCompleted: variables.isCompleted ?? item.isCompleted,
               };
             }
             return item;

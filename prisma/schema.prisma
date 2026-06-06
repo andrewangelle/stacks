@@ -66,6 +66,7 @@ model List {
 
 model Card {
   id               String          @id @default(uuid())
+  isCompleted Boolean   @default(false) @map("is_completed")
   cardTitle        String          @map("card_title")
   cardDescription  String          @default("") @map("card_description")
   listId           String          @map("list_id")
