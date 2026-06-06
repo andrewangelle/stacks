@@ -18,6 +18,7 @@ export const UpdateCardSchema = z.object({
   cardId: z.string(),
   cardDescription: z.string().optional(),
   cardTitle: z.string().optional(),
+  isCompleted: z.boolean().optional(),
 });
 
 export const DeleteCardSchema = z.object({
