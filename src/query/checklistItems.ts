@@ -1,4 +1,3 @@
-import type { ChecklistItem } from '@prisma/client';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import {
   createChecklistItem,
@@ -14,6 +13,7 @@ import type {
   GetChecklistItemsArgs,
   UpdateChecklistItemArgs,
 } from '~/db/checklistItems/checklistItems.schemas';
+import type { ChecklistItem } from '~/generated/prisma/client';
 import { queryClient } from '~/query/queryClient';
 
 const queryKeys = {

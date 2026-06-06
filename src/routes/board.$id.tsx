@@ -1,10 +1,10 @@
-import type { List as ListType } from '@prisma/client';
 import { useSuspenseQuery } from '@tanstack/react-query';
 import { createFileRoute, redirect } from '@tanstack/react-router';
 import { Draggable } from '~/components/Draggable';
 import { AddLists } from '~/components/Lists/AddList';
 import { List } from '~/components/Lists/List';
 import { BoardPageBackground } from '~/components/Nav/Nav.styled';
+import type { List as ListType } from '~/generated/prisma/client';
 import { fetchUserId } from '~/middleware/auth';
 import { boardByIdQueryOptions } from '~/query/boards';
 import { listsQueryOptions, reorderLists } from '~/query/lists';

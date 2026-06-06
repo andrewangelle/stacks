@@ -1,4 +1,3 @@
-import type { Card as CardType } from '@prisma/client';
 import { Card } from '~/components/Cards/Card';
 import { Draggable } from '~/components/Draggable';
 import { AddNewCard } from '~/components/Lists/AddNewCard';
@@ -7,6 +6,7 @@ import {
   ListContainer,
 } from '~/components/Lists/List.styled';
 import { ListHeader } from '~/components/Lists/ListHeader';
+import type { Card as CardType } from '~/generated/prisma/client';
 import { reorderCards, useGetCardsByListId } from '~/query/cards';
 import { useGetListById } from '~/query/lists';
 

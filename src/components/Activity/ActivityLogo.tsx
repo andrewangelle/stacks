@@ -1,5 +1,5 @@
-import type { Profile } from '@prisma/client';
 import { ActivityNameCircle } from '~/components/Activity/Activity.styled';
+import type { Profile } from '~/generated/prisma/client';
 import { useGetProfile } from '~/query/profile';
 import { Center } from '~/styles/Page.styled';
 
