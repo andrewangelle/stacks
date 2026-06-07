@@ -4,7 +4,7 @@ import { AppError } from '~/components/AppError';
 import { NotFound } from '~/components/NotFound';
 import { queryClient } from '~/query/queryClient';
 import { initSentry } from '~/sentry.config';
-import { boardIDMask } from '~/utils/routeMasks';
+import { boardIDMask, cardMask } from '~/utils/routeMasks';
 import { routeTree } from './routeTree.gen';
 
 export function getRouter() {
@@ -13,7 +13,7 @@ export function getRouter() {
     defaultErrorComponent: AppError,
     defaultNotFoundComponent: NotFound,
     scrollRestoration: true,
-    routeMasks: [boardIDMask],
+    routeMasks: [boardIDMask, cardMask],
     context: {
       queryClient,
     },

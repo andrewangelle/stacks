@@ -1,3 +1,4 @@
+import { useNavigate } from '@tanstack/react-router';
 import { type FocusEvent, type KeyboardEvent, useRef, useState } from 'react';
 import { CardModalTrigger } from '~/components/Cards/Card.styled';
 import { CardCompletedIndicator } from '~/components/Cards/CardCompletedIndicator';
@@ -6,8 +7,11 @@ import { CardTitleDetailsChecklists } from '~/components/Cards/CardTitleDetails/
 import { ListCardContainer } from '~/components/Lists/List.styled';
 import { useGetCardById } from '~/query/cards';
 import { useGetCardChecklistView } from '~/query/checklists';
+import { useCurrentBoardId } from '~/utils/useCurrentBoardId';
 
 export function CardTitleDetails({ id }: { id: string }) {
+  const boardId = useCurrentBoardId();
+  const navigate = useNavigate();
   const [isHovering, setHovering] = useState(false);
   const [isFocused, setIsFocused] = useState(false);
   const triggerRef = useRef<HTMLDivElement>(null);
@@ -18,6 +22,13 @@ export function CardTitleDetails({ id }: { id: string }) {
   });
 
   const isCircleVisible = isHovering || isFocused;
+
+  function openCardModal() {
+    navigate({
+      to: '/board/$id/card/$cardId',
+      params: { id: boardId, cardId: id },
+    });
+  }
 
   function handleTriggerFocus() {
     setIsFocused(true);
@@ -58,17 +69,18 @@ export function CardTitleDetails({ id }: { id: string }) {
 
     if (event.key === 'Enter' || event.key === ' ') {
       event.preventDefault();
-      event.currentTarget.click();
+      openCardModal();
     }
   }
 
   return (
-    <CardModalTrigger asChild data-testid="CardModalTrigger">
+    <CardModalTrigger data-testid="CardModalTrigger" onClick={openCardModal}>
       <ListCardContainer
         ref={triggerRef}
         role="button"
         tabIndex={0}
         data-testid="ListCardContainer"
+        data-card-id={id}
         onBlur={handleTriggerBlur}
         onFocus={handleTriggerFocus}
         onKeyDown={handleTriggerKeyDown}

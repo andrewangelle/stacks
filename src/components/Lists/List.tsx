@@ -1,10 +1,10 @@
-import { Card } from '~/components/Cards/Card';
 import { Draggable } from '~/components/Draggable';
 import { AddNewCard } from '~/components/Lists/AddNewCard';
 import {
   ListCardSkeleton,
   ListContainer,
 } from '~/components/Lists/List.styled';
+import { ListCard } from '~/components/Lists/ListCard';
 import { ListHeader } from '~/components/Lists/ListHeader';
 import type { Card as CardType } from '~/generated/prisma/client';
 import { reorderCards, useGetCardsByListId } from '~/query/cards';
@@ -36,7 +36,7 @@ export function List({ id: listId }: { id: string }) {
           type="card"
           onDrop={(item: CardType) => reorderCards(item, listId, card.id)}
         >
-          <Card id={card.id} />
+          <ListCard id={card.id} />
         </Draggable>
       ))}
 
