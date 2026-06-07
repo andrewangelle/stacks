@@ -30,6 +30,14 @@ export function CardTitleDetails({ id }: { id: string }) {
     });
   }
 
+  function openCardModalToChecklist(checklistId: string) {
+    navigate({
+      href: `/card/${id.slice(0, 8)}#checklist-${checklistId}`,
+      resetScroll: false,
+      hashScrollIntoView: false,
+    });
+  }
+
   function handleTriggerFocus() {
     setIsFocused(true);
     pointerFocusedRef.current = true;
@@ -94,7 +102,10 @@ export function CardTitleDetails({ id }: { id: string }) {
         </ListCardTitleDetailsContainer>
 
         {isSuccess && checklistViews.totalItemsForCard > 0 && (
-          <CardTitleDetailsChecklists cardId={id} />
+          <CardTitleDetailsChecklists
+            cardId={id}
+            onShowMore={openCardModalToChecklist}
+          />
         )}
       </ListCardContainer>
     </CardModalTrigger>

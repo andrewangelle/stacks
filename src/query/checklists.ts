@@ -26,6 +26,12 @@ const queryKeys = {
 
 export const checklistQueryKeys = queryKeys;
 
+function invalidateCardChecklistView(cardId: string) {
+  queryClient.invalidateQueries({
+    queryKey: queryKeys.cardChecklistView(cardId),
+  });
+}
+
 export function useGetChecklist(data: GetChecklistByIdArgs) {
   return useQuery({
     queryKey: queryKeys.detail(data.checklistId),
@@ -61,6 +67,7 @@ export function useCreateChecklist() {
         queryKeys.list(variables.cardId),
         (cache = []) => [...cache, result.data[0]],
       );
+      invalidateCardChecklistView(variables.cardId);
     },
   });
 
@@ -81,6 +88,10 @@ export function useDeleteChecklist() {
         (cache = []) =>
           cache.filter((item) => item.id !== variables.checklistId),
       );
+      queryClient.removeQueries({
+        queryKey: queryKeys.detail(variables.checklistId),
+      });
+      invalidateCardChecklistView(variables.cardId);
     },
   });
 

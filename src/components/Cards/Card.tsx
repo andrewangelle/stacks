@@ -1,4 +1,5 @@
 import { useNavigate } from '@tanstack/react-router';
+import { useEffect, useRef } from 'react';
 import { CardActivity } from '~/components/Activity/CardActivity';
 import {
   CardActionsContainer,
@@ -22,6 +23,7 @@ import { ListCardSkeleton } from '~/components/Lists/List.styled';
 import { useGetCardById } from '~/query/cards';
 import { useCardColumnWidth } from '~/utils/useCardColumnWidth';
 import { useCurrentBoardId } from '~/utils/useCurrentBoardId';
+import { useHashChecklistId } from '~/utils/useHashChecklistId';
 
 function focusCardTrigger(cardId: string) {
   requestAnimationFrame(() => {
@@ -35,7 +37,17 @@ export function Card({ cardId }: { cardId: string }) {
   const boardId = useCurrentBoardId();
   const navigate = useNavigate();
   const { isLoading } = useGetCardById({ id: cardId });
+  const scrollToChecklistId = useHashChecklistId();
   const { columnWidth, setColumnWidth, isWideLayout } = useCardColumnWidth();
+  const mainColumnRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (!scrollToChecklistId) {
+      return;
+    }
+
+    mainColumnRef.current?.scrollTo({ top: 0 });
+  }, [scrollToChecklistId]);
 
   const gridTemplateColumns = `minmax(0, 1fr) 8px ${columnWidth}px`;
   const cardModalBodyStyle = isWideLayout ? { gridTemplateColumns } : undefined;
@@ -76,7 +88,7 @@ export function Card({ cardId }: { cardId: string }) {
               data-testid="CardModalBody"
               style={cardModalBodyStyle}
             >
-              <CardMainColumn data-testid="CardMainColumn">
+              <CardMainColumn data-testid="CardMainColumn" ref={mainColumnRef}>
                 <CardEditableTitle id={cardId} />
 
                 <CardActionsContainer data-testid="CardActionsContainer">
@@ -86,7 +98,10 @@ export function Card({ cardId }: { cardId: string }) {
 
                 <CardDescription cardId={cardId} />
 
-                <CardChecklists cardId={cardId} />
+                <CardChecklists
+                  cardId={cardId}
+                  scrollToChecklistId={scrollToChecklistId}
+                />
               </CardMainColumn>
 
               {isWideLayout && (
