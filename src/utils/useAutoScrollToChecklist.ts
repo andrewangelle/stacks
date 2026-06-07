@@ -2,6 +2,7 @@ import { useEffect, useRef } from 'react';
 import { useGetChecklists } from '~/query/checklists';
 
 const MAX_SCROLL_ATTEMPTS = 30;
+const SCROLL_DELAY_MS = 350;
 
 export function useAutoScrollToChecklist({
   cardId,
@@ -25,6 +26,7 @@ export function useAutoScrollToChecklist({
 
     let cancelled = false;
     let attempts = 0;
+    let scrollTimeoutId: NodeJS.Timeout | undefined;
 
     function tryScroll() {
       if (cancelled) {
@@ -36,8 +38,10 @@ export function useAutoScrollToChecklist({
       );
 
       if (targetElement) {
-        targetElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
-        scrolledToChecklistIdRef.current = scrollToChecklistId;
+        scrollTimeoutId = setTimeout(() => {
+          targetElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          scrolledToChecklistIdRef.current = scrollToChecklistId;
+        }, SCROLL_DELAY_MS);
         return;
       }
 
@@ -52,6 +56,10 @@ export function useAutoScrollToChecklist({
 
     return () => {
       cancelled = true;
+
+      if (scrollTimeoutId !== undefined) {
+        clearTimeout(scrollTimeoutId);
+      }
     };
   }, [data, scrollToChecklistId]);
 
