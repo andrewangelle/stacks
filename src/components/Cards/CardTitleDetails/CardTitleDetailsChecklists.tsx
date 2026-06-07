@@ -3,18 +3,23 @@ import { RiCheckboxLine } from 'react-icons/ri';
 import {
   CardTitleDetailsChecklistAccordionRoot,
   CardTitleDetailsChecklistDivider,
+  CardTitleDetailsChecklistShowMore,
   CardTitleDetailsChecklistTotalsContainer,
 } from '~/components/Cards/CardTitleDetails/CardTitleDetails.styled';
 import { CardTitleDetailsChecklist } from '~/components/Cards/CardTitleDetails/CardTitleDetailsChecklist';
 import { CardTitleDetailsChecklistAccordion } from '~/components/Cards/CardTitleDetails/CardTitleDetailsChecklistAccordion';
 import { useGetCardChecklistView } from '~/query/checklists';
 
+const MAX_VISIBLE_CHECKLISTS = 3;
+
 type CardTitleDetailsChecklistDetailsProps = {
   cardId: string;
+  onShowMore: (checklistId: string) => void;
 };
 
 export function CardTitleDetailsChecklists({
   cardId,
+  onShowMore,
 }: CardTitleDetailsChecklistDetailsProps) {
   const { data: checklistViews } = useGetCardChecklistView({
     cardId,
@@ -23,6 +28,8 @@ export function CardTitleDetailsChecklists({
   const [openChecklistId, setOpenChecklistId] = useState('');
 
   const checklists = checklistViews?.checklists ?? [];
+  const visibleChecklists = checklists.slice(0, MAX_VISIBLE_CHECKLISTS);
+  const hiddenChecklistCount = checklists.length - MAX_VISIBLE_CHECKLISTS;
   const accordionValue =
     openChecklistId &&
     checklists.some((checklist) => checklist.id === openChecklistId)
@@ -33,6 +40,16 @@ export function CardTitleDetailsChecklists({
     event.preventDefault();
     event.stopPropagation();
     setIsOpen((prev) => !prev);
+  }
+
+  function handleShowMore(event: MouseEvent<HTMLButtonElement>) {
+    event.preventDefault();
+    event.stopPropagation();
+
+    const firstHiddenChecklist = checklists[MAX_VISIBLE_CHECKLISTS];
+    if (firstHiddenChecklist) {
+      onShowMore(firstHiddenChecklist.id);
+    }
   }
 
   return (
@@ -60,7 +77,7 @@ export function CardTitleDetailsChecklists({
               type="single"
               value={accordionValue}
             >
-              {checklists.map((checklist) => (
+              {visibleChecklists.map((checklist) => (
                 <CardTitleDetailsChecklistAccordion
                   key={checklist.id}
                   checklistId={checklist.id}
@@ -68,6 +85,16 @@ export function CardTitleDetailsChecklists({
                 />
               ))}
             </CardTitleDetailsChecklistAccordionRoot>
+          )}
+
+          {checklistViews?.hasMultiple && hiddenChecklistCount > 0 && (
+            <CardTitleDetailsChecklistShowMore
+              data-testid="CardTitleDetailsChecklistShowMore"
+              onClick={handleShowMore}
+              type="button"
+            >
+              ...and {hiddenChecklistCount} more
+            </CardTitleDetailsChecklistShowMore>
           )}
 
           {!checklistViews?.hasMultiple &&
