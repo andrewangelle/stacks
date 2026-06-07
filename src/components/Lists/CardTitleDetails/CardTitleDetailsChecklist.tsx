@@ -7,7 +7,7 @@ import {
   CardTitleDetailsChecklistItemLabel,
   CardTitleDetailsChecklistItemRow,
   CardTitleDetailsChecklistShowMore,
-} from '~/components/Cards/CardTitleDetails/CardTitleDetails.styled';
+} from '~/components/Lists/CardTitleDetails/CardTitleDetails.styled';
 import { useCreateActivity } from '~/query/activity';
 import {
   useGetChecklistItems,

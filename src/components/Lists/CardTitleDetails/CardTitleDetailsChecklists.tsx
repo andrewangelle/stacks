@@ -5,9 +5,9 @@ import {
   CardTitleDetailsChecklistDivider,
   CardTitleDetailsChecklistShowMore,
   CardTitleDetailsChecklistTotalsContainer,
-} from '~/components/Cards/CardTitleDetails/CardTitleDetails.styled';
-import { CardTitleDetailsChecklist } from '~/components/Cards/CardTitleDetails/CardTitleDetailsChecklist';
-import { CardTitleDetailsChecklistAccordion } from '~/components/Cards/CardTitleDetails/CardTitleDetailsChecklistAccordion';
+} from '~/components/Lists/CardTitleDetails/CardTitleDetails.styled';
+import { CardTitleDetailsChecklist } from '~/components/Lists/CardTitleDetails/CardTitleDetailsChecklist';
+import { CardTitleDetailsChecklistAccordion } from '~/components/Lists/CardTitleDetails/CardTitleDetailsChecklistAccordion';
 import { useGetCardChecklistView } from '~/query/checklists';
 
 const MAX_VISIBLE_CHECKLISTS = 3;

@@ -7,8 +7,8 @@ import {
   CardTitleDetailsChecklistAccordionItem,
   CardTitleDetailsChecklistAccordionTitle,
   CardTitleDetailsChecklistAccordionTrigger,
-} from '~/components/Cards/CardTitleDetails/CardTitleDetails.styled';
-import { CardTitleDetailsChecklist } from '~/components/Cards/CardTitleDetails/CardTitleDetailsChecklist';
+} from '~/components/Lists/CardTitleDetails/CardTitleDetails.styled';
+import { CardTitleDetailsChecklist } from '~/components/Lists/CardTitleDetails/CardTitleDetailsChecklist';
 import { useGetCardChecklistView } from '~/query/checklists';
 
 type CardTitleDetailsChecklistAccordionProps = {
