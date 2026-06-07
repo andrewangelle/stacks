@@ -40,7 +40,7 @@ export const AddActivityInput = styled.input`
   margin: 0px 5px;
   width: 100%;
   border: none;
-  border-radius: 5px;
+  border-radius: 8px;
   padding: 8px 10px;
 `;
 
@@ -50,7 +50,7 @@ export const ActivityCommentContent = styled.div`
   margin: 0px 5px;
   width: 94%;
   border: none;
-  border-radius: 5px;
+  border-radius: 8px;
   padding: 8px 10px;
   background: white; 
 `;

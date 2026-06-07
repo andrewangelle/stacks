@@ -3,12 +3,12 @@ import * as Accordion from '@radix-ui/react-accordion';
 import * as Checkbox from '@radix-ui/react-checkbox';
 import {
   checklistProgressBlue,
+  completedGreen,
   darkGray,
   focusRingBlue,
   fontFamily,
 } from '~/styles/tokens';
 
-const cardCompleteGreen = '#1f845a';
 const circleSizeDefault = '15px';
 
 export const CardTitleModalTriggerText = styled.div`
@@ -64,8 +64,8 @@ export const CardCompletedIndicatorCircle = styled(
     width: ({ circleSize = circleSizeDefault }) => circleSize,
     marginRight: '6px',
     opacity: 1,
-    backgroundColor: cardCompleteGreen,
-    borderColor: cardCompleteGreen,
+    backgroundColor: completedGreen,
+    borderColor: completedGreen,
   },
 });
 
