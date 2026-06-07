@@ -75,7 +75,6 @@ export const DeleteChecklistButton = styled(Button)`
   
   &:hover {
     color: ${red};
-    border-radius: 8px;
   }
 `;
 

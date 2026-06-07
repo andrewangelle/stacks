@@ -61,7 +61,7 @@ export function ChecklistItem({ id }: { id: string }) {
       <ChecklistLeadingColumn data-testid="ChecklistLeadingColumn">
         <CheckboxRoot
           data-testid="CheckboxRoot"
-          isEditing={isEditingLabel}
+          data-editing={isEditingLabel ? '' : undefined}
           checked={checklistItem.isCompleted}
           onClick={toggleCheckbox}
         >

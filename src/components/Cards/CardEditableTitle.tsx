@@ -48,7 +48,7 @@ export function CardEditableTitle({ id }: CardEditableTitleProps) {
       {!isEditingTitle && (
         <CardModalTitle
           data-testid="CardModalTitle"
-          isCompleted={card?.isCompleted}
+          data-completed={card?.isCompleted ? '' : undefined}
           onClick={openEditTitle}
         >
           {card?.cardTitle}

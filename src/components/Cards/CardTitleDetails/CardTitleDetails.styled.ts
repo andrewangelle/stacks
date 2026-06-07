@@ -11,7 +11,7 @@ import {
 
 const circleSizeDefault = '15px';
 
-export const CardTitleModalTriggerText = styled.div`
+export const ListCardTitleDetailsContainer = styled.div`
   display: inline-flex;
   align-items: center;
   width: 100%;
@@ -74,7 +74,7 @@ type ChecklistTotalsContainerProps = {
   isAllCompleted: boolean;
 };
 
-export const CardTitleChecklistTotalsContainer =
+export const CardTitleDetailsChecklistTotalsContainer =
   styled.div<ChecklistTotalsContainerProps>({
     display: 'inline-flex',
     alignItems: 'center',
@@ -113,36 +113,40 @@ export const CardTitleChecklistTotalsContainer =
     ],
   });
 
-export const CardTitleChecklistDivider = styled.div`
+export const CardTitleDetailsChecklistDivider = styled.div`
   width: 100%;
   height: 1px;
   margin: 6px 0 4px;
   background: rgba(9, 30, 66, 0.13);
 `;
 
-export const CardTitleChecklistAccordion = styled(Accordion.Root)`
+export const CardTitleDetailsChecklistAccordionRoot = styled(Accordion.Root)`
   width: 100%;
   display: flex;
   flex-direction: column;
   gap: 2px;
 `;
 
-export const CardTitleChecklistAccordionItem = styled(Accordion.Item)`
+export const CardTitleDetailsChecklistAccordionItem = styled(Accordion.Item)`
   width: 100%;
 `;
 
-export const CardTitleChecklistAccordionHeader = styled(Accordion.Header)`
+export const CardTitleDetailsChecklistAccordionHeader = styled(
+  Accordion.Header,
+)`
   margin: 0;
 `;
 
-export const CardTitleChecklistAccordionChevron = styled.span`
+export const CardTitleDetailsChecklistAccordionChevron = styled.span`
   display: inline-flex;
   flex-shrink: 0;
   color: #44546f;
   transition: transform 150ms ease;
 `;
 
-export const CardTitleChecklistAccordionTrigger = styled(Accordion.Trigger)`
+export const CardTitleDetailsChecklistAccordionTrigger = styled(
+  Accordion.Trigger,
+)`
   all: unset;
   box-sizing: border-box;
   display: flex;
@@ -166,7 +170,7 @@ export const CardTitleChecklistAccordionTrigger = styled(Accordion.Trigger)`
   }
 `;
 
-export const CardTitleChecklistAccordionTitle = styled.span`
+export const CardTitleDetailsChecklistAccordionTitle = styled.span`
   flex: 1;
   min-width: 0;
   font-weight: 600;
@@ -176,7 +180,7 @@ export const CardTitleChecklistAccordionTitle = styled.span`
   text-align: left;
 `;
 
-export const CardTitleChecklistAccordionCount = styled.span`
+export const CardTitleDetailsChecklistAccordionCount = styled.span`
   flex-shrink: 0;
   color: #44546f;
   font-weight: 400;
@@ -184,7 +188,9 @@ export const CardTitleChecklistAccordionCount = styled.span`
   letter-spacing: 0.07rem;
 `;
 
-export const CardTitleChecklistAccordionContent = styled(Accordion.Content)`
+export const CardTitleDetailsChecklistAccordionContent = styled(
+  Accordion.Content,
+)`
   overflow: hidden;
 
   &[data-state='open'] {
@@ -216,14 +222,14 @@ export const CardTitleChecklistAccordionContent = styled(Accordion.Content)`
   }
 `;
 
-export const CardTitleChecklistItemsList = styled.div`
+export const CardTitleDetailsChecklistContainer = styled.div`
   display: flex;
   flex-direction: column;
   gap: 2px;
   padding: 2px 0 4px 18px;
 `;
 
-export const CardTitleChecklistItemRow = styled.div`
+export const CardTitleDetailsChecklistItemRow = styled.div`
   display: flex;
   align-items: flex-start;
   gap: 8px;
@@ -233,7 +239,7 @@ export const CardTitleChecklistItemRow = styled.div`
   color: #172b4d;
 `;
 
-export const CardTitleChecklistCheckbox = styled(Checkbox.Root)({
+export const CardTitleDetailsChecklistCheckbox = styled(Checkbox.Root)({
   width: '16px',
   height: '16px',
   flexShrink: 0,
@@ -258,14 +264,16 @@ export const CardTitleChecklistCheckbox = styled(Checkbox.Root)({
   ],
 });
 
-export const CardTitleChecklistCheckboxIndicator = styled(Checkbox.Indicator)`
+export const CardTitleDetailsChecklistCheckboxIndicator = styled(
+  Checkbox.Indicator,
+)`
   color: inherit;
   display: flex;
   align-items: center;
   justify-content: center;
 `;
 
-export const CardTitleChecklistItemLabel = styled.span`
+export const CardTitleDetailsChecklistItemLabel = styled.span`
   min-width: 0;
   word-break: break-word;
   text-align: left;

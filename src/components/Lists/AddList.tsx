@@ -26,7 +26,10 @@ export function AddLists({ boardId }: AddListsProps) {
   }
 
   return (
-    <AddListContainer data-testid="AddListContainer" isEditing={isEditing}>
+    <AddListContainer
+      data-testid="AddListContainer"
+      data-editing={isEditing ? '' : undefined}
+    >
       {!isEditing && (
         <button
           type="button"
