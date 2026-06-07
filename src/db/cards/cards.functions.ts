@@ -9,6 +9,7 @@ import {
 import {
   createCardQuery,
   deleteCardQuery,
+  getBoardIdByCardIdQuery,
   getCardByIdQuery,
   getCardsByListIdQuery,
   updateCardQuery,
@@ -27,6 +28,13 @@ export const getCardById = createServerFn({ method: 'GET' })
   .middleware([authMiddleware])
   .handler(async ({ data, context }) =>
     getCardByIdQuery({ ...data, userId: context.uid }),
+  );
+
+export const getBoardIdByCardId = createServerFn({ method: 'GET' })
+  .inputValidator(GetCardByIdSchema)
+  .middleware([authMiddleware])
+  .handler(async ({ data, context }) =>
+    getBoardIdByCardIdQuery({ ...data, userId: context.uid }),
   );
 
 export const createCard = createServerFn({ method: 'POST' })

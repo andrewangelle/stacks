@@ -31,13 +31,18 @@ export function useGetCardsByListId(data: GetCardsByListIdArgs) {
   });
 }
 
-export function useGetCardById(args: { id: string }) {
-  return useQuery({
-    queryKey: queryKeys.detail(args.id),
+export function cardByIdQueryOptions(cardId: string) {
+  return {
+    queryKey: queryKeys.detail(cardId),
+    enabled: !!cardId,
     queryFn() {
-      return getCardById({ data: { cardId: args.id } });
+      return getCardById({ data: { cardId } });
     },
-  });
+  };
+}
+
+export function useGetCardById(args: { id: string }) {
+  return useQuery(cardByIdQueryOptions(args.id));
 }
 
 export function useCreateCard() {

@@ -11,8 +11,10 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as BoardsRouteImport } from './routes/boards'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as CardCardIdRouteImport } from './routes/card.$cardId'
 import { Route as BoardIdRouteImport } from './routes/board.$id'
 import { Route as AuthSignInRouteImport } from './routes/auth.sign-in'
+import { Route as BoardIdCardCardIdRouteImport } from './routes/board.$id.card.$cardId'
 
 const BoardsRoute = BoardsRouteImport.update({
   id: '/boards',
@@ -22,6 +24,11 @@ const BoardsRoute = BoardsRouteImport.update({
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CardCardIdRoute = CardCardIdRouteImport.update({
+  id: '/card/$cardId',
+  path: '/card/$cardId',
   getParentRoute: () => rootRouteImport,
 } as any)
 const BoardIdRoute = BoardIdRouteImport.update({
@@ -34,39 +41,70 @@ const AuthSignInRoute = AuthSignInRouteImport.update({
   path: '/auth/sign-in',
   getParentRoute: () => rootRouteImport,
 } as any)
+const BoardIdCardCardIdRoute = BoardIdCardCardIdRouteImport.update({
+  id: '/card/$cardId',
+  path: '/card/$cardId',
+  getParentRoute: () => BoardIdRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/boards': typeof BoardsRoute
   '/auth/sign-in': typeof AuthSignInRoute
-  '/board/$id': typeof BoardIdRoute
+  '/board/$id': typeof BoardIdRouteWithChildren
+  '/card/$cardId': typeof CardCardIdRoute
+  '/board/$id/card/$cardId': typeof BoardIdCardCardIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/boards': typeof BoardsRoute
   '/auth/sign-in': typeof AuthSignInRoute
-  '/board/$id': typeof BoardIdRoute
+  '/board/$id': typeof BoardIdRouteWithChildren
+  '/card/$cardId': typeof CardCardIdRoute
+  '/board/$id/card/$cardId': typeof BoardIdCardCardIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/boards': typeof BoardsRoute
   '/auth/sign-in': typeof AuthSignInRoute
-  '/board/$id': typeof BoardIdRoute
+  '/board/$id': typeof BoardIdRouteWithChildren
+  '/card/$cardId': typeof CardCardIdRoute
+  '/board/$id/card/$cardId': typeof BoardIdCardCardIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/boards' | '/auth/sign-in' | '/board/$id'
+  fullPaths:
+    | '/'
+    | '/boards'
+    | '/auth/sign-in'
+    | '/board/$id'
+    | '/card/$cardId'
+    | '/board/$id/card/$cardId'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/boards' | '/auth/sign-in' | '/board/$id'
-  id: '__root__' | '/' | '/boards' | '/auth/sign-in' | '/board/$id'
+  to:
+    | '/'
+    | '/boards'
+    | '/auth/sign-in'
+    | '/board/$id'
+    | '/card/$cardId'
+    | '/board/$id/card/$cardId'
+  id:
+    | '__root__'
+    | '/'
+    | '/boards'
+    | '/auth/sign-in'
+    | '/board/$id'
+    | '/card/$cardId'
+    | '/board/$id/card/$cardId'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   BoardsRoute: typeof BoardsRoute
   AuthSignInRoute: typeof AuthSignInRoute
-  BoardIdRoute: typeof BoardIdRoute
+  BoardIdRoute: typeof BoardIdRouteWithChildren
+  CardCardIdRoute: typeof CardCardIdRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -85,6 +123,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/card/$cardId': {
+      id: '/card/$cardId'
+      path: '/card/$cardId'
+      fullPath: '/card/$cardId'
+      preLoaderRoute: typeof CardCardIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/board/$id': {
       id: '/board/$id'
       path: '/board/$id'
@@ -99,14 +144,33 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthSignInRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/board/$id/card/$cardId': {
+      id: '/board/$id/card/$cardId'
+      path: '/card/$cardId'
+      fullPath: '/board/$id/card/$cardId'
+      preLoaderRoute: typeof BoardIdCardCardIdRouteImport
+      parentRoute: typeof BoardIdRoute
+    }
   }
 }
+
+interface BoardIdRouteChildren {
+  BoardIdCardCardIdRoute: typeof BoardIdCardCardIdRoute
+}
+
+const BoardIdRouteChildren: BoardIdRouteChildren = {
+  BoardIdCardCardIdRoute: BoardIdCardCardIdRoute,
+}
+
+const BoardIdRouteWithChildren =
+  BoardIdRoute._addFileChildren(BoardIdRouteChildren)
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   BoardsRoute: BoardsRoute,
   AuthSignInRoute: AuthSignInRoute,
-  BoardIdRoute: BoardIdRoute,
+  BoardIdRoute: BoardIdRouteWithChildren,
+  CardCardIdRoute: CardCardIdRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
