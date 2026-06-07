@@ -127,5 +127,18 @@ export function useGetCardChecklistView(data: GetCardChecklistViewArgs) {
         data,
       });
     },
+    select(data) {
+      const filteredChecklists = data.checklists.filter(
+        (checklist) => checklist.completedItems < checklist.totalItems,
+      );
+      return {
+        completedItemsForCard: data.completedItemsForCard,
+        totalItemsForCard: data.totalItemsForCard,
+        checklists: filteredChecklists,
+        isAllCompleted: data.completedItemsForCard === data.totalItemsForCard,
+        hasMultiple: filteredChecklists.length > 1,
+        singleChecklistId: filteredChecklists[0]?.id,
+      };
+    },
   });
 }

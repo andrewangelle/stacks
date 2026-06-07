@@ -1,8 +1,8 @@
 import { type FocusEvent, type KeyboardEvent, useRef, useState } from 'react';
 import { CardModalTrigger } from '~/components/Cards/Card.styled';
 import { CardCompletedIndicator } from '~/components/Cards/CardCompletedIndicator';
-import { CardTitleChecklistDetails } from '~/components/Cards/CardTitleDetails/CardTitleChecklistsDetails';
-import { CardTitleModalTriggerText } from '~/components/Cards/CardTitleDetails/CardTitleDetails.styled';
+import { ListCardTitleDetailsContainer } from '~/components/Cards/CardTitleDetails/CardTitleDetails.styled';
+import { CardTitleDetailsChecklists } from '~/components/Cards/CardTitleDetails/CardTitleDetailsChecklists';
 import { ListCardContainer } from '~/components/Lists/List.styled';
 import { useGetCardById } from '~/query/cards';
 import { useGetCardChecklistView } from '~/query/checklists';
@@ -28,7 +28,6 @@ export function CardTitleDetails({ id }: { id: string }) {
     if (event.currentTarget.contains(event.relatedTarget as Node | null)) {
       return;
     }
-
     setIsFocused(false);
     pointerFocusedRef.current = false;
   }
@@ -77,14 +76,13 @@ export function CardTitleDetails({ id }: { id: string }) {
         onMouseLeave={handleListCardMouseLeave}
         onPointerDown={handleTriggerFocus}
       >
-        <CardTitleModalTriggerText data-testid="CardTitleModalTriggerText">
+        <ListCardTitleDetailsContainer data-testid="ListCardTitleDetailsContainer">
           <CardCompletedIndicator cardId={id} visible={isCircleVisible} />
-
           {data?.cardTitle}
-        </CardTitleModalTriggerText>
+        </ListCardTitleDetailsContainer>
 
         {isSuccess && checklistViews.totalItemsForCard > 0 && (
-          <CardTitleChecklistDetails checklistViews={checklistViews} />
+          <CardTitleDetailsChecklists cardId={id} />
         )}
       </ListCardContainer>
     </CardModalTrigger>
