@@ -58,15 +58,6 @@ export const CheckboxLabel = styled('label')<CheckboxLabelProps>({
   cursor: 'pointer',
   textDecoration: (props) => (props.checked ? 'line-through' : 'none'),
 });
-export const DragChecklistItemShadow = styled.div<{
-  height?: number;
-  width?: number;
-}>({
-  height: ({ height }) => `${height ?? 0}px`,
-  width: ({ width }) => `${width ?? 0}px`,
-  background: 'rgba(0,0,0,0.1)',
-  borderRadius: '5px',
-});
 
 export const EditChecklistItemContainer = styled.div`
   display: flex;
