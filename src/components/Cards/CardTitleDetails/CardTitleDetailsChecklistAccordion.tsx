@@ -57,7 +57,7 @@ export function CardTitleDetailsChecklistAccordion({
         data-testid="CardTitleDetailsChecklistAccordionContent"
         onPointerDown={(event) => event.stopPropagation()}
       >
-        <CardTitleDetailsChecklist checklistId={checklist.id} />
+        <CardTitleDetailsChecklist checklistId={checklist.id} collapsible />
       </CardTitleDetailsChecklistAccordionContent>
     </CardTitleDetailsChecklistAccordionItem>
   );

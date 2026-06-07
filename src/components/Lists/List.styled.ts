@@ -24,6 +24,7 @@ export const ListContainer = styled.div`
   width: 275px;
   padding: 15px 15px 7.5px;
   margin: 0 15px;
+  overflow: scroll;
 `;
 
 export const ListName = styled.div` 
