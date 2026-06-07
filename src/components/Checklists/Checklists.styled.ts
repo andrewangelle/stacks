@@ -69,11 +69,11 @@ export const CreateChecklistAddButton = styled(Button)`
 `;
 
 export const DeleteChecklistButton = styled(Button)` 
-  border: none;
+  border: 1px solid black;
   padding: 8px 10px;
   color: black;
   margin: 0;
-
+  
   &:hover {
     color: ${red};
     border-radius: 5px;

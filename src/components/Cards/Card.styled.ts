@@ -207,10 +207,14 @@ export const CardModalTitleContainer = styled.div`
   margin: 12px 12px 0px;
 `;
 
-export const CardModalTitle = styled(Dialog.Title)` 
-  margin: 0 16px;
-  font-size: 18px;
-`;
+type CardModalTitleProps = {
+  isCompleted?: boolean;
+};
+export const CardModalTitle = styled(Dialog.Title)<CardModalTitleProps>({
+  margin: '0 16px',
+  fontSize: '18px',
+  color: ({ isCompleted }) => (isCompleted ? 'rgba(0,0,0, 0.5)' : 'black'),
+});
 
 export const CardModalListName = styled.div` 
   font-size: 14px;

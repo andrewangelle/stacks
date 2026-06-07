@@ -9,7 +9,7 @@ import {
 } from '~/styles/tokens';
 
 const cardCompleteGreen = '#1f845a';
-const circleSize = '15px';
+const circleSizeDefault = '15px';
 
 export const CardTitleModalTriggerText = styled.div`
   display: inline-flex;
@@ -19,14 +19,20 @@ export const CardTitleModalTriggerText = styled.div`
   word-break: break-word;
 `;
 
-export const CardTitleModalTriggerCircle = styled('button')({
+type CardCompletedIndicatorCircleProps = {
+  circleSize?: string;
+};
+
+export const CardCompletedIndicatorCircle = styled(
+  'button',
+)<CardCompletedIndicatorCircleProps>({
   display: 'inline-flex',
   flexShrink: 0,
   alignItems: 'center',
   justifyContent: 'center',
   boxSizing: 'border-box',
   width: 0,
-  height: circleSize,
+  height: ({ circleSize = circleSizeDefault }) => circleSize,
   marginRight: 0,
   padding: 0,
   borderRadius: '50%',
@@ -39,10 +45,12 @@ export const CardTitleModalTriggerCircle = styled('button')({
   transition:
     'opacity 250ms ease, width 250ms ease, margin-right 250ms ease, background-color 250ms ease, border-color 250ms ease',
 
+  alignSelf: 'center',
+
   // Reveal on hover/focus of the card (data-visible) or when this control
   // itself receives keyboard focus.
   '&[data-visible], &:focus-visible': {
-    width: circleSize,
+    width: ({ circleSize = circleSizeDefault }) => circleSize,
     marginRight: '6px',
     opacity: 1,
   },
@@ -53,7 +61,7 @@ export const CardTitleModalTriggerCircle = styled('button')({
   },
 
   '&[data-completed]': {
-    width: circleSize,
+    width: ({ circleSize = circleSizeDefault }) => circleSize,
     marginRight: '6px',
     opacity: 1,
     backgroundColor: cardCompleteGreen,

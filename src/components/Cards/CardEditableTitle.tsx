@@ -1,11 +1,11 @@
 import { useState } from 'react';
-import * as Bs from 'react-icons/bs';
 import {
   CardModalTitle,
   CardModalTitleContainer,
   EditCardTitleForm,
   EditCardTitleInput,
 } from '~/components/Cards/Card.styled';
+import { CardCompletedIndicator } from '~/components/Cards/CardCompletedIndicator';
 import { useGetCardById, useUpdateCard } from '~/query/cards';
 import { useOutsideClick } from '~/utils/useOutsideClick';
 
@@ -43,10 +43,14 @@ export function CardEditableTitle({ id }: CardEditableTitleProps) {
 
   return (
     <CardModalTitleContainer data-testid="CardModalTitleContainer">
-      <Bs.BsCardHeading size={24} />
+      <CardCompletedIndicator cardId={id} circleSize="18px" />
 
       {!isEditingTitle && (
-        <CardModalTitle data-testid="CardModalTitle" onClick={openEditTitle}>
+        <CardModalTitle
+          data-testid="CardModalTitle"
+          isCompleted={card?.isCompleted}
+          onClick={openEditTitle}
+        >
           {card?.cardTitle}
         </CardModalTitle>
       )}
