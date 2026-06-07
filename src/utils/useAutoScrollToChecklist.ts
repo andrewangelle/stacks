@@ -1,46 +1,7 @@
-import { useLocation } from '@tanstack/react-router';
 import { useEffect, useRef } from 'react';
 import { useGetChecklists } from '~/query/checklists';
 
 const MAX_SCROLL_ATTEMPTS = 30;
-const SCROLL_DELAY_MS = 350;
-
-function getScrollContainer(element: HTMLElement | null) {
-  let current = element?.parentElement ?? null;
-
-  while (current) {
-    const { overflowY } = getComputedStyle(current);
-
-    if (overflowY === 'auto' || overflowY === 'scroll') {
-      return current;
-    }
-
-    current = current.parentElement;
-  }
-
-  return null;
-}
-
-function scrollChecklistIntoView(
-  scrollContainer: HTMLElement,
-  targetElement: HTMLElement,
-  onScroll: () => void,
-) {
-  scrollContainer.scrollTop = 0;
-
-  return window.setTimeout(() => {
-    const containerRect = scrollContainer.getBoundingClientRect();
-    const targetRect = targetElement.getBoundingClientRect();
-    const offsetTop =
-      targetRect.top - containerRect.top + scrollContainer.scrollTop;
-
-    scrollContainer.scrollTo({
-      top: offsetTop,
-      behavior: 'smooth',
-    });
-    onScroll();
-  }, SCROLL_DELAY_MS);
-}
 
 export function useAutoScrollToChecklist({
   cardId,
@@ -49,8 +10,6 @@ export function useAutoScrollToChecklist({
   cardId: string;
   scrollToChecklistId?: string;
 }) {
-  const location = useLocation();
-  console.log(location.hash);
   const { data } = useGetChecklists({ cardId });
   const ref = useRef<HTMLDivElement>(null);
   const scrolledToChecklistIdRef = useRef<string | undefined>(undefined);
@@ -64,17 +23,8 @@ export function useAutoScrollToChecklist({
       return;
     }
 
-    const targetChecklist = data.find(
-      (checklist) => checklist.id === scrollToChecklistId,
-    );
-
-    if (!targetChecklist) {
-      return;
-    }
-
     let cancelled = false;
     let attempts = 0;
-    let scrollTimeoutId: number | undefined;
 
     function tryScroll() {
       if (cancelled) {
@@ -86,18 +36,8 @@ export function useAutoScrollToChecklist({
       );
 
       if (targetElement) {
-        const scrollContainer = getScrollContainer(targetElement);
-
-        if (scrollContainer) {
-          scrollTimeoutId = scrollChecklistIntoView(
-            scrollContainer,
-            targetElement,
-            () => {
-              scrolledToChecklistIdRef.current = scrollToChecklistId;
-            },
-          );
-        }
-
+        targetElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        scrolledToChecklistIdRef.current = scrollToChecklistId;
         return;
       }
 
@@ -112,10 +52,6 @@ export function useAutoScrollToChecklist({
 
     return () => {
       cancelled = true;
-
-      if (scrollTimeoutId !== undefined) {
-        window.clearTimeout(scrollTimeoutId);
-      }
     };
   }, [data, scrollToChecklistId]);
 
