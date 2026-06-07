@@ -307,11 +307,3 @@ export const EditCardTitleInput = styled.input`
   font-weight: 700;
   font-family: ${fontFamily};
 `;
-
-export const DragCardShadow = styled.div<{ height?: number; width?: number }>({
-  height: ({ height }) => `${height ?? 0}px`,
-  width: ({ width }) => `${width ?? 0}px`,
-  background: 'rgba(0,0,0,0.1)',
-  margin: '4px auto',
-  borderRadius: '5px',
-});
