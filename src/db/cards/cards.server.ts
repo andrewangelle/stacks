@@ -27,6 +27,55 @@ export function getCardByIdQuery(data: WithUserId<GetCardByIdArgs>) {
   });
 }
 
+export async function getBoardIdByCardIdQuery(
+  data: WithUserId<GetCardByIdArgs>,
+) {
+  const ownershipFilter = {
+    list: { board: { userId: data.userId } },
+  };
+
+  let card = await prisma.card.findFirst({
+    where: {
+      id: data.cardId,
+      ...ownershipFilter,
+    },
+    select: {
+      id: true,
+      list: {
+        select: {
+          boardId: true,
+        },
+      },
+    },
+  });
+
+  if (!card) {
+    card = await prisma.card.findFirst({
+      where: {
+        id: { startsWith: data.cardId },
+        ...ownershipFilter,
+      },
+      select: {
+        id: true,
+        list: {
+          select: {
+            boardId: true,
+          },
+        },
+      },
+    });
+  }
+
+  if (!card) {
+    return null;
+  }
+
+  return {
+    boardId: card.list.boardId,
+    cardId: card.id,
+  };
+}
+
 export async function createCardQuery(data: WithUserId<CreateCardArgs>) {
   const list = await prisma.list.findFirst({
     where: { id: data.listId, board: { userId: data.userId } },

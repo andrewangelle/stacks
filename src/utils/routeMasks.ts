@@ -9,3 +9,12 @@ export const boardIDMask = createRouteMask({
     id: prev?.id?.slice(0, 8) ?? '',
   }),
 });
+
+export const cardMask = createRouteMask({
+  routeTree,
+  from: '/board/$id/card/$cardId',
+  to: '/card/$cardId',
+  params: (prev) => ({
+    cardId: prev.cardId?.slice(0, 8) ?? '',
+  }),
+});

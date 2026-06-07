@@ -163,7 +163,7 @@ export const CardModalContent = styled(Dialog.Content)`
   }
 `;
 
-export const CardModalTrigger = styled(Dialog.Trigger)({
+export const CardModalTrigger = styled('div')({
   border: 'none',
   padding: '0px',
   cursor: 'pointer',

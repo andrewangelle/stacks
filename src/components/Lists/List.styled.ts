@@ -3,6 +3,7 @@ import * as Ti from 'react-icons/ti';
 import { fontFamily } from '~/components/Boards/Boards.styled';
 import { animationStyles } from '~/styles/animations';
 import { Button } from '~/styles/Page.styled';
+import { focusRingBlue } from '~/styles/tokens';
 
 export const ListGridContainer = styled.div` 
   display: grid;
@@ -88,6 +89,15 @@ export const ListCardContainer = styled.div`
   box-sizing: border-box;
   width: 100%;
   min-width: 0;
+
+  &[role='button'] {
+    cursor: pointer;
+
+    &:focus {
+      outline: 2px solid ${focusRingBlue};
+      outline-offset: -2px;
+    }
+  }
 `;
 
 export const ListCardSkeleton = styled(ListCardContainer)({
