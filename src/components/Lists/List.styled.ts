@@ -12,7 +12,7 @@ export const ListGridContainer = styled.div`
 
 export const ListContainer = styled.div` 
   background-color: #ebecf0;
-  border-radius: 3px;
+  border-radius: 8px;
   box-sizing: border-box;
   display: flex;
   flex-direction: column;
