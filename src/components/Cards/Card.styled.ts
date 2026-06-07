@@ -57,7 +57,7 @@ export const CardActionsContainer = styled.div`
 export const CardModalActionButton = styled.div`
   font-family: ${fontFamily};
   background: #091e420a;
-  border-radius: 5px;
+  border-radius: 8px;
   padding: 12px;
   display: flex;
   cursor: pointer;
@@ -153,7 +153,7 @@ export const CardModalContent = styled(Dialog.Content)`
   margin: 0 30px;
   overflow: hidden;
   background: white;
-  border-radius: 5px;
+  border-radius: 8px;
 
   ${cardModalBreakpoint} {
     min-width: unset;
@@ -198,7 +198,7 @@ export const CardModalClose = styled(Dialog.Close)`
 
   &:hover {
     background: rgba(0,0,0, 0.1);
-    border-radius: 5px;
+    border-radius: 8px;
   }
 `;
 
@@ -212,7 +212,7 @@ type CardModalTitleProps = {
 };
 export const CardModalTitle = styled(Dialog.Title)<CardModalTitleProps>({
   margin: '0 16px',
-  fontSize: '18px',
+  fontSize: '20px',
   color: ({ isCompleted }) => (isCompleted ? 'rgba(0,0,0, 0.5)' : 'black'),
 });
 
@@ -225,14 +225,26 @@ export const DescriptionContainer = styled.div`
   margin: 30px 12px 0px;
 `;
 
+export const DescriptionHeadingRow = styled.div`
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 12px;
+`;
+
+export const DescriptionTitle = styled(CardModalTitle)`
+  font-size: 14px;
+`;
+
 export const DescriptionPlaceholder = styled.div` 
-  background: rgba(0,0,0, 0.03);
+  border: 1px solid rgba(0,0,0, 0.5);
   height: 30px;
   margin-left: ${cardModalContentIndent};
   font-size: 14px;
   padding: 15px;
-  border-radius: 5px;
+  border-radius: 4px;
   cursor: pointer;
+  color: rgba(0,0,0, 0.5);
+  font-weight: 500;
 
   &:hover {
     background: rgba(0,0,0, 0.1);
@@ -243,9 +255,10 @@ export const DescriptionInput = styled.textarea`
   height: 60px;
   width: 80%;
   margin-left: ${cardModalContentIndent};
+  margin-bottom: 12px;
   font-size: 14px;
   padding: 15px;
-  border-radius: 5px;
+  border-radius: 8px;
   border: none;
   font-family: ${fontFamily};
 `;
@@ -274,6 +287,11 @@ export const EditDescriptionButton = styled(Button)`
   padding: 8px 10px;
   color: black;
   margin: -4px 0px 0px 0px;
+  background: transparent;
+  border: 1px solid rgba(0,0,0, 0.5);
+  &:hover {
+    color: black;
+  }
 `;
 
 export const EditCardTitleForm = styled.form`

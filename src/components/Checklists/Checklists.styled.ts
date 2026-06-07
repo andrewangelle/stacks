@@ -9,7 +9,6 @@ import {
   EditCardTitleInput,
 } from '~/components/Cards/Card.styled';
 import { Button } from '~/styles/Page.styled';
-import { checklistProgressBlue } from '~/styles/tokens';
 
 const checklistRowColumns = `${cardModalContentIndent} minmax(0, 1fr)`;
 
@@ -25,7 +24,7 @@ export const ChecklistPopoverContent = styled(Popover.Content)`
   height: 227px;
   width: 304px;
   border: 2px solid rgba(9, 30, 66, 0.08);
-  border-radius: 5px; 
+  border-radius: 8px; 
   font-family: ${fontFamily};
   font-size: 14px;
   background: #fff;
@@ -76,7 +75,7 @@ export const DeleteChecklistButton = styled(Button)`
   
   &:hover {
     color: ${red};
-    border-radius: 5px;
+    border-radius: 8px;
   }
 `;
 
@@ -86,7 +85,6 @@ export const ChecklistHeader = styled.div`
 `;
 
 export const ChecklistProgressIndicator = styled(Progress.Indicator)` 
-  background-color: ${checklistProgressBlue};
   height: 100%;
   transition: width 660ms cubic-bezier(0.65, 0, 0.35, 1);
 `;
@@ -115,6 +113,8 @@ export const ChecklistProgressPercentage = styled.span`
   margin-top: 12px;
 `;
 
-export const ChecklistTitle = styled(CardModalTitle)``;
+export const ChecklistTitle = styled(CardModalTitle)`
+  font-size: 14px;
+`;
 export const EditChecklistTitleForm = styled(EditCardTitleForm)``;
 export const EditChecklistTitleInput = styled(EditCardTitleInput)``;

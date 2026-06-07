@@ -2,11 +2,12 @@ import { useState } from 'react';
 import * as Io from 'react-icons/io';
 import {
   CardDescriptionText,
-  CardModalTitle,
   CloseDescriptionButton,
   DescriptionContainer,
+  DescriptionHeadingRow,
   DescriptionInput,
   DescriptionPlaceholder,
+  DescriptionTitle,
   EditDescriptionButton,
   SaveDescriptionButton,
 } from '~/components/Cards/Card.styled';
@@ -34,7 +35,7 @@ export function CardDescription({ cardId }: CardModalDescriptionProps) {
     updateCard({
       cardId,
       cardTitle: data?.cardTitle ?? '',
-      cardDescription: description,
+      cardDescription: description ?? undefined,
       listId: data?.listId ?? '',
     });
     setEditing(false);
@@ -42,12 +43,14 @@ export function CardDescription({ cardId }: CardModalDescriptionProps) {
 
   return (
     <DescriptionContainer data-testid="DescriptionContainer">
-      <Flex data-testid="Flex">
-        <Io.IoMdList size={24} />
+      <DescriptionHeadingRow data-testid="DescriptionHeadingRow">
+        <Flex data-testid="Flex" style={{ alignItems: 'center' }}>
+          <Io.IoMdList size={24} />
 
-        <CardModalTitle data-testid="CardModalTitle">
-          Description
-        </CardModalTitle>
+          <DescriptionTitle data-testid="DescriptionTitle">
+            Description
+          </DescriptionTitle>
+        </Flex>
 
         {data?.cardDescription && !isEditing && (
           <EditDescriptionButton
@@ -58,7 +61,7 @@ export function CardDescription({ cardId }: CardModalDescriptionProps) {
             Edit
           </EditDescriptionButton>
         )}
-      </Flex>
+      </DescriptionHeadingRow>
 
       {data?.cardDescription && !isEditing && (
         <CardDescriptionText data-testid="CardDescriptionText">
