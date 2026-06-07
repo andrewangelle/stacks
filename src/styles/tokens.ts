@@ -8,6 +8,7 @@ export const checklistProgressBlue = '#5ba4cf';
 export const focusRingBlue = '#2F80ED';
 export const fontFamily =
   '-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Noto Sans,Ubuntu,Droid Sans,Helvetica Neue,sans-serif;';
+export const completedGreen = '#1f845a';
 
 /** References gradients in `board-gradient.css` — edit that file to tune. */
 export const boardGradientVars = {

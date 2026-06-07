@@ -153,7 +153,7 @@ export const CreateBoardPopoverContent = styled(Popover.Content)`
   height: auto;
   width: 225px;
   border: 2px solid rgba(9, 30, 66, 0.08);
-  border-radius: 5px; 
+  border-radius: 8px; 
   font-family: ${fontFamily};
   font-size: 14px;
   background: #fff;

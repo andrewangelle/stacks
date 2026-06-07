@@ -31,7 +31,7 @@ export const AddListContainer = styled('div')<AddListContainerProps>({
 });
 
 export const AddListInput = styled.input` 
-  border-radius: 5px;
+  border-radius: 8px;
   border: none;
   padding: 6px 8px;
   margin: auto auto 10px;

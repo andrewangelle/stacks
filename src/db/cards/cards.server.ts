@@ -57,10 +57,10 @@ export async function updateCardQuery(data: WithUserId<UpdateCardArgs>) {
     cardTitle?: string;
     isCompleted?: boolean;
   } = {};
-  if (data.cardDescription) {
+  if (data.cardDescription !== undefined) {
     patch.cardDescription = data.cardDescription;
   }
-  if (data.cardTitle) {
+  if (data.cardTitle !== undefined) {
     patch.cardTitle = data.cardTitle;
   }
   if (typeof data.isCompleted === 'boolean') {

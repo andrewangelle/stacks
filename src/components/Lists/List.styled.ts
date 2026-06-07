@@ -38,7 +38,7 @@ export const AddCardText = styled.button`
   font-family: ${fontFamily};
   cursor: pointer;
   font-size: 14px;
-  border-radius: 5px;
+  border-radius: 8px;
   padding: 8px;
   margin-top: 4px;
   width: 100%;
@@ -50,7 +50,7 @@ export const AddCardText = styled.button`
 `;
 
 export const AddCardInput = styled.input` 
-  border-radius: 5px;
+  border-radius: 8px;
   border: none;
   padding: 9px;
   margin: 8px 0px 12px;
@@ -74,7 +74,7 @@ export const CloseAddCardButton = styled(Button)`
 `;
 
 export const ListCardContainer = styled.div` 
-  border-radius: 5px;
+  border-radius: 8px;
   background: #fff;
   font-family: ${fontFamily};
   font-size: 14px;
