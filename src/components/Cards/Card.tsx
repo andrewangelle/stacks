@@ -39,7 +39,10 @@ export function Card({ id }: { id: string }) {
 
       <CardModalPortal data-testid="CardModalPortal">
         <CardModalOverlay data-testid="CardModalOverlay">
-          <CardModalContent data-testid="CardModalContent">
+          <CardModalContent
+            data-testid="CardModalContent"
+            aria-describedby={undefined}
+          >
             <CardModalCloseContainer data-testid="CardModalCloseContainer">
               <CardModalClose data-testid="CardModalClose">X</CardModalClose>
             </CardModalCloseContainer>

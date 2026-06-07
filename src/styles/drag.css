@@ -5,17 +5,25 @@
  * we render it as a subtle shadow so the drop target is still visible.
  */
 [data-dnd-placeholder] {
-  visibility: visible;
-  background: rgba(0, 0, 0, 0.1);
-  border-radius: 5px;
-  box-shadow: none;
+  /* biome-ignore lint/complexity/noImportantStyles: <> */
+  visibility: visible !important;
+  /* biome-ignore lint/complexity/noImportantStyles: <> */
+  background: rgba(0, 0, 0, 0.1) !important;
+  /* biome-ignore lint/complexity/noImportantStyles: <> */
+  border-radius: 5px !important;
+  /* biome-ignore lint/complexity/noImportantStyles: <> */
+  box-shadow: none !important;
+
   /* Lists sit in a flex row with align-items: stretch, so their wrapper would
      otherwise stretch to the full board height. A content-based height keeps
-     the shadow the same size as the dragged item. */
-  height: fit-content;
+     the shadow the same size as the dragged item. 
+    biome-ignore lint/complexity/noImportantStyles: <> 
+  */
+  height: fit-content !important;
 }
 
 /* Hide the cloned content inside the placeholder; only the shadow box shows. */
 [data-dnd-placeholder] * {
-  visibility: hidden;
+  /* biome-ignore lint/complexity/noImportantStyles: <> */
+  visibility: hidden !important;
 }
