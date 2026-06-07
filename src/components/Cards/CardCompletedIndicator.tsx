@@ -1,6 +1,6 @@
 import type { MouseEvent } from 'react';
 import { AiOutlineCheck } from 'react-icons/ai';
-import { CardCompletedIndicatorCircle } from '~/components/Cards/CardTitleDetails/CardTitleDetails.styled';
+import { CardCompletedIndicatorCircle } from '~/components/Lists/CardTitleDetails/CardTitleDetails.styled';
 import { useCreateActivity } from '~/query/activity';
 import { useGetCardById, useUpdateCard } from '~/query/cards';
 import { useCurrentBoardId } from '~/utils/useCurrentBoardId';

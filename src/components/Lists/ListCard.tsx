@@ -1,4 +1,4 @@
-import { CardTitleDetails } from '~/components/Cards/CardTitleDetails/CardTitleDetails';
+import { CardTitleDetails } from '~/components/Lists/CardTitleDetails/CardTitleDetails';
 import { ListCardSkeleton } from '~/components/Lists/List.styled';
 import { useGetCardById } from '~/query/cards';
 
