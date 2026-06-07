@@ -278,3 +278,27 @@ export const CardTitleDetailsChecklistItemLabel = styled.span`
   word-break: break-word;
   text-align: left;
 `;
+
+export const CardTitleDetailsChecklistShowMore = styled.button`
+  all: unset;
+  box-sizing: border-box;
+  display: inline-block;
+  margin-top: 6px;
+  padding: 2px 0;
+  font-size: 12px;
+  text-decoration: none;
+  font-weight: 400;
+  line-height: 16px;
+  color: rgba(0, 0, 0, 0.8);
+  cursor: pointer;
+
+  &:hover {
+    text-decoration: underline;
+  }
+
+  &:focus-visible {
+    outline: 2px solid ${focusRingBlue};
+    outline-offset: 1px;
+    border-radius: 2px;
+  }
+`;
