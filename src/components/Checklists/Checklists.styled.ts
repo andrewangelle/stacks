@@ -117,4 +117,6 @@ export const ChecklistTitle = styled(CardModalTitle)`
   font-size: 14px;
 `;
 export const EditChecklistTitleForm = styled(EditCardTitleForm)``;
-export const EditChecklistTitleInput = styled(EditCardTitleInput)``;
+export const EditChecklistTitleInput = styled(EditCardTitleInput)`
+  font-size: 14px;
+`;

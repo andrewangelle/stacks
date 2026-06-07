@@ -37,6 +37,25 @@ type CardChecklistViewData = {
   }[];
 };
 
+function extractUpdatedChecklistItem(
+  result: ChecklistItem[] | { data: ChecklistItem[] },
+) {
+  if (Array.isArray(result)) {
+    return result[0] as ChecklistItem | undefined;
+  }
+
+  if (
+    typeof result === 'object' &&
+    result !== null &&
+    'data' in result &&
+    Array.isArray((result as { data?: unknown }).data)
+  ) {
+    return (result as { data: ChecklistItem[] }).data[0];
+  }
+
+  return undefined;
+}
+
 function getCachedChecklistItem(itemId: string, checklistId: string) {
   return (
     queryClient.getQueryData<ChecklistItem>(queryKeys.detail(itemId)) ??
@@ -156,7 +175,7 @@ export function useUpdateChecklistItem() {
       });
     },
     onSuccess(result, variables) {
-      const updatedItem = result[0];
+      const updatedItem = extractUpdatedChecklistItem(result);
 
       if (updatedItem) {
         updateChecklistItemCaches(updatedItem);
@@ -171,6 +190,11 @@ export function useUpdateChecklistItem() {
           label: variables.label ?? cache.label,
         }),
       );
+
+      // Safety net for unexpected server payloads: refresh derived checklist totals.
+      queryClient.invalidateQueries({
+        queryKey: ['cardChecklistView'],
+      });
     },
   });
 
