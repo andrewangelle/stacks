@@ -74,6 +74,7 @@ export function CardTitleDetailsChecklists({
             checklistViews?.singleChecklistId && (
               <CardTitleDetailsChecklist
                 checklistId={checklistViews?.singleChecklistId}
+                collapsible
               />
             )}
         </>
