@@ -99,6 +99,7 @@ export const ChecklistCheckboxContentColumn = styled(
       style: {
         background: 'rgba(0,0,0,0.1)',
         cursor: 'pointer',
+        borderRadius: '8px',
       },
     },
   ],
@@ -116,11 +117,7 @@ export const ChecklistCheckboxContainer = styled('div')({
   cursor: 'pointer',
 });
 
-type CheckboxRootProps = {
-  isEditing: boolean;
-};
-
-export const CheckboxRoot = styled(Checkbox.Root)<CheckboxRootProps>({
+export const CheckboxRoot = styled(Checkbox.Root)({
   width: '16px',
   height: '16px',
   verticalAlign: 'top',
@@ -138,13 +135,10 @@ export const CheckboxRoot = styled(Checkbox.Root)<CheckboxRootProps>({
         borderRadius: '3px',
       },
     },
-    {
-      props: { isEditing: true },
-      style: {
-        top: '30px',
-      },
-    },
   ],
+  '&[data-editing]': {
+    top: '30px',
+  },
 });
 
 export const DeleteChecklistPopoverTrigger = styled(Popover.Trigger)` 
@@ -155,7 +149,5 @@ export const DeleteChecklistPopoverTrigger = styled(Popover.Trigger)`
 
   &:hover {
     position: relative;
-    background: rgba(0,0,0,0.3);
-    border-radius: 4px 
   }
 `;

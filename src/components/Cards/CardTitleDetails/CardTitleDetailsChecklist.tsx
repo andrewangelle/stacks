@@ -1,11 +1,11 @@
 import type { MouseEvent } from 'react';
 import { AiOutlineCheck } from 'react-icons/ai';
 import {
-  CardTitleChecklistCheckbox,
-  CardTitleChecklistCheckboxIndicator,
-  CardTitleChecklistItemLabel,
-  CardTitleChecklistItemRow,
-  CardTitleChecklistItemsList,
+  CardTitleDetailsChecklistCheckbox,
+  CardTitleDetailsChecklistCheckboxIndicator,
+  CardTitleDetailsChecklistContainer,
+  CardTitleDetailsChecklistItemLabel,
+  CardTitleDetailsChecklistItemRow,
 } from '~/components/Cards/CardTitleDetails/CardTitleDetails.styled';
 import { useCreateActivity } from '~/query/activity';
 import {
@@ -15,13 +15,13 @@ import {
 import { useGetChecklist } from '~/query/checklists';
 import { useCurrentBoardId } from '~/utils/useCurrentBoardId';
 
-type CardTitleChecklistItemRowsProps = {
+type CardTitleDetailsChecklistProps = {
   checklistId: string;
 };
 
-export function CardTitleChecklistItemRows({
+export function CardTitleDetailsChecklist({
   checklistId,
-}: CardTitleChecklistItemRowsProps) {
+}: CardTitleDetailsChecklistProps) {
   const { data: checklist } = useGetChecklist({ checklistId });
   const { data: items } = useGetChecklistItems({ checklistId });
   const updateItem = useUpdateChecklistItem();
@@ -52,27 +52,27 @@ export function CardTitleChecklistItemRows({
   }
 
   return (
-    <CardTitleChecklistItemsList data-testid="CardTitleChecklistItemsList">
+    <CardTitleDetailsChecklistContainer data-testid="CardTitleDetailsChecklistContainer">
       {incompleteItems.map((item) => (
-        <CardTitleChecklistItemRow
-          data-testid="CardTitleChecklistItemRow"
+        <CardTitleDetailsChecklistItemRow
+          data-testid="CardTitleDetailsChecklistItemRow"
           key={item.id}
         >
-          <CardTitleChecklistCheckbox
+          <CardTitleDetailsChecklistCheckbox
             checked={false}
-            data-testid="CardTitleChecklistCheckbox"
+            data-testid="CardTitleDetailsChecklistCheckbox"
             onClick={completeItem({ itemId: item.id, label: item.label })}
           >
-            <CardTitleChecklistCheckboxIndicator data-testid="CardTitleChecklistCheckboxIndicator">
+            <CardTitleDetailsChecklistCheckboxIndicator data-testid="CardTitleDetailsChecklistCheckboxIndicator">
               <AiOutlineCheck size={12} />
-            </CardTitleChecklistCheckboxIndicator>
-          </CardTitleChecklistCheckbox>
+            </CardTitleDetailsChecklistCheckboxIndicator>
+          </CardTitleDetailsChecklistCheckbox>
 
-          <CardTitleChecklistItemLabel data-testid="CardTitleChecklistItemLabel">
+          <CardTitleDetailsChecklistItemLabel data-testid="CardTitleDetailsChecklistItemLabel">
             {item.label}
-          </CardTitleChecklistItemLabel>
-        </CardTitleChecklistItemRow>
+          </CardTitleDetailsChecklistItemLabel>
+        </CardTitleDetailsChecklistItemRow>
       ))}
-    </CardTitleChecklistItemsList>
+    </CardTitleDetailsChecklistContainer>
   );
 }

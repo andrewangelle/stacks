@@ -2,11 +2,7 @@ import { styled } from '@pigment-css/react';
 import { fontFamily } from '~/components/Boards/Boards.styled';
 import { Button } from '~/styles/Page.styled';
 
-type AddListContainerProps = {
-  isEditing: boolean;
-};
-
-export const AddListContainer = styled('div')<AddListContainerProps>({
+export const AddListContainer = styled('div')({
   position: 'relative',
   fontFamily: fontFamily,
   backgroundColor: 'rgba(255, 255, 255, .3)',
@@ -15,16 +11,10 @@ export const AddListContainer = styled('div')<AddListContainerProps>({
   borderRadius: '5px',
   color: '#fff',
   cursor: 'pointer',
-  variants: [
-    {
-      props: { isEditing: true },
-      style: { height: 'max-content' },
-    },
-    {
-      props: { isEditing: false },
-      style: { height: '25px' },
-    },
-  ],
+  height: '25px',
+  '&[data-editing]': {
+    height: 'max-content',
+  },
   '&:hover': {
     backgroundColor: 'rgba(255, 255, 255, .5)',
   },
