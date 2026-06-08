@@ -44,3 +44,26 @@ export async function seedCard(
 
   return (await response.json()) as SeededCard;
 }
+
+type SeededListCard = SeededCard & {
+  checklists: { id: string; checklistTitle: string }[];
+  checklistItems: { id: string; label: string; checklistId: string }[];
+};
+
+export async function seedListCard(
+  request: APIRequestContext,
+  data: {
+    boardId: string;
+    listTitle?: string;
+    cardTitle?: string;
+    checklists: { title: string; items: string[] }[];
+  },
+) {
+  const response = await request.post('/__test/seed-list-card', { data });
+
+  if (!response.ok()) {
+    throw new Error(`Failed to seed list card: ${response.status()}`);
+  }
+
+  return (await response.json()) as SeededListCard;
+}
