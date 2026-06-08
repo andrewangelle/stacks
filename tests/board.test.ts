@@ -1,22 +1,29 @@
-import { expect, test } from '@playwright/test';
+import { expect, type Page, test } from '@playwright/test';
 import { resetDb } from '~test/helpers/resetDb';
 import { seedBoard } from '~test/helpers/seed';
 
-test.describe('Board', () => {
-  // Next increment: board page loads but AddList edit UI needs investigation (no app changes).
-  test.skip(
-    true,
-    'Enable after AddList interaction is verified in headed mode',
-  );
+function waitForAddListInput(page: Page) {
+  // SSR renders the add-list control before React attaches handlers; poll in
+  // the page until a click opens the form (headed/UI mode is slower).
+  return page.waitForFunction(() => {
+    if (document.querySelector('[data-testid="AddListInput"]')) return true;
+    const button = document.querySelector(
+      '[data-testid="AddListContainer"] button',
+    );
+    button?.dispatchEvent(new MouseEvent('click', { bubbles: true }));
+    return !!document.querySelector('[data-testid="AddListInput"]');
+  });
+}
 
+test.describe('Board', () => {
   test('adds a list and card on a board', async ({ page, request }) => {
     await resetDb(request);
     const board = await seedBoard(request, 'Product Roadmap');
     await page.goto(`/board/${board.id}`);
+    await expect(page.getByTestId('AddListContainer')).toBeVisible();
 
-    await expect(page.getByTestId('BoardPageBackground')).toBeVisible();
+    await waitForAddListInput(page);
 
-    await page.getByRole('button', { name: '+ Add a list' }).click();
     await expect(page.getByTestId('AddListInput')).toBeVisible();
     await page.getByTestId('AddListInput').fill('To Do');
     await page.getByTestId('AddListButton').click();

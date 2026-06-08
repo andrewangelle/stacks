@@ -22,10 +22,10 @@
     "db:deploy": "prisma migrate deploy",
     "db:studio": "prisma studio",
     "update:tsr": "pnpm add @tanstack/react-start@latest @tanstack/react-router@latest @tanstack/react-router-devtools@latest",
-    "test": "playwright test",
-    "test:ui": "playwright test --ui",
-    "test:headed": "playwright test --headed",
-    "test:debug": "playwright test --debug",
+    "test": "playwright test --project=chromium",
+    "test:ui": "playwright test --ui --project=chromium",
+    "test:headed": "playwright test --headed --ui --project=chromium",
+    "test:debug": "playwright test --debug --project=chromium",
     "test:report": "playwright show-report"
   },
   "dependencies": {
