@@ -7,9 +7,10 @@
 
 <img src="public/screenshot1.png" />
 
+<img src="public/screenshot2.png" />
+
 <img src="public/screenshot3.png" />
 
-<img src="public/screenshot2.png" />
 
 ## Testing
 
