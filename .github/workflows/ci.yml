@@ -1,4 +1,4 @@
-name: Repo Tests
+name: CI Tests
 
 on:
   pull_request:
@@ -56,6 +56,6 @@ jobs:
         run: pnpm exec playwright install --with-deps chromium
 
       # Smoke + boards only until board.test.ts is enabled (see tests/README.md).
-      - run: pnpm test --project=chromium
+      - run: pnpm test
         env:
           CI: true
