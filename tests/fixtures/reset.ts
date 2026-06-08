@@ -11,6 +11,8 @@ export function resetDB(seed = 42) {
   getStore().stacks = [];
   getStore().lists = [];
   getStore().cards = [];
+  getStore().checklists = [];
+  getStore().checklistItems = [];
   seedUser();
 }
 
