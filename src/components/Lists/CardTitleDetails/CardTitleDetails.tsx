@@ -6,7 +6,7 @@ import { ListCardTitleDetailsContainer } from '~/components/Lists/CardTitleDetai
 import { CardTitleDetailsChecklists } from '~/components/Lists/CardTitleDetails/CardTitleDetailsChecklists';
 import { ListCardContainer } from '~/components/Lists/List.styled';
 import { useGetCardById } from '~/query/cards';
-import { useGetCardChecklistView } from '~/query/checklists';
+import { useGetCardTitleDetailsChecklists } from '~/query/checklists';
 import { useCurrentBoardId } from '~/utils/useCurrentBoardId';
 
 export function CardTitleDetails({ id }: { id: string }) {
@@ -17,7 +17,7 @@ export function CardTitleDetails({ id }: { id: string }) {
   const triggerRef = useRef<HTMLDivElement>(null);
   const pointerFocusedRef = useRef(false);
   const { data } = useGetCardById({ id });
-  const { isSuccess, data: checklistViews } = useGetCardChecklistView({
+  const { isSuccess, data: checklistViews } = useGetCardTitleDetailsChecklists({
     cardId: id,
   });
 

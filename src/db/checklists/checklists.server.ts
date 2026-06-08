@@ -1,7 +1,6 @@
 import type {
   CreateChecklistArgs,
   DeleteChecklistArgs,
-  GetCardChecklistViewArgs,
   GetChecklistByIdArgs,
   GetChecklistsArgs,
   UpdateChecklistArgs,
@@ -28,8 +27,8 @@ export function getChecklistByIdQuery(data: WithUserId<GetChecklistByIdArgs>) {
   });
 }
 
-export async function getCardChecklistViewQuery(
-  data: WithUserId<GetCardChecklistViewArgs>,
+export async function getCardTitleDetailsChecklistsQuery(
+  data: WithUserId<GetChecklistsArgs>,
 ) {
   const checklists = await prisma.checklist.findMany({
     where: {
