@@ -1,0 +1,43 @@
+---
+description: E2E test conventions — no production code changes to satisfy tests
+globs: tests/**/*
+alwaysApply: false
+---
+
+# E2E tests must not change app behavior for testability
+
+When fixing or writing Playwright tests, **do not modify application source code** (`src/**`) to make tests pass.
+
+## Allowed in `src/**` for E2E
+
+- Adding or updating `data-testid` attributes on existing elements
+
+## Not allowed in `src/**` for E2E
+
+- Hydration markers (`data-hydrated`, `data-ready`, mount `useEffect` flags)
+- Test-only props, exports, or conditional branches
+- Renaming or duplicating testids on loading/skeleton UI to satisfy timing
+- Any other production change whose sole purpose is test synchronization
+
+## Fix flakiness in tests instead
+
+- Wait for loaded UI (`AddListContainer`, not a shared pending-shell testid)
+- For SSR hydration races, poll in the page with `page.waitForFunction` until interaction works
+- Use Playwright retries: `expect(async () => { ... }).toPass()`
+- Seed data via `/__test/*` helpers and assert on rendered UI
+- Prefer roles and existing `data-testid`s over new production hooks
+
+```typescript
+// ✅ GOOD — test-only hydration wait (no src/ changes)
+await expect(page.getByTestId('AddListContainer')).toBeVisible();
+await page.waitForFunction(() => {
+  if (document.querySelector('[data-testid="AddListInput"]')) return true;
+  document
+    .querySelector('[data-testid="AddListContainer"] button')
+    ?.dispatchEvent(new MouseEvent('click', { bubbles: true }));
+  return !!document.querySelector('[data-testid="AddListInput"]');
+});
+
+// ❌ BAD — app hook only for tests
+// <AddListContainer data-hydrated={hydrated ? '' : undefined} />
+```

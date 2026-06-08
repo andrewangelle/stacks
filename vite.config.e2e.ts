@@ -3,6 +3,7 @@ import { fileURLToPath } from 'node:url';
 import { mergeConfig } from 'vite';
 import baseConfig from './vite.config';
 import { resetInMemoryDB } from './tests/plugins/resetInMemoryDB';
+import { stubDndKitSourcemaps } from './tests/plugins/stubDndKitSourcemaps';
 
 const rootDir = path.dirname(fileURLToPath(import.meta.url));
 
@@ -11,7 +12,7 @@ export default mergeConfig(baseConfig, {
     port: 3100,
     strictPort: true,
   },
-  plugins: [resetInMemoryDB()],
+  plugins: [stubDndKitSourcemaps(), resetInMemoryDB()],
   resolve: {
     alias: {
       '~/db/prisma': path.resolve(rootDir, 'tests/mocks/memoryPrisma.ts'),

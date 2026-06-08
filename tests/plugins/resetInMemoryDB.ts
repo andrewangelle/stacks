@@ -1,12 +1,14 @@
 import type { Plugin } from 'vite';
 
-function readJsonBody(req: import('http').IncomingMessage): Promise<unknown> {
-  return new Promise((resolve, reject) => {
+function readJsonBody<DataType>(
+  req: import('http').IncomingMessage,
+): Promise<DataType> {
+  return new Promise<DataType>((resolve, reject) => {
     const chunks: Buffer[] = [];
     req.on('data', (chunk) => chunks.push(chunk));
     req.on('end', () => {
       if (chunks.length === 0) {
-        resolve({});
+        resolve({} as DataType);
         return;
       }
       try {
@@ -45,14 +47,17 @@ export function resetInMemoryDB(): Plugin {
             const { seedBoard } = await server.ssrLoadModule(
               '~test/fixtures/seedBoard',
             );
-            const body = (await readJsonBody(req)) as {
+
+            const body = await readJsonBody<{
               boardTitle?: string;
               boardColor?: string;
-            };
+            }>(req);
+
             const board = seedBoard({
               boardTitle: body.boardTitle ?? 'Untitled board',
               boardColor: body.boardColor,
             });
+
             res.setHeader('Content-Type', 'application/json');
             res.statusCode = 200;
             res.end(JSON.stringify(board));
