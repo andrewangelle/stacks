@@ -1,6 +1,6 @@
-import fs from 'node:fs';
+import { existsSync, readdirSync, writeFileSync } from 'node:fs';
 import { createRequire } from 'node:module';
-import path from 'node:path';
+import { dirname, join } from 'node:path';
 import type { Plugin } from 'vite';
 
 const EMPTY_MAP = '{"version":3,"sources":[],"names":[],"mappings":""}';
@@ -14,13 +14,13 @@ export function stubDndKitSourcemaps(): Plugin {
     name: 'e2e-stub-dnd-kit-sourcemaps',
     buildStart() {
       const require = createRequire(import.meta.url);
-      const pkgDir = path.dirname(require.resolve('@dnd-kit/react'));
+      const pkgDir = dirname(require.resolve('@dnd-kit/react'));
 
-      for (const file of fs.readdirSync(pkgDir)) {
+      for (const file of readdirSync(pkgDir)) {
         if (!file.endsWith('.js')) continue;
-        const mapPath = path.join(pkgDir, `${file}.map`);
-        if (!fs.existsSync(mapPath)) {
-          fs.writeFileSync(mapPath, EMPTY_MAP);
+        const mapPath = join(pkgDir, `${file}.map`);
+        if (!existsSync(mapPath)) {
+          writeFileSync(mapPath, EMPTY_MAP);
         }
       }
     },
