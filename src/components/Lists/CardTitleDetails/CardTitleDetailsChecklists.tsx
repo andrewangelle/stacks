@@ -8,7 +8,7 @@ import {
 } from '~/components/Lists/CardTitleDetails/CardTitleDetails.styled';
 import { CardTitleDetailsChecklist } from '~/components/Lists/CardTitleDetails/CardTitleDetailsChecklist';
 import { CardTitleDetailsChecklistAccordion } from '~/components/Lists/CardTitleDetails/CardTitleDetailsChecklistAccordion';
-import { useGetCardChecklistView } from '~/query/checklists';
+import { useGetCardTitleDetailsChecklists } from '~/query/checklists';
 
 const MAX_VISIBLE_CHECKLISTS = 3;
 
@@ -21,15 +21,15 @@ export function CardTitleDetailsChecklists({
   cardId,
   onShowMore,
 }: CardTitleDetailsChecklistDetailsProps) {
-  const { data: checklistViews } = useGetCardChecklistView({
+  const { data } = useGetCardTitleDetailsChecklists({
     cardId,
   });
   const [isOpen, setIsOpen] = useState(false);
   const [openChecklistId, setOpenChecklistId] = useState('');
 
-  const checklists = checklistViews?.checklists ?? [];
+  const checklists = data?.checklists ?? [];
   const visibleChecklists = checklists.slice(0, MAX_VISIBLE_CHECKLISTS);
-  const hiddenChecklistCount = checklists.length - MAX_VISIBLE_CHECKLISTS;
+  const truncatedCount = checklists.length - MAX_VISIBLE_CHECKLISTS;
   const accordionValue =
     openChecklistId &&
     checklists.some((checklist) => checklist.id === openChecklistId)
@@ -56,20 +56,19 @@ export function CardTitleDetailsChecklists({
     <>
       <CardTitleDetailsChecklistTotalsContainer
         data-testid="CardTitleDetailsChecklistTotalsContainer"
-        isAllCompleted={checklistViews?.isAllCompleted ?? false}
+        isAllCompleted={data?.isAllCompleted ?? false}
         isOpen={isOpen}
         onClick={toggleOpen}
       >
         <RiCheckboxLine size={14} />
-        {checklistViews?.completedItemsForCard} /{' '}
-        {checklistViews?.totalItemsForCard}
+        {data?.completedItemsForCard} / {data?.totalItemsForCard}
       </CardTitleDetailsChecklistTotalsContainer>
 
       {isOpen && checklists.length > 0 && (
         <>
           <CardTitleDetailsChecklistDivider data-testid="CardTitleDetailsChecklistDivider" />
 
-          {checklistViews?.hasMultiple && (
+          {data?.hasMultiple && (
             <CardTitleDetailsChecklistAccordionRoot
               collapsible
               data-testid="CardTitleDetailsChecklistAccordion"
@@ -87,23 +86,22 @@ export function CardTitleDetailsChecklists({
             </CardTitleDetailsChecklistAccordionRoot>
           )}
 
-          {checklistViews?.hasMultiple && hiddenChecklistCount > 0 && (
+          {data?.hasMultiple && truncatedCount > 0 && (
             <CardTitleDetailsChecklistShowMore
               data-testid="CardTitleDetailsChecklistShowMore"
               onClick={handleShowMore}
               type="button"
             >
-              ...and {hiddenChecklistCount} more
+              ...and {truncatedCount} more
             </CardTitleDetailsChecklistShowMore>
           )}
 
-          {!checklistViews?.hasMultiple &&
-            checklistViews?.singleChecklistId && (
-              <CardTitleDetailsChecklist
-                checklistId={checklistViews?.singleChecklistId}
-                collapsible
-              />
-            )}
+          {!data?.hasMultiple && data?.singleChecklistId && (
+            <CardTitleDetailsChecklist
+              checklistId={data?.singleChecklistId}
+              collapsible
+            />
+          )}
         </>
       )}
     </>

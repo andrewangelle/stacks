@@ -9,7 +9,7 @@ import {
   CardTitleDetailsChecklistAccordionTrigger,
 } from '~/components/Lists/CardTitleDetails/CardTitleDetails.styled';
 import { CardTitleDetailsChecklist } from '~/components/Lists/CardTitleDetails/CardTitleDetailsChecklist';
-import { useGetCardChecklistView } from '~/query/checklists';
+import { useGetCardTitleDetailsChecklists } from '~/query/checklists';
 
 type CardTitleDetailsChecklistAccordionProps = {
   cardId: string;
@@ -20,7 +20,7 @@ export function CardTitleDetailsChecklistAccordion({
   cardId,
   checklistId,
 }: CardTitleDetailsChecklistAccordionProps) {
-  const { data: checklistViews } = useGetCardChecklistView({
+  const { data: checklistViews } = useGetCardTitleDetailsChecklists({
     cardId,
   });
   const checklist = checklistViews?.checklists.find(

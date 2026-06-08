@@ -2,7 +2,7 @@ import { useMutation, useQuery } from '@tanstack/react-query';
 import {
   createChecklist,
   deleteChecklist,
-  getCardChecklistView,
+  getCardTitleDetailsChecklists,
   getChecklistById,
   getChecklists,
   updateChecklist,
@@ -10,7 +10,6 @@ import {
 import type {
   CreateChecklistArgs,
   DeleteChecklistArgs,
-  GetCardChecklistViewArgs,
   GetChecklistByIdArgs,
   GetChecklistsArgs,
   UpdateChecklistArgs,
@@ -130,25 +129,25 @@ export function useUpdateChecklist() {
   return mutation.mutate;
 }
 
-export function useGetCardChecklistView(data: GetCardChecklistViewArgs) {
+export function useGetCardTitleDetailsChecklists(data: GetChecklistsArgs) {
   return useQuery({
     queryKey: queryKeys.cardChecklistView(data.cardId),
     queryFn() {
-      return getCardChecklistView({
+      return getCardTitleDetailsChecklists({
         data,
       });
     },
     select(data) {
-      const filteredChecklists = data.checklists.filter(
+      const checklistsWithIncompleteItems = data.checklists.filter(
         (checklist) => checklist.completedItems < checklist.totalItems,
       );
       return {
         completedItemsForCard: data.completedItemsForCard,
         totalItemsForCard: data.totalItemsForCard,
-        checklists: filteredChecklists,
+        checklists: checklistsWithIncompleteItems,
         isAllCompleted: data.completedItemsForCard === data.totalItemsForCard,
-        hasMultiple: filteredChecklists.length > 1,
-        singleChecklistId: filteredChecklists[0]?.id,
+        hasMultiple: checklistsWithIncompleteItems.length > 1,
+        singleChecklistId: checklistsWithIncompleteItems[0]?.id,
       };
     },
   });
