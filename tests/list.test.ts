@@ -112,4 +112,90 @@ test.describe('List', () => {
       }),
     ).toBeVisible();
   });
+
+  test('edits the list name', async ({ page, request }) => {
+    await resetDb(request);
+
+    const board = await seedBoard(request, 'Sprint Board');
+
+    await seedListCard(request, {
+      boardId: board.id,
+      listTitle: 'In Progress',
+      cardTitle: 'Launch feature',
+      checklists: [],
+    });
+
+    await page.goto(`/board/${board.id}`);
+    await expect(page.getByTestId('ListContainer')).toBeVisible();
+    await expect(page.getByTestId('ListName')).toHaveText('In Progress');
+
+    await waitForPopover(
+      page,
+      'AddCardInput',
+      '[data-testid="EditableListName"] [data-testid="ListName"]',
+    );
+
+    await page
+      .getByTestId('EditableListName')
+      .getByTestId('AddCardInput')
+      .fill('Done');
+
+    await page.waitForFunction(() => {
+      if (
+        !document.querySelector(
+          '[data-testid="EditableListName"] [data-testid="AddCardInput"]',
+        )
+      ) {
+        return true;
+      }
+      document
+        .querySelector('[data-testid="BoardTitle"]')
+        ?.dispatchEvent(new MouseEvent('click', { bubbles: true }));
+      return !document.querySelector(
+        '[data-testid="EditableListName"] [data-testid="AddCardInput"]',
+      );
+    });
+
+    await page.reload();
+    await expect(page.getByTestId('ListName')).toHaveText('Done');
+  });
+
+  test('deletes a list', async ({ page, request }) => {
+    await resetDb(request);
+
+    const board = await seedBoard(request, 'Sprint Board');
+
+    await seedListCard(request, {
+      boardId: board.id,
+      listTitle: 'In Progress',
+      cardTitle: 'Launch feature',
+      checklists: [],
+    });
+
+    await page.goto(`/board/${board.id}`);
+    await expect(page.getByTestId('ListContainer')).toBeVisible();
+
+    await page.waitForFunction(() => {
+      if (
+        document.querySelector('[data-testid="DeleteChecklistPopoverContent"]')
+      ) {
+        return true;
+      }
+      document
+        .querySelector(
+          '[data-testid="ListContainer"] [data-testid="DeleteListIcon"]',
+        )
+        ?.dispatchEvent(new MouseEvent('click', { bubbles: true }));
+      return !!document.querySelector(
+        '[data-testid="DeleteChecklistPopoverContent"]',
+      );
+    });
+
+    await page
+      .getByTestId('DeleteChecklistPopoverButton')
+      .filter({ hasText: 'Delete list' })
+      .click();
+
+    await expect(page.getByTestId('ListContainer')).toHaveCount(0);
+  });
 });
