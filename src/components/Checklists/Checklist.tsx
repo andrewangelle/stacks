@@ -1,3 +1,4 @@
+import { useEffect, useRef } from 'react';
 import { AddChecklistItem } from '~/components/ChecklistItem/AddChecklistItem';
 import { ChecklistItem } from '~/components/ChecklistItem/ChecklistItem';
 import { ChecklistEditableTitle } from '~/components/Checklists/ChecklistEditableTitle';
@@ -14,16 +15,33 @@ import {
   useGetChecklistItems,
 } from '~/query/checklistItems';
 import { useGetChecklist } from '~/query/checklists';
+import { useHashChecklistId } from '~/utils/useHashChecklistId';
+
+const SCROLL_DELAY_MS = 350;
 
 export function Checklist({ id }: { id: string }) {
-  const { data: checklist } = useGetChecklist({ checklistId: id });
+  const { isSuccess, data: checklist } = useGetChecklist({ checklistId: id });
   const { data } = useGetChecklistItems({ checklistId: id });
+  const hashId = useHashChecklistId();
+  const ref = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (hashId !== id || !checklist || !isSuccess) {
+      return;
+    }
+
+    const timeoutId = setTimeout(() => {
+      ref.current?.scrollIntoView({ behavior: 'smooth' });
+    }, SCROLL_DELAY_MS);
+
+    return () => clearTimeout(timeoutId);
+  }, [hashId, id, checklist, isSuccess]);
 
   if (!checklist) return null;
 
   return (
     <ChecklistContainer data-testid="ChecklistContainer">
-      <ChecklistHeader data-testid="ChecklistHeader" key={id}>
+      <ChecklistHeader data-testid="ChecklistHeader" key={id} ref={ref}>
         <ChecklistEditableTitle id={id} />
         <DeleteChecklist id={id} />
       </ChecklistHeader>
