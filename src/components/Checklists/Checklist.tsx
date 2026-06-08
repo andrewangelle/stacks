@@ -17,25 +17,25 @@ import {
 import { useGetChecklist } from '~/query/checklists';
 import { useHashChecklistId } from '~/utils/useHashChecklistId';
 
-const SCROLL_DELAY_MS = 350;
-
 export function Checklist({ id }: { id: string }) {
   const { isSuccess, data: checklist } = useGetChecklist({ checklistId: id });
-  const { data } = useGetChecklistItems({ checklistId: id });
+  const { isSuccess: isItemsSuccess, data: items } = useGetChecklistItems({
+    checklistId: id,
+  });
   const hashId = useHashChecklistId();
   const ref = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    if (hashId !== id || !checklist || !isSuccess) {
-      return;
+    let timeoutId: NodeJS.Timeout | undefined;
+
+    if (hashId === id && isItemsSuccess && isSuccess) {
+      timeoutId = setTimeout(() => {
+        ref.current?.scrollIntoView({ behavior: 'smooth' });
+      }, 350);
     }
 
-    const timeoutId = setTimeout(() => {
-      ref.current?.scrollIntoView({ behavior: 'smooth' });
-    }, SCROLL_DELAY_MS);
-
     return () => clearTimeout(timeoutId);
-  }, [hashId, id, checklist, isSuccess]);
+  }, [hashId, id, isSuccess, isItemsSuccess]);
 
   if (!checklist) return null;
 
@@ -48,7 +48,7 @@ export function Checklist({ id }: { id: string }) {
 
       <ChecklistProgress checklistId={id} />
 
-      {data?.map((checklistItem: ChecklistItemType) => (
+      {items?.map((checklistItem: ChecklistItemType) => (
         <Draggable
           key={checklistItem.id}
           id={checklistItem.id}
