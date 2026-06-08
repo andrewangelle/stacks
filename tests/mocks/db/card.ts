@@ -20,9 +20,15 @@ export const cardModel = {
     where: {
       listId: string;
       list: { board: { userId: string } };
+      id?: string;
     };
     orderBy: { createdAt: 'asc' };
   }) {
+    if ('id' in args.where) {
+      const card = getStore().cards.find((item) => item.id === args.where.id);
+      return card ? [card] : [];
+    }
+
     const userId = args.where.list.board.userId;
 
     return sortByCreatedAt(
@@ -79,7 +85,11 @@ export const cardModel = {
 
   async updateMany(args: {
     where: { id: string; userId: string };
-    data: { cardDescription?: string; cardTitle?: string };
+    data: {
+      cardDescription?: string;
+      cardTitle?: string;
+      isCompleted?: boolean;
+    };
   }) {
     const card = getStore().cards.find(
       (item) => item.id === args.where.id && item.userId === args.where.userId,

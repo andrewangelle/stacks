@@ -68,6 +68,30 @@ export function resetInMemoryDB(): Plugin {
           return;
         }
 
+        if (req.url === '/__test/seed-card' && req.method === 'POST') {
+          try {
+            const { seedCard } = await server.ssrLoadModule(
+              '~test/fixtures/seedCard',
+            );
+
+            const body = await readJsonBody<{
+              boardId: string;
+              listTitle?: string;
+              cardTitle?: string;
+            }>(req);
+
+            const seeded = seedCard(body);
+
+            res.setHeader('Content-Type', 'application/json');
+            res.statusCode = 200;
+            res.end(JSON.stringify(seeded));
+          } catch {
+            res.statusCode = 400;
+            res.end();
+          }
+          return;
+        }
+
         next();
       });
     },

@@ -22,3 +22,25 @@ export async function seedBoard(
 
   return (await response.json()) as SeededBoard;
 }
+
+type SeededCard = {
+  list: { id: string; listTitle: string; boardId: string };
+  card: { id: string; cardTitle: string; listId: string };
+};
+
+export async function seedCard(
+  request: APIRequestContext,
+  data: {
+    boardId: string;
+    listTitle?: string;
+    cardTitle?: string;
+  },
+) {
+  const response = await request.post('/__test/seed-card', { data });
+
+  if (!response.ok()) {
+    throw new Error(`Failed to seed card: ${response.status()}`);
+  }
+
+  return (await response.json()) as SeededCard;
+}
