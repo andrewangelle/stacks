@@ -1,5 +1,6 @@
 import type { User } from '@clerk/tanstack-react-start/server';
 import type { PrismaClient } from '~/generated/prisma/client';
+import { type ActivityRecord, activityModel } from '~test/mocks/db/activity';
 import { type CardRecord, cardModel } from '~test/mocks/db/card';
 import { type ChecklistRecord, checklistModel } from '~test/mocks/db/checklist';
 import {
@@ -25,6 +26,7 @@ type E2EStore = {
   cards: CardRecord[];
   checklists: ChecklistRecord[];
   checklistItems: ChecklistItemRecord[];
+  activities: ActivityRecord[];
 };
 
 declare global {
@@ -43,6 +45,7 @@ export function getStore(): E2EStore {
       cards: [],
       checklists: [],
       checklistItems: [],
+      activities: [],
     };
   }
   return globalThis.__stacksE2EStore;
@@ -70,4 +73,5 @@ export const prisma = {
   card: cardModel,
   checklist: checklistModel,
   checklistItem: checklistItemModel,
+  activity: activityModel,
 } as unknown as PrismaClient;
