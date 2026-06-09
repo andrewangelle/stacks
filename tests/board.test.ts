@@ -1,7 +1,7 @@
 import { expect, test } from '@playwright/test';
 import { resetDb } from '~test/helpers/resetDb';
 import { seedBoard } from '~test/helpers/seed';
-import { waitForPopover } from '~test/helpers/waitForPopover';
+import { waitForInteractiveTrigger } from '~test/helpers/waitForInteractiveTrigger';
 
 test.describe('Board', () => {
   test('adds a list and card on a board', async ({ page, request }) => {
@@ -10,9 +10,9 @@ test.describe('Board', () => {
     await page.goto(`/board/${board.id}`);
     await expect(page.getByTestId('AddListContainer')).toBeVisible();
 
-    await waitForPopover(
+    await waitForInteractiveTrigger(
       page,
-      'AddListInput',
+      '[data-testid="AddListInput"]',
       '[data-testid="AddListContainer"] button',
     );
 
@@ -37,26 +37,16 @@ test.describe('Board', () => {
     await page.goto(`/board/${board.id}`);
     await expect(page.getByTestId('BoardTitle')).toHaveText('Product Roadmap');
 
-    await waitForPopover(
+    await waitForInteractiveTrigger(
       page,
-      'EditBoardTitleInput',
+      '[data-testid="EditBoardTitleInput"]',
       '[data-testid="BoardTitle"]',
     );
 
     await page.getByTestId('EditBoardTitleInput').fill('Q3 Roadmap');
 
-    await page.waitForFunction(() => {
-      const title = document.querySelector('[data-testid="BoardTitle"]');
-      if (title?.textContent?.trim() === 'Q3 Roadmap') return true;
-      document
-        .querySelector('[data-testid="AddListContainer"]')
-        ?.dispatchEvent(new MouseEvent('click', { bubbles: true }));
-      return (
-        document
-          .querySelector('[data-testid="BoardTitle"]')
-          ?.textContent?.trim() === 'Q3 Roadmap'
-      );
-    });
+    // click outside to save
+    await page.getByTestId('AddListContainer').click();
 
     await expect(page.getByTestId('BoardTitle')).toHaveText('Q3 Roadmap');
   });

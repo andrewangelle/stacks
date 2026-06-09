@@ -1,7 +1,7 @@
 import { expect, test } from '@playwright/test';
 import { resetDb } from '~test/helpers/resetDb';
 import { seedBoard } from '~test/helpers/seed';
-import { waitForPopover } from '~test/helpers/waitForPopover';
+import { waitForInteractiveTrigger } from '~test/helpers/waitForInteractiveTrigger';
 
 test.describe('Boards', () => {
   test('shows a seeded board on the boards page', async ({ page, request }) => {
@@ -17,9 +17,10 @@ test.describe('Boards', () => {
     await page.goto('/boards');
 
     await expect(page.getByTestId('CreateBoardCard')).toBeVisible();
-    await waitForPopover(
+
+    await waitForInteractiveTrigger(
       page,
-      'CreateBoardPopoverContent',
+      '[data-testid="CreateBoardPopoverContent"]',
       '[data-testid="CreateBoardCard"]',
     );
 

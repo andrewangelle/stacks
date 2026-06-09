@@ -1,7 +1,8 @@
 import { expect, test } from '@playwright/test';
 import { resetDb } from '~test/helpers/resetDb';
 import { seedBoard, seedCard } from '~test/helpers/seed';
-import { waitForPopover } from '~test/helpers/waitForPopover';
+import { waitForHydratedAction } from '~test/helpers/waitForHydratedAction';
+import { waitForInteractiveTrigger } from '~test/helpers/waitForInteractiveTrigger';
 
 test.describe('Card', () => {
   test('edits the card name', async ({ page, request }) => {
@@ -19,30 +20,24 @@ test.describe('Card', () => {
       page.getByTestId('CardModalTitleContainer').getByTestId('CardModalTitle'),
     ).toHaveText('Write docs');
 
-    await waitForPopover(
+    await waitForInteractiveTrigger(
       page,
-      'EditCardTitleInput',
+      '[data-testid="EditCardTitleInput"]',
       '[data-testid="CardModalTitleContainer"] [data-testid="CardModalTitle"]',
     );
 
     await page.getByTestId('EditCardTitleInput').fill('Write E2E docs');
 
-    await page.waitForFunction(() => {
-      const title = document.querySelector(
-        '[data-testid="CardModalTitleContainer"] [data-testid="CardModalTitle"]',
-      );
-      if (title?.textContent?.trim() === 'Write E2E docs') return true;
-      document
-        .querySelector('[data-testid="DescriptionPlaceholder"]')
-        ?.dispatchEvent(new MouseEvent('click', { bubbles: true }));
-      return (
+    await waitForHydratedAction(
+      page,
+      '[data-testid="DescriptionPlaceholder"]',
+      () =>
         document
           .querySelector(
             '[data-testid="CardModalTitleContainer"] [data-testid="CardModalTitle"]',
           )
-          ?.textContent?.trim() === 'Write E2E docs'
-      );
-    });
+          ?.textContent?.trim() === 'Write E2E docs',
+    );
 
     await expect(
       page.getByTestId('CardModalTitleContainer').getByTestId('CardModalTitle'),
@@ -65,9 +60,9 @@ test.describe('Card', () => {
       page.getByTestId('CardModalTitleContainer').getByTestId('CardModalTitle'),
     ).toHaveText('Write docs');
 
-    await waitForPopover(
+    await waitForInteractiveTrigger(
       page,
-      'DescriptionInput',
+      '[data-testid="DescriptionInput"]',
       '[data-testid="DescriptionPlaceholder"]',
     );
 
@@ -75,9 +70,9 @@ test.describe('Card', () => {
       .getByTestId('DescriptionInput')
       .pressSequentially('Add acceptance criteria.');
 
-    await waitForPopover(
+    await waitForInteractiveTrigger(
       page,
-      'CardDescriptionText',
+      '[data-testid="CardDescriptionText"]',
       '[data-testid="SaveDescriptionButton"]',
     );
 
@@ -98,21 +93,11 @@ test.describe('Card', () => {
     await page.goto(`/board/${board.id}/card/${card.id}`);
     await expect(page.getByTestId('CardModalContent')).toBeVisible();
 
-    await page.waitForFunction(() => {
-      if (
-        document.querySelector('[data-testid="DeleteChecklistPopoverContent"]')
-      ) {
-        return true;
-      }
-      document
-        .querySelector(
-          '[data-testid="CardActionsContainer"] [data-testid="DeleteCardPopoverTrigger"]',
-        )
-        ?.dispatchEvent(new MouseEvent('click', { bubbles: true }));
-      return !!document.querySelector(
-        '[data-testid="DeleteChecklistPopoverContent"]',
-      );
-    });
+    await waitForInteractiveTrigger(
+      page,
+      '[data-testid="DeleteChecklistPopoverContent"]',
+      '[data-testid="CardActionsContainer"] [data-testid="DeleteCardPopoverTrigger"]',
+    );
 
     await page
       .getByTestId('CardActionsContainer')
