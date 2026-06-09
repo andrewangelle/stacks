@@ -6,33 +6,13 @@ import {
 } from '@playwright/test';
 import { resetDb } from '~test/helpers/resetDb';
 import { seedBoard, seedListCard } from '~test/helpers/seed';
-import { waitForPopover } from '~test/helpers/waitForPopover';
+import { waitForHydratedAction } from '~test/helpers/waitForHydratedAction';
+import { waitForInteractiveTrigger } from '~test/helpers/waitForInteractiveTrigger';
 
 type ChecklistSeed = {
   title: string;
   items: string[];
 };
-
-async function openCardWithChecklists(
-  page: Page,
-  request: APIRequestContext,
-  checklists: ChecklistSeed[],
-) {
-  await resetDb(request);
-  const board = await seedBoard(request, 'Sprint Board');
-  const { card } = await seedListCard(request, {
-    boardId: board.id,
-    listTitle: 'To Do',
-    cardTitle: 'Ship feature',
-    checklists,
-  });
-
-  await page.goto(`/board/${board.id}/card/${card.id}`);
-  await expect(page.getByTestId('CardModalContent')).toBeVisible();
-  await expect(page.getByTestId('ChecklistContainer')).toBeVisible();
-
-  return { board, card };
-}
 
 test.describe('Checklist', () => {
   test('marks a checklist item complete in the card modal', async ({
@@ -45,18 +25,7 @@ test.describe('Checklist', () => {
 
     const checkbox = page.getByTestId('CheckboxRoot');
     await expect(checkbox).toHaveAttribute('data-state', 'unchecked');
-
-    await page.waitForFunction(() => {
-      const root = document.querySelector('[data-testid="CheckboxRoot"]');
-      if (root?.getAttribute('data-state') === 'checked') return true;
-      root?.dispatchEvent(new MouseEvent('click', { bubbles: true }));
-      return (
-        document
-          .querySelector('[data-testid="CheckboxRoot"]')
-          ?.getAttribute('data-state') === 'checked'
-      );
-    });
-
+    await waitForChecked(page);
     await expect(checkbox).toHaveAttribute('data-state', 'checked');
     await expect(page.getByTestId('ChecklistProgressPercentage')).toHaveText(
       '100%',
@@ -75,9 +44,9 @@ test.describe('Checklist', () => {
       { title: 'Launch checklist', items: ['Deploy to staging'] },
     ]);
 
-    await waitForPopover(
+    await waitForInteractiveTrigger(
       page,
-      'EditChecklistItemContainer',
+      '[data-testid="EditChecklistItemContainer"]',
       '[data-testid="CheckboxLabel"]',
     );
 
@@ -86,20 +55,7 @@ test.describe('Checklist', () => {
       .getByTestId('AddChecklistItemInput')
       .fill('Deploy to production');
 
-    await page.waitForFunction(() => {
-      const label = document.querySelector('[data-testid="CheckboxLabel"]');
-      if (label?.textContent?.trim() === 'Deploy to production') return true;
-      document
-        .querySelector(
-          '[data-testid="EditChecklistItemContainer"] [data-testid="AddChecklistButton"]',
-        )
-        ?.dispatchEvent(new MouseEvent('click', { bubbles: true }));
-      return (
-        document
-          .querySelector('[data-testid="CheckboxLabel"]')
-          ?.textContent?.trim() === 'Deploy to production'
-      );
-    });
+    await waitForLabelToBeUpdated(page);
 
     await expect(page.getByTestId('CheckboxLabel')).toHaveText(
       'Deploy to production',
@@ -121,19 +77,11 @@ test.describe('Checklist', () => {
 
     await page.getByTestId('ChecklistCheckboxContainer').first().hover();
 
-    await page.waitForFunction(() => {
-      if (
-        document.querySelector('[data-testid="DeleteChecklistPopoverContent"]')
-      ) {
-        return true;
-      }
-      document
-        .querySelector('[data-testid="DeleteChecklistPopoverTrigger"] svg')
-        ?.dispatchEvent(new MouseEvent('click', { bubbles: true }));
-      return !!document.querySelector(
-        '[data-testid="DeleteChecklistPopoverContent"]',
-      );
-    });
+    await waitForInteractiveTrigger(
+      page,
+      '[data-testid="DeleteChecklistPopoverContent"]',
+      '[data-testid="DeleteChecklistPopoverTrigger"] svg',
+    );
 
     await page.getByTestId('DeleteChecklistPopoverButton').click();
 
@@ -149,9 +97,9 @@ test.describe('Checklist', () => {
       { title: 'Launch checklist', items: ['Deploy to staging'] },
     ]);
 
-    await waitForPopover(
+    await waitForInteractiveTrigger(
       page,
-      'EditCardTitleInput',
+      '[data-testid="EditCardTitleInput"]',
       '[data-testid="ChecklistTitle"]',
     );
 
@@ -160,18 +108,7 @@ test.describe('Checklist', () => {
       .getByTestId('EditCardTitleInput')
       .fill('Release checklist');
 
-    await page.waitForFunction(() => {
-      const title = document.querySelector('[data-testid="ChecklistTitle"]');
-      if (title?.textContent?.trim() === 'Release checklist') return true;
-      document
-        .querySelector('[data-testid="DescriptionTitle"]')
-        ?.dispatchEvent(new MouseEvent('click', { bubbles: true }));
-      return (
-        document
-          .querySelector('[data-testid="ChecklistTitle"]')
-          ?.textContent?.trim() === 'Release checklist'
-      );
-    });
+    await waitForTitleToBeUpdated(page);
 
     await expect(page.getByTestId('ChecklistTitle')).toHaveText(
       'Release checklist',
@@ -194,19 +131,11 @@ test.describe('Checklist', () => {
     await page.goto(`/board/${board.id}/card/${card.id}`);
     await expect(page.getByTestId('ChecklistContainer')).toHaveCount(2);
 
-    await page.waitForFunction(() => {
-      if (
-        document.querySelector('[data-testid="DeleteChecklistPopoverContent"]')
-      ) {
-        return true;
-      }
-      document
-        .querySelector('[data-testid="DeleteChecklistButton"]')
-        ?.dispatchEvent(new MouseEvent('click', { bubbles: true }));
-      return !!document.querySelector(
-        '[data-testid="DeleteChecklistPopoverContent"]',
-      );
-    });
+    await waitForInteractiveTrigger(
+      page,
+      '[data-testid="DeleteChecklistPopoverContent"]',
+      '[data-testid="DeleteChecklistButton"]',
+    );
 
     await page
       .getByTestId('ChecklistHeader')
@@ -218,3 +147,71 @@ test.describe('Checklist', () => {
     await expect(page.getByTestId('ChecklistTitle')).toHaveText('QA checklist');
   });
 });
+
+/**
+ * Helpers for this test file
+ */
+async function openCardWithChecklists(
+  page: Page,
+  request: APIRequestContext,
+  checklists: ChecklistSeed[],
+) {
+  await resetDb(request);
+  const board = await seedBoard(request, 'Sprint Board');
+  const { card } = await seedListCard(request, {
+    boardId: board.id,
+    listTitle: 'To Do',
+    cardTitle: 'Ship feature',
+    checklists,
+  });
+
+  await page.goto(`/board/${board.id}/card/${card.id}`);
+  await expect(page.getByTestId('CardModalContent')).toBeVisible();
+  await expect(page.getByTestId('ChecklistContainer')).toBeVisible();
+
+  return { board, card };
+}
+
+function waitForChecked(page: Page) {
+  function isChecked() {
+    return (
+      document
+        .querySelector('[data-testid="CheckboxRoot"]')
+        ?.getAttribute('data-state') === 'checked'
+    );
+  }
+
+  return waitForHydratedAction(page, '[data-testid="CheckboxRoot"]', isChecked);
+}
+
+function waitForLabelToBeUpdated(page: Page) {
+  function isLabelUpdated() {
+    return (
+      document
+        .querySelector('[data-testid="CheckboxLabel"]')
+        ?.textContent?.trim() === 'Deploy to production'
+    );
+  }
+
+  return waitForHydratedAction(
+    page,
+    '[data-testid="EditChecklistItemContainer"] [data-testid="AddChecklistButton"]',
+    isLabelUpdated,
+  );
+}
+
+function waitForTitleToBeUpdated(page: Page) {
+  function isTitleUpdated() {
+    return (
+      document
+        .querySelector('[data-testid="ChecklistTitle"]')
+        ?.textContent?.trim() === 'Release checklist'
+    );
+  }
+
+  return waitForHydratedAction(
+    page,
+    '[data-testid="DescriptionTitle"]',
+    isTitleUpdated,
+  );
+}

@@ -6,6 +6,7 @@ import {
 } from '@playwright/test';
 import { resetDb } from '~test/helpers/resetDb';
 import { seedBoard, seedCard } from '~test/helpers/seed';
+import { waitForInteractiveTrigger } from '~test/helpers/waitForInteractiveTrigger';
 
 async function openCard(page: Page, request: APIRequestContext) {
   await resetDb(request);
@@ -66,19 +67,11 @@ test.describe('Activity', () => {
 
     await addComment(page, 'Looks good');
 
-    await page.waitForFunction(() => {
-      const header = [
-        ...document.querySelectorAll('[data-testid="ChecklistPopoverHeader"]'),
-      ].find((element) => element.textContent?.includes('Delete comment'));
-      if (header) return true;
-      document
-        .querySelector('[data-testid="ActivityCommentContainer"]')
-        ?.querySelector('[data-testid="DeleteChecklistPopoverTrigger"]')
-        ?.dispatchEvent(new MouseEvent('click', { bubbles: true }));
-      return [
-        ...document.querySelectorAll('[data-testid="ChecklistPopoverHeader"]'),
-      ].some((element) => element.textContent?.includes('Delete comment'));
-    });
+    await waitForInteractiveTrigger(
+      page,
+      '[data-testid="DeleteChecklistPopoverContent"]',
+      '[data-testid="ActivityCommentContainer"] [data-testid="DeleteChecklistPopoverTrigger"]',
+    );
 
     await page
       .getByTestId('DeleteChecklistPopoverButton')

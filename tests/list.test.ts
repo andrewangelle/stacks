@@ -1,7 +1,8 @@
 import { expect, test } from '@playwright/test';
 import { resetDb } from '~test/helpers/resetDb';
 import { seedBoard, seedListCard } from '~test/helpers/seed';
-import { waitForPopover } from '~test/helpers/waitForPopover';
+import { waitForHydratedAction } from '~test/helpers/waitForHydratedAction';
+import { waitForInteractiveTrigger } from '~test/helpers/waitForInteractiveTrigger';
 
 test.describe('List', () => {
   test('truncates checklists and items on a list card', async ({
@@ -33,9 +34,9 @@ test.describe('List', () => {
       'Launch feature',
     );
 
-    await waitForPopover(
+    await waitForInteractiveTrigger(
       page,
-      'CardTitleDetailsChecklistDivider',
+      '[data-testid="CardTitleDetailsChecklistDivider"]',
       '[data-testid="CardTitleDetailsChecklistTotalsContainer"]',
     );
 
@@ -49,25 +50,11 @@ test.describe('List', () => {
         .filter({ hasText: '...and 1 more' }),
     ).toBeVisible();
 
-    await page.waitForFunction(() => {
-      if (
-        document.querySelector(
-          '[data-testid="CardTitleDetailsChecklistItemRow"]',
-        )
-      ) {
-        return true;
-      }
-
-      document
-        .querySelector(
-          '[data-testid="CardTitleDetailsChecklistAccordionTrigger"]',
-        )
-        ?.dispatchEvent(new MouseEvent('click', { bubbles: true }));
-
-      return !!document.querySelector(
-        '[data-testid="CardTitleDetailsChecklistItemRow"]',
-      );
-    });
+    await waitForInteractiveTrigger(
+      page,
+      '[data-testid="CardTitleDetailsChecklistItemRow"]',
+      '[data-testid="CardTitleDetailsChecklistAccordionTrigger"]',
+    );
 
     await expect(
       page.getByTestId('CardTitleDetailsChecklistItemRow'),
@@ -79,29 +66,21 @@ test.describe('List', () => {
         .filter({ hasText: 'Show more' }),
     ).toBeVisible();
 
-    await page.waitForFunction(() => {
-      if (
+    await waitForHydratedAction(
+      page,
+      () => {
+        const showMore = [
+          ...document.querySelectorAll(
+            '[data-testid="CardTitleDetailsChecklistShowMore"]',
+          ),
+        ].find((button) => button.textContent?.trim() === 'Show more');
+        showMore?.dispatchEvent(new MouseEvent('click', { bubbles: true }));
+      },
+      () =>
         document.querySelectorAll(
           '[data-testid="CardTitleDetailsChecklistItemRow"]',
-        ).length >= 5
-      ) {
-        return true;
-      }
-
-      const showMore = [
-        ...document.querySelectorAll(
-          '[data-testid="CardTitleDetailsChecklistShowMore"]',
-        ),
-      ].find((button) => button.textContent?.trim() === 'Show more');
-
-      showMore?.dispatchEvent(new MouseEvent('click', { bubbles: true }));
-
-      return (
-        document.querySelectorAll(
-          '[data-testid="CardTitleDetailsChecklistItemRow"]',
-        ).length >= 5
-      );
-    });
+        ).length >= 5,
+    );
 
     await expect(
       page.getByTestId('CardTitleDetailsChecklistItemRow'),
@@ -129,9 +108,9 @@ test.describe('List', () => {
     await expect(page.getByTestId('ListContainer')).toBeVisible();
     await expect(page.getByTestId('ListName')).toHaveText('In Progress');
 
-    await waitForPopover(
+    await waitForInteractiveTrigger(
       page,
-      'AddCardInput',
+      '[data-testid="AddCardInput"]',
       '[data-testid="EditableListName"] [data-testid="ListName"]',
     );
 
@@ -140,21 +119,14 @@ test.describe('List', () => {
       .getByTestId('AddCardInput')
       .fill('Done');
 
-    await page.waitForFunction(() => {
-      if (
+    await waitForHydratedAction(
+      page,
+      '[data-testid="BoardTitle"]',
+      () =>
         !document.querySelector(
           '[data-testid="EditableListName"] [data-testid="AddCardInput"]',
-        )
-      ) {
-        return true;
-      }
-      document
-        .querySelector('[data-testid="BoardTitle"]')
-        ?.dispatchEvent(new MouseEvent('click', { bubbles: true }));
-      return !document.querySelector(
-        '[data-testid="EditableListName"] [data-testid="AddCardInput"]',
-      );
-    });
+        ),
+    );
 
     await page.reload();
     await expect(page.getByTestId('ListName')).toHaveText('Done');
@@ -175,21 +147,11 @@ test.describe('List', () => {
     await page.goto(`/board/${board.id}`);
     await expect(page.getByTestId('ListContainer')).toBeVisible();
 
-    await page.waitForFunction(() => {
-      if (
-        document.querySelector('[data-testid="DeleteChecklistPopoverContent"]')
-      ) {
-        return true;
-      }
-      document
-        .querySelector(
-          '[data-testid="ListContainer"] [data-testid="DeleteListIcon"]',
-        )
-        ?.dispatchEvent(new MouseEvent('click', { bubbles: true }));
-      return !!document.querySelector(
-        '[data-testid="DeleteChecklistPopoverContent"]',
-      );
-    });
+    await waitForInteractiveTrigger(
+      page,
+      '[data-testid="DeleteChecklistPopoverContent"]',
+      '[data-testid="ListContainer"] [data-testid="DeleteListIcon"]',
+    );
 
     await page
       .getByTestId('DeleteChecklistPopoverButton')
