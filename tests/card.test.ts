@@ -1,4 +1,4 @@
-import { expect, test } from '@playwright/test';
+import { expect, type Page, test } from '@playwright/test';
 import { resetDb } from '~test/helpers/resetDb';
 import { seedBoard, seedCard } from '~test/helpers/seed';
 import { waitForHydratedAction } from '~test/helpers/waitForHydratedAction';
@@ -28,16 +28,7 @@ test.describe('Card', () => {
 
     await page.getByTestId('EditCardTitleInput').fill('Write E2E docs');
 
-    await waitForHydratedAction(
-      page,
-      '[data-testid="DescriptionPlaceholder"]',
-      () =>
-        document
-          .querySelector(
-            '[data-testid="CardModalTitleContainer"] [data-testid="CardModalTitle"]',
-          )
-          ?.textContent?.trim() === 'Write E2E docs',
-    );
+    await waitForCardTitleToBeUpdated(page);
 
     await expect(
       page.getByTestId('CardModalTitleContainer').getByTestId('CardModalTitle'),
@@ -108,3 +99,17 @@ test.describe('Card', () => {
     await expect(page.getByTestId('ListCardContainer')).toHaveCount(0);
   });
 });
+
+async function waitForCardTitleToBeUpdated(page: Page) {
+  const cardTitle = page
+    .getByTestId('CardModalTitleContainer')
+    .getByTestId('CardModalTitle')
+    .first();
+
+  const trigger = () => page.getByTestId('DescriptionPlaceholder').click();
+  const isDone = async () =>
+    (await cardTitle.count()) > 0 &&
+    (await cardTitle.textContent())?.trim() === 'Write E2E docs';
+
+  return waitForHydratedAction(trigger, isDone);
+}
