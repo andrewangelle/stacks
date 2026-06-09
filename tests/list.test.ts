@@ -1,4 +1,4 @@
-import { expect, test } from '@playwright/test';
+import { expect, type Page, test } from '@playwright/test';
 import { resetDb } from '~test/helpers/resetDb';
 import { seedBoard, seedListCard } from '~test/helpers/seed';
 import { waitForHydratedAction } from '~test/helpers/waitForHydratedAction';
@@ -66,25 +66,12 @@ test.describe('List', () => {
         .filter({ hasText: 'Show more' }),
     ).toBeVisible();
 
-    await waitForHydratedAction(
-      page,
-      () => {
-        const showMore = [
-          ...document.querySelectorAll(
-            '[data-testid="CardTitleDetailsChecklistShowMore"]',
-          ),
-        ].find((button) => button.textContent?.trim() === 'Show more');
-        showMore?.dispatchEvent(new MouseEvent('click', { bubbles: true }));
-      },
-      () =>
-        document.querySelectorAll(
-          '[data-testid="CardTitleDetailsChecklistItemRow"]',
-        ).length >= 5,
-    );
+    await waitForItemToBeVisible(page);
 
     await expect(
       page.getByTestId('CardTitleDetailsChecklistItemRow'),
     ).toHaveCount(5);
+
     await expect(
       page.getByTestId('CardTitleDetailsChecklistItemLabel').filter({
         hasText: 'Step 5',
@@ -119,14 +106,7 @@ test.describe('List', () => {
       .getByTestId('AddCardInput')
       .fill('Done');
 
-    await waitForHydratedAction(
-      page,
-      '[data-testid="BoardTitle"]',
-      () =>
-        !document.querySelector(
-          '[data-testid="EditableListName"] [data-testid="AddCardInput"]',
-        ),
-    );
+    await waitForUpdatedListName(page);
 
     await page.reload();
     await expect(page.getByTestId('ListName')).toHaveText('Done');
@@ -161,3 +141,31 @@ test.describe('List', () => {
     await expect(page.getByTestId('ListContainer')).toHaveCount(0);
   });
 });
+
+/**
+ * Local utils
+ */
+async function waitForUpdatedListName(page: Page) {
+  const trigger = () => page.getByTestId('BoardTitle').click();
+  const isUpdated = async () =>
+    (await page
+      .getByTestId('EditableListName')
+      .getByTestId('AddCardInput')
+      .count()) === 0;
+
+  return waitForHydratedAction(trigger, isUpdated);
+}
+
+async function waitForItemToBeVisible(page: Page) {
+  const trigger = () =>
+    page
+      .getByTestId('CardTitleDetailsChecklistShowMore')
+      .filter({ hasText: 'Show more' })
+      .first()
+      .click();
+
+  const isVisible = async () =>
+    (await page.getByTestId('CardTitleDetailsChecklistItemRow').count()) >= 5;
+
+  return waitForHydratedAction(trigger, isVisible);
+}

@@ -173,45 +173,41 @@ async function openCardWithChecklists(
 }
 
 function waitForChecked(page: Page) {
-  function isChecked() {
-    return (
-      document
-        .querySelector('[data-testid="CheckboxRoot"]')
-        ?.getAttribute('data-state') === 'checked'
-    );
-  }
+  const trigger = () => page.getByTestId('CheckboxRoot').first().click();
 
-  return waitForHydratedAction(page, '[data-testid="CheckboxRoot"]', isChecked);
+  const isChecked = async () =>
+    (await page
+      .getByTestId('CheckboxRoot')
+      .first()
+      .getAttribute('data-state')) === 'checked';
+
+  return waitForHydratedAction(trigger, isChecked);
 }
 
 function waitForLabelToBeUpdated(page: Page) {
-  function isLabelUpdated() {
-    return (
-      document
-        .querySelector('[data-testid="CheckboxLabel"]')
-        ?.textContent?.trim() === 'Deploy to production'
-    );
-  }
+  const label = page.getByTestId('CheckboxLabel').first();
 
-  return waitForHydratedAction(
-    page,
-    '[data-testid="EditChecklistItemContainer"] [data-testid="AddChecklistButton"]',
-    isLabelUpdated,
-  );
+  const trigger = () =>
+    page
+      .getByTestId('EditChecklistItemContainer')
+      .getByTestId('AddChecklistButton')
+      .click();
+
+  const isUpdated = async () =>
+    (await label.count()) > 0 &&
+    (await label.textContent())?.trim() === 'Deploy to production';
+
+  return waitForHydratedAction(trigger, isUpdated);
 }
 
 function waitForTitleToBeUpdated(page: Page) {
-  function isTitleUpdated() {
-    return (
-      document
-        .querySelector('[data-testid="ChecklistTitle"]')
-        ?.textContent?.trim() === 'Release checklist'
-    );
-  }
+  const title = page.getByTestId('ChecklistTitle').first();
 
-  return waitForHydratedAction(
-    page,
-    '[data-testid="DescriptionTitle"]',
-    isTitleUpdated,
-  );
+  const trigger = () => page.getByTestId('DescriptionTitle').click();
+
+  const isUpdated = async () =>
+    (await title.count()) > 0 &&
+    (await title.textContent())?.trim() === 'Release checklist';
+
+  return waitForHydratedAction(trigger, isUpdated);
 }
