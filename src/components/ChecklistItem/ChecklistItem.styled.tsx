@@ -3,17 +3,21 @@ import * as Checkbox from '@radix-ui/react-checkbox';
 import * as Popover from '@radix-ui/react-popover';
 import { fontFamily, red } from '~/components/Boards/Boards.styled';
 import { cardModalContentIndent } from '~/components/Cards/Card.styled';
-import { Button } from '~/styles/Page.styled';
+import { Button, secondaryButtonStyles } from '~/styles/Page.styled';
 import { checklistProgressBlue } from '~/styles/tokens';
 
 const checklistRowColumns = `${cardModalContentIndent} minmax(0, 1fr)`;
 
-export const AddChecklistItemButton = styled(Button)` 
-  border: none;
-  padding: 8px 10px;
-  margin: 12px 0px 0px ${cardModalContentIndent};
-`;
+export const AddChecklistItemButton = styled(Button)({
+  ...secondaryButtonStyles,
+  padding: '8px 10px',
+  margin: `12px 0px 0px ${cardModalContentIndent}`,
+  fontSize: '14px',
 
+  '&:hover:not(:disabled)': {
+    color: secondaryButtonStyles.color,
+  },
+});
 export const AddChecklistItemInput = styled.textarea` 
   height: 30px;
   width: 100%;

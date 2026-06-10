@@ -73,7 +73,7 @@ export const DeleteChecklistButton = styled(Button)`
   color: black;
   margin: 0;
   
-  &:hover {
+  &:hover:not(:disabled) {
     color: ${red};
   }
 `;

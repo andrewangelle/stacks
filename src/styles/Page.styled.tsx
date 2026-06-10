@@ -38,14 +38,26 @@ export const FlexCenter = styled.div`
 `;
 
 type ButtonExtraProps = {
-  isDisabled?: boolean;
   secondary?: boolean;
+};
+
+export const secondaryButtonStyles = {
+  background: 'transparent',
+  color: 'rgba(9, 30, 66, 0.9)',
+  border: '1px solid rgba(9, 30, 66, 0.2)',
+  cursor: 'pointer',
+  fontWeight: 600,
+
+  '&:hover': {
+    background: 'rgba(9, 30, 66, 0.04)',
+    color: 'rgba(9, 30, 66, 0.9)',
+  },
 };
 
 export const Button = styled('button')<ButtonExtraProps>({
   position: 'relative',
   overflow: 'hidden',
-  borderRadius: '5px',
+  borderRadius: '8px',
   margin: 'auto',
   display: 'flex',
   alignSelf: 'center',
@@ -69,55 +81,19 @@ export const Button = styled('button')<ButtonExtraProps>({
     opacity: 0.1,
   },
 
-  variants: [
-    {
-      props: { secondary: true },
-      style: {
-        background: 'rgba(9, 30, 66, 0.04)',
-        color: blue,
-        border: `1px solid ${blue}`,
-        cursor: 'pointer',
-      },
-    },
-    {
-      props: { disabled: true },
-      style: {
-        background: 'grey',
-        color: '#fff',
-        border: 'none',
-        cursor: 'not-allowed',
-        '&:hover::before': {
-          opacity: 0,
-        },
-      },
-    },
-    {
-      props: { isDisabled: true },
-      style: {
-        background: 'rgba(9, 30, 66, 0.04)',
-        color: 'rgba(9, 30, 66, 0.08)',
-        border: 'none',
-        cursor: 'not-allowed',
-        '&:hover::before': {
-          opacity: 0,
-        },
-      },
-    },
-    {
-      props: {
-        disabled: undefined,
-        isDisabled: undefined,
-        secondary: undefined,
-      },
-      style: {
-        background: blue,
-        color: '#fff',
-        border: 'none',
-        cursor: 'pointer',
-      },
-    },
-  ],
-  '&:hover': {
+  '&:disabled': {
+    background: 'rgba(9, 30, 66, 0.02)',
+    color: 'rgba(9, 30, 66, 0.2)',
+    border: '1px solid rgba(9, 30, 66, 0.2)',
+    cursor: 'not-allowed',
+  },
+
+  background: `${blue}`,
+  color: '#fff',
+  border: 'none',
+  cursor: 'pointer',
+
+  '&:hover:not(:disabled)': {
     color: 'white',
   },
 });

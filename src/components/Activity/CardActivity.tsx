@@ -1,21 +1,21 @@
-import { formatRelative } from 'date-fns';
+import { useUser } from '@clerk/tanstack-react-start';
 import { useState } from 'react';
-import * as Md from 'react-icons/md';
+import { BiCommentDetail } from 'react-icons/bi';
 import {
   ActivityCommentContainer,
   ActivityContainer,
   ActivityHeader,
+  ActivityTitle,
   AddActivityInput,
   HideActivityButton,
   SaveCommentButton,
 } from '~/components/Activity/Activity.styled';
 import { ActivityComment } from '~/components/Activity/ActivityComment';
 import { ActivityLogo } from '~/components/Activity/ActivityLogo';
-import { CardModalTitle } from '~/components/Cards/Card.styled';
 import { useCreateActivity, useGetActivity } from '~/query/activity';
 import { useGetCardById } from '~/query/cards';
-import { useGetProfile } from '~/query/profile';
 import { Flex } from '~/styles/Page.styled';
+import { formatActivityTime } from '~/utils/formatDateTime';
 import { useCurrentBoardId } from '~/utils/useCurrentBoardId';
 
 type CardActivityProps = {
@@ -29,7 +29,7 @@ export function CardActivity({ cardId }: CardActivityProps) {
   const boardId = useCurrentBoardId();
   const { data } = useGetActivity({ cardId });
   const [comment, setComment] = useState<string>('');
-  const profile = useGetProfile();
+  const { user } = useUser();
   const createActivity = useCreateActivity();
 
   function createComment() {
@@ -46,22 +46,27 @@ export function CardActivity({ cardId }: CardActivityProps) {
   return (
     <div>
       <ActivityHeader data-testid="ActivityHeader">
-        <Flex data-testid="Flex">
-          <Md.MdOutlineFormatListBulleted size={24} />
-          <CardModalTitle data-testid="CardModalTitle">Activity</CardModalTitle>
+        <Flex data-testid="Flex" style={{ alignItems: 'baseline' }}>
+          <BiCommentDetail
+            size={18}
+            style={{ position: 'relative', top: '4px' }}
+          />
+          <ActivityTitle data-testid="ActivityTitle">
+            Comments and activity
+          </ActivityTitle>
         </Flex>
+
         <HideActivityButton
           data-testid="HideActivityButton"
-          secondary
+          secondary={true}
           onClick={() => setShowActivity((prev) => !prev)}
         >
-          {showActivity ? 'Hide Activity' : 'Show Activity'}
+          {showActivity ? 'Hide details' : 'Show details'}
         </HideActivityButton>
       </ActivityHeader>
 
       <ActivityContainer data-testid="ActivityContainer">
         <Flex data-testid="Flex">
-          <ActivityLogo />
           <AddActivityInput
             data-testid="AddActivityInput"
             value={comment}
@@ -73,6 +78,7 @@ export function CardActivity({ cardId }: CardActivityProps) {
         <SaveCommentButton
           data-testid="SaveCommentButton"
           onClick={createComment}
+          disabled={!comment}
         >
           Save
         </SaveCommentButton>
@@ -88,10 +94,6 @@ export function CardActivity({ cardId }: CardActivityProps) {
         data
           ?.filter((value) => value.type === 'feed')
           .map((comment) => {
-            const commentTime = formatRelative(
-              new Date(comment.createdAt),
-              new Date(comment.createdAt),
-            );
             return (
               <ActivityContainer
                 data-testid="ActivityContainer"
@@ -102,11 +104,13 @@ export function CardActivity({ cardId }: CardActivityProps) {
                   <ActivityCommentContainer data-testid="ActivityCommentContainer">
                     <div style={{ marginLeft: '8px' }}>
                       <strong>
-                        {profile.data?.firstName} {profile.data?.lastName}
+                        {user?.firstName} {user?.lastName}
                       </strong>{' '}
                       {comment.content}
                     </div>
-                    <div style={{ marginLeft: '8px' }}>{commentTime}</div>
+                    <div style={{ marginLeft: '8px' }}>
+                      {formatActivityTime(comment.createdAt)}
+                    </div>
                   </ActivityCommentContainer>
                 </Flex>
               </ActivityContainer>

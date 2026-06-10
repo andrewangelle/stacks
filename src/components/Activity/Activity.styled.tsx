@@ -1,6 +1,8 @@
 import { styled } from '@pigment-css/react';
 import { fontFamily } from '~/components/Boards/Boards.styled';
-import { Button } from '~/styles/Page.styled';
+import { CardModalTitle } from '~/components/Cards/Card.styled';
+import { Button, secondaryButtonStyles } from '~/styles/Page.styled';
+import { blue } from '~/styles/tokens';
 
 export const ActivityHeader = styled.div` 
   display: flex;
@@ -8,15 +10,25 @@ export const ActivityHeader = styled.div`
   width: 100%;
 `;
 
-export const HideActivityButton = styled(Button)` 
-  border: none;
-  padding: 8px 10px;
-  margin: 0;
-`;
+export const HideActivityButton = styled(Button)({
+  ...secondaryButtonStyles,
+  padding: '8px 10px',
+  margin: 0,
+  fontSize: '14px',
+
+  '&:hover:not(:disabled)': {
+    color: secondaryButtonStyles.color,
+  },
+});
 
 export const ActivityContainer = styled.div` 
   margin: 10px 0px;
   width: 100%;
+`;
+
+export const ActivityTitle = styled(CardModalTitle)` 
+  font-size: 14px;
+  font-weight: 600;
 `;
 
 export const ActivityCommentContainer = styled.div` 
@@ -27,13 +39,14 @@ export const ActivityCommentContainer = styled.div`
 `;
 
 export const ActivityNameCircle = styled.div` 
-  border-radius: 50%;
-  background: blue;
+  border-radius: 100%;
+  background: ${blue};
   color: white;
-  height: 25px;
-  width: 25px;
+  height: 30px;
+  width: 34px;
   position: relative;
-  font-size: 10px;
+  font-size: 13px;
+  font-weight: 500;
 `;
 
 export const AddActivityInput = styled.input` 
@@ -57,5 +70,5 @@ export const ActivityCommentContent = styled.div`
 
 export const SaveCommentButton = styled(Button)` 
   padding: 8px 10px;
-  margin: 5px 0 0 30px;
+  margin: 8px 0 0 5px;
 `;

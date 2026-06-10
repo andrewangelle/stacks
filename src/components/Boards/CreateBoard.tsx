@@ -105,7 +105,7 @@ export function CreateBoard() {
 
         <CreateBoardButton
           data-testid="CreateBoardButton"
-          isDisabled={!boardTitle}
+          disabled={!boardTitle}
           onClick={onBoardCreate}
         >
           Create

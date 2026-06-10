@@ -1,16 +1,15 @@
+import { useUser } from '@clerk/tanstack-react-start';
 import { ActivityNameCircle } from '~/components/Activity/Activity.styled';
-import type { Profile } from '~/generated/prisma/client';
-import { useGetProfile } from '~/query/profile';
 import { Center } from '~/styles/Page.styled';
 
-export function getInitials(
-  data: Pick<Profile, 'firstName' | 'lastName'> | null,
-) {
-  if (data === null || !data.firstName) {
-    return 'Anon';
+export function useInitials() {
+  const { user } = useUser();
+
+  if (!user?.firstName) {
+    return 'U';
   }
 
-  const { firstName, lastName } = data;
+  const { firstName, lastName } = user;
   const firstInitial = firstName.charAt(0).toUpperCase();
   const lastInitial = lastName?.charAt(0).toUpperCase() ?? '';
 
@@ -18,8 +17,7 @@ export function getInitials(
 }
 
 export function ActivityLogo() {
-  const profile = useGetProfile();
-  const initials = getInitials(profile.data ?? null);
+  const initials = useInitials();
   return (
     <ActivityNameCircle data-testid="ActivityNameCircle">
       <Center data-testid="Center">
