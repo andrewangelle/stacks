@@ -27,6 +27,20 @@ When fixing or writing Playwright tests, **do not modify application source code
 - Seed data via `/__test/*` helpers and assert on rendered UI
 - Prefer roles and existing `data-testid`s over new production hooks
 
+## Do not assert on CSS in tests
+
+Assert on rendered UI via `data-testid`, roles, text, or attributes — not computed styles (`toHaveCSS`, color tokens, layout values). If a visual state needs verifying, add a `data-testid` on the element that represents that state.
+
+```typescript
+// ✅ GOOD — assert via test id
+await expect(
+  completionCircle.getByTestId('CardCompletedIndicatorCheckmark'),
+).toBeVisible();
+
+// ❌ BAD — couples tests to styling implementation
+await expect(completionCircle).toHaveCSS('background-color', 'rgb(31, 132, 90)');
+```
+
 ```typescript
 // ✅ GOOD — test-only hydration wait (no src/ changes)
 await expect(page.getByTestId('AddListContainer')).toBeVisible();

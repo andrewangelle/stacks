@@ -57,7 +57,12 @@ export function CardCompletedIndicator({
       onClick={toggleCardCompletion}
       type="button"
     >
-      {isCompleted && <AiOutlineCheck size={10} />}
+      {isCompleted && (
+        <AiOutlineCheck
+          size={10}
+          data-testid="CardCompletedIndicatorCheckmark"
+        />
+      )}
     </CardCompletedIndicatorCircle>
   );
 }
