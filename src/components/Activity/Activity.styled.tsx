@@ -52,7 +52,7 @@ export const ActivityNameCircle = styled.div`
 export const AddActivityInput = styled.input` 
   margin: 0px 5px;
   width: stretch; 
-  border: none;
+  border: 0.05px solid rgba(9, 30, 66, 0.2);
   border-radius: 8px;
   padding: 8px 10px;
   box-shadow: 0 1px 0 #091e4240;
@@ -66,7 +66,7 @@ export const ActivityCommentContent = styled.div`
   font-family: ${fontFamily};
   font-size: 14px;
   margin: 8px 0 0 5px;
-  border: none;
+  border: 0.05px solid rgba(9, 30, 66, 0.2);
   border-radius: 8px;
   padding: 8px 10px;
   background: white; 
