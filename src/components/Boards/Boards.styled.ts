@@ -236,7 +236,11 @@ export const CreateBoardTitleInput = styled.input`
   height: 20px;
 `;
 
-export const CreateBoardButton = styled('button')({
+type CreateBoardButtonProps = {
+  disabled: boolean;
+};
+
+export const CreateBoardButton = styled('button')<CreateBoardButtonProps>({
   border: 'none',
   borderRadius: '5px',
   width: '200px',
