@@ -49,9 +49,9 @@ test.describe('Activity', () => {
 
     const commentContainer = await addComment(page, 'Looks good');
 
-    await commentContainer.getByRole('button', { name: 'Edit' }).click();
+    await commentContainer.getByTestId('EditCommentLink').click();
     await commentContainer
-      .getByTestId('AddActivityInput')
+      .getByTestId('AddCommentInput')
       .fill('Needs revision');
     await commentContainer.getByTestId('SaveCommentButton').click();
 
