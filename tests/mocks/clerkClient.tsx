@@ -1,4 +1,15 @@
 import type { ReactNode } from 'react';
+import { getStore } from '~test/mocks/memoryPrisma';
+
+export function useUser() {
+  const clerkUser = getStore().clerkUser;
+
+  return {
+    isLoaded: true,
+    isSignedIn: clerkUser !== null,
+    user: clerkUser,
+  };
+}
 
 type ShowProps = {
   when: 'signed-in' | 'signed-out';

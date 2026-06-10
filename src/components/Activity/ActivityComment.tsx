@@ -1,4 +1,4 @@
-import { formatRelative } from 'date-fns';
+import { useUser } from '@clerk/tanstack-react-start';
 import { useState } from 'react';
 import {
   ActivityCommentContainer,
@@ -12,18 +12,15 @@ import { DeleteCommentPopover } from '~/components/Activity/DeleteCommentPopover
 import { CloseAddCardButton } from '~/components/Lists/List.styled';
 import type { Activity } from '~/generated/prisma/client';
 import { useUpdateActivity } from '~/query/activity';
-import { useGetProfile } from '~/query/profile';
 import { Flex } from '~/styles/Page.styled';
+import { formatActivityTime } from '~/utils/formatDateTime';
 
 export function ActivityComment(props: Activity) {
-  const profile = useGetProfile();
+  const { user } = useUser();
   const [isEditing, setIsEditing] = useState(false);
   const [editedComment, setEditedComment] = useState(props.content);
   const updateActivity = useUpdateActivity();
-  const commentTime = formatRelative(
-    new Date(props.createdAt),
-    new Date(props.createdAt),
-  );
+  const commentTime = formatActivityTime(props.createdAt);
   return (
     <ActivityContainer data-testid="ActivityContainer" key={props.id}>
       <Flex data-testid="Flex">
@@ -32,7 +29,7 @@ export function ActivityComment(props: Activity) {
         <ActivityCommentContainer data-testid="ActivityCommentContainer">
           <div style={{ marginLeft: '8px' }}>
             <strong>
-              {profile.data?.firstName} {profile.data?.lastName}
+              {user?.firstName} {user?.lastName}
             </strong>
             <span style={{ marginLeft: '4px' }}>{commentTime}</span>
           </div>
@@ -82,7 +79,10 @@ export function ActivityComment(props: Activity) {
               </ActivityCommentContent>
 
               <div style={{ marginLeft: '8px' }}>
-                <Flex data-testid="Flex">
+                <Flex
+                  data-testid="Flex"
+                  style={{ alignItems: 'center', marginTop: 8 }}
+                >
                   <button
                     type="button"
                     onKeyDown={(event) => {
@@ -100,6 +100,17 @@ export function ActivityComment(props: Activity) {
                   >
                     Edit
                   </button>
+
+                  <div
+                    style={{
+                      width: 4,
+                      height: 4,
+                      marginLeft: 4,
+                      background: 'black',
+                      borderRadius: '100%',
+                    }}
+                  />
+
                   <DeleteCommentPopover {...props} />
                 </Flex>
               </div>

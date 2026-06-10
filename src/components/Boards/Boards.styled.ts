@@ -236,11 +236,7 @@ export const CreateBoardTitleInput = styled.input`
   height: 20px;
 `;
 
-type IsDisabledProps = {
-  isDisabled: boolean;
-};
-
-export const CreateBoardButton = styled('button')<IsDisabledProps>({
+export const CreateBoardButton = styled('button')({
   border: 'none',
   borderRadius: '5px',
   width: '200px',
@@ -253,14 +249,14 @@ export const CreateBoardButton = styled('button')<IsDisabledProps>({
   cursor: 'pointer',
   variants: [
     {
-      props: { isDisabled: true },
+      props: { disabled: true },
       style: {
         background: 'rgba(9, 30, 66, 0.04)',
         color: 'rgba(9, 30, 66, 0.08)',
       },
     },
     {
-      props: { isDisabled: false },
+      props: { disabled: false },
       style: {
         background: blue,
         color: '#fff',
