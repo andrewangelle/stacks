@@ -1,4 +1,5 @@
 import { expect, type Page, test } from '@playwright/test';
+import { expectCardCompletionActivity } from '~test/helpers/expectCardCompletionActivity';
 import { resetDb } from '~test/helpers/resetDb';
 import { seedBoard, seedCard } from '~test/helpers/seed';
 import { waitForHydratedAction } from '~test/helpers/waitForHydratedAction';
@@ -72,6 +73,57 @@ test.describe('Card', () => {
     );
   });
 
+  test('marks a card complete in the card modal', async ({ page, request }) => {
+    await resetDb(request);
+    const board = await seedBoard(request, 'Sprint Board');
+    const { card } = await seedCard(request, {
+      boardId: board.id,
+      listTitle: 'To Do',
+      cardTitle: 'Ship feature',
+    });
+
+    await page.goto(`/board/${board.id}/card/${card.id}`);
+    await expect(page.getByTestId('CardModalContent')).toBeVisible();
+
+    const completionCircle = page
+      .getByTestId('CardModalTitleContainer')
+      .getByTestId('CardTitleModalTriggerCircle');
+
+    await expect(completionCircle).not.toHaveAttribute('data-completed', '');
+
+    await waitForCardCompleted(page);
+
+    await expectCompletedCheckmark(completionCircle);
+    await expectCardCompletionActivity(page, 'marked this card complete');
+  });
+
+  test('marks a card incomplete in the card modal', async ({
+    page,
+    request,
+  }) => {
+    await resetDb(request);
+    const board = await seedBoard(request, 'Sprint Board');
+    const { card } = await seedCard(request, {
+      boardId: board.id,
+      listTitle: 'To Do',
+      cardTitle: 'Ship feature',
+    });
+
+    await page.goto(`/board/${board.id}/card/${card.id}`);
+    await expect(page.getByTestId('CardModalContent')).toBeVisible();
+
+    const completionCircle = page
+      .getByTestId('CardModalTitleContainer')
+      .getByTestId('CardTitleModalTriggerCircle');
+
+    await waitForCardCompleted(page);
+    await expectCompletedCheckmark(completionCircle);
+
+    await waitForCardIncomplete(page);
+    await expectIncompleteCheckmark(completionCircle);
+    await expectCardCompletionActivity(page, 'marked this card incomplete');
+  });
+
   test('deletes a card', async ({ page, request }) => {
     await resetDb(request);
     const board = await seedBoard(request, 'Sprint Board');
@@ -99,6 +151,48 @@ test.describe('Card', () => {
     await expect(page.getByTestId('ListCardContainer')).toHaveCount(0);
   });
 });
+
+async function waitForCardCompleted(page: Page) {
+  const completionCircle = modalCompletionCircle(page);
+
+  return waitForHydratedAction(
+    () => completionCircle.click(),
+    async () => (await completionCircle.getAttribute('data-completed')) === '',
+  );
+}
+
+async function waitForCardIncomplete(page: Page) {
+  const completionCircle = modalCompletionCircle(page);
+
+  return waitForHydratedAction(
+    () => completionCircle.click(),
+    async () => (await completionCircle.getAttribute('data-completed')) !== '',
+  );
+}
+
+function modalCompletionCircle(page: Page) {
+  return page
+    .getByTestId('CardModalTitleContainer')
+    .getByTestId('CardTitleModalTriggerCircle');
+}
+
+async function expectCompletedCheckmark(
+  completionCircle: ReturnType<Page['getByTestId']>,
+) {
+  await expect(completionCircle).toHaveAttribute('data-completed', '');
+  await expect(
+    completionCircle.getByTestId('CardCompletedIndicatorCheckmark'),
+  ).toBeVisible();
+}
+
+async function expectIncompleteCheckmark(
+  completionCircle: ReturnType<Page['getByTestId']>,
+) {
+  await expect(completionCircle).not.toHaveAttribute('data-completed', '');
+  await expect(
+    completionCircle.getByTestId('CardCompletedIndicatorCheckmark'),
+  ).toHaveCount(0);
+}
 
 async function waitForCardTitleToBeUpdated(page: Page) {
   const cardTitle = page

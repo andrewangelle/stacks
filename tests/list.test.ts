@@ -1,4 +1,5 @@
 import { expect, type Page, test } from '@playwright/test';
+import { expectCardCompletionActivity } from '~test/helpers/expectCardCompletionActivity';
 import { resetDb } from '~test/helpers/resetDb';
 import { seedBoard, seedListCard } from '~test/helpers/seed';
 import { waitForHydratedAction } from '~test/helpers/waitForHydratedAction';
@@ -112,6 +113,66 @@ test.describe('List', () => {
     await expect(page.getByTestId('ListName')).toHaveText('Done');
   });
 
+  test('marks a card complete on the list', async ({ page, request }) => {
+    await resetDb(request);
+
+    const board = await seedBoard(request, 'Sprint Board');
+
+    await seedListCard(request, {
+      boardId: board.id,
+      listTitle: 'In Progress',
+      cardTitle: 'Launch feature',
+      checklists: [],
+    });
+
+    await page.goto(`/board/${board.id}`);
+    await expect(page.getByTestId('ListCardContainer')).toBeVisible();
+
+    const listCard = page.getByTestId('ListCardContainer');
+    const completionCircle = page.getByTestId('CardTitleModalTriggerCircle');
+
+    await expect(completionCircle).not.toHaveAttribute('data-completed', '');
+
+    await waitForCardCompletedOnList(page);
+
+    await expectCompletedCheckmark(completionCircle);
+    await expect(listCard).toContainText('Launch feature');
+
+    await page.getByTestId('ListCardTitleDetailsContainer').click();
+    await expect(page.getByTestId('CardModalContent')).toBeVisible();
+    await expectCardCompletionActivity(page, 'marked this card complete');
+  });
+
+  test('marks a card incomplete on the list', async ({ page, request }) => {
+    await resetDb(request);
+
+    const board = await seedBoard(request, 'Sprint Board');
+
+    await seedListCard(request, {
+      boardId: board.id,
+      listTitle: 'In Progress',
+      cardTitle: 'Launch feature',
+      checklists: [],
+    });
+
+    await page.goto(`/board/${board.id}`);
+    await expect(page.getByTestId('ListCardContainer')).toBeVisible();
+
+    const listCard = page.getByTestId('ListCardContainer');
+    const completionCircle = page.getByTestId('CardTitleModalTriggerCircle');
+
+    await waitForCardCompletedOnList(page);
+    await expectCompletedCheckmark(completionCircle);
+
+    await waitForCardIncompleteOnList(page);
+    await expectIncompleteCheckmark(completionCircle);
+    await expect(listCard).toContainText('Launch feature');
+
+    await page.getByTestId('ListCardTitleDetailsContainer').click();
+    await expect(page.getByTestId('CardModalContent')).toBeVisible();
+    await expectCardCompletionActivity(page, 'marked this card incomplete');
+  });
+
   test('deletes a list', async ({ page, request }) => {
     await resetDb(request);
 
@@ -145,6 +206,49 @@ test.describe('List', () => {
 /**
  * Local utils
  */
+async function waitForCardCompletedOnList(page: Page) {
+  return waitForCardCompletionOnList(page, true);
+}
+
+async function waitForCardIncompleteOnList(page: Page) {
+  return waitForCardCompletionOnList(page, false);
+}
+
+async function waitForCardCompletionOnList(page: Page, completed: boolean) {
+  const listCard = page.getByTestId('ListCardContainer');
+  const completionCircle = page.getByTestId('CardTitleModalTriggerCircle');
+
+  return waitForHydratedAction(
+    async () => {
+      await listCard.hover();
+      await completionCircle.click();
+    },
+    async () => {
+      const isCompleted =
+        (await completionCircle.getAttribute('data-completed')) === '';
+      return completed ? isCompleted : !isCompleted;
+    },
+  );
+}
+
+async function expectCompletedCheckmark(
+  completionCircle: ReturnType<Page['getByTestId']>,
+) {
+  await expect(completionCircle).toHaveAttribute('data-completed', '');
+  await expect(
+    completionCircle.getByTestId('CardCompletedIndicatorCheckmark'),
+  ).toBeVisible();
+}
+
+async function expectIncompleteCheckmark(
+  completionCircle: ReturnType<Page['getByTestId']>,
+) {
+  await expect(completionCircle).not.toHaveAttribute('data-completed', '');
+  await expect(
+    completionCircle.getByTestId('CardCompletedIndicatorCheckmark'),
+  ).toHaveCount(0);
+}
+
 async function waitForUpdatedListName(page: Page) {
   const trigger = () => page.getByTestId('BoardTitle').click();
   const isUpdated = async () =>
