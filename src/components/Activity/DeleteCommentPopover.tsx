@@ -14,7 +14,7 @@ import {
 import type { Activity } from '~/generated/prisma/client';
 import { useDeleteActivity } from '~/query/activity';
 
-export function DeleteCommentPopover(props: Activity) {
+export function DeleteCommentPopover(props: Pick<Activity, 'id' | 'cardId'>) {
   const deleteActivity = useDeleteActivity();
   return (
     <Popover.Root>

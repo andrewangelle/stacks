@@ -22,7 +22,7 @@ export const HideActivityButton = styled(Button)({
 });
 
 export const ActivityContainer = styled.div` 
-  margin: 10px 0px;
+  margin: 18px 0px;
   width: 100%;
 `;
 
@@ -51,24 +51,44 @@ export const ActivityNameCircle = styled.div`
 
 export const AddActivityInput = styled.input` 
   margin: 0px 5px;
-  width: 100%;
+  width: stretch; 
   border: none;
   border-radius: 8px;
   padding: 8px 10px;
+  box-shadow: 0 1px 0 #091e4240;
+`;
+
+export const AddCommentInput = styled(AddActivityInput)`
+  margin: 8px 0 8px 5px;
 `;
 
 export const ActivityCommentContent = styled.div` 
   font-family: ${fontFamily};
   font-size: 14px;
-  margin: 0px 5px;
-  width: 94%;
+  margin: 8px 0 0 5px;
   border: none;
   border-radius: 8px;
   padding: 8px 10px;
   background: white; 
+  box-shadow: 0 1px 0 #091e4240;
 `;
 
 export const SaveCommentButton = styled(Button)` 
   padding: 8px 10px;
   margin: 8px 0 0 5px;
+`;
+
+export const EditCommentLink = styled.button`
+  border: none;
+  background: none;
+  text-decoration: underline;
+  cursor: pointer;
+`;
+
+export const ActivityActionsSeparator = styled.div`
+  width: 4px;
+  height: 4px;
+  margin-left: 4px;
+  background: black;
+  border-radius: 100%;
 `;

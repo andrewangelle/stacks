@@ -2,7 +2,7 @@ import { styled } from '@pigment-css/react';
 import * as Dialog from '@radix-ui/react-dialog';
 import * as Popover from '@radix-ui/react-popover';
 import { fontFamily } from '~/components/Boards/Boards.styled';
-import { Button } from '~/styles/Page.styled';
+import { Button, secondaryButtonStyles } from '~/styles/Page.styled';
 import { focusRingBlue } from '~/styles/tokens';
 
 const cardModalBreakpoint = '@media (max-width: 850px)';
@@ -268,12 +268,16 @@ export const SaveDescriptionButton = styled(Button)`
   margin: 0 10px 0 ${cardModalContentIndent};
 `;
 
-export const CloseDescriptionButton = styled(Button)`
-  padding: 8px 10px;
-  margin: 0;
-  border: none;
-  color: black;
-`;
+export const CloseDescriptionButton = styled(Button)({
+  ...secondaryButtonStyles,
+  padding: '8px 10px',
+  margin: 0,
+  color: 'black',
+
+  '&:hover:not(:disabled)': {
+    color: secondaryButtonStyles.color,
+  },
+});
 
 export const CardDescriptionText = styled.div` 
   font-family: ${fontFamily};
