@@ -18,6 +18,7 @@ async function openCard(page: Page, request: APIRequestContext) {
   });
 
   await page.goto(`/board/${board.id}/card/${card.id}`);
+  await expect(page.getByTestId('CardModalContent')).toBeVisible();
   await expect(page.getByTestId('CardActivityColumn')).toBeVisible();
 
   return { board, card };
