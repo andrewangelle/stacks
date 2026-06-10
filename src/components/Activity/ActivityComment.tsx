@@ -13,21 +13,14 @@ import { Flex } from '~/styles/Page.styled';
 import { formatActivityTime } from '~/utils/formatDateTime';
 
 export function ActivityComment(props: Activity) {
-  const { user } = useUser();
   const [isEditing, setIsEditing] = useState(false);
-  const commentTime = formatActivityTime(props.createdAt);
   return (
     <ActivityContainer data-testid="ActivityContainer" key={props.id}>
       <Flex data-testid="Flex">
         <ActivityLogo />
 
         <ActivityCommentContainer data-testid="ActivityCommentContainer">
-          <div style={{ marginLeft: '8px' }}>
-            <strong>
-              {user?.firstName} {user?.lastName}
-            </strong>
-            <span style={{ marginLeft: '4px' }}>{commentTime}</span>
-          </div>
+          <CommentInfo createdAt={props.createdAt} />
 
           {isEditing && (
             <EditComment
@@ -54,5 +47,19 @@ export function ActivityComment(props: Activity) {
         </ActivityCommentContainer>
       </Flex>
     </ActivityContainer>
+  );
+}
+
+function CommentInfo({ createdAt }: { createdAt: Date }) {
+  const { user } = useUser();
+  const commentTime = formatActivityTime(createdAt);
+
+  return (
+    <div style={{ marginLeft: '8px' }}>
+      <span style={{ fontWeight: 600 }}>
+        {user?.firstName} {user?.lastName}
+      </span>
+      <span style={{ marginLeft: '4px' }}>{commentTime}</span>
+    </div>
   );
 }
