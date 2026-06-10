@@ -4,22 +4,17 @@ import {
   ActivityCommentContainer,
   ActivityCommentContent,
   ActivityContainer,
-  AddActivityInput,
-  SaveCommentButton,
 } from '~/components/Activity/Activity.styled';
+import { ActivityActions } from '~/components/Activity/ActivityActions';
 import { ActivityLogo } from '~/components/Activity/ActivityLogo';
-import { DeleteCommentPopover } from '~/components/Activity/DeleteCommentPopover';
-import { CloseAddCardButton } from '~/components/Lists/List.styled';
+import { EditComment } from '~/components/Activity/EditComment';
 import type { Activity } from '~/generated/prisma/client';
-import { useUpdateActivity } from '~/query/activity';
 import { Flex } from '~/styles/Page.styled';
 import { formatActivityTime } from '~/utils/formatDateTime';
 
 export function ActivityComment(props: Activity) {
   const { user } = useUser();
   const [isEditing, setIsEditing] = useState(false);
-  const [editedComment, setEditedComment] = useState(props.content);
-  const updateActivity = useUpdateActivity();
   const commentTime = formatActivityTime(props.createdAt);
   return (
     <ActivityContainer data-testid="ActivityContainer" key={props.id}>
@@ -35,41 +30,12 @@ export function ActivityComment(props: Activity) {
           </div>
 
           {isEditing && (
-            <>
-              <AddActivityInput
-                data-testid="AddActivityInput"
-                value={editedComment}
-                onChange={(event) => setEditedComment(event.target.value)}
-                placeholder={props.content}
-                autoFocus
-              />
-
-              <Flex data-testid="Flex">
-                <SaveCommentButton
-                  data-testid="SaveCommentButton"
-                  style={{ margin: 0 }}
-                  onClick={() => {
-                    updateActivity({
-                      activityId: props.id,
-                      cardId: props.cardId,
-                      content: editedComment,
-                    });
-                    setIsEditing(false);
-                  }}
-                >
-                  Save
-                </SaveCommentButton>
-
-                <CloseAddCardButton
-                  data-testid="CloseAddCardButton"
-                  secondary
-                  style={{ margin: '0 0 0 4px' }}
-                  onClick={() => setIsEditing(false)}
-                >
-                  X
-                </CloseAddCardButton>
-              </Flex>
-            </>
+            <EditComment
+              id={props.id}
+              cardId={props.cardId}
+              content={props.content}
+              setIsEditing={setIsEditing}
+            />
           )}
 
           {!isEditing && (
@@ -78,42 +44,11 @@ export function ActivityComment(props: Activity) {
                 {props.content}
               </ActivityCommentContent>
 
-              <div style={{ marginLeft: '8px' }}>
-                <Flex
-                  data-testid="Flex"
-                  style={{ alignItems: 'center', marginTop: 8 }}
-                >
-                  <button
-                    type="button"
-                    onKeyDown={(event) => {
-                      if (event.key === 'Enter' || event.key === ' ') {
-                        setIsEditing(true);
-                      }
-                    }}
-                    style={{
-                      border: 'none',
-                      background: 'none',
-                      textDecoration: 'underline',
-                      cursor: 'pointer',
-                    }}
-                    onClick={() => setIsEditing(true)}
-                  >
-                    Edit
-                  </button>
-
-                  <div
-                    style={{
-                      width: 4,
-                      height: 4,
-                      marginLeft: 4,
-                      background: 'black',
-                      borderRadius: '100%',
-                    }}
-                  />
-
-                  <DeleteCommentPopover {...props} />
-                </Flex>
-              </div>
+              <ActivityActions
+                id={props.id}
+                cardId={props.cardId}
+                setIsEditing={setIsEditing}
+              />
             </>
           )}
         </ActivityCommentContainer>
