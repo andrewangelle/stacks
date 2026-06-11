@@ -4,7 +4,7 @@ import * as Popover from '@radix-ui/react-popover';
 import { fontFamily, red } from '~/components/Boards/Boards.styled';
 import { cardModalContentIndent } from '~/components/Cards/Card.styled';
 import { Button, secondaryButtonStyles } from '~/styles/Page.styled';
-import { checklistProgressBlue } from '~/styles/tokens';
+import { blue } from '~/styles/tokens';
 
 const checklistRowColumns = `${cardModalContentIndent} minmax(0, 1fr)`;
 
@@ -132,10 +132,10 @@ export const CheckboxRoot = styled(Checkbox.Root)({
     {
       props: { checked: true },
       style: {
-        backgroundColor: checklistProgressBlue,
+        backgroundColor: blue,
         color: 'white',
-        borderColor: checklistProgressBlue,
-        borderBlockColor: checklistProgressBlue,
+        borderColor: blue,
+        borderBlockColor: blue,
         borderRadius: '3px',
       },
     },

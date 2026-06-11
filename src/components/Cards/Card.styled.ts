@@ -273,6 +273,7 @@ export const CloseDescriptionButton = styled(Button)({
   padding: '8px 10px',
   margin: 0,
   color: 'black',
+  border: 'none',
 
   '&:hover:not(:disabled)': {
     color: secondaryButtonStyles.color,

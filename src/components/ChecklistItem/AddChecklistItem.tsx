@@ -62,7 +62,7 @@ export function AddChecklistItem({ checklistId }: { checklistId: string }) {
               secondary
               onClick={() => setIsEditing(false)}
             >
-              X
+              Cancel
             </CloseDescriptionButton>
           </ChecklistItemActionsIndented>
         </EditChecklistItemContainer>

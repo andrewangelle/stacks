@@ -101,7 +101,7 @@ export function CardDescription({ cardId }: CardModalDescriptionProps) {
               secondary
               onClick={() => setEditing(false)}
             >
-              X
+              Cancel
             </CloseDescriptionButton>
           </Flex>
         </>

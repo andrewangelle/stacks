@@ -85,7 +85,7 @@ export function EditableChecklistLabel({
           secondary
           onClick={() => setIsEditingLabel(false)}
         >
-          X
+          Cancel
         </CloseDescriptionButton>
       </ChecklistItemActions>
     </EditChecklistItemContainer>
