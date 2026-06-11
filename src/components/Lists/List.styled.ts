@@ -70,6 +70,8 @@ export const CloseAddCardButton = styled(Button)`
   padding: 8px;
   background: none;
   cursor: pointer;
+  margin: 0 8px;
+  font-weight: 600;
   &:hover {
     background-color: rgba(0, 0, 0, .3);
   }

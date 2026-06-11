@@ -47,7 +47,7 @@ export function EditComment(
           style={{ margin: '0 0 0 4px' }}
           onClick={() => props.setIsEditing(false)}
         >
-          X
+          Cancel
         </CloseAddCardButton>
       </Flex>
     </>

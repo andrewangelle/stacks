@@ -76,6 +76,7 @@ export const ActivityCommentContent = styled.div`
 export const SaveCommentButton = styled(Button)` 
   padding: 8px 10px;
   margin: 8px 0 0 5px;
+  font-weight: 600;
 `;
 
 export const EditCommentLink = styled.button`

@@ -2,7 +2,7 @@ import { styled } from '@pigment-css/react';
 import * as Accordion from '@radix-ui/react-accordion';
 import * as Checkbox from '@radix-ui/react-checkbox';
 import {
-  checklistProgressBlue,
+  blue,
   completedGreen,
   darkGray,
   focusRingBlue,
@@ -256,8 +256,8 @@ export const CardTitleDetailsChecklistCheckbox = styled(Checkbox.Root)({
     {
       props: { checked: true },
       style: {
-        backgroundColor: checklistProgressBlue,
-        borderColor: checklistProgressBlue,
+        backgroundColor: blue,
+        borderColor: blue,
         color: '#fff',
       },
     },
