@@ -1,4 +1,5 @@
 import * as Popover from '@radix-ui/react-popover';
+import { DeleteCommentLink } from '~/components/Activity/Activity.styled';
 import {
   CreateBoardCloseBorder,
   PopoverClose,
@@ -14,29 +15,34 @@ import {
 import type { Activity } from '~/generated/prisma/client';
 import { useDeleteActivity } from '~/query/activity';
 
+const strings = {
+  deleteComment: 'Delete comment',
+  deleteCommentConfirmation:
+    'Deleting a comment is permanent and there is no way to get it back.',
+  deleteCommentButton: 'Delete',
+};
+
 export function DeleteCommentPopover(props: Pick<Activity, 'id' | 'cardId'>) {
   const deleteActivity = useDeleteActivity();
   return (
     <Popover.Root>
       <DeleteChecklistPopoverTrigger data-testid="DeleteChecklistPopoverTrigger">
-        <div
-          style={{
-            textDecoration: 'underline',
-            marginLeft: '4px',
-            cursor: 'pointer',
-          }}
-        >
-          Delete
-        </div>
+        <DeleteCommentLink type="button">
+          {strings.deleteCommentButton}
+        </DeleteCommentLink>
       </DeleteChecklistPopoverTrigger>
 
       <DeleteChecklistPopoverContent data-testid="DeleteChecklistPopoverContent">
         <ChecklistPopoverHeader data-testid="ChecklistPopoverHeader">
-          {'Delete comment'}
+          {strings.deleteComment}
+
           <PopoverClose data-testid="PopoverClose">X</PopoverClose>
         </ChecklistPopoverHeader>
+
         <CreateBoardCloseBorder data-testid="CreateBoardCloseBorder" />
-        Deleting a comment is permanent and there is no way to get it back.
+
+        {strings.deleteCommentConfirmation}
+
         <DeleteChecklistPopoverButton
           data-testid="DeleteChecklistPopoverButton"
           onClick={() =>
@@ -46,7 +52,7 @@ export function DeleteCommentPopover(props: Pick<Activity, 'id' | 'cardId'>) {
             })
           }
         >
-          Delete
+          {strings.deleteCommentButton}
         </DeleteChecklistPopoverButton>
       </DeleteChecklistPopoverContent>
     </Popover.Root>

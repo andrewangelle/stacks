@@ -1,12 +1,12 @@
 import { useState } from 'react';
 import {
   AddCommentInput,
+  EditCommentActions,
   SaveCommentButton,
 } from '~/components/Activity/Activity.styled';
 import { CloseAddCardButton } from '~/components/Lists/List.styled';
 import type { Activity } from '~/generated/prisma/client';
 import { useUpdateActivity } from '~/query/activity';
-import { Flex } from '~/styles/Page.styled';
 
 export function EditComment(
   props: Pick<Activity, 'id' | 'cardId' | 'content'> & {
@@ -25,10 +25,9 @@ export function EditComment(
         autoFocus
       />
 
-      <Flex data-testid="Flex">
+      <EditCommentActions data-testid="Flex">
         <SaveCommentButton
           data-testid="SaveCommentButton"
-          style={{ margin: 0 }}
           onClick={() => {
             updateActivity({
               activityId: props.id,
@@ -44,12 +43,11 @@ export function EditComment(
         <CloseAddCardButton
           data-testid="CloseAddCardButton"
           secondary
-          style={{ margin: '0 0 0 4px' }}
           onClick={() => props.setIsEditing(false)}
         >
           Cancel
         </CloseAddCardButton>
-      </Flex>
+      </EditCommentActions>
     </>
   );
 }

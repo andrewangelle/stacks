@@ -2,6 +2,7 @@ import type {
   CreateActivityArgs,
   DeleteActivityArgs,
   GetActivityArgs,
+  GetActivityByIdArgs,
   UpdateActivityArgs,
 } from '~/db/activity/activity.schemas';
 import { prisma } from '~/db/prisma';
@@ -14,6 +15,15 @@ export function getActivityQuery(data: WithUserId<GetActivityArgs>) {
       card: { list: { board: { userId: data.userId } } },
     },
     orderBy: { createdAt: 'asc' },
+  });
+}
+
+export function getActivityByIdQuery(data: WithUserId<GetActivityByIdArgs>) {
+  return prisma.activity.findFirst({
+    where: {
+      id: data.activityId,
+      card: { list: { board: { userId: data.userId } } },
+    },
   });
 }
 

@@ -133,6 +133,7 @@ export const CardActivityColumn = styled.div`
   padding: 12px;
   background: #ebecf0;
   overflow-y: auto;
+  padding: 0;
 
   ${cardModalBreakpoint} {
     background: white;

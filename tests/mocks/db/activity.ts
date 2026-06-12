@@ -18,6 +18,28 @@ export type ActivityRecord = {
 } & Timestamps;
 
 export const activityModel = {
+  async findFirst(args: {
+    where: {
+      id: string;
+      card: { list: { board: { userId: string } } };
+    };
+  }) {
+    const userId = args.where.card.list.board.userId;
+
+    return (
+      getStore().activities.find((activity) => {
+        const cardInStore = getStore().cards.find(
+          (card) => card.id === activity.cardId,
+        );
+        return (
+          activity.id === args.where.id &&
+          cardInStore &&
+          cardBelongsToUser(cardInStore, userId)
+        );
+      }) ?? null
+    );
+  },
+
   async findMany(args: {
     where: {
       cardId: string;

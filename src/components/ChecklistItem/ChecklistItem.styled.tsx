@@ -153,5 +153,6 @@ export const DeleteChecklistPopoverTrigger = styled(Popover.Trigger)`
 
   &:hover {
     position: relative;
+    background: rgba(0,0,0,0.1);
   }
 `;
