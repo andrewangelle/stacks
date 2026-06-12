@@ -1,32 +1,37 @@
 import { useUser } from '@clerk/tanstack-react-start';
 import { useState } from 'react';
 import {
+  ActivityAuthorName,
   ActivityCommentContainer,
   ActivityCommentContent,
   ActivityContainer,
+  ActivityMeta,
+  ActivityMetaTime,
+  ActivityRow,
 } from '~/components/Activity/Activity.styled';
 import { ActivityActions } from '~/components/Activity/ActivityActions';
 import { ActivityLogo } from '~/components/Activity/ActivityLogo';
 import { EditComment } from '~/components/Activity/EditComment';
-import type { Activity } from '~/generated/prisma/client';
-import { Flex } from '~/styles/Page.styled';
+import { useGetActivityById } from '~/query/activity';
 import { formatActivityTime } from '~/utils/formatDateTime';
 
-export function ActivityComment(props: Activity) {
+export function ActivityComment({ id }: { id: string }) {
+  const { data } = useGetActivityById({ activityId: id });
   const [isEditing, setIsEditing] = useState(false);
+  if (!data) return null;
   return (
-    <ActivityContainer data-testid="ActivityContainer" key={props.id}>
-      <Flex data-testid="Flex">
+    <ActivityContainer data-testid="ActivityContainer" key={data.id}>
+      <ActivityRow data-testid="ActivityRow">
         <ActivityLogo />
 
         <ActivityCommentContainer data-testid="ActivityCommentContainer">
-          <CommentInfo createdAt={props.createdAt} />
+          <CommentInfo createdAt={data.createdAt} />
 
           {isEditing && (
             <EditComment
-              id={props.id}
-              cardId={props.cardId}
-              content={props.content}
+              id={data.id}
+              cardId={data.cardId}
+              content={data.content}
               setIsEditing={setIsEditing}
             />
           )}
@@ -34,18 +39,18 @@ export function ActivityComment(props: Activity) {
           {!isEditing && (
             <>
               <ActivityCommentContent data-testid="ActivityCommentContent">
-                {props.content}
+                {data.content}
               </ActivityCommentContent>
 
               <ActivityActions
-                id={props.id}
-                cardId={props.cardId}
+                id={data.id}
+                cardId={data.cardId}
                 setIsEditing={setIsEditing}
               />
             </>
           )}
         </ActivityCommentContainer>
-      </Flex>
+      </ActivityRow>
     </ActivityContainer>
   );
 }
@@ -55,11 +60,11 @@ function CommentInfo({ createdAt }: { createdAt: Date }) {
   const commentTime = formatActivityTime(createdAt);
 
   return (
-    <div style={{ marginLeft: '8px' }}>
-      <span style={{ fontWeight: 600 }}>
+    <ActivityMeta>
+      <ActivityAuthorName>
         {user?.firstName} {user?.lastName}
-      </span>
-      <span style={{ marginLeft: '4px' }}>{commentTime}</span>
-    </div>
+      </ActivityAuthorName>
+      <ActivityMetaTime>{commentTime}</ActivityMetaTime>
+    </ActivityMeta>
   );
 }

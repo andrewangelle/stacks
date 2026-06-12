@@ -1,22 +1,28 @@
-import { useUser } from '@clerk/tanstack-react-start';
 import { useState } from 'react';
 import { BiCommentDetail } from 'react-icons/bi';
 import {
   ActivityCommentContainer,
-  ActivityContainer,
   ActivityHeader,
+  ActivityHeaderTitle,
+  ActivityPanel,
+  ActivityRow,
   ActivityTitle,
   AddActivityInput,
+  AddCommentContainer,
+  EditCommentActions,
   HideActivityButton,
   SaveCommentButton,
 } from '~/components/Activity/Activity.styled';
 import { ActivityComment } from '~/components/Activity/ActivityComment';
 import { ActivityLogo } from '~/components/Activity/ActivityLogo';
-import { useCreateActivity, useGetActivity } from '~/query/activity';
+import {
+  useCreateActivity,
+  useGetActivity,
+  useGetComments,
+} from '~/query/activity';
 import { useGetCardById } from '~/query/cards';
-import { Flex } from '~/styles/Page.styled';
-import { formatActivityTime } from '~/utils/formatDateTime';
 import { useCurrentBoardId } from '~/utils/useCurrentBoardId';
+import { ActivityEntry } from './ActivityEntry';
 
 type CardActivityProps = {
   cardId: string;
@@ -24,12 +30,11 @@ type CardActivityProps = {
 
 export function CardActivity({ cardId }: CardActivityProps) {
   const { data: cardData } = useGetCardById({ id: cardId });
-
-  const [showActivity, setShowActivity] = useState(false);
+  const [showActivity, setShowActivity] = useState(true);
   const boardId = useCurrentBoardId();
   const { data } = useGetActivity({ cardId });
+  const { data: comments } = useGetComments({ cardId });
   const [comment, setComment] = useState<string>('');
-  const { user } = useUser();
   const createActivity = useCreateActivity();
 
   function createComment() {
@@ -44,17 +49,17 @@ export function CardActivity({ cardId }: CardActivityProps) {
   }
 
   return (
-    <div>
+    <ActivityPanel data-testid="ActivityPanel">
       <ActivityHeader data-testid="ActivityHeader">
-        <Flex data-testid="Flex" style={{ alignItems: 'baseline' }}>
+        <ActivityHeaderTitle data-testid="ActivityHeaderTitle">
           <BiCommentDetail
             size={18}
-            style={{ position: 'relative', top: '4px' }}
+            style={{ position: 'relative', top: '4px', flexShrink: 0 }}
           />
           <ActivityTitle data-testid="ActivityTitle">
             Comments and activity
           </ActivityTitle>
-        </Flex>
+        </ActivityHeaderTitle>
 
         <HideActivityButton
           data-testid="HideActivityButton"
@@ -65,57 +70,44 @@ export function CardActivity({ cardId }: CardActivityProps) {
         </HideActivityButton>
       </ActivityHeader>
 
-      <ActivityContainer data-testid="ActivityContainer">
-        <Flex data-testid="Flex">
-          <AddActivityInput
-            data-testid="AddActivityInput"
-            value={comment}
-            onChange={(event) => setComment(event.target.value)}
-            placeholder="Write a comment..."
-            autoFocus
-          />
-        </Flex>
-        <SaveCommentButton
-          data-testid="SaveCommentButton"
-          onClick={createComment}
-          disabled={!comment}
-        >
-          Save
-        </SaveCommentButton>
-      </ActivityContainer>
+      <AddCommentContainer data-testid="AddCommentContainer">
+        <ActivityRow data-testid="ActivityRow">
+          <ActivityLogo />
 
-      {data
-        ?.filter((value) => value.type === 'comment')
-        .map((comment) => (
-          <ActivityComment key={comment.id} {...comment} />
+          <ActivityCommentContainer>
+            <AddActivityInput
+              data-testid="AddActivityInput"
+              value={comment}
+              onChange={(event) => setComment(event.target.value)}
+              placeholder="Write a comment..."
+            />
+
+            <EditCommentActions data-testid="EditCommentActions">
+              <SaveCommentButton
+                data-testid="SaveCommentButton"
+                onClick={createComment}
+                disabled={!comment}
+              >
+                Save
+              </SaveCommentButton>
+            </EditCommentActions>
+          </ActivityCommentContainer>
+        </ActivityRow>
+      </AddCommentContainer>
+
+      {!showActivity &&
+        comments?.map((comment) => (
+          <ActivityComment key={comment.id} id={comment.id} />
         ))}
 
       {showActivity &&
-        data
-          ?.filter((value) => value.type === 'feed')
-          .map((comment) => {
-            return (
-              <ActivityContainer
-                data-testid="ActivityContainer"
-                key={comment.id}
-              >
-                <Flex data-testid="Flex">
-                  <ActivityLogo />
-                  <ActivityCommentContainer data-testid="ActivityCommentContainer">
-                    <div style={{ marginLeft: '8px' }}>
-                      <strong>
-                        {user?.firstName} {user?.lastName}
-                      </strong>{' '}
-                      {comment.content}
-                    </div>
-                    <div style={{ marginLeft: '8px' }}>
-                      {formatActivityTime(comment.createdAt)}
-                    </div>
-                  </ActivityCommentContainer>
-                </Flex>
-              </ActivityContainer>
-            );
-          })}
-    </div>
+        data?.map((entry) =>
+          entry?.type === 'feed' ? (
+            <ActivityEntry key={entry.id} id={entry.id} />
+          ) : (
+            <ActivityComment key={entry.id} id={entry.id} />
+          ),
+        )}
+    </ActivityPanel>
   );
 }
