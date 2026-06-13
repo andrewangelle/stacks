@@ -19,10 +19,11 @@ export function EditComment(
     <>
       <AddCommentInput
         data-testid="AddCommentInput"
-        value={editedComment}
-        onChange={(event) => setEditedComment(event.target.value)}
         placeholder={props.content}
         autoFocus
+        style={{ margin: '8px 0px' }}
+        value={editedComment}
+        onChange={(event) => setEditedComment(event.target.value)}
       />
 
       <EditCommentActionsRow data-testid="EditCommentActionsRow">

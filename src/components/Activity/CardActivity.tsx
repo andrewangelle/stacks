@@ -1,52 +1,25 @@
 import { useState } from 'react';
 import { BiCommentDetail } from 'react-icons/bi';
 import {
-  ActivityCommentContainer,
   ActivityHeader,
   ActivityHeaderTitle,
   ActivityPanel,
-  ActivityRow,
   ActivityTitle,
-  AddActivityInput,
-  AddCommentContainer,
-  EditCommentActionsRow,
   HideActivityButton,
-  SaveCommentButton,
 } from '~/components/Activity/Activity.styled';
 import { ActivityComment } from '~/components/Activity/ActivityComment';
 import { ActivityEntry } from '~/components/Activity/ActivityEntry';
-import { ActivityLogo } from '~/components/Activity/ActivityLogo';
-import {
-  useCreateActivity,
-  useGetActivity,
-  useGetComments,
-} from '~/query/activity';
-import { useGetCardById } from '~/query/cards';
-import { useCurrentBoardId } from '~/utils/useCurrentBoardId';
+import { AddComment } from '~/components/Activity/AddComment';
+import { useGetActivity, useGetComments } from '~/query/activity';
 
 type CardActivityProps = {
   cardId: string;
 };
 
 export function CardActivity({ cardId }: CardActivityProps) {
-  const { data: cardData } = useGetCardById({ id: cardId });
   const [showActivity, setShowActivity] = useState(true);
-  const boardId = useCurrentBoardId();
   const { data } = useGetActivity({ cardId });
   const { data: comments } = useGetComments({ cardId });
-  const [comment, setComment] = useState<string>('');
-  const createActivity = useCreateActivity();
-
-  function createComment() {
-    createActivity({
-      boardId,
-      cardId,
-      listId: cardData?.listId ?? '',
-      type: 'comment',
-      content: comment,
-    });
-    setComment('');
-  }
 
   return (
     <ActivityPanel data-testid="ActivityPanel">
@@ -70,30 +43,7 @@ export function CardActivity({ cardId }: CardActivityProps) {
         </HideActivityButton>
       </ActivityHeader>
 
-      <AddCommentContainer data-testid="AddCommentContainer">
-        <ActivityRow data-testid="ActivityRow">
-          <ActivityLogo />
-
-          <ActivityCommentContainer>
-            <AddActivityInput
-              data-testid="AddActivityInput"
-              value={comment}
-              onChange={(event) => setComment(event.target.value)}
-              placeholder="Write a comment..."
-            />
-
-            <EditCommentActionsRow data-testid="EditCommentActions">
-              <SaveCommentButton
-                data-testid="SaveCommentButton"
-                onClick={createComment}
-                disabled={!comment}
-              >
-                Save
-              </SaveCommentButton>
-            </EditCommentActionsRow>
-          </ActivityCommentContainer>
-        </ActivityRow>
-      </AddCommentContainer>
+      <AddComment cardId={cardId} />
 
       {!showActivity &&
         comments?.map((comment) => (

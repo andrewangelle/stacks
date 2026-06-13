@@ -136,7 +136,7 @@ export const activityFieldStyles = {
   boxShadow: '0 1px 0 #091e4240',
 };
 
-export const AddActivityInput = styled.input` 
+export const AddCommentInput = styled.input` 
   box-sizing: border-box;
   width: 100%;
   max-width: 100%;
@@ -144,10 +144,6 @@ export const AddActivityInput = styled.input`
   border-radius: ${activityFieldStyles.borderRadius};
   padding: ${activityFieldStyles.padding};
   box-shadow: ${activityFieldStyles.boxShadow};
-`;
-
-export const AddCommentInput = styled(AddActivityInput)`
-  margin: 8px 0;
 `;
 
 export const ActivityCommentContent = styled.div` 
