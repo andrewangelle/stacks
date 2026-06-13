@@ -5,11 +5,7 @@
  * a middle stop, e.g. linear-gradient(to bottom right, #0747a6, #0065ff, #00b8d9).
  */
 :root {
-  --board-gradient-green: linear-gradient(
-    to bottom right,
-    #3d722b,
-    #5fa049
-  );
+  --board-gradient-green: linear-gradient(to bottom right, #3d722b, #5fa049);
   --board-gradient-green-hover: linear-gradient(
     to bottom right,
     #31591f,
@@ -27,33 +23,21 @@
     #4bbf6b
   );
 
-  --board-gradient-blue: linear-gradient(
-    to bottom right,
-    #0747a6,
-    #00b8d9
-  );
+  --board-gradient-blue: linear-gradient(to bottom right, #0747a6, #00b8d9);
   --board-gradient-blue-hover: linear-gradient(
     to bottom right,
     #053d8f,
     #009bb8
   );
 
-  --board-gradient-orange: linear-gradient(
-    to bottom right,
-    #a66220,
-    #f0b84a
-  );
+  --board-gradient-orange: linear-gradient(to bottom right, #a66220, #f0b84a);
   --board-gradient-orange-hover: linear-gradient(
     to bottom right,
     #8f5518,
     #d29034
   );
 
-  --board-gradient-red: linear-gradient(
-    to bottom right,
-    #7a2818,
-    #d06048
-  );
+  --board-gradient-red: linear-gradient(to bottom right, #7a2818, #d06048);
   --board-gradient-red-hover: linear-gradient(
     to bottom right,
     #672010,
