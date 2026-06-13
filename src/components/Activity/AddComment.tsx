@@ -1,8 +1,8 @@
 import { useState } from 'react';
 import {
-  ActivityCommentContainer,
   ActivityRow,
   AddCommentContainer,
+  AddCommentForm,
   AddCommentInput,
   EditCommentActionsRow,
   SaveCommentButton,
@@ -38,7 +38,7 @@ export function AddComment({ cardId }: AddCommentProps) {
       <ActivityRow data-testid="ActivityRow">
         <ActivityLogo />
 
-        <ActivityCommentContainer>
+        <AddCommentForm onSubmit={(event) => event.preventDefault()}>
           <AddCommentInput
             data-testid="AddCommentInput"
             value={comment}
@@ -55,7 +55,7 @@ export function AddComment({ cardId }: AddCommentProps) {
               Save
             </SaveCommentButton>
           </EditCommentActionsRow>
-        </ActivityCommentContainer>
+        </AddCommentForm>
       </ActivityRow>
     </AddCommentContainer>
   );
