@@ -5,8 +5,11 @@ export async function expectCardCompletionActivity(
   content: 'marked this card complete' | 'marked this card incomplete',
 ) {
   const activityColumn = page.getByTestId('CardActivityColumn');
+  const toggleButton = activityColumn.getByTestId('HideActivityButton');
 
-  await activityColumn.getByTestId('HideActivityButton').click();
+  if (await toggleButton.getByText('Show details').isVisible()) {
+    await toggleButton.click();
+  }
 
   await expect(
     activityColumn
