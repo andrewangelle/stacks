@@ -1,6 +1,11 @@
 import { type MouseEvent, useState } from 'react';
 import { AiOutlineCheck } from 'react-icons/ai';
 import {
+  CheckboxSkeleton,
+  ChecklistLabelSkeleton,
+} from '~/components/ChecklistItem/ChecklistItem.styled';
+import { ChecklistItemSkeleton } from '~/components/ChecklistItem/ChecklistItemSkeleton';
+import {
   CardTitleDetailsChecklistCheckbox,
   CardTitleDetailsChecklistCheckboxIndicator,
   CardTitleDetailsChecklistContainer,
@@ -28,15 +33,16 @@ export function CardTitleDetailsChecklist({
   checklistId,
   collapsible = false,
 }: CardTitleDetailsChecklistProps) {
-  const { data: checklist } = useGetChecklist({ checklistId });
-  const { data: items } = useGetChecklistItems({ checklistId });
+  const { isLoading, data: checklist } = useGetChecklist({ checklistId });
+  const { isLoading: isItemsLoading, data: items } = useGetChecklistItems({
+    checklistId,
+  });
   const updateItem = useUpdateChecklistItem();
   const createActivity = useCreateActivity();
   const boardId = useCurrentBoardId();
-
-  const incompleteItems = items?.filter((item) => !item.isCompleted) ?? [];
   const [visibleCount, setVisibleCount] = useState(INITIAL_VISIBLE);
 
+  const incompleteItems = items?.filter((item) => !item.isCompleted) ?? [];
   const visibleItems = incompleteItems.slice(0, visibleCount);
   const hasMore = collapsible && visibleCount < incompleteItems.length;
 
@@ -65,6 +71,37 @@ export function CardTitleDetailsChecklist({
         content: `marked ${label} complete on this card`,
       });
     };
+  }
+
+  if (isLoading) {
+    return (
+      <CardTitleDetailsChecklistContainer data-testid="CardTitleDetailsChecklistContainer">
+        <ChecklistItemSkeleton />
+      </CardTitleDetailsChecklistContainer>
+    );
+  }
+
+  if (isItemsLoading) {
+    return (
+      <CardTitleDetailsChecklistContainer data-testid="CardTitleDetailsChecklistContainer">
+        {visibleItems.map((item) => (
+          <div
+            key={item.id}
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: '8px',
+            }}
+          >
+            <CheckboxSkeleton data-testid="CheckboxSkeleton" />
+            <ChecklistLabelSkeleton
+              data-testid="ChecklistLabelSkeleton"
+              style={{ width: '83%' }}
+            />
+          </div>
+        ))}
+      </CardTitleDetailsChecklistContainer>
+    );
   }
 
   return (

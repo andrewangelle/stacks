@@ -8,6 +8,7 @@ import {
   EditCardTitleForm,
   EditCardTitleInput,
 } from '~/components/Cards/Card.styled';
+import { animationStyles } from '~/styles/animations';
 import { Button } from '~/styles/Page.styled';
 
 const checklistRowColumns = `${cardModalContentIndent} minmax(0, 1fr)`;
@@ -119,3 +120,49 @@ export const EditChecklistTitleForm = styled(EditCardTitleForm)``;
 export const EditChecklistTitleInput = styled(EditCardTitleInput)`
   font-size: 14px;
 `;
+
+export const ChecklistNameSkeletonContainer = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 8px;
+`;
+
+export const ChecklistNameSkeleton = styled.div({
+  background: 'rgba(9, 30, 66, 0.25)',
+  cursor: 'default',
+  pointerEvents: 'none',
+  minHeight: '16px',
+  width: '75px',
+  height: '24px',
+  borderRadius: '8px',
+  flexShrink: 0,
+  position: 'relative',
+  ...animationStyles.pulse,
+});
+
+export const DeleteChecklistSkeleton = styled.div({
+  background: 'rgba(9, 30, 66, 0.25)',
+  cursor: 'default',
+  pointerEvents: 'none',
+  minHeight: '16px',
+  width: '60px',
+  height: '32px',
+  borderRadius: '8px',
+  flexShrink: 0,
+  position: 'relative',
+  ...animationStyles.pulse,
+});
+
+export const ChecklistProgressSkeleton = styled.div({
+  background: 'rgba(9, 30, 66, 0.25)',
+  cursor: 'default',
+  pointerEvents: 'none',
+  minHeight: '16px',
+  width: '100%',
+  height: '8px',
+  borderRadius: '8px',
+  flexShrink: 0,
+  position: 'relative',
+  margin: '12px 0',
+  ...animationStyles.pulse,
+});

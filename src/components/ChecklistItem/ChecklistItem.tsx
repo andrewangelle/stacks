@@ -7,6 +7,7 @@ import {
   ChecklistCheckboxContentColumn,
   ChecklistLeadingColumn,
 } from '~/components/ChecklistItem/ChecklistItem.styled';
+import { ChecklistItemSkeleton } from '~/components/ChecklistItem/ChecklistItemSkeleton';
 import { DeleteChecklistItem } from '~/components/ChecklistItem/DeleteChecklistItem';
 import { EditableChecklistLabel } from '~/components/ChecklistItem/EditableChecklistLabel';
 import { useCreateActivity } from '~/query/activity';
@@ -20,7 +21,9 @@ const AiOutlineCheck = AiIcons.AiOutlineCheck;
 
 export function ChecklistItem({ id }: { id: string }) {
   const boardId = useCurrentBoardId();
-  const { data: checklistItem } = useGetChecklistItem({ itemId: id });
+  const { isLoading, data: checklistItem } = useGetChecklistItem({
+    itemId: id,
+  });
   const updateItem = useUpdateChecklistItem();
   const [isEditingLabel, setIsEditingLabel] = useState(false);
   const [isHovering, setHovering] = useState(false);
@@ -54,7 +57,9 @@ export function ChecklistItem({ id }: { id: string }) {
     }
   }
 
-  if (!checklistItem) return null;
+  if (isLoading || !checklistItem) {
+    return <ChecklistItemSkeleton />;
+  }
 
   return (
     <ChecklistCheckboxContainer data-testid="ChecklistCheckboxContainer">
