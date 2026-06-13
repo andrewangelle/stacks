@@ -14,6 +14,7 @@ import {
   SaveCommentButton,
 } from '~/components/Activity/Activity.styled';
 import { ActivityComment } from '~/components/Activity/ActivityComment';
+import { ActivityEntry } from '~/components/Activity/ActivityEntry';
 import { ActivityLogo } from '~/components/Activity/ActivityLogo';
 import {
   useCreateActivity,
@@ -22,7 +23,6 @@ import {
 } from '~/query/activity';
 import { useGetCardById } from '~/query/cards';
 import { useCurrentBoardId } from '~/utils/useCurrentBoardId';
-import { ActivityEntry } from './ActivityEntry';
 
 type CardActivityProps = {
   cardId: string;
