@@ -4,6 +4,7 @@ import {
   deleteChecklistItem,
   getChecklistItemById,
   getChecklistItems,
+  reorderChecklistItems as reorderChecklistItemsServer,
   updateChecklistItem,
 } from '~/db/checklistItems/checklistItems.functions';
 import type {
@@ -274,7 +275,7 @@ export const reorderChecklistItems = (
   item: { id: string },
   checklistId: string,
   droppedId: string,
-) =>
+) => {
   queryClient.setQueryData<ChecklistItemListItem[]>(
     queryKeys.list(checklistId),
     (cache = []) => {
@@ -291,3 +292,17 @@ export const reorderChecklistItems = (
       return cacheArray;
     },
   );
+
+  const orderedIds =
+    queryClient
+      .getQueryData<ChecklistItemListItem[]>(queryKeys.list(checklistId))
+      ?.map((checklistItem) => checklistItem.id) ?? [];
+
+  reorderChecklistItemsServer({ data: { checklistId, orderedIds } }).catch(
+    () => {
+      queryClient.invalidateQueries({
+        queryKey: queryKeys.list(checklistId),
+      });
+    },
+  );
+};

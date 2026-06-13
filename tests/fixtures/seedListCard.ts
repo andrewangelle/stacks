@@ -37,6 +37,7 @@ export function seedListCard(data: {
     listTitle,
     boardId: data.boardId,
     userId,
+    position: 0,
     createdAt: timestamp,
     updatedAt: timestamp,
   };
@@ -47,6 +48,8 @@ export function seedListCard(data: {
     cardDescription: '',
     listId: list.id,
     userId,
+    position: 0,
+    isCompleted: false,
     createdAt: timestamp,
     updatedAt: timestamp,
   };
@@ -67,7 +70,7 @@ export function seedListCard(data: {
 
     checklists.push(checklist);
 
-    for (const label of checklistSeed.items) {
+    for (const [itemIndex, label] of checklistSeed.items.entries()) {
       checklistItems.push({
         id: id(),
         label,
@@ -76,6 +79,7 @@ export function seedListCard(data: {
         checklistId: checklist.id,
         listId: list.id,
         userId,
+        position: itemIndex,
         createdAt: timestamp,
         updatedAt: timestamp,
       });

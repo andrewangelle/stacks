@@ -4,6 +4,7 @@ import {
   deleteList,
   getListById,
   getLists,
+  reorderLists as reorderListsServer,
   updateList,
 } from '~/db/lists/lists.functions';
 import type {
@@ -120,7 +121,7 @@ export const reorderLists = (
   item: { id: string },
   boardId: string,
   droppedId: string,
-) =>
+) => {
   queryClient.setQueryData<ListListItem[]>(
     queryKeys.list(boardId),
     (cache = []) => {
@@ -139,3 +140,13 @@ export const reorderLists = (
       return cacheArray;
     },
   );
+
+  const orderedIds =
+    queryClient
+      .getQueryData<ListListItem[]>(queryKeys.list(boardId))
+      ?.map((list) => list.id) ?? [];
+
+  reorderListsServer({ data: { boardId, orderedIds } }).catch(() => {
+    queryClient.invalidateQueries({ queryKey: queryKeys.list(boardId) });
+  });
+};

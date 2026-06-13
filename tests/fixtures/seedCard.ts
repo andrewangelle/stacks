@@ -29,6 +29,7 @@ export function seedCard(data: {
     listTitle,
     boardId: data.boardId,
     userId,
+    position: 0,
     createdAt: timestamp,
     updatedAt: timestamp,
   };
@@ -39,6 +40,8 @@ export function seedCard(data: {
     cardDescription: '',
     listId: list.id,
     userId,
+    position: 0,
+    isCompleted: false,
     createdAt: timestamp,
     updatedAt: timestamp,
   };

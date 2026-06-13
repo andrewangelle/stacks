@@ -4,6 +4,7 @@ import {
   DeleteCardSchema,
   GetCardByIdSchema,
   GetCardsByListIdSchema,
+  ReorderCardsSchema,
   UpdateCardSchema,
 } from '~/db/cards/cards.schemas';
 import {
@@ -12,6 +13,7 @@ import {
   getBoardIdByCardIdQuery,
   getCardByIdQuery,
   getCardsByListIdQuery,
+  reorderCardsQuery,
   updateCardQuery,
 } from '~/db/cards/cards.server';
 import { authMiddleware } from '~/middleware/auth';
@@ -56,4 +58,11 @@ export const deleteCard = createServerFn({ method: 'POST' })
   .middleware([authMiddleware])
   .handler(async ({ data, context }) =>
     deleteCardQuery({ ...data, userId: context.uid }),
+  );
+
+export const reorderCards = createServerFn({ method: 'POST' })
+  .validator(ReorderCardsSchema)
+  .middleware([authMiddleware])
+  .handler(async ({ data, context }) =>
+    reorderCardsQuery({ ...data, userId: context.uid }),
   );

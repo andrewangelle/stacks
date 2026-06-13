@@ -3,7 +3,7 @@ import {
   getStore,
   id,
   now,
-  sortByCreatedAt,
+  sortByPosition,
   type Timestamps,
 } from '~test/mocks/memoryPrisma';
 
@@ -15,6 +15,7 @@ export type ChecklistItemRecord = {
   checklistId: string;
   listId: string;
   userId: string;
+  position: number;
 } & Timestamps;
 
 function checklistItemBelongsToUser(item: ChecklistItemRecord, userId: string) {
@@ -29,7 +30,7 @@ export const checklistItemModel = {
       checklist: { card: { list: { board: { userId: string } } } };
       id?: string;
     };
-    orderBy: { createdAt: 'asc' };
+    orderBy: { createdAt: 'asc' } | [{ position: 'asc' }, { createdAt: 'asc' }];
   }) {
     if ('id' in args.where) {
       const item = getStore().checklistItems.find(
@@ -40,7 +41,7 @@ export const checklistItemModel = {
 
     const userId = args.where.checklist.card.list.board.userId;
 
-    return sortByCreatedAt(
+    return sortByPosition(
       getStore().checklistItems.filter(
         (item) =>
           item.checklistId === args.where.checklistId &&
@@ -66,9 +67,15 @@ export const checklistItemModel = {
       listId: string;
       userId: string;
       isCompleted: boolean;
+      position?: number;
     };
   }) {
     const timestamp = now();
+    const position =
+      args.data.position ??
+      getStore().checklistItems.filter(
+        (item) => item.checklistId === args.data.checklistId,
+      ).length;
 
     const created: ChecklistItemRecord = {
       id: id(),
@@ -78,6 +85,7 @@ export const checklistItemModel = {
       checklistId: args.data.checklistId,
       listId: args.data.listId,
       userId: args.data.userId,
+      position,
       createdAt: timestamp,
       updatedAt: timestamp,
     };
@@ -89,7 +97,7 @@ export const checklistItemModel = {
 
   async updateMany(args: {
     where: { id: string; userId: string };
-    data: { label?: string; isCompleted?: boolean };
+    data: { label?: string; isCompleted?: boolean; position?: number };
   }) {
     const item = getStore().checklistItems.find(
       (record) =>
@@ -108,9 +116,28 @@ export const checklistItemModel = {
       item.isCompleted = args.data.isCompleted;
     }
 
+    if (args.data.position !== undefined) {
+      item.position = args.data.position;
+    }
+
     item.updatedAt = now();
 
     return { count: 1 };
+  },
+
+  async count(args: {
+    where: {
+      checklistId: string;
+      checklist: { card: { list: { board: { userId: string } } } };
+    };
+  }) {
+    const userId = args.where.checklist.card.list.board.userId;
+
+    return getStore().checklistItems.filter(
+      (item) =>
+        item.checklistId === args.where.checklistId &&
+        checklistItemBelongsToUser(item, userId),
+    ).length;
   },
 
   async delete(args: { where: { id: string } }) {
