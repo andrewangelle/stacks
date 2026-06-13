@@ -10,6 +10,7 @@ import {
 export type ChecklistRecord = {
   id: string;
   checklistTitle: string;
+  hideCheckedItems: boolean;
   cardId: string;
   listId: string;
   userId: string;
@@ -139,6 +140,7 @@ export const checklistModel = {
     const created: ChecklistRecord = {
       id: id(),
       checklistTitle: args.data.checklistTitle,
+      hideCheckedItems: false,
       cardId: args.data.cardId,
       listId: args.data.listId,
       userId: args.data.userId,
@@ -153,7 +155,7 @@ export const checklistModel = {
 
   async update(args: {
     where: { id: string; userId: string };
-    data: { checklistTitle?: string };
+    data: { checklistTitle?: string; hideCheckedItems?: boolean };
   }) {
     const checklist = getStore().checklists.find(
       (item) => item.id === args.where.id && item.userId === args.where.userId,
@@ -165,6 +167,10 @@ export const checklistModel = {
 
     if (args.data.checklistTitle !== undefined) {
       checklist.checklistTitle = args.data.checklistTitle;
+    }
+
+    if (args.data.hideCheckedItems !== undefined) {
+      checklist.hideCheckedItems = args.data.hideCheckedItems;
     }
 
     checklist.updatedAt = now();

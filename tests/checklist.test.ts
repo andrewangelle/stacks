@@ -115,6 +115,35 @@ test.describe('Checklist', () => {
     );
   });
 
+  test('hides and shows completed checklist items and persists the setting', async ({
+    page,
+    request,
+  }) => {
+    await openCardWithChecklists(page, request, [
+      { title: 'Launch checklist', items: ['Deploy to staging'] },
+    ]);
+
+    await waitForChecked(page);
+
+    const toggleButton = page.getByTestId('ToggleCheckedItemsButton');
+    await expect(toggleButton).toHaveText('Hide checked items');
+    await expect(page.getByTestId('CheckboxLabel')).toHaveCount(1);
+
+    await waitForToggleCheckedItems(page);
+
+    await expect(toggleButton).toHaveText('Show checked items (1)');
+    await expect(page.getByTestId('CheckboxLabel')).toHaveCount(0);
+    await expect(page.getByTestId('AllItemsCompleteMessage')).toHaveText(
+      'Everything in this checklist is complete!',
+    );
+
+    await page.reload();
+    await expect(page.getByTestId('CardModalContent')).toBeVisible();
+    await expect(toggleButton).toHaveText('Show checked items (1)');
+    await expect(page.getByTestId('CheckboxLabel')).toHaveCount(0);
+    await expect(page.getByTestId('AllItemsCompleteMessage')).toBeVisible();
+  });
+
   test('deletes a checklist in the card modal', async ({ page, request }) => {
     await resetDb(request);
     const board = await seedBoard(request, 'Sprint Board');
@@ -210,4 +239,17 @@ function waitForTitleToBeUpdated(page: Page) {
     (await title.textContent())?.trim() === 'Release checklist';
 
   return waitForHydratedAction(trigger, isUpdated);
+}
+
+function waitForToggleCheckedItems(page: Page) {
+  const toggleButton = page.getByTestId('ToggleCheckedItemsButton');
+
+  const trigger = () => toggleButton.click();
+
+  const isHidden = async () =>
+    (await page.getByTestId('CheckboxLabel').count()) === 0 &&
+    (await toggleButton.textContent())?.includes('Show checked items (1)') ===
+      true;
+
+  return waitForHydratedAction(trigger, isHidden);
 }

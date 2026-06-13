@@ -104,7 +104,7 @@ export function useDeleteChecklist() {
 }
 
 export function useUpdateChecklist() {
-  const mutation = useMutation({
+  return useMutation({
     mutationFn(data: UpdateChecklistArgs) {
       return updateChecklist({
         data,
@@ -112,17 +112,33 @@ export function useUpdateChecklist() {
     },
 
     onSuccess(_result, variables) {
+      const patch: Partial<Checklist> = {};
+
+      if (variables.checklistTitle !== undefined) {
+        patch.checklistTitle = variables.checklistTitle;
+      }
+
+      if (variables.hideCheckedItems !== undefined) {
+        patch.hideCheckedItems = variables.hideCheckedItems;
+      }
+
       queryClient.setQueryData<Checklist>(
         queryKeys.detail(variables.checklistId),
         (cache = {} as Checklist) => ({
           ...cache,
-          checklistTitle: variables.checklistTitle,
+          ...patch,
         }),
+      );
+
+      queryClient.setQueryData<Checklist[]>(
+        queryKeys.list(variables.cardId),
+        (cache = []) =>
+          cache.map((item) =>
+            item.id === variables.checklistId ? { ...item, ...patch } : item,
+          ),
       );
     },
   });
-
-  return mutation.mutate;
 }
 
 export function useGetCardTitleDetailsChecklists(data: GetChecklistsArgs) {

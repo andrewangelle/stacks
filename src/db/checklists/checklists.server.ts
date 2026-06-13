@@ -138,10 +138,14 @@ export async function deleteChecklistQuery(
 export async function updateChecklistQuery(
   data: WithUserId<UpdateChecklistArgs>,
 ) {
-  const patch: { checklistTitle?: string } = {};
+  const patch: { checklistTitle?: string; hideCheckedItems?: boolean } = {};
 
   if (typeof data.checklistTitle === 'string') {
     patch.checklistTitle = data.checklistTitle;
+  }
+
+  if (typeof data.hideCheckedItems === 'boolean') {
+    patch.hideCheckedItems = data.hideCheckedItems;
   }
 
   return prisma.checklist.update({

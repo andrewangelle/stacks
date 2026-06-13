@@ -21,8 +21,9 @@ export const DeleteChecklistSchema = z.object({
 
 export const UpdateChecklistSchema = z.object({
   checklistId: z.string(),
-  checklistTitle: z.string(),
   cardId: z.string(),
+  checklistTitle: z.string().optional(),
+  hideCheckedItems: z.boolean().optional(),
 });
 
 export type GetChecklistsArgs = z.infer<typeof GetChecklistsSchema>;

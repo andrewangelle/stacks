@@ -17,7 +17,7 @@ export function ChecklistEditableTitle({ id }: ChecklistEditableTitleProps) {
   const [isEditingTitle, setEditingTitle] = useState(false);
   const { data: checklist } = useGetChecklist({ checklistId: id });
   const [editedTitle, setEditedTitle] = useState('');
-  const updateChecklist = useUpdateChecklist();
+  const { mutate: updateChecklist } = useUpdateChecklist();
   const outsideClickRef = useOutsideClick(
     onOutsideTitleEditClick,
     isEditingTitle,
