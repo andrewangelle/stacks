@@ -125,6 +125,10 @@ export const ActivityAuthorName = styled.span`
 
 export const ActivityMetaTime = styled.span`
   margin-left: 4px;
+    /* margin-top: 8px; */
+  cursor: pointer;
+  text-decoration: underline;
+  color: #0000EE;
 `;
 
 export const ActivityNameCircle = styled.div` 

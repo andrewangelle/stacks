@@ -1,5 +1,10 @@
 import { useUser } from '@clerk/tanstack-react-start';
-import { useLocation, useNavigate, useParams } from '@tanstack/react-router';
+import {
+  type HistoryState,
+  useLocation,
+  useNavigate,
+  useParams,
+} from '@tanstack/react-router';
 import { useEffect, useRef, useState } from 'react';
 import {
   ActivityAuthorName,
@@ -14,6 +19,8 @@ import { useGetActivityById } from '~/query/activity';
 import { formatActivityTime } from '~/utils/formatDateTime';
 import { ActivitySkeleton } from './ActivitySkeleton';
 
+type ActivityLocationState = { skipActivityScroll?: boolean };
+
 export function ActivityEntry({ id }: { id: string }) {
   const { user } = useUser();
   const { isLoading, isSuccess, data } = useGetActivityById({ activityId: id });
@@ -21,21 +28,22 @@ export function ActivityEntry({ id }: { id: string }) {
   const location = useLocation();
   const { cardId } = useParams({ strict: false });
   const ref = useRef<HTMLDivElement>(null);
-  const skipScrollRef = useRef(false);
   const [isSelected, setIsSelected] = useState(false);
 
   function highlightAndCopyActivity() {
     const nextLocation = `${window.location.origin}/card/${cardId?.slice(0, 8)}#activity-${id}`;
 
-    skipScrollRef.current = true;
     navigate({
-      href: nextLocation,
+      href: `/card/${cardId?.slice(0, 8)}#activity-${id}`,
+      replace: true,
       resetScroll: false,
       hashScrollIntoView: false,
+      // Carries across the route remount so the in-app click highlights
+      // without scrolling; a direct visit has no state and still scrolls.
+      state: (prev) => ({ ...prev, skipActivityScroll: true }) as HistoryState,
     });
 
     navigator.clipboard.writeText(nextLocation);
-    setIsSelected(true);
   }
 
   useEffect(() => {
@@ -43,8 +51,10 @@ export function ActivityEntry({ id }: { id: string }) {
     const isMatch = activityId === id;
     setIsSelected(isMatch);
 
-    if (!isMatch || skipScrollRef.current || !isSuccess || !data) {
-      skipScrollRef.current = false;
+    const skipScroll = (location.state as ActivityLocationState)
+      .skipActivityScroll;
+
+    if (!isMatch || skipScroll || !isSuccess || !data) {
       return;
     }
 
@@ -52,10 +62,8 @@ export function ActivityEntry({ id }: { id: string }) {
       ref.current?.scrollIntoView({ behavior: 'smooth' });
     }, 350);
 
-    skipScrollRef.current = false;
-
     return () => clearTimeout(timeoutId);
-  }, [location.hash, id, isSuccess, data]);
+  }, [location.hash, location.state, id, isSuccess, data]);
 
   if (isLoading || !data) {
     return <ActivitySkeleton />;

@@ -48,7 +48,7 @@ export function Card() {
       return;
     }
 
-    navigate({ to: '/board/$id', params: { id: boardId } });
+    navigate({ to: '/board/$id', params: { id: boardId }, hash: '' });
     focusCardTrigger(cardId);
   }
 
