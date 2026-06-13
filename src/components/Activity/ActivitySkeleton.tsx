@@ -8,6 +8,7 @@ import {
   ActivityTimestamp,
   ActivityTimestampSkeleton,
 } from '~/components/Activity/Activity.styled';
+
 export function ActivitySkeleton() {
   return (
     <ActivityContainer data-testid="ActivityContainer">
