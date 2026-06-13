@@ -30,7 +30,7 @@ async function openCard(page: Page, request: APIRequestContext) {
 
 async function addComment(page: Page, text: string) {
   const activityColumn = page.getByTestId('CardActivityColumn');
-  await activityColumn.getByTestId('AddActivityInput').fill(text);
+  await activityColumn.getByTestId('AddCommentInput').fill(text);
   await activityColumn.getByTestId('SaveCommentButton').click();
 
   const commentContainer = activityColumn

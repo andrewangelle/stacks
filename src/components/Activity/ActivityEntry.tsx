@@ -1,6 +1,6 @@
 import { useUser } from '@clerk/tanstack-react-start';
 import { useLocation, useNavigate, useParams } from '@tanstack/react-router';
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import {
   ActivityAuthorName,
   ActivityCommentContainer,
@@ -16,18 +16,18 @@ import { ActivitySkeleton } from './ActivitySkeleton';
 
 export function ActivityEntry({ id }: { id: string }) {
   const { user } = useUser();
-  const { isLoading, data } = useGetActivityById({ activityId: id });
+  const { isLoading, isSuccess, data } = useGetActivityById({ activityId: id });
   const navigate = useNavigate();
   const location = useLocation();
   const { cardId } = useParams({ strict: false });
   const ref = useRef<HTMLDivElement>(null);
-  const isMounted = useRef(false);
-  const [, activityId = ''] = location.hash?.split('activity-') ?? [];
-  const isSelected = activityId === id;
+  const skipScrollRef = useRef(false);
+  const [isSelected, setIsSelected] = useState(false);
 
   function highlightAndCopyActivity() {
     const nextLocation = `${window.location.origin}/card/${cardId?.slice(0, 8)}#activity-${id}`;
 
+    skipScrollRef.current = true;
     navigate({
       href: nextLocation,
       resetScroll: false,
@@ -35,15 +35,27 @@ export function ActivityEntry({ id }: { id: string }) {
     });
 
     navigator.clipboard.writeText(nextLocation);
-    isMounted.current = true;
+    setIsSelected(true);
   }
 
   useEffect(() => {
-    if (isSelected && data && !isMounted.current) {
-      isMounted.current = true;
-      ref.current?.scrollIntoView({ behavior: 'smooth' });
+    const [, activityId = ''] = location.hash?.split('activity-') ?? [];
+    const isMatch = activityId === id;
+    setIsSelected(isMatch);
+
+    if (!isMatch || skipScrollRef.current || !isSuccess || !data) {
+      skipScrollRef.current = false;
+      return;
     }
-  }, [isSelected, data]);
+
+    const timeoutId = setTimeout(() => {
+      ref.current?.scrollIntoView({ behavior: 'smooth' });
+    }, 350);
+
+    skipScrollRef.current = false;
+
+    return () => clearTimeout(timeoutId);
+  }, [location.hash, id, isSuccess, data]);
 
   if (isLoading || !data) {
     return <ActivitySkeleton />;
