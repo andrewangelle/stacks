@@ -54,6 +54,14 @@ export function useUpdateList() {
     },
 
     onSuccess(_result, variables) {
+      queryClient.setQueryData<List>(
+        queryKeys.detail(variables.listId),
+        (cache = {} as List) => ({
+          ...cache,
+          listTitle: variables.listTitle,
+        }),
+      );
+
       queryClient.setQueryData<List[]>(
         queryKeys.list(variables.boardId),
         (cache = []) =>

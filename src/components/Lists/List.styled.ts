@@ -22,7 +22,7 @@ export const ListContainer = styled.div`
   position: relative;
   white-space: normal;
   width: 275px;
-  padding: 15px 15px 7.5px;
+  padding: 8px;
   margin: 0 15px;
   overflow: scroll;
 `;
@@ -55,8 +55,19 @@ export const AddCardInput = styled.input`
   border-radius: 8px;
   border: none;
   padding: 9px;
-  margin: 8px 0px 12px;
   box-shadow: 0 1px 0 #091e4240;
+  margin: 4px 0px 8px;
+`;
+
+export const EditListNameInput = styled.input`
+  border-radius: 8px;
+  border: none;
+  padding: 9px;
+  box-shadow: 0 1px 0 #091e4240;
+  font-weight: 600;
+  position: relative;
+  margin-bottom: 4px;
+  font-size: 14px;
 `;
 
 export const AddCardButton = styled(Button)` 
@@ -112,9 +123,8 @@ export const ListCardSkeleton = styled(ListCardContainer)({
 });
 
 export const DeleteListIcon = styled(Ti.TiDelete)` 
-  position: absolute;
-  top: 15px;
-  right: 10px;
+  position: relative;
+  top: -4px;
   cursor: pointer;
 
   &:hover {

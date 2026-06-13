@@ -1,5 +1,5 @@
 import type { Dispatch, SetStateAction } from 'react';
-import { AddCardInput, ListName } from '~/components/Lists/List.styled';
+import { EditListNameInput, ListName } from '~/components/Lists/List.styled';
 import { useGetListById, useUpdateList } from '~/query/lists';
 import { useCurrentBoardId } from '~/utils/useCurrentBoardId';
 import { useOutsideClick } from '~/utils/useOutsideClick';
@@ -44,6 +44,9 @@ export function EditableListName({
       {!isEditingListName && (
         <ListName
           data-testid="ListName"
+          style={{
+            margin: '8px 0px 12px 8px',
+          }}
           onClick={() => {
             setIsEditingListName(true);
             setEditedListTitle(list?.listTitle ?? '');
@@ -54,14 +57,15 @@ export function EditableListName({
       )}
 
       {isEditingListName && (
-        <AddCardInput
+        <EditListNameInput
           ref={outsideClickRef}
-          data-testid="AddCardInput"
+          data-testid="EditListNameInput"
           value={editedListTitle}
           autoFocus
           onChange={(event) =>
             setEditedListTitle((_prevState) => event.target.value)
           }
+          onBlur={onOutsideNameEditClick}
         />
       )}
     </div>
