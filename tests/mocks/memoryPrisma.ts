@@ -8,7 +8,6 @@ import {
   checklistItemModel,
 } from '~test/mocks/db/checklistItem';
 import { type ListRecord, listModel } from '~test/mocks/db/list';
-import { type ProfileRecord, profileModel } from '~test/mocks/db/profile';
 import { type StackRecord, stackModel } from '~test/mocks/db/stack';
 import { type UserRecord, userModel } from '~test/mocks/db/user';
 
@@ -20,7 +19,6 @@ export type Timestamps = {
 type E2EStore = {
   clerkUser: User | null;
   users: UserRecord[];
-  profiles: ProfileRecord[];
   stacks: StackRecord[];
   lists: ListRecord[];
   cards: CardRecord[];
@@ -39,7 +37,6 @@ export function getStore(): E2EStore {
     globalThis.__stacksE2EStore = {
       clerkUser: null,
       users: [],
-      profiles: [],
       stacks: [],
       lists: [],
       cards: [],
@@ -79,7 +76,6 @@ export function sortByPosition<T extends { position: number; createdAt: Date }>(
 
 export const prisma = {
   user: userModel,
-  profile: profileModel,
   stack: stackModel,
   list: listModel,
   card: cardModel,
