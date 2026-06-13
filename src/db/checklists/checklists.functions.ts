@@ -17,42 +17,42 @@ import {
 import { authMiddleware } from '~/middleware/auth';
 
 export const getChecklists = createServerFn({ method: 'GET' })
-  .inputValidator(GetChecklistsSchema)
+  .validator(GetChecklistsSchema)
   .middleware([authMiddleware])
   .handler(async ({ data, context }) =>
     getChecklistsQuery({ ...data, userId: context.uid }),
   );
 
 export const getChecklistById = createServerFn({ method: 'GET' })
-  .inputValidator(GetChecklistByIdSchema)
+  .validator(GetChecklistByIdSchema)
   .middleware([authMiddleware])
   .handler(async ({ data, context }) =>
     getChecklistByIdQuery({ ...data, userId: context.uid }),
   );
 
 export const createChecklist = createServerFn({ method: 'POST' })
-  .inputValidator(CreateChecklistSchema)
+  .validator(CreateChecklistSchema)
   .middleware([authMiddleware])
   .handler(async ({ data, context }) =>
     createChecklistQuery({ ...data, userId: context.uid }),
   );
 
 export const deleteChecklist = createServerFn({ method: 'POST' })
-  .inputValidator(DeleteChecklistSchema)
+  .validator(DeleteChecklistSchema)
   .middleware([authMiddleware])
   .handler(async ({ data, context }) =>
     deleteChecklistQuery({ ...data, userId: context.uid }),
   );
 
 export const updateChecklist = createServerFn({ method: 'POST' })
-  .inputValidator(UpdateChecklistSchema)
+  .validator(UpdateChecklistSchema)
   .middleware([authMiddleware])
   .handler(async ({ data, context }) =>
     updateChecklistQuery({ ...data, userId: context.uid }),
   );
 
 export const getCardTitleDetailsChecklists = createServerFn({ method: 'GET' })
-  .inputValidator(GetChecklistsSchema)
+  .validator(GetChecklistsSchema)
   .middleware([authMiddleware])
   .handler(async ({ data, context }) =>
     getCardTitleDetailsChecklistsQuery({ ...data, userId: context.uid }),
