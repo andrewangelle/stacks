@@ -1,10 +1,11 @@
 import { useState } from 'react';
 import {
-  AddListButton,
   AddListContainer,
   AddListInput,
   CloseAddListButton,
+  CreateListButton,
 } from '~/components/Boards/Board.styled';
+import { AddListButton } from '~/components/Lists/List.styled';
 import { useCreateList } from '~/query/lists';
 import { Flex } from '~/styles/Page.styled';
 import { useOutsideClick } from '~/utils/useOutsideClick';
@@ -40,21 +41,12 @@ export function AddLists({ boardId }: AddListsProps) {
       ref={outsideClickRef}
     >
       {!isEditing && (
-        <button
-          type="button"
-          style={{
-            border: 'none',
-            background: 'none',
-            cursor: 'pointer',
-            fontWeight: 500,
-            fontSize: 14,
-            color: 'white',
-            letterSpacing: '0.05rem',
-          }}
+        <AddListButton
+          data-testid="AddListButton"
           onClick={() => setEditing(true)}
         >
           + Add another list
-        </button>
+        </AddListButton>
       )}
 
       {isEditing && (
@@ -67,9 +59,12 @@ export function AddLists({ boardId }: AddListsProps) {
           />
 
           <Flex data-testid="Flex" style={{ margin: '0' }}>
-            <AddListButton data-testid="AddListButton" onClick={onListCreate}>
+            <CreateListButton
+              data-testid="CreateListButton"
+              onClick={onListCreate}
+            >
               Add list
-            </AddListButton>
+            </CreateListButton>
 
             <CloseAddListButton
               data-testid="CloseAddListButton"

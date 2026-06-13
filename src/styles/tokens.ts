@@ -26,6 +26,23 @@ export const boardGradientHoverVars = {
   red: 'var(--board-gradient-red-hover)',
 } as const;
 
+/** Nav/board bar solids in `board-gradient.css` — darkest nav, lighter board bar. */
+export const boardNavVars = {
+  green: 'var(--board-nav-green)',
+  lightGreen: 'var(--board-nav-light-green)',
+  blue: 'var(--board-nav-blue)',
+  orange: 'var(--board-nav-orange)',
+  red: 'var(--board-nav-red)',
+} as const;
+
+export const boardBarVars = {
+  green: 'var(--board-bar-green)',
+  lightGreen: 'var(--board-bar-light-green)',
+  blue: 'var(--board-bar-blue)',
+  orange: 'var(--board-bar-orange)',
+  red: 'var(--board-bar-red)',
+} as const;
+
 export const tokenShades = {
   darkGray: {
     darkest: '#38414f',

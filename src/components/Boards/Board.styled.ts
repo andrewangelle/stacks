@@ -6,9 +6,9 @@ export const AddListContainer = styled('div')({
   position: 'relative',
   fontFamily: fontFamily,
   backgroundColor: 'rgba(255, 255, 255, .3)',
-  padding: '12px 16px 10px',
+  padding: '12px 12px 10px',
   width: '225px',
-  borderRadius: '5px',
+  borderRadius: '8px',
   color: '#fff',
   cursor: 'pointer',
   height: '25px',
@@ -30,7 +30,7 @@ export const AddListInput = styled.input`
   width: stretch;
 `;
 
-export const AddListButton = styled(Button)` 
+export const CreateListButton = styled(Button)` 
   margin: 0;
   padding: 8px;
 `;
