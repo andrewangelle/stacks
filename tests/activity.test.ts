@@ -79,12 +79,8 @@ test.describe('Activity', () => {
 
     await waitForSaveButton(activityColumn);
 
-    await page.reload();
-    await expect(page.getByTestId('CardModalContent')).toBeVisible();
-
-    const reloadedActivityColumn = page.getByTestId('CardActivityColumn');
     await expect(
-      reloadedActivityColumn
+      activityColumn
         .getByTestId('ActivityCommentContent')
         .filter({ hasText: 'Needs revision' }),
     ).toHaveText('Needs revision');

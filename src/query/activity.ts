@@ -112,6 +112,11 @@ export function useUpdateActivity() {
         queryKeys.list(variables.cardId),
         (cache = []) => updateActivityInCache(cache, variables),
       );
+
+      queryClient.setQueryData<Activity>(
+        queryKeys.detail(variables.activityId),
+        (cache) => (cache ? { ...cache, content: variables.content } : cache),
+      );
     },
   });
 
@@ -130,6 +135,10 @@ export function useDeleteActivity() {
         (cache = []) =>
           cache.filter((item) => item.id !== variables.activityId),
       );
+
+      queryClient.removeQueries({
+        queryKey: queryKeys.detail(variables.activityId),
+      });
     },
   });
 
