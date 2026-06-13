@@ -1,11 +1,13 @@
 import {
   type APIRequestContext,
   expect,
+  type Locator,
   type Page,
   test,
 } from '@playwright/test';
 import { resetDb } from '~test/helpers/resetDb';
 import { seedBoard, seedCard } from '~test/helpers/seed';
+import { waitForHydratedAction } from '~test/helpers/waitForHydratedAction';
 import { waitForInteractiveTrigger } from '~test/helpers/waitForInteractiveTrigger';
 
 async function openCard(page: Page, request: APIRequestContext) {
@@ -18,7 +20,9 @@ async function openCard(page: Page, request: APIRequestContext) {
   });
 
   await page.goto(`/board/${board.id}/card/${card.id}`);
-  await expect(page.getByTestId('CardModalContent')).toBeVisible();
+  await expect(async () => {
+    await expect(page.getByTestId('CardModalContent')).toBeVisible();
+  }).toPass();
   await expect(page.getByTestId('CardActivityColumn')).toBeVisible();
 
   return { board, card };
@@ -29,12 +33,27 @@ async function addComment(page: Page, text: string) {
   await activityColumn.getByTestId('AddActivityInput').fill(text);
   await activityColumn.getByTestId('SaveCommentButton').click();
 
-  const commentContainer = page.getByTestId('ActivityCommentContainer');
+  const commentContainer = activityColumn
+    .getByTestId('ActivityCommentContainer')
+    .filter({ hasText: text });
+
   await expect(
     commentContainer.getByTestId('ActivityCommentContent'),
   ).toHaveText(text);
 
   return commentContainer;
+}
+
+async function waitForSaveButton(activityColumn: Locator) {
+  const trigger = () =>
+    activityColumn
+      .locator('[data-testid="SaveCommentButton"]:not([disabled])')
+      .click();
+
+  const isDone = async () =>
+    (await activityColumn.getByTestId('AddCommentInput').count()) === 0;
+
+  return waitForHydratedAction(trigger, isDone);
 }
 
 test.describe('Activity', () => {
@@ -47,16 +66,27 @@ test.describe('Activity', () => {
   test('edits a comment in the activity column', async ({ page, request }) => {
     await openCard(page, request);
 
-    const commentContainer = await addComment(page, 'Looks good');
+    const activityColumn = page.getByTestId('CardActivityColumn');
+    await addComment(page, 'Looks good');
 
-    await commentContainer.getByTestId('EditCommentLink').click();
-    await commentContainer
-      .getByTestId('AddCommentInput')
-      .fill('Needs revision');
-    await commentContainer.getByTestId('SaveCommentButton').click();
+    await waitForInteractiveTrigger(
+      page,
+      '[data-testid="AddCommentInput"]',
+      '[data-testid="EditCommentLink"]',
+    );
 
+    await activityColumn.getByTestId('AddCommentInput').fill('Needs revision');
+
+    await waitForSaveButton(activityColumn);
+
+    await page.reload();
+    await expect(page.getByTestId('CardModalContent')).toBeVisible();
+
+    const reloadedActivityColumn = page.getByTestId('CardActivityColumn');
     await expect(
-      commentContainer.getByTestId('ActivityCommentContent'),
+      reloadedActivityColumn
+        .getByTestId('ActivityCommentContent')
+        .filter({ hasText: 'Needs revision' }),
     ).toHaveText('Needs revision');
   });
 
