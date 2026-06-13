@@ -14,6 +14,8 @@ export const AddChecklistItemButton = styled(Button)({
   padding: '8px 10px',
   margin: `12px 0px 0px ${cardModalContentIndent}`,
   fontSize: '14px',
+  color: 'rgba(9, 30, 66, 0.725)',
+  border: '1px solid rgba(9, 30, 66, 0.2)',
 
   '&:hover:not(:disabled)': {
     color: secondaryButtonStyles.color,

@@ -9,7 +9,7 @@ import {
   EditCardTitleInput,
 } from '~/components/Cards/Card.styled';
 import { animationStyles } from '~/styles/animations';
-import { Button } from '~/styles/Page.styled';
+import { Button, secondaryButtonStyles } from '~/styles/Page.styled';
 
 const checklistRowColumns = `${cardModalContentIndent} minmax(0, 1fr)`;
 
@@ -73,10 +73,38 @@ export const DeleteChecklistButton = styled(Button)`
   padding: 8px 10px;
   color: black;
   margin: 0;
-  
+  font-weight: 600;
+  color: rgba(9, 30, 66, 0.725);
+  border: 1px solid rgba(9, 30, 66, 0.2);
+
   &:hover:not(:disabled) {
     color: ${red};
   }
+`;
+
+export const ChecklistHeaderActions = styled.div`
+  display: flex;
+  gap: 8px;
+`;
+
+export const ToggleCheckedItemsButton = styled(Button)({
+  ...secondaryButtonStyles,
+  color: 'rgba(9, 30, 66, 0.725)',
+  border: '1px solid rgba(9, 30, 66, 0.2)',
+  padding: '8px 10px',
+  margin: 0,
+  fontSize: '14px',
+  flexShrink: 0,
+
+  '&:hover:not(:disabled)': {
+    color: secondaryButtonStyles.color,
+  },
+});
+
+export const AllItemsCompleteMessage = styled.p`
+  color: #5e6c84;
+  font-size: 14px;
+  margin: 8px 0 8px ${cardModalContentIndent};
 `;
 
 export const ChecklistHeader = styled.div` 

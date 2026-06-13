@@ -5,10 +5,13 @@ import { ChecklistEditableTitle } from '~/components/Checklists/ChecklistEditabl
 import { ChecklistProgress } from '~/components/Checklists/ChecklistProgress';
 import { ChecklistSkeleton } from '~/components/Checklists/ChecklistSkeleton';
 import {
+  AllItemsCompleteMessage,
   ChecklistContainer,
   ChecklistHeader,
+  ChecklistHeaderActions,
 } from '~/components/Checklists/Checklists.styled';
 import { DeleteChecklist } from '~/components/Checklists/DeleteChecklist';
+import { ToggleCheckedItems } from '~/components/Checklists/ToggleCheckedItems';
 import { Draggable } from '~/components/Draggable';
 import {
   reorderChecklistItems,
@@ -18,12 +21,25 @@ import { useGetChecklist } from '~/query/checklists';
 import { useHashChecklistId } from '~/utils/useHashChecklistId';
 
 export function Checklist({ id }: { id: string }) {
-  const { isLoading, isSuccess } = useGetChecklist({ checklistId: id });
+  const {
+    isLoading,
+    isSuccess,
+    data: checklist,
+  } = useGetChecklist({
+    checklistId: id,
+  });
   const { isSuccess: isItemsSuccess, data: items } = useGetChecklistItems({
     checklistId: id,
   });
   const hashId = useHashChecklistId();
   const ref = useRef<HTMLDivElement>(null);
+
+  const hideCheckedItems = checklist?.hideCheckedItems ?? false;
+  const visibleItems = hideCheckedItems
+    ? items?.filter((item) => !item.isCompleted)
+    : items;
+  const showAllItemsCompleteMessage =
+    hideCheckedItems && (items?.length ?? 0) > 0 && visibleItems?.length === 0;
 
   useEffect(() => {
     let timeoutId: NodeJS.Timeout | undefined;
@@ -45,12 +61,21 @@ export function Checklist({ id }: { id: string }) {
     <ChecklistContainer data-testid="ChecklistContainer">
       <ChecklistHeader data-testid="ChecklistHeader" key={id} ref={ref}>
         <ChecklistEditableTitle id={id} />
-        <DeleteChecklist id={id} />
+        <ChecklistHeaderActions>
+          <ToggleCheckedItems checklistId={id} />
+          <DeleteChecklist id={id} />
+        </ChecklistHeaderActions>
       </ChecklistHeader>
 
       <ChecklistProgress checklistId={id} />
 
-      {items?.map((checklistItem) => (
+      {showAllItemsCompleteMessage && (
+        <AllItemsCompleteMessage data-testid="AllItemsCompleteMessage">
+          Everything in this checklist is complete!
+        </AllItemsCompleteMessage>
+      )}
+
+      {visibleItems?.map((checklistItem) => (
         <Draggable
           key={checklistItem.id}
           id={checklistItem.id}

@@ -5,3 +5,4 @@ alwaysApply: true
 # TypeScript
 - Use `pnpm test:types` when checking for type errors or typescript compilation results
 - Use `pnpm build` when checking compilation
+- Use `pnpm test` when checking tests or regressions

@@ -61,6 +61,7 @@ export function seedListCard(data: {
     const checklist: ChecklistRecord = {
       id: id(),
       checklistTitle: checklistSeed.title,
+      hideCheckedItems: false,
       cardId: card.id,
       listId: list.id,
       userId,

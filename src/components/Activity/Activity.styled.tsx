@@ -34,6 +34,8 @@ export const HideActivityButton = styled(Button)({
   margin: 0,
   fontSize: '14px',
   flexShrink: 0,
+  color: 'rgba(9, 30, 66, 0.725)',
+  border: '1px solid rgba(9, 30, 66, 0.2)',
 
   '&:hover:not(:disabled)': {
     color: secondaryButtonStyles.color,
