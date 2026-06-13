@@ -48,11 +48,9 @@ export const Route = createFileRoute('/card/$cardId')({
   },
 
   component() {
-    const { cardId } = Route.useLoaderData();
-
     return (
       <BoardPage>
-        <Card cardId={cardId} />
+        <Card />
       </BoardPage>
     );
   },

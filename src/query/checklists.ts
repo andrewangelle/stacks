@@ -17,6 +17,12 @@ import type {
 import type { Checklist } from '~/generated/prisma/client';
 import { queryClient } from '~/query/queryClient';
 
+export type ChecklistListItem = Pick<Checklist, 'id' | 'createdAt'>;
+
+function toChecklistListItem(item: Checklist): ChecklistListItem {
+  return { id: item.id, createdAt: item.createdAt };
+}
+
 const queryKeys = {
   list: (cardId: string) => ['checklists', cardId] as const,
   detail: (checklistId: string) => ['checklist', checklistId] as const,
@@ -62,9 +68,9 @@ export function useCreateChecklist() {
     },
 
     onSuccess(result, variables) {
-      queryClient.setQueryData<Checklist[]>(
+      queryClient.setQueryData<ChecklistListItem[]>(
         queryKeys.list(variables.cardId),
-        (cache = []) => [...cache, result.data[0]],
+        (cache = []) => [...cache, toChecklistListItem(result.data[0])],
       );
       invalidateCardChecklistView(variables.cardId);
     },
@@ -82,7 +88,7 @@ export function useDeleteChecklist() {
     },
 
     onSuccess(_result, variables) {
-      queryClient.setQueryData<Checklist[]>(
+      queryClient.setQueryData<ChecklistListItem[]>(
         queryKeys.list(variables.cardId),
         (cache = []) =>
           cache.filter((item) => item.id !== variables.checklistId),
@@ -112,16 +118,6 @@ export function useUpdateChecklist() {
           ...cache,
           checklistTitle: variables.checklistTitle,
         }),
-      );
-
-      queryClient.setQueryData<Checklist[]>(
-        queryKeys.list(variables.cardId),
-        (cache = []) =>
-          cache.map((item) =>
-            item.id === variables.checklistId
-              ? { ...item, checklistTitle: variables.checklistTitle }
-              : item,
-          ),
       );
     },
   });

@@ -11,12 +11,10 @@ import { ActivityLogo } from '~/components/Activity/ActivityLogo';
 import { useCreateActivity } from '~/query/activity';
 import { useGetCardById } from '~/query/cards';
 import { useCurrentBoardId } from '~/utils/useCurrentBoardId';
+import { useCurrentCardId } from '~/utils/useCurrentCardId';
 
-type AddCommentProps = {
-  cardId: string;
-};
-
-export function AddComment({ cardId }: AddCommentProps) {
+export function AddComment() {
+  const cardId = useCurrentCardId();
   const { data: cardData } = useGetCardById({ id: cardId });
   const boardId = useCurrentBoardId();
   const [comment, setComment] = useState<string>('');

@@ -15,6 +15,12 @@ import type {
 import type { Card } from '~/generated/prisma/client';
 import { queryClient } from '~/query/queryClient';
 
+export type CardListItem = Pick<Card, 'id' | 'cardTitle' | 'createdAt'>;
+
+function toCardListItem(item: Card): CardListItem {
+  return { id: item.id, cardTitle: item.cardTitle, createdAt: item.createdAt };
+}
+
 export const queryKeys = {
   list: (listId: string) => ['cards', listId] as const,
   detail: (cardId: string) => ['card', cardId] as const,
@@ -52,9 +58,9 @@ export function useCreateCard() {
     },
 
     onSuccess(result, variables) {
-      queryClient.setQueryData<Card[]>(
+      queryClient.setQueryData<CardListItem[]>(
         queryKeys.list(variables.listId),
-        (cache = []) => [...cache, result.data[0]],
+        (cache = []) => [...cache, toCardListItem(result.data[0])],
       );
     },
   });
@@ -80,17 +86,14 @@ export function useUpdateCard() {
         }),
       );
 
-      queryClient.setQueryData<Card[]>(
+      queryClient.setQueryData<CardListItem[]>(
         queryKeys.list(variables.listId),
         (cache = []) =>
           cache.map((item) => {
             if (item.id === variables.cardId) {
               return {
                 ...item,
-                cardDescription:
-                  variables.cardDescription ?? item.cardDescription,
                 cardTitle: variables.cardTitle ?? item.cardTitle,
-                isCompleted: variables.isCompleted ?? item.isCompleted,
               };
             }
             return item;
@@ -108,7 +111,7 @@ export function useDeleteCard() {
       return deleteCard({ data });
     },
     onSuccess(_result, variables) {
-      queryClient.setQueryData<Card[]>(
+      queryClient.setQueryData<CardListItem[]>(
         queryKeys.list(variables.listId),
         (cache = []) => cache.filter((item) => item.id !== variables.cardId),
       );
@@ -118,8 +121,12 @@ export function useDeleteCard() {
   return mutation.mutate;
 }
 
-export function reorderCards(item: Card, listId: string, droppedId: string) {
-  return queryClient.setQueryData<Card[]>(
+export function reorderCards(
+  item: { id: string },
+  listId: string,
+  droppedId: string,
+) {
+  return queryClient.setQueryData<CardListItem[]>(
     queryKeys.list(listId),
     (cache = []) => {
       const cacheArray = [...cache];

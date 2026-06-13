@@ -19,6 +19,7 @@ export function getChecklistItemsQuery(
       },
     },
     orderBy: { createdAt: 'asc' },
+    select: { id: true, label: true, isCompleted: true, createdAt: true },
   });
 }
 

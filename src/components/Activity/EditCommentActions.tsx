@@ -6,13 +6,12 @@ import {
 import { DeleteCommentPopover } from '~/components/Activity/DeleteCommentPopover';
 import type { Activity } from '~/generated/prisma/client';
 
-type EditCommentActionsProps = Pick<Activity, 'id' | 'cardId'> & {
+type EditCommentActionsProps = Pick<Activity, 'id'> & {
   setIsEditing: (isEditing: boolean) => void;
 };
 
 export function EditCommentActions({
   id,
-  cardId,
   setIsEditing,
 }: EditCommentActionsProps) {
   return (
@@ -26,7 +25,7 @@ export function EditCommentActions({
 
       <EditCommentActionsSeperator data-testid="ActivityActionsSeparator" />
 
-      <DeleteCommentPopover id={id} cardId={cardId} />
+      <DeleteCommentPopover id={id} />
     </EditCommentActionsRow>
   );
 }

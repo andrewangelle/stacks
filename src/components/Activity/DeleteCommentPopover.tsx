@@ -11,6 +11,7 @@ import {
 } from '~/components/Checklists/Checklists.styled';
 import type { Activity } from '~/generated/prisma/client';
 import { useDeleteActivity } from '~/query/activity';
+import { useCurrentCardId } from '~/utils/useCurrentCardId';
 
 const strings = {
   deleteComment: 'Delete comment',
@@ -19,7 +20,8 @@ const strings = {
   deleteCommentButton: 'Delete',
 };
 
-export function DeleteCommentPopover(props: Pick<Activity, 'id' | 'cardId'>) {
+export function DeleteCommentPopover(props: Pick<Activity, 'id'>) {
+  const cardId = useCurrentCardId();
   const deleteActivity = useDeleteActivity();
   return (
     <Popover.Root>
@@ -48,7 +50,7 @@ export function DeleteCommentPopover(props: Pick<Activity, 'id' | 'cardId'>) {
           onClick={() =>
             deleteActivity({
               activityId: props.id,
-              cardId: props.cardId,
+              cardId,
             })
           }
         >

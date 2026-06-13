@@ -10,7 +10,6 @@ import {
 } from '~/components/Checklists/Checklists.styled';
 import { DeleteChecklist } from '~/components/Checklists/DeleteChecklist';
 import { Draggable } from '~/components/Draggable';
-import type { ChecklistItem as ChecklistItemType } from '~/generated/prisma/client';
 import {
   reorderChecklistItems,
   useGetChecklistItems,
@@ -51,13 +50,13 @@ export function Checklist({ id }: { id: string }) {
 
       <ChecklistProgress checklistId={id} />
 
-      {items?.map((checklistItem: ChecklistItemType) => (
+      {items?.map((checklistItem) => (
         <Draggable
           key={checklistItem.id}
           id={checklistItem.id}
           name={checklistItem.label}
           type="checklistItem"
-          onDrop={(item: ChecklistItemType) =>
+          onDrop={(item: { id: string }) =>
             reorderChecklistItems(item, id, checklistItem.id)
           }
         >

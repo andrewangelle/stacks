@@ -11,12 +11,10 @@ import { ActivityComment } from '~/components/Activity/ActivityComment';
 import { ActivityEntry } from '~/components/Activity/ActivityEntry';
 import { AddComment } from '~/components/Activity/AddComment';
 import { useGetActivity, useGetComments } from '~/query/activity';
+import { useCurrentCardId } from '~/utils/useCurrentCardId';
 
-type CardActivityProps = {
-  cardId: string;
-};
-
-export function CardActivity({ cardId }: CardActivityProps) {
+export function CardActivity() {
+  const cardId = useCurrentCardId();
   const [showActivity, setShowActivity] = useState(true);
   const { data } = useGetActivity({ cardId });
   const { data: comments } = useGetComments({ cardId });
@@ -43,7 +41,7 @@ export function CardActivity({ cardId }: CardActivityProps) {
         </HideActivityButton>
       </ActivityHeader>
 
-      <AddComment cardId={cardId} />
+      <AddComment />
 
       {!showActivity &&
         comments?.map((comment) => (

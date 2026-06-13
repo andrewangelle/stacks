@@ -7,13 +7,11 @@ import {
 } from '~/components/Cards/Card.styled';
 import { CardCompletedIndicator } from '~/components/Cards/CardCompletedIndicator';
 import { useGetCardById, useUpdateCard } from '~/query/cards';
+import { useCurrentCardId } from '~/utils/useCurrentCardId';
 import { useOutsideClick } from '~/utils/useOutsideClick';
 
-type CardEditableTitleProps = {
-  id: string;
-};
-
-export function CardEditableTitle({ id }: CardEditableTitleProps) {
+export function CardEditableTitle() {
+  const id = useCurrentCardId();
   const [isEditingTitle, setEditingTitle] = useState(false);
   const { data: card } = useGetCardById({ id });
   const [editedTitle, setEditedTitle] = useState('');

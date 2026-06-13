@@ -13,12 +13,11 @@ import {
   ChecklistPopoverHeader,
   DeleteChecklistPopoverContent,
 } from '~/components/Checklists/Checklists.styled';
-import type { Card } from '~/generated/prisma/client';
 import { useDeleteCard, useGetCardById } from '~/query/cards';
+import { useCurrentCardId } from '~/utils/useCurrentCardId';
 
-type DeleteCardPopoverProps = Pick<Card, 'id'>;
-
-export function DeleteCardPopover({ id }: DeleteCardPopoverProps) {
+export function DeleteCardPopover() {
+  const id = useCurrentCardId();
   const { data } = useGetCardById({ id });
   const deleteCard = useDeleteCard();
   return (

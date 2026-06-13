@@ -7,17 +7,18 @@ import {
 import { CloseAddCardButton } from '~/components/Lists/List.styled';
 import type { Activity } from '~/generated/prisma/client';
 import { useUpdateActivity } from '~/query/activity';
+import { useCurrentCardId } from '~/utils/useCurrentCardId';
 
-type EditCommentFormProps = Pick<Activity, 'id' | 'cardId' | 'content'> & {
+type EditCommentFormProps = Pick<Activity, 'id' | 'content'> & {
   setIsEditing: (isEditing: boolean) => void;
 };
 
 export function EditCommentForm({
   id,
-  cardId,
   content,
   setIsEditing,
 }: EditCommentFormProps) {
+  const cardId = useCurrentCardId();
   const [editedComment, setEditedComment] = useState(content);
   const updateActivity = useUpdateActivity();
 

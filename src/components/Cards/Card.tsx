@@ -23,6 +23,7 @@ import { ListCardSkeleton } from '~/components/Lists/List.styled';
 import { useGetCardById } from '~/query/cards';
 import { useCardColumnWidth } from '~/utils/useCardColumnWidth';
 import { useCurrentBoardId } from '~/utils/useCurrentBoardId';
+import { useCurrentCardId } from '~/utils/useCurrentCardId';
 
 function focusCardTrigger(cardId: string) {
   requestAnimationFrame(() => {
@@ -32,7 +33,8 @@ function focusCardTrigger(cardId: string) {
   });
 }
 
-export function Card({ cardId }: { cardId: string }) {
+export function Card() {
+  const cardId = useCurrentCardId();
   const boardId = useCurrentBoardId();
   const navigate = useNavigate();
   const { isLoading } = useGetCardById({ id: cardId });
@@ -79,16 +81,16 @@ export function Card({ cardId }: { cardId: string }) {
               style={cardModalBodyStyle}
             >
               <CardMainColumn data-testid="CardMainColumn" ref={mainColumnRef}>
-                <CardEditableTitle id={cardId} />
+                <CardEditableTitle />
 
                 <CardActionsContainer data-testid="CardActionsContainer">
-                  <CreateChecklist cardId={cardId} />
-                  <DeleteCardPopover id={cardId} />
+                  <CreateChecklist />
+                  <DeleteCardPopover />
                 </CardActionsContainer>
 
-                <CardDescription cardId={cardId} />
+                <CardDescription />
 
-                <CardChecklists cardId={cardId} />
+                <CardChecklists />
               </CardMainColumn>
 
               {isWideLayout && (
@@ -99,7 +101,7 @@ export function Card({ cardId }: { cardId: string }) {
               )}
 
               <CardActivityColumn data-testid="CardActivityColumn">
-                <CardActivity cardId={cardId} />
+                <CardActivity />
               </CardActivityColumn>
             </CardModalBody>
           </CardModalContent>
