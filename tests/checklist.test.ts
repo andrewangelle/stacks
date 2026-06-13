@@ -126,12 +126,12 @@ test.describe('Checklist', () => {
     await waitForChecked(page);
 
     const toggleButton = page.getByTestId('ToggleCheckedItemsButton');
-    await expect(toggleButton).toHaveText('Hide checked items');
+    await expect(toggleButton).toHaveText('Hide completed items');
     await expect(page.getByTestId('CheckboxLabel')).toHaveCount(1);
 
     await waitForToggleCheckedItems(page);
 
-    await expect(toggleButton).toHaveText('Show checked items (1)');
+    await expect(toggleButton).toHaveText('Show completed items (1)');
     await expect(page.getByTestId('CheckboxLabel')).toHaveCount(0);
     await expect(page.getByTestId('AllItemsCompleteMessage')).toHaveText(
       'Everything in this checklist is complete!',
@@ -139,7 +139,7 @@ test.describe('Checklist', () => {
 
     await page.reload();
     await expect(page.getByTestId('CardModalContent')).toBeVisible();
-    await expect(toggleButton).toHaveText('Show checked items (1)');
+    await expect(toggleButton).toHaveText('Show completed items (1)');
     await expect(page.getByTestId('CheckboxLabel')).toHaveCount(0);
     await expect(page.getByTestId('AllItemsCompleteMessage')).toBeVisible();
   });
@@ -248,7 +248,7 @@ function waitForToggleCheckedItems(page: Page) {
 
   const isHidden = async () =>
     (await page.getByTestId('CheckboxLabel').count()) === 0 &&
-    (await toggleButton.textContent())?.includes('Show checked items (1)') ===
+    (await toggleButton.textContent())?.includes('Show completed items (1)') ===
       true;
 
   return waitForHydratedAction(trigger, isHidden);

@@ -12,7 +12,6 @@ model User {
   email            String          @unique
   createdAt        DateTime        @default(now()) @map("created_at")
   updatedAt        DateTime        @updatedAt @map("updated_at")
-  profile          Profile?
   stacks           Stack[]
   lists            List[]
   cards            Card[]
@@ -21,19 +20,6 @@ model User {
   activities       Activity[]
 
   @@map("users")
-}
-
-model Profile {
-  id        String   @id @default(uuid())
-  userId    String   @unique @map("user_id")
-  email     String?
-  firstName String?  @map("first_name")
-  lastName  String?  @map("last_name")
-  createdAt DateTime @default(now()) @map("created_at")
-  updatedAt DateTime @updatedAt @map("updated_at")
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-  @@map("profiles")
 }
 
 model Stack {

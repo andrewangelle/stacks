@@ -17,6 +17,5 @@ export function buildE2EUser() {
   return {
     clerkUser,
     user: { id: TEST_USER_ID, email },
-    profile: { userId: TEST_USER_ID, email, firstName, lastName },
   };
 }

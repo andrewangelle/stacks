@@ -1,6 +1,6 @@
 import { auth, clerkClient } from '@clerk/tanstack-react-start/server';
 import { createMiddleware, createServerFn } from '@tanstack/react-start';
-import { upsertUserAndProfile } from '~/db/upsertUserAndProfile';
+import { upsertUser } from '~/db/upsertUser';
 import { data } from '~/utils/response';
 
 export const userIdMiddleware = createMiddleware().server(async ({ next }) => {
@@ -31,7 +31,7 @@ export const authMiddleware = createMiddleware()
     }
     const response = await next();
     const user = await clerkClient().users.getUser(context.uid);
-    await upsertUserAndProfile(user);
+    await upsertUser(user);
 
     return response;
   });

@@ -15,8 +15,8 @@ export function ToggleCheckedItems({ checklistId }: { checklistId: string }) {
 
   const hideCheckedItems = checklist.hideCheckedItems;
   const label = hideCheckedItems
-    ? `Show checked items (${completedCount})`
-    : 'Hide checked items';
+    ? `Show completed items (${completedCount})`
+    : 'Hide completed items';
 
   return (
     <ToggleCheckedItemsButton
