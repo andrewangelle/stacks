@@ -1,5 +1,5 @@
 ---
-description: E2E test conventions — no production code changes to satisfy tests
+description: E2E test conventions — fix tests first, ask before src/ changes
 globs: tests/**/*
 alwaysApply: false
 ---
@@ -7,6 +7,26 @@ alwaysApply: false
 # E2E tests must not change app behavior for testability
 
 When fixing or writing Playwright tests, **do not modify application source code** (`src/**`) to make tests pass.
+
+## When tests fail
+
+Follow this order:
+
+1. **Fix the tests** — update locators, waits, and assertions to match current app behavior
+2. **Note real bugs separately** — if a failure exposes a production issue, call it out explicitly; do not fold the fix into "debugging tests" silently
+3. **Ask before touching `src/`** — get approval before any production change, even when the test revealed a legitimate bug
+
+Do not bend UI state, defaults, or business logic so stale assertions pass. The test should observe the app; the app should not be reshaped for the test.
+
+### Legitimate `src/` fixes (with approval)
+
+Some failures expose real bugs unrelated to testability. These are OK to fix in `src/**` after calling them out — typically in the data layer, not UI:
+
+- Query cache not updated on mutation (e.g. list cache patched but detail cache stale)
+- Server function returning wrong shape
+- Actual broken user-facing behavior the test correctly caught
+
+Still **not** OK: changing component defaults, layout, or feature behavior to match what the test used to expect.
 
 ## Allowed in `src/**` for E2E
 
@@ -17,6 +37,7 @@ When fixing or writing Playwright tests, **do not modify application source code
 - Hydration markers (`data-hydrated`, `data-ready`, mount `useEffect` flags)
 - Test-only props, exports, or conditional branches
 - Renaming or duplicating testids on loading/skeleton UI to satisfy timing
+- Reverting or changing app defaults/state so tests pass (e.g. toggling `showActivity`, re-adding effects)
 - Any other production change whose sole purpose is test synchronization
 
 ## Fix flakiness in tests instead
