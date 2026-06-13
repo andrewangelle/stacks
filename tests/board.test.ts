@@ -18,7 +18,7 @@ test.describe('Board', () => {
 
     await expect(page.getByTestId('AddListInput')).toBeVisible();
     await page.getByTestId('AddListInput').fill('To Do');
-    await page.getByTestId('AddListButton').click();
+    await page.getByTestId('CreateListButton').click();
 
     await expect(page.getByTestId('ListContainer')).toBeVisible();
 

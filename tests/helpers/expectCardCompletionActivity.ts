@@ -11,9 +11,11 @@ export async function expectCardCompletionActivity(
     await toggleButton.click();
   }
 
-  await expect(
-    activityColumn
-      .getByTestId('ActivityCommentContainer')
-      .filter({ hasText: content }),
-  ).toBeVisible();
+  await expect(async () => {
+    await expect(
+      activityColumn
+        .getByTestId('ActivityCommentContainer')
+        .filter({ hasText: content }),
+    ).toBeVisible();
+  }).toPass();
 }

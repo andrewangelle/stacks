@@ -98,13 +98,13 @@ test.describe('List', () => {
 
     await waitForInteractiveTrigger(
       page,
-      '[data-testid="AddCardInput"]',
+      '[data-testid="EditListNameInput"]',
       '[data-testid="EditableListName"] [data-testid="ListName"]',
     );
 
     await page
       .getByTestId('EditableListName')
-      .getByTestId('AddCardInput')
+      .getByTestId('EditListNameInput')
       .fill('Done');
 
     await waitForUpdatedListName(page);
@@ -194,12 +194,14 @@ test.describe('List', () => {
       '[data-testid="ListContainer"] [data-testid="DeleteListIcon"]',
     );
 
-    await page
-      .getByTestId('DeleteChecklistPopoverButton')
-      .filter({ hasText: 'Delete list' })
-      .click();
-
-    await expect(page.getByTestId('ListContainer')).toHaveCount(0);
+    await waitForHydratedAction(
+      () =>
+        page
+          .getByTestId('DeleteChecklistPopoverButton')
+          .filter({ hasText: 'Delete list' })
+          .click(),
+      async () => (await page.getByTestId('ListContainer').count()) === 0,
+    );
   });
 });
 
@@ -254,7 +256,7 @@ async function waitForUpdatedListName(page: Page) {
   const isUpdated = async () =>
     (await page
       .getByTestId('EditableListName')
-      .getByTestId('AddCardInput')
+      .getByTestId('EditListNameInput')
       .count()) === 0;
 
   return waitForHydratedAction(trigger, isUpdated);
