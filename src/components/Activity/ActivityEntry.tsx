@@ -12,10 +12,11 @@ import {
 import { ActivityLogo } from '~/components/Activity/ActivityLogo';
 import { useGetActivityById } from '~/query/activity';
 import { formatActivityTime } from '~/utils/formatDateTime';
+import { ActivitySkeleton } from './ActivitySkeleton';
 
 export function ActivityEntry({ id }: { id: string }) {
   const { user } = useUser();
-  const { data } = useGetActivityById({ activityId: id });
+  const { isLoading, data } = useGetActivityById({ activityId: id });
   const navigate = useNavigate();
   const location = useLocation();
   const { cardId } = useParams({ strict: false });
@@ -44,7 +45,9 @@ export function ActivityEntry({ id }: { id: string }) {
     }
   }, [isSelected, data]);
 
-  if (!data) return null;
+  if (isLoading || !data) {
+    return <ActivitySkeleton />;
+  }
 
   return (
     <ActivityContainer

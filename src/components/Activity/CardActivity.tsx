@@ -9,7 +9,7 @@ import {
   ActivityTitle,
   AddActivityInput,
   AddCommentContainer,
-  EditCommentActions,
+  EditCommentActionsRow,
   HideActivityButton,
   SaveCommentButton,
 } from '~/components/Activity/Activity.styled';
@@ -82,7 +82,7 @@ export function CardActivity({ cardId }: CardActivityProps) {
               placeholder="Write a comment..."
             />
 
-            <EditCommentActions data-testid="EditCommentActions">
+            <EditCommentActionsRow data-testid="EditCommentActions">
               <SaveCommentButton
                 data-testid="SaveCommentButton"
                 onClick={createComment}
@@ -90,7 +90,7 @@ export function CardActivity({ cardId }: CardActivityProps) {
               >
                 Save
               </SaveCommentButton>
-            </EditCommentActions>
+            </EditCommentActionsRow>
           </ActivityCommentContainer>
         </ActivityRow>
       </AddCommentContainer>

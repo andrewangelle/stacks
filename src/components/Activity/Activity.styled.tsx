@@ -1,6 +1,7 @@
 import { styled } from '@pigment-css/react';
 import { fontFamily } from '~/components/Boards/Boards.styled';
 import { CardModalTitle } from '~/components/Cards/Card.styled';
+import { animationStyles } from '~/styles/animations';
 import { Button, secondaryButtonStyles } from '~/styles/Page.styled';
 import { blue } from '~/styles/tokens';
 
@@ -168,17 +169,10 @@ export const ActivityEntryContent = styled.div`
   overflow-wrap: anywhere;
 `;
 
-export const ActivityActionsRow = styled.div`
+export const EditCommentActionsRow = styled.div`
   display: flex;
   align-items: center;
   flex-wrap: wrap;
-  gap: 4px;
-  margin-top: 8px;
-`;
-
-export const EditCommentActions = styled.div`
-  display: flex;
-  align-items: center;
   gap: 4px;
   margin-top: 8px;
 `;
@@ -196,7 +190,7 @@ export const EditCommentLink = styled.button`
   cursor: pointer;
 `;
 
-export const ActivityActionsSeparator = styled.div`
+export const EditCommentActionsSeperator = styled.div`
   width: 4px;
   height: 4px;
   background: black;
@@ -219,3 +213,40 @@ export const DeleteCommentLink = styled.button`
   padding: 0;
   font: inherit;
 `;
+
+export const ActivityLogoSkeleton = styled.div({
+  background: 'rgba(9, 30, 66, 0.25)',
+  cursor: 'default',
+  pointerEvents: 'none',
+  minHeight: '16px',
+  borderRadius: '100%',
+  flexShrink: 0,
+  height: 32,
+  width: 32,
+  position: 'relative',
+  ...animationStyles.pulse,
+});
+
+export const ActivityContentSkeleton = styled.div({
+  background: 'rgba(9, 30, 66, 0.25)',
+  cursor: 'default',
+  pointerEvents: 'none',
+  borderRadius: '8px',
+  flexShrink: 0,
+  height: 14,
+  width: '100%',
+  position: 'relative',
+  ...animationStyles.pulse,
+});
+
+export const ActivityTimestampSkeleton = styled.div({
+  background: 'rgba(9, 30, 66, 0.25)',
+  cursor: 'default',
+  pointerEvents: 'none',
+  borderRadius: '8px',
+  flexShrink: 0,
+  height: 14,
+  width: '25%',
+  position: 'relative',
+  ...animationStyles.pulse,
+});

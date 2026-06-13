@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import {
   AddCommentInput,
-  EditCommentActions,
+  EditCommentActionsRow,
   SaveCommentButton,
 } from '~/components/Activity/Activity.styled';
 import { CloseAddCardButton } from '~/components/Lists/List.styled';
@@ -25,7 +25,7 @@ export function EditComment(
         autoFocus
       />
 
-      <EditCommentActions data-testid="Flex">
+      <EditCommentActionsRow data-testid="EditCommentActionsRow">
         <SaveCommentButton
           data-testid="SaveCommentButton"
           onClick={() => {
@@ -47,7 +47,7 @@ export function EditComment(
         >
           Cancel
         </CloseAddCardButton>
-      </EditCommentActions>
+      </EditCommentActionsRow>
     </>
   );
 }

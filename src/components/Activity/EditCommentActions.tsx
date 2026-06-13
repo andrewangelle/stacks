@@ -1,20 +1,22 @@
 import {
-  ActivityActionsRow,
-  ActivityActionsSeparator,
+  EditCommentActionsRow,
+  EditCommentActionsSeperator,
   EditCommentLink,
 } from '~/components/Activity/Activity.styled';
 import { DeleteCommentPopover } from '~/components/Activity/DeleteCommentPopover';
 import type { Activity } from '~/generated/prisma/client';
 
-export function ActivityActions({
+type EditCommentActionsProps = Pick<Activity, 'id' | 'cardId'> & {
+  setIsEditing: (isEditing: boolean) => void;
+};
+
+export function EditCommentActions({
   id,
   cardId,
   setIsEditing,
-}: Pick<Activity, 'id' | 'cardId'> & {
-  setIsEditing: (isEditing: boolean) => void;
-}) {
+}: EditCommentActionsProps) {
   return (
-    <ActivityActionsRow data-testid="Flex">
+    <EditCommentActionsRow data-testid="EditCommentActionsRow">
       <EditCommentLink
         data-testid="EditCommentLink"
         onClick={() => setIsEditing(true)}
@@ -22,9 +24,9 @@ export function ActivityActions({
         Edit
       </EditCommentLink>
 
-      <ActivityActionsSeparator data-testid="ActivityActionsSeparator" />
+      <EditCommentActionsSeperator data-testid="ActivityActionsSeparator" />
 
       <DeleteCommentPopover id={id} cardId={cardId} />
-    </ActivityActionsRow>
+    </EditCommentActionsRow>
   );
 }
