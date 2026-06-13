@@ -16,35 +16,35 @@ import {
 import { authMiddleware } from '~/middleware/auth';
 
 export const getActivity = createServerFn({ method: 'GET' })
-  .inputValidator(GetActivitySchema)
+  .validator(GetActivitySchema)
   .middleware([authMiddleware])
   .handler(async ({ data, context }) =>
     getActivityQuery({ ...data, userId: context.uid }),
   );
 
 export const getActivityById = createServerFn({ method: 'GET' })
-  .inputValidator(GetActivityByIdSchema)
+  .validator(GetActivityByIdSchema)
   .middleware([authMiddleware])
   .handler(async ({ data, context }) =>
     getActivityByIdQuery({ ...data, userId: context.uid }),
   );
 
 export const createActivity = createServerFn({ method: 'POST' })
-  .inputValidator(CreateActivitySchema)
+  .validator(CreateActivitySchema)
   .middleware([authMiddleware])
   .handler(async ({ data, context }) =>
     createActivityQuery({ ...data, userId: context.uid }),
   );
 
 export const updateActivity = createServerFn({ method: 'POST' })
-  .inputValidator(UpdateActivitySchema)
+  .validator(UpdateActivitySchema)
   .middleware([authMiddleware])
   .handler(async ({ data, context }) =>
     updateActivityQuery({ ...data, userId: context.uid }),
   );
 
 export const deleteActivity = createServerFn({ method: 'POST' })
-  .inputValidator(DeleteActivitySchema)
+  .validator(DeleteActivitySchema)
   .middleware([authMiddleware])
   .handler(async ({ data, context }) =>
     deleteActivityQuery({ ...data, userId: context.uid }),

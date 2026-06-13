@@ -88,7 +88,7 @@ In `<entity>.functions.ts`, export a GET `createServerFn` wired through `authMid
 
 ```typescript
 export const getActivityById = createServerFn({ method: 'GET' })
-  .inputValidator(GetActivityByIdSchema)
+  .validator(GetActivityByIdSchema)
   .middleware([authMiddleware])
   .handler(async ({ data, context }) =>
     getActivityByIdQuery({ ...data, userId: context.uid }),

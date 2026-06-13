@@ -16,35 +16,35 @@ import {
 import { authMiddleware } from '~/middleware/auth';
 
 export const getLists = createServerFn({ method: 'GET' })
-  .inputValidator(GetListsSchema)
+  .validator(GetListsSchema)
   .middleware([authMiddleware])
   .handler(async ({ data, context }) =>
     getListsQuery({ ...data, userId: context.uid }),
   );
 
 export const getListById = createServerFn({ method: 'GET' })
-  .inputValidator(GetListByIdSchema)
+  .validator(GetListByIdSchema)
   .middleware([authMiddleware])
   .handler(async ({ data, context }) =>
     getListByIdQuery({ ...data, userId: context.uid }),
   );
 
 export const createList = createServerFn({ method: 'POST' })
-  .inputValidator(CreateListSchema)
+  .validator(CreateListSchema)
   .middleware([authMiddleware])
   .handler(async ({ data, context }) =>
     createListQuery({ ...data, userId: context.uid }),
   );
 
 export const updateList = createServerFn({ method: 'POST' })
-  .inputValidator(UpdateListSchema)
+  .validator(UpdateListSchema)
   .middleware([authMiddleware])
   .handler(async ({ data, context }) =>
     updateListQuery({ ...data, userId: context.uid }),
   );
 
 export const deleteList = createServerFn({ method: 'POST' })
-  .inputValidator(DeleteListSchema)
+  .validator(DeleteListSchema)
   .middleware([authMiddleware])
   .handler(async ({ data, context }) =>
     deleteListQuery({ ...data, userId: context.uid }),
