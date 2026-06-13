@@ -1,6 +1,11 @@
 import { styled } from '@pigment-css/react';
 import type { BackgroundProps } from '~/components/Boards/Boards.styled';
-import { boardGradientVars, fontFamily, tokenShades } from '~/styles/tokens';
+import {
+  boardBarVars,
+  boardGradientVars,
+  boardNavVars,
+  fontFamily,
+} from '~/styles/tokens';
 
 export const NavBarContainer = styled('div')({
   width: '100%',
@@ -19,31 +24,31 @@ export const NavBarContent = styled.div<BackgroundProps>({
     {
       props: { background: 'blue' },
       style: {
-        background: tokenShades.blue.darkest,
+        background: boardNavVars.blue,
       },
     },
     {
       props: { background: 'green' },
       style: {
-        background: tokenShades.green.darkest,
+        background: boardNavVars.green,
       },
     },
     {
       props: { background: 'lightGreen' },
       style: {
-        background: tokenShades.lightGreen.darkest,
+        background: boardNavVars.lightGreen,
       },
     },
     {
       props: { background: 'orange' },
       style: {
-        background: tokenShades.orange.darkest,
+        background: boardNavVars.orange,
       },
     },
     {
       props: { background: 'red' },
       style: {
-        background: tokenShades.red.darkest,
+        background: boardNavVars.red,
       },
     },
   ],
@@ -57,35 +62,35 @@ export const BoardBarContainer = styled(NavBarContainer)<BackgroundProps>({
     {
       props: { background: 'blue' },
       style: {
-        background: tokenShades.blue.darker,
+        background: boardBarVars.blue,
         borderBottom: '1px solid white',
       },
     },
     {
       props: { background: 'green' },
       style: {
-        background: tokenShades.green.darker,
+        background: boardBarVars.green,
         borderBottom: '1px solid white',
       },
     },
     {
       props: { background: 'lightGreen' },
       style: {
-        background: tokenShades.lightGreen.darker,
+        background: boardBarVars.lightGreen,
         borderBottom: '1px solid white',
       },
     },
     {
       props: { background: 'orange' },
       style: {
-        background: tokenShades.orange.darker,
+        background: boardBarVars.orange,
         borderBottom: '1px solid white',
       },
     },
     {
       props: { background: 'red' },
       style: {
-        background: tokenShades.red.darker,
+        background: boardBarVars.red,
         borderBottom: '1px solid white',
       },
     },

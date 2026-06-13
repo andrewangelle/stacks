@@ -34,6 +34,32 @@ export const ListName = styled.div`
   font-size: 14px;
 `;
 
+export const EditListNameInput = styled.input`
+  border-radius: 8px;
+  border: none;
+  padding: 9px;
+  box-shadow: 0 1px 0 #091e4240;
+  font-weight: 600;
+  position: relative;
+  margin-bottom: 4px;
+  font-size: 14px;
+`;
+
+export const AddListButton = styled.button({
+  border: 'none',
+  background: 'none',
+  cursor: 'pointer',
+  fontWeight: 500,
+  fontSize: 14,
+  color: 'white',
+  letterSpacing: '0.05rem',
+});
+
+export const AddCardButton = styled(Button)` 
+  margin: 0;
+  padding: 8px;
+`;
+
 export const AddCardText = styled.button` 
   border: none;
   background: none;
@@ -57,22 +83,6 @@ export const AddCardInput = styled.input`
   padding: 9px;
   box-shadow: 0 1px 0 #091e4240;
   margin: 4px 0px 8px;
-`;
-
-export const EditListNameInput = styled.input`
-  border-radius: 8px;
-  border: none;
-  padding: 9px;
-  box-shadow: 0 1px 0 #091e4240;
-  font-weight: 600;
-  position: relative;
-  margin-bottom: 4px;
-  font-size: 14px;
-`;
-
-export const AddCardButton = styled(Button)` 
-  margin: 0;
-  padding: 8px;
 `;
 
 export const CloseAddCardButton = styled(Button)` 

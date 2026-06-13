@@ -1,62 +1,78 @@
 /**
  * Board background gradients — edit and save (imported from __root.tsx).
  *
- * Change the % in color-mix (dark top-left → light bottom-right), or swap in hex
- * stops, e.g. linear-gradient(to bottom right, #3d722b, #5fa049).
+ * Vibrant top-left → bottom-right stops (Trello-style). Adjust hex values or add
+ * a middle stop, e.g. linear-gradient(to bottom right, #0747a6, #0065ff, #00b8d9).
  */
 :root {
   --board-gradient-green: linear-gradient(
     to bottom right,
-    color-mix(in srgb, #519839 88%, black),
-    color-mix(in srgb, #519839 88%, white)
+    #3d722b,
+    #5fa049
   );
   --board-gradient-green-hover: linear-gradient(
     to bottom right,
-    color-mix(in srgb, #519839 85%, black),
-    color-mix(in srgb, #519839 88%, black)
+    #31591f,
+    #519839
   );
 
   --board-gradient-light-green: linear-gradient(
     to bottom right,
-    color-mix(in srgb, #4bbf6b 88%, black),
-    color-mix(in srgb, #4bbf6b 88%, white)
+    #248342,
+    #6dd89a
   );
   --board-gradient-light-green-hover: linear-gradient(
     to bottom right,
-    color-mix(in srgb, #4bbf6b 85%, black),
-    color-mix(in srgb, #4bbf6b 88%, black)
+    #1d6834,
+    #4bbf6b
   );
 
   --board-gradient-blue: linear-gradient(
     to bottom right,
-    color-mix(in srgb, #0079bf 78%, black),
-    color-mix(in srgb, #0079bf 78%, white)
+    #0747a6,
+    #00b8d9
   );
   --board-gradient-blue-hover: linear-gradient(
     to bottom right,
-    color-mix(in srgb, #0079bf 85%, black),
-    color-mix(in srgb, #0079bf 88%, black)
+    #053d8f,
+    #009bb8
   );
 
   --board-gradient-orange: linear-gradient(
     to bottom right,
-    color-mix(in srgb, #d29034 88%, black),
-    color-mix(in srgb, #d29034 88%, white)
+    #a66220,
+    #f0b84a
   );
   --board-gradient-orange-hover: linear-gradient(
     to bottom right,
-    color-mix(in srgb, #d29034 85%, black),
-    color-mix(in srgb, #d29034 88%, black)
+    #8f5518,
+    #d29034
   );
 
   --board-gradient-red: linear-gradient(
     to bottom right,
-    color-mix(in srgb, #b04632 78%, black),
-    color-mix(in srgb, #b04632 78%, white)
+    #7a2818,
+    #d06048
   );
   --board-gradient-red-hover: linear-gradient(
     to bottom right,
-    color-mix(in srgb, #b04632 85%, black),
-    color-mix(in srgb, #b04632 88%, black)
+    #672010,
+    #b04632
   );
+
+  /* Nav bar (darkest) and board bar (one step lighter) — match gradient family */
+  --board-nav-green: #31591f;
+  --board-bar-green: #3d722b;
+
+  --board-nav-light-green: #1d6834;
+  --board-bar-light-green: #248342;
+
+  --board-nav-blue: #053d8f;
+  --board-bar-blue: #0747a6;
+
+  --board-nav-orange: #8f5518;
+  --board-bar-orange: #a66220;
+
+  --board-nav-red: #672010;
+  --board-bar-red: #7a2818;
 }
