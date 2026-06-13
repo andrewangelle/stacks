@@ -1,4 +1,4 @@
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { useMutation, useQuery } from '@tanstack/react-query';
 import {
   createChecklist,
   deleteChecklist,
@@ -80,14 +80,6 @@ export function useCreateChecklist() {
 }
 
 export function useDeleteChecklist() {
-  const { setQueryData, removeQueries } = useQueryClient();
-  const { list, detail } = queryKeys;
-
-  function removeChecklist(checklistId: string) {
-    return (items: ChecklistListItem[]) =>
-      items.filter((item) => item.id !== checklistId);
-  }
-
   const mutation = useMutation({
     mutationFn(data: DeleteChecklistArgs) {
       return deleteChecklist({
@@ -96,15 +88,14 @@ export function useDeleteChecklist() {
     },
 
     onSuccess(_result, variables) {
-      setQueryData<ChecklistListItem[]>(
-        list(variables.cardId),
-        removeChecklist(variables.checklistId),
+      queryClient.setQueryData<ChecklistListItem[]>(
+        queryKeys.list(variables.cardId),
+        (cache = []) =>
+          cache.filter((item) => item.id !== variables.checklistId),
       );
-
-      removeQueries({
-        queryKey: detail(variables.checklistId),
+      queryClient.removeQueries({
+        queryKey: queryKeys.detail(variables.checklistId),
       });
-
       invalidateCardChecklistView(variables.cardId);
     },
   });
