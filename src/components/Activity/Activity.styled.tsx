@@ -184,14 +184,19 @@ export const EditCommentLink = styled.button`
   background: none;
   text-decoration: underline;
   cursor: pointer;
+  padding: 0;
+  font: inherit;
+  color: inherit;
 `;
 
 export const EditCommentActionsSeperator = styled.div`
-  width: 4px;
-  height: 4px;
+  width: 3.5px;
+  height: 3.5px;
   background: black;
   border-radius: 100%;
   flex-shrink: 0;
+  position: relative;
+  top: 1px;
 `;
 
 export const ActivityTimestamp = styled.div`
@@ -199,15 +204,6 @@ export const ActivityTimestamp = styled.div`
   cursor: pointer;
   text-decoration: underline;
   color: #0000EE;
-`;
-
-export const DeleteCommentLink = styled.button`
-  border: none;
-  background: none;
-  text-decoration: underline;
-  cursor: pointer;
-  padding: 0;
-  font: inherit;
 `;
 
 export const ActivityLogoSkeleton = styled.div({

@@ -1,13 +1,10 @@
 import * as Popover from '@radix-ui/react-popover';
-import { DeleteCommentLink } from '~/components/Activity/Activity.styled';
+import { EditCommentLink } from '~/components/Activity/Activity.styled';
 import {
   CreateBoardCloseBorder,
   PopoverClose,
 } from '~/components/Boards/Boards.styled';
-import {
-  DeleteChecklistPopoverButton,
-  DeleteChecklistPopoverTrigger,
-} from '~/components/ChecklistItem/ChecklistItem.styled';
+import { DeleteChecklistPopoverButton } from '~/components/ChecklistItem/ChecklistItem.styled';
 import {
   ChecklistPopoverHeader,
   DeleteChecklistPopoverContent,
@@ -26,11 +23,14 @@ export function DeleteCommentPopover(props: Pick<Activity, 'id' | 'cardId'>) {
   const deleteActivity = useDeleteActivity();
   return (
     <Popover.Root>
-      <DeleteChecklistPopoverTrigger data-testid="DeleteChecklistPopoverTrigger">
-        <DeleteCommentLink type="button">
+      <Popover.Trigger asChild>
+        <EditCommentLink
+          type="button"
+          data-testid="DeleteChecklistPopoverTrigger"
+        >
           {strings.deleteCommentButton}
-        </DeleteCommentLink>
-      </DeleteChecklistPopoverTrigger>
+        </EditCommentLink>
+      </Popover.Trigger>
 
       <DeleteChecklistPopoverContent data-testid="DeleteChecklistPopoverContent">
         <ChecklistPopoverHeader data-testid="ChecklistPopoverHeader">
