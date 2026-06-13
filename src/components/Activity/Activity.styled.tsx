@@ -104,6 +104,14 @@ export const ActivityCommentContainer = styled.div`
   font-size: 12px;
 `;
 
+export const AddCommentForm = styled.form` 
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-width: 0;
+  font-size: 12px;
+`;
+
 export const ActivityMeta = styled.div`
   line-height: 1.4;
   overflow-wrap: anywhere;

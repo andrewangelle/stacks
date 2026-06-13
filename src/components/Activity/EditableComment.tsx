@@ -1,8 +1,8 @@
 import { useState } from 'react';
 import { ActivityCommentContent } from '~/components/Activity/Activity.styled';
 import { ActivitySkeleton } from '~/components/Activity/ActivitySkeleton';
-import { EditComment } from '~/components/Activity/EditComment';
 import { EditCommentActions } from '~/components/Activity/EditCommentActions';
+import { EditCommentForm } from '~/components/Activity/EditCommentForm';
 import type { Activity } from '~/generated/prisma/client';
 import { useGetActivityById } from '~/query/activity';
 
@@ -18,7 +18,7 @@ export function EditableComment({ id }: EditableCommentProps) {
 
   if (isEditing) {
     return (
-      <EditComment
+      <EditCommentForm
         id={id}
         cardId={data.cardId}
         content={data.content}
