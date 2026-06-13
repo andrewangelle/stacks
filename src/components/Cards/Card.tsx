@@ -19,7 +19,6 @@ import { CardEditableTitle } from '~/components/Cards/CardEditableTitle';
 import { DeleteCardPopover } from '~/components/Cards/DeleteCardPopover';
 import { CardChecklists } from '~/components/Checklists/Checklists';
 import { CreateChecklist } from '~/components/Checklists/CreateChecklist';
-import { ListCardSkeleton } from '~/components/Lists/List.styled';
 import { useGetCardById } from '~/query/cards';
 import { useCardColumnWidth } from '~/utils/useCardColumnWidth';
 import { useCurrentBoardId } from '~/utils/useCurrentBoardId';
@@ -54,7 +53,24 @@ export function Card() {
   }
 
   if (isLoading) {
-    return <ListCardSkeleton />;
+    return (
+      <CardModalRoot
+        data-testid="CardModalRoot"
+        open
+        onOpenChange={handleOpenChange}
+      >
+        <CardModalPortal data-testid="CardModalPortal">
+          <CardModalOverlay data-testid="CardModalOverlay">
+            <CardModalContent
+              data-testid="CardModalContent"
+              aria-describedby={undefined}
+            >
+              {null}
+            </CardModalContent>
+          </CardModalOverlay>
+        </CardModalPortal>
+      </CardModalRoot>
+    );
   }
 
   return (

@@ -65,6 +65,18 @@ export function sortByCreatedAt<T extends { createdAt: Date }>(items: T[]) {
   );
 }
 
+export function sortByPosition<T extends { position: number; createdAt: Date }>(
+  items: T[],
+) {
+  return [...items].sort((a, b) => {
+    if (a.position !== b.position) {
+      return a.position - b.position;
+    }
+
+    return a.createdAt.getTime() - b.createdAt.getTime();
+  });
+}
+
 export const prisma = {
   user: userModel,
   profile: profileModel,
@@ -74,4 +86,5 @@ export const prisma = {
   checklist: checklistModel,
   checklistItem: checklistItemModel,
   activity: activityModel,
+  $transaction: async <T>(operations: Promise<T>[]) => Promise.all(operations),
 } as unknown as PrismaClient;

@@ -3,6 +3,7 @@ import type {
   DeleteListArgs,
   GetListByIdArgs,
   GetListsArgs,
+  ReorderListsArgs,
   UpdateListArgs,
 } from '~/db/lists/lists.schemas';
 import { prisma } from '~/db/prisma';
@@ -14,7 +15,7 @@ export function getListsQuery(data: WithUserId<GetListsArgs>) {
       boardId: data.boardId,
       board: { userId: data.userId },
     },
-    orderBy: { createdAt: 'asc' },
+    orderBy: [{ position: 'asc' }, { createdAt: 'asc' }],
     select: { id: true, listTitle: true, createdAt: true },
   });
 }
@@ -34,11 +35,16 @@ export async function createListQuery(data: WithUserId<CreateListArgs>) {
     throw new Error('Forbidden');
   }
 
+  const position = await prisma.list.count({
+    where: { boardId: data.boardId, board: { userId: data.userId } },
+  });
+
   const result = await prisma.list.create({
     data: {
       listTitle: data.listTitle,
       boardId: data.boardId,
       userId: data.userId,
+      position,
     },
   });
 
@@ -86,5 +92,39 @@ export async function deleteListQuery(data: WithUserId<DeleteListArgs>) {
     code: 'lists:delete:success',
     message: 'success',
     data: [result],
+  };
+}
+
+export async function reorderListsQuery(data: WithUserId<ReorderListsArgs>) {
+  const existingLists = await prisma.list.findMany({
+    where: {
+      boardId: data.boardId,
+      board: { userId: data.userId },
+    },
+    select: { id: true },
+    orderBy: [{ position: 'asc' }, { createdAt: 'asc' }],
+  });
+
+  const existingIds = new Set(existingLists.map((list) => list.id));
+
+  if (
+    data.orderedIds.length !== existingIds.size ||
+    !data.orderedIds.every((id) => existingIds.has(id))
+  ) {
+    throw new Error('Invalid reorder');
+  }
+
+  await prisma.$transaction(
+    data.orderedIds.map((id, position) =>
+      prisma.list.updateMany({
+        where: { id, userId: data.userId },
+        data: { position },
+      }),
+    ),
+  );
+
+  return {
+    code: 'lists:reorder:success',
+    message: 'success',
   };
 }

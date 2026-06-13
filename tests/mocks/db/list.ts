@@ -3,7 +3,7 @@ import {
   getStore,
   id,
   now,
-  sortByCreatedAt,
+  sortByPosition,
   type Timestamps,
 } from '~test/mocks/memoryPrisma';
 
@@ -12,6 +12,7 @@ export type ListRecord = {
   listTitle: string;
   boardId: string;
   userId: string;
+  position: number;
 } & Timestamps;
 
 export const listModel = {
@@ -20,9 +21,9 @@ export const listModel = {
       boardId: string;
       board: { userId: string };
     };
-    orderBy: { createdAt: 'asc' };
+    orderBy: { createdAt: 'asc' } | [{ position: 'asc' }, { createdAt: 'asc' }];
   }) {
-    return sortByCreatedAt(
+    return sortByPosition(
       getStore().lists.filter(
         (list) =>
           list.boardId === args.where.boardId &&
@@ -60,15 +61,25 @@ export const listModel = {
   },
 
   async create(args: {
-    data: { listTitle: string; boardId: string; userId: string };
+    data: {
+      listTitle: string;
+      boardId: string;
+      userId: string;
+      position?: number;
+    };
   }) {
     const timestamp = now();
+    const position =
+      args.data.position ??
+      getStore().lists.filter((list) => list.boardId === args.data.boardId)
+        .length;
 
     const created: ListRecord = {
       id: id(),
       listTitle: args.data.listTitle,
       boardId: args.data.boardId,
       userId: args.data.userId,
+      position,
       createdAt: timestamp,
       updatedAt: timestamp,
     };
@@ -80,7 +91,7 @@ export const listModel = {
 
   async updateMany(args: {
     where: { id: string; userId: string };
-    data: { listTitle: string };
+    data: { listTitle?: string; position?: number };
   }) {
     const list = getStore().lists.find(
       (item) => item.id === args.where.id && item.userId === args.where.userId,
@@ -90,9 +101,24 @@ export const listModel = {
       return { count: 0 };
     }
 
-    list.listTitle = args.data.listTitle;
+    if (args.data.listTitle !== undefined) {
+      list.listTitle = args.data.listTitle;
+    }
+
+    if (args.data.position !== undefined) {
+      list.position = args.data.position;
+    }
+
     list.updatedAt = now();
     return { count: 1 };
+  },
+
+  async count(args: { where: { boardId: string; board: { userId: string } } }) {
+    return getStore().lists.filter(
+      (list) =>
+        list.boardId === args.where.boardId &&
+        getBoardUserId(list.boardId) === args.where.board.userId,
+    ).length;
   },
 
   async delete(args: { where: { id: string } }) {

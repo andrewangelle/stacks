@@ -3,7 +3,7 @@ import {
   getStore,
   id,
   now,
-  sortByCreatedAt,
+  sortByPosition,
   type Timestamps,
 } from '~test/mocks/memoryPrisma';
 
@@ -13,6 +13,8 @@ export type CardRecord = {
   cardDescription: string;
   listId: string;
   userId: string;
+  position: number;
+  isCompleted: boolean;
 } & Timestamps;
 
 export const cardModel = {
@@ -22,7 +24,7 @@ export const cardModel = {
       list: { board: { userId: string } };
       id?: string;
     };
-    orderBy: { createdAt: 'asc' };
+    orderBy: { createdAt: 'asc' } | [{ position: 'asc' }, { createdAt: 'asc' }];
   }) {
     if ('id' in args.where) {
       const card = getStore().cards.find((item) => item.id === args.where.id);
@@ -31,7 +33,7 @@ export const cardModel = {
 
     const userId = args.where.list.board.userId;
 
-    return sortByCreatedAt(
+    return sortByPosition(
       getStore().cards.filter(
         (card) =>
           card.listId === args.where.listId && cardBelongsToUser(card, userId),
@@ -64,9 +66,18 @@ export const cardModel = {
   },
 
   async create(args: {
-    data: { cardTitle: string; listId: string; userId: string };
+    data: {
+      cardTitle: string;
+      listId: string;
+      userId: string;
+      position?: number;
+    };
   }) {
     const timestamp = now();
+    const position =
+      args.data.position ??
+      getStore().cards.filter((card) => card.listId === args.data.listId)
+        .length;
 
     const created: CardRecord = {
       id: id(),
@@ -74,6 +85,8 @@ export const cardModel = {
       cardDescription: '',
       listId: args.data.listId,
       userId: args.data.userId,
+      position,
+      isCompleted: false,
       createdAt: timestamp,
       updatedAt: timestamp,
     };
@@ -89,6 +102,7 @@ export const cardModel = {
       cardDescription?: string;
       cardTitle?: string;
       isCompleted?: boolean;
+      position?: number;
     };
   }) {
     const card = getStore().cards.find(
@@ -107,9 +121,31 @@ export const cardModel = {
       card.cardTitle = args.data.cardTitle;
     }
 
+    if (args.data.isCompleted !== undefined) {
+      card.isCompleted = args.data.isCompleted;
+    }
+
+    if (args.data.position !== undefined) {
+      card.position = args.data.position;
+    }
+
     card.updatedAt = now();
 
     return { count: 1 };
+  },
+
+  async count(args: {
+    where: {
+      listId: string;
+      list: { board: { userId: string } };
+    };
+  }) {
+    const userId = args.where.list.board.userId;
+
+    return getStore().cards.filter(
+      (card) =>
+        card.listId === args.where.listId && cardBelongsToUser(card, userId),
+    ).length;
   },
 
   async delete(args: { where: { id: string } }) {

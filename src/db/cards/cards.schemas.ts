@@ -26,8 +26,14 @@ export const DeleteCardSchema = z.object({
   listId: z.string(),
 });
 
+export const ReorderCardsSchema = z.object({
+  listId: z.string(),
+  orderedIds: z.array(z.string()),
+});
+
 export type GetCardsByListIdArgs = z.infer<typeof GetCardsByListIdSchema>;
 export type GetCardByIdArgs = z.infer<typeof GetCardByIdSchema>;
 export type CreateCardArgs = z.infer<typeof CreateCardSchema>;
 export type UpdateCardArgs = z.infer<typeof UpdateCardSchema>;
 export type DeleteCardArgs = z.infer<typeof DeleteCardSchema>;
+export type ReorderCardsArgs = z.infer<typeof ReorderCardsSchema>;

@@ -4,6 +4,7 @@ import {
   DeleteListSchema,
   GetListByIdSchema,
   GetListsSchema,
+  ReorderListsSchema,
   UpdateListSchema,
 } from '~/db/lists/lists.schemas';
 import {
@@ -11,6 +12,7 @@ import {
   deleteListQuery,
   getListByIdQuery,
   getListsQuery,
+  reorderListsQuery,
   updateListQuery,
 } from '~/db/lists/lists.server';
 import { authMiddleware } from '~/middleware/auth';
@@ -48,4 +50,11 @@ export const deleteList = createServerFn({ method: 'POST' })
   .middleware([authMiddleware])
   .handler(async ({ data, context }) =>
     deleteListQuery({ ...data, userId: context.uid }),
+  );
+
+export const reorderLists = createServerFn({ method: 'POST' })
+  .validator(ReorderListsSchema)
+  .middleware([authMiddleware])
+  .handler(async ({ data, context }) =>
+    reorderListsQuery({ ...data, userId: context.uid }),
   );

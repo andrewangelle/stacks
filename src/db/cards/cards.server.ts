@@ -3,6 +3,7 @@ import type {
   DeleteCardArgs,
   GetCardByIdArgs,
   GetCardsByListIdArgs,
+  ReorderCardsArgs,
   UpdateCardArgs,
 } from '~/db/cards/cards.schemas';
 import { prisma } from '~/db/prisma';
@@ -14,7 +15,7 @@ export function getCardsByListIdQuery(data: WithUserId<GetCardsByListIdArgs>) {
       listId: data.listId,
       list: { board: { userId: data.userId } },
     },
-    orderBy: { createdAt: 'asc' },
+    orderBy: [{ position: 'asc' }, { createdAt: 'asc' }],
     select: { id: true, cardTitle: true, createdAt: true },
   });
 }
@@ -86,11 +87,19 @@ export async function createCardQuery(data: WithUserId<CreateCardArgs>) {
     throw new Error('Forbidden');
   }
 
+  const position = await prisma.card.count({
+    where: {
+      listId: data.listId,
+      list: { board: { userId: data.userId } },
+    },
+  });
+
   const result = await prisma.card.create({
     data: {
       cardTitle: data.cardTitle,
       listId: data.listId,
       userId: data.userId,
+      position,
     },
   });
 
@@ -150,5 +159,39 @@ export async function deleteCardQuery(data: WithUserId<DeleteCardArgs>) {
     code: 'cards:delete:success',
     message: 'success',
     cardData: [result],
+  };
+}
+
+export async function reorderCardsQuery(data: WithUserId<ReorderCardsArgs>) {
+  const existingCards = await prisma.card.findMany({
+    where: {
+      listId: data.listId,
+      list: { board: { userId: data.userId } },
+    },
+    select: { id: true },
+    orderBy: [{ position: 'asc' }, { createdAt: 'asc' }],
+  });
+
+  const existingIds = new Set(existingCards.map((card) => card.id));
+
+  if (
+    data.orderedIds.length !== existingIds.size ||
+    !data.orderedIds.every((id) => existingIds.has(id))
+  ) {
+    throw new Error('Invalid reorder');
+  }
+
+  await prisma.$transaction(
+    data.orderedIds.map((id, position) =>
+      prisma.card.updateMany({
+        where: { id, userId: data.userId },
+        data: { position },
+      }),
+    ),
+  );
+
+  return {
+    code: 'cards:reorder:success',
+    message: 'success',
   };
 }

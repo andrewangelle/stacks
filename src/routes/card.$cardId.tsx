@@ -1,7 +1,6 @@
 import { createFileRoute, redirect } from '@tanstack/react-router';
 import { BoardPage } from '~/components/Boards/BoardPage';
 import { Card } from '~/components/Cards/Card';
-import { BoardPageBackground } from '~/components/Nav/Nav.styled';
 import { getBoardIdByCardId } from '~/db/cards/cards.functions';
 import { fetchUserId } from '~/middleware/auth';
 import { boardByIdQueryOptions } from '~/query/boards';
@@ -44,7 +43,7 @@ export const Route = createFileRoute('/card/$cardId')({
   },
 
   pendingComponent() {
-    return <BoardPageBackground data-testid="BoardPageBackground" />;
+    return <BoardPage>{null}</BoardPage>;
   },
 
   component() {

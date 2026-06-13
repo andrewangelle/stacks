@@ -3,6 +3,7 @@ import type {
   DeleteChecklistItemArgs,
   GetChecklistItemByIdArgs,
   GetChecklistItemsArgs,
+  ReorderChecklistItemsArgs,
   UpdateChecklistItemArgs,
 } from '~/db/checklistItems/checklistItems.schemas';
 import { prisma } from '~/db/prisma';
@@ -18,7 +19,7 @@ export function getChecklistItemsQuery(
         card: { list: { board: { userId: data.userId } } },
       },
     },
-    orderBy: { createdAt: 'asc' },
+    orderBy: [{ position: 'asc' }, { createdAt: 'asc' }],
     select: { id: true, label: true, isCompleted: true, createdAt: true },
   });
 }
@@ -47,6 +48,15 @@ export async function createChecklistItemQuery(
     throw new Error('Forbidden');
   }
 
+  const position = await prisma.checklistItem.count({
+    where: {
+      checklistId: data.checklistId,
+      checklist: {
+        card: { list: { board: { userId: data.userId } } },
+      },
+    },
+  });
+
   const result = await prisma.checklistItem.create({
     data: {
       label: data.label,
@@ -55,6 +65,7 @@ export async function createChecklistItemQuery(
       listId: data.listId,
       userId: data.userId,
       isCompleted: false,
+      position,
     },
   });
 
@@ -113,5 +124,43 @@ export async function deleteChecklistItemQuery(
     code: 'checklists:delete:success',
     message: 'success',
     data: [result],
+  };
+}
+
+export async function reorderChecklistItemsQuery(
+  data: WithUserId<ReorderChecklistItemsArgs>,
+) {
+  const existingItems = await prisma.checklistItem.findMany({
+    where: {
+      checklistId: data.checklistId,
+      checklist: {
+        card: { list: { board: { userId: data.userId } } },
+      },
+    },
+    select: { id: true },
+    orderBy: [{ position: 'asc' }, { createdAt: 'asc' }],
+  });
+
+  const existingIds = new Set(existingItems.map((item) => item.id));
+
+  if (
+    data.orderedIds.length !== existingIds.size ||
+    !data.orderedIds.every((id) => existingIds.has(id))
+  ) {
+    throw new Error('Invalid reorder');
+  }
+
+  await prisma.$transaction(
+    data.orderedIds.map((id, position) =>
+      prisma.checklistItem.updateMany({
+        where: { id, userId: data.userId },
+        data: { position },
+      }),
+    ),
+  );
+
+  return {
+    code: 'checklist-items:reorder:success',
+    message: 'success',
   };
 }

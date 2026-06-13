@@ -4,6 +4,7 @@ import {
   deleteCard,
   getCardById,
   getCardsByListId,
+  reorderCards as reorderCardsServer,
   updateCard,
 } from '~/db/cards/cards.functions';
 import type {
@@ -126,7 +127,7 @@ export function reorderCards(
   listId: string,
   droppedId: string,
 ) {
-  return queryClient.setQueryData<CardListItem[]>(
+  queryClient.setQueryData<CardListItem[]>(
     queryKeys.list(listId),
     (cache = []) => {
       const cacheArray = [...cache];
@@ -142,4 +143,13 @@ export function reorderCards(
       return cacheArray;
     },
   );
+
+  const orderedIds =
+    queryClient
+      .getQueryData<CardListItem[]>(queryKeys.list(listId))
+      ?.map((card) => card.id) ?? [];
+
+  reorderCardsServer({ data: { listId, orderedIds } }).catch(() => {
+    queryClient.invalidateQueries({ queryKey: queryKeys.list(listId) });
+  });
 }
