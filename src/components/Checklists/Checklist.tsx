@@ -3,6 +3,7 @@ import { AddChecklistItem } from '~/components/ChecklistItem/AddChecklistItem';
 import { ChecklistItem } from '~/components/ChecklistItem/ChecklistItem';
 import { ChecklistEditableTitle } from '~/components/Checklists/ChecklistEditableTitle';
 import { ChecklistProgress } from '~/components/Checklists/ChecklistProgress';
+import { ChecklistSkeleton } from '~/components/Checklists/ChecklistSkeleton';
 import {
   ChecklistContainer,
   ChecklistHeader,
@@ -18,7 +19,7 @@ import { useGetChecklist } from '~/query/checklists';
 import { useHashChecklistId } from '~/utils/useHashChecklistId';
 
 export function Checklist({ id }: { id: string }) {
-  const { isSuccess, data: checklist } = useGetChecklist({ checklistId: id });
+  const { isLoading, isSuccess } = useGetChecklist({ checklistId: id });
   const { isSuccess: isItemsSuccess, data: items } = useGetChecklistItems({
     checklistId: id,
   });
@@ -37,7 +38,9 @@ export function Checklist({ id }: { id: string }) {
     return () => clearTimeout(timeoutId);
   }, [hashId, id, isSuccess, isItemsSuccess]);
 
-  if (!checklist) return null;
+  if (isLoading) {
+    return <ChecklistSkeleton />;
+  }
 
   return (
     <ChecklistContainer data-testid="ChecklistContainer">

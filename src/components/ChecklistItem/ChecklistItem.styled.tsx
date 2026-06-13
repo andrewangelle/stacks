@@ -3,6 +3,7 @@ import * as Checkbox from '@radix-ui/react-checkbox';
 import * as Popover from '@radix-ui/react-popover';
 import { fontFamily, red } from '~/components/Boards/Boards.styled';
 import { cardModalContentIndent } from '~/components/Cards/Card.styled';
+import { animationStyles } from '~/styles/animations';
 import { Button, secondaryButtonStyles } from '~/styles/Page.styled';
 import { blue } from '~/styles/tokens';
 
@@ -156,3 +157,47 @@ export const DeleteChecklistPopoverTrigger = styled(Popover.Trigger)`
     background: rgba(0,0,0,0.1);
   }
 `;
+
+export const ChecklistItemSkeletonContainer = styled.div({});
+
+export const CheckboxSkeleton = styled.div({
+  background: 'rgba(9, 30, 66, 0.25)',
+  cursor: 'default',
+  pointerEvents: 'none',
+  minHeight: '16px',
+  width: '18px',
+  height: '10px',
+  borderRadius: '2px',
+  flexShrink: 0,
+  position: 'relative',
+  // margin: '12px 0',
+  ...animationStyles.pulse,
+});
+
+export const ChecklistLabelSkeleton = styled.div({
+  background: 'rgba(9, 30, 66, 0.25)',
+  cursor: 'default',
+  pointerEvents: 'none',
+  minHeight: '16px',
+  width: '100%',
+  height: '8px',
+  borderRadius: '8px',
+  flexShrink: 0,
+  position: 'relative',
+  margin: '12px 0',
+  ...animationStyles.pulse,
+});
+
+export const AddChecklistButtonSkeleton = styled.div({
+  background: 'rgba(9, 30, 66, 0.25)',
+  cursor: 'default',
+  pointerEvents: 'none',
+  minHeight: '16px',
+  width: '100%',
+  height: '8px',
+  borderRadius: '8px',
+  flexShrink: 0,
+  position: 'relative',
+  margin: '12px 0',
+  ...animationStyles.pulse,
+});
