@@ -8,13 +8,11 @@ import {
 import { AddListButton } from '~/components/Lists/List.styled';
 import { useCreateList } from '~/query/lists';
 import { Flex } from '~/styles/Page.styled';
+import { useCurrentBoardId } from '~/utils/useCurrentBoardId';
 import { useOutsideClick } from '~/utils/useOutsideClick';
 
-type AddListsProps = {
-  boardId: string;
-};
-
-export function AddLists({ boardId }: AddListsProps) {
+export function AddLists() {
+  const boardId = useCurrentBoardId();
   const [isEditing, setEditing] = useState(false);
   const [listName, setListName] = useState('');
   const createList = useCreateList();

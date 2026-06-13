@@ -4,7 +4,6 @@ import { Draggable } from '~/components/Draggable';
 import { AddLists } from '~/components/Lists/AddList';
 import { List } from '~/components/Lists/List';
 import { BoardPageBackground } from '~/components/Nav/Nav.styled';
-import type { List as ListType } from '~/generated/prisma/client';
 import { boardByIdQueryOptions } from '~/query/boards';
 import { listsQueryOptions, reorderLists } from '~/query/lists';
 import { useCurrentBoardId } from '~/utils/useCurrentBoardId';
@@ -25,12 +24,14 @@ export function BoardPage({ children }: { children?: ReactNode }) {
           id={list.id}
           name={list.listTitle}
           type="list"
-          onDrop={(item: ListType) => reorderLists(item, boardId, list.id)}
+          onDrop={(item: { id: string }) =>
+            reorderLists(item, boardId, list.id)
+          }
         >
           <List id={list.id} />
         </Draggable>
       ))}
-      {boardId && <AddLists boardId={boardId} />}
+      {boardId && <AddLists />}
       {children}
     </BoardPageBackground>
   );

@@ -17,6 +17,12 @@ import type {
 import type { Activity } from '~/generated/prisma/client';
 import { queryClient } from '~/query/queryClient';
 
+export type ActivityListItem = Pick<Activity, 'id' | 'type' | 'createdAt'>;
+
+function toActivityListItem(item: Activity): ActivityListItem {
+  return { id: item.id, type: item.type, createdAt: item.createdAt };
+}
+
 const queryKeys = {
   list: (cardId: string) => ['activity', cardId] as const,
   detail: (activityId: string) => ['activity', 'detail', activityId] as const,
@@ -77,9 +83,9 @@ export function useCreateActivity() {
     },
 
     onSuccess(result, variables) {
-      queryClient.setQueryData<Activity[]>(
+      queryClient.setQueryData<ActivityListItem[]>(
         queryKeys.list(variables.cardId),
-        (cache = []) => [...cache, result],
+        (cache = []) => [...cache, toActivityListItem(result)],
       );
     },
   });
@@ -88,18 +94,6 @@ export function useCreateActivity() {
 }
 
 export function useUpdateActivity() {
-  function updateActivityInCache(
-    cache: Activity[],
-    variables: UpdateActivityArgs,
-  ) {
-    return cache.map((item) => {
-      if (item.id === variables.activityId) {
-        return { ...item, content: variables.content };
-      }
-      return item;
-    });
-  }
-
   const mutation = useMutation({
     mutationFn(data: UpdateActivityArgs) {
       return updateActivity({
@@ -108,11 +102,6 @@ export function useUpdateActivity() {
     },
 
     onSuccess(_result, variables) {
-      queryClient.setQueryData<Activity[]>(
-        queryKeys.list(variables.cardId),
-        (cache = []) => updateActivityInCache(cache, variables),
-      );
-
       queryClient.setQueryData<Activity>(
         queryKeys.detail(variables.activityId),
         (cache) => (cache ? { ...cache, content: variables.content } : cache),
@@ -130,7 +119,7 @@ export function useDeleteActivity() {
     },
 
     onSuccess(_result, variables) {
-      queryClient.setQueryData<Activity[]>(
+      queryClient.setQueryData<ActivityListItem[]>(
         queryKeys.list(variables.cardId),
         (cache = []) =>
           cache.filter((item) => item.id !== variables.activityId),

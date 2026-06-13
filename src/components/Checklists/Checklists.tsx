@@ -1,12 +1,10 @@
 import { Checklist } from '~/components/Checklists/Checklist';
 import { ChecklistsContainer } from '~/components/Checklists/Checklists.styled';
 import { useGetChecklists } from '~/query/checklists';
+import { useCurrentCardId } from '~/utils/useCurrentCardId';
 
-type CardChecklistsProps = {
-  cardId: string;
-};
-
-export function CardChecklists({ cardId }: CardChecklistsProps) {
+export function CardChecklists() {
+  const cardId = useCurrentCardId();
   const { data } = useGetChecklists({ cardId });
 
   return (

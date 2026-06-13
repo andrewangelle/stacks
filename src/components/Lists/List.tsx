@@ -6,7 +6,6 @@ import {
 } from '~/components/Lists/List.styled';
 import { ListCard } from '~/components/Lists/ListCard';
 import { ListHeader } from '~/components/Lists/ListHeader';
-import type { Card as CardType } from '~/generated/prisma/client';
 import { reorderCards, useGetCardsByListId } from '~/query/cards';
 import { useGetListById } from '~/query/lists';
 
@@ -34,7 +33,7 @@ export function List({ id: listId }: { id: string }) {
           id={card.id}
           name={card.cardTitle}
           type="card"
-          onDrop={(item: CardType) => reorderCards(item, listId, card.id)}
+          onDrop={(item: { id: string }) => reorderCards(item, listId, card.id)}
         >
           <ListCard id={card.id} />
         </Draggable>

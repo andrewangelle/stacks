@@ -13,12 +13,10 @@ import {
 } from '~/components/Cards/Card.styled';
 import { useGetCardById, useUpdateCard } from '~/query/cards';
 import { Flex } from '~/styles/Page.styled';
+import { useCurrentCardId } from '~/utils/useCurrentCardId';
 
-type CardModalDescriptionProps = {
-  cardId: string;
-};
-
-export function CardDescription({ cardId }: CardModalDescriptionProps) {
+export function CardDescription() {
+  const cardId = useCurrentCardId();
   const { data } = useGetCardById({ id: cardId });
   const [isEditing, setEditing] = useState(false);
   const [description, setDescription] = useState('');

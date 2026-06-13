@@ -15,6 +15,12 @@ import type { List } from '~/generated/prisma/client';
 import { queryClient } from '~/query/queryClient';
 import { useCurrentBoardId } from '~/utils/useCurrentBoardId';
 
+export type ListListItem = Pick<List, 'id' | 'listTitle' | 'createdAt'>;
+
+function toListListItem(item: List): ListListItem {
+  return { id: item.id, listTitle: item.listTitle, createdAt: item.createdAt };
+}
+
 const queryKeys = {
   list: (boardId: string) => ['lists', boardId] as const,
   detail: (id: string) => ['list', id] as const,
@@ -62,7 +68,7 @@ export function useUpdateList() {
         }),
       );
 
-      queryClient.setQueryData<List[]>(
+      queryClient.setQueryData<ListListItem[]>(
         queryKeys.list(variables.boardId),
         (cache = []) =>
           cache.map((item) =>
@@ -83,9 +89,9 @@ export function useCreateList() {
       return createList({ data: args });
     },
     onSuccess(result, variables) {
-      queryClient.setQueryData<List[]>(
+      queryClient.setQueryData<ListListItem[]>(
         queryKeys.list(variables.boardId),
-        (cache = []) => [...cache, result.data[0]],
+        (cache = []) => [...cache, toListListItem(result.data[0])],
       );
     },
   });
@@ -100,7 +106,7 @@ export function useDeleteList() {
     },
 
     onSuccess(_result, variables) {
-      queryClient.setQueryData<List[]>(
+      queryClient.setQueryData<ListListItem[]>(
         queryKeys.list(variables.boardId),
         (cache = []) => cache.filter((item) => item.id !== variables.listId),
       );
@@ -110,19 +116,26 @@ export function useDeleteList() {
   return mutation.mutate;
 }
 
-export const reorderLists = (item: List, boardId: string, droppedId: string) =>
-  queryClient.setQueryData<List[]>(queryKeys.list(boardId), (cache = []) => {
-    const cacheArray = [...cache];
+export const reorderLists = (
+  item: { id: string },
+  boardId: string,
+  droppedId: string,
+) =>
+  queryClient.setQueryData<ListListItem[]>(
+    queryKeys.list(boardId),
+    (cache = []) => {
+      const cacheArray = [...cache];
 
-    const draggedIndex = cacheArray.findIndex(
-      (cacheItem) => cacheItem.id === item.id,
-    );
+      const draggedIndex = cacheArray.findIndex(
+        (cacheItem) => cacheItem.id === item.id,
+      );
 
-    const droppedIndex = cacheArray.findIndex(
-      (cacheItem) => cacheItem.id === droppedId,
-    );
+      const droppedIndex = cacheArray.findIndex(
+        (cacheItem) => cacheItem.id === droppedId,
+      );
 
-    cacheArray.splice(droppedIndex, 0, cacheArray.splice(draggedIndex, 1)[0]);
+      cacheArray.splice(droppedIndex, 0, cacheArray.splice(draggedIndex, 1)[0]);
 
-    return cacheArray;
-  });
+      return cacheArray;
+    },
+  );

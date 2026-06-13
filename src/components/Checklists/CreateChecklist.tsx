@@ -21,12 +21,10 @@ import { useCreateActivity } from '~/query/activity';
 import { useGetCardById } from '~/query/cards';
 import { useCreateChecklist } from '~/query/checklists';
 import { useCurrentBoardId } from '~/utils/useCurrentBoardId';
+import { useCurrentCardId } from '~/utils/useCurrentCardId';
 
-type CreateChecklistProps = {
-  cardId: string;
-};
-
-export function CreateChecklist({ cardId }: CreateChecklistProps) {
+export function CreateChecklist() {
+  const cardId = useCurrentCardId();
   const boardId = useCurrentBoardId();
   const { data } = useGetCardById({ id: cardId });
 

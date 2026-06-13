@@ -17,6 +17,20 @@ import type { ChecklistItem } from '~/generated/prisma/client';
 import { checklistQueryKeys } from '~/query/checklists';
 import { queryClient } from '~/query/queryClient';
 
+export type ChecklistItemListItem = Pick<
+  ChecklistItem,
+  'id' | 'label' | 'isCompleted' | 'createdAt'
+>;
+
+function toChecklistItemListItem(item: ChecklistItem): ChecklistItemListItem {
+  return {
+    id: item.id,
+    label: item.label,
+    isCompleted: item.isCompleted,
+    createdAt: item.createdAt,
+  };
+}
+
 const queryKeys = {
   list: (checklistId: string) => ['checklistItems', checklistId] as const,
   detail: (checklistItemId: string) =>
@@ -60,7 +74,7 @@ function getCachedChecklistItem(itemId: string, checklistId: string) {
   return (
     queryClient.getQueryData<ChecklistItem>(queryKeys.detail(itemId)) ??
     queryClient
-      .getQueryData<ChecklistItem[]>(queryKeys.list(checklistId))
+      .getQueryData<ChecklistItemListItem[]>(queryKeys.list(checklistId))
       ?.find((cachedItem) => cachedItem.id === itemId)
   );
 }
@@ -113,11 +127,13 @@ function updateChecklistItemCaches(item: ChecklistItem) {
 
   queryClient.setQueryData<ChecklistItem>(queryKeys.detail(item.id), item);
 
-  queryClient.setQueryData<ChecklistItem[]>(
+  const listItem = toChecklistItemListItem(item);
+
+  queryClient.setQueryData<ChecklistItemListItem[]>(
     queryKeys.list(item.checklistId),
     (cache = []) =>
       cache.map((cachedItem) =>
-        cachedItem.id === item.id ? item : cachedItem,
+        cachedItem.id === item.id ? listItem : cachedItem,
       ),
   );
 
@@ -155,9 +171,9 @@ export function useCreateChecklistItem() {
     },
 
     onSuccess(result, variables) {
-      queryClient.setQueryData<ChecklistItem[]>(
+      queryClient.setQueryData<ChecklistItemListItem[]>(
         queryKeys.list(variables.checklistId),
-        (cache = []) => [...cache, result.data[0]],
+        (cache = []) => [...cache, toChecklistItemListItem(result.data[0])],
       );
 
       invalidateCardChecklistView(variables.cardId);
@@ -191,6 +207,27 @@ export function useUpdateChecklistItem() {
         }),
       );
 
+      const checklistId = queryClient.getQueryData<ChecklistItem>(
+        queryKeys.detail(variables.itemId),
+      )?.checklistId;
+
+      if (checklistId) {
+        queryClient.setQueryData<ChecklistItemListItem[]>(
+          queryKeys.list(checklistId),
+          (cache = []) =>
+            cache.map((cachedItem) =>
+              cachedItem.id === variables.itemId
+                ? {
+                    ...cachedItem,
+                    isCompleted:
+                      variables.isCompleted ?? cachedItem.isCompleted,
+                    label: variables.label ?? cachedItem.label,
+                  }
+                : cachedItem,
+            ),
+        );
+      }
+
       // Safety net for unexpected server payloads: refresh derived checklist totals.
       queryClient.invalidateQueries({
         queryKey: ['cardChecklistView'],
@@ -218,7 +255,7 @@ export function useDeleteChecklistItem() {
       const checklistId = deletedItem?.checklistId;
 
       if (checklistId) {
-        queryClient.setQueryData<ChecklistItem[]>(
+        queryClient.setQueryData<ChecklistItemListItem[]>(
           queryKeys.list(checklistId),
           (cache = []) => cache.filter((item) => item.id !== variables.itemId),
         );
@@ -234,11 +271,11 @@ export function useDeleteChecklistItem() {
 }
 
 export const reorderChecklistItems = (
-  item: ChecklistItem,
+  item: { id: string },
   checklistId: string,
   droppedId: string,
 ) =>
-  queryClient.setQueryData<ChecklistItem[]>(
+  queryClient.setQueryData<ChecklistItemListItem[]>(
     queryKeys.list(checklistId),
     (cache = []) => {
       const cacheArray = [...cache];

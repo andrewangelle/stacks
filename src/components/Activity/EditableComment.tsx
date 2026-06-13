@@ -20,7 +20,6 @@ export function EditableComment({ id }: EditableCommentProps) {
     return (
       <EditCommentForm
         id={id}
-        cardId={data.cardId}
         content={data.content}
         setIsEditing={setIsEditing}
       />
@@ -33,11 +32,7 @@ export function EditableComment({ id }: EditableCommentProps) {
         {data.content}
       </ActivityCommentContent>
 
-      <EditCommentActions
-        id={id}
-        cardId={data.cardId}
-        setIsEditing={setIsEditing}
-      />
+      <EditCommentActions id={id} setIsEditing={setIsEditing} />
     </>
   );
 }

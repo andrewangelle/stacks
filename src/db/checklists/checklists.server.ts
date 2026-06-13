@@ -15,6 +15,7 @@ export function getChecklistsQuery(data: WithUserId<GetChecklistsArgs>) {
       card: { list: { board: { userId: data.userId } } },
     },
     orderBy: { createdAt: 'asc' },
+    select: { id: true, createdAt: true },
   });
 }
 

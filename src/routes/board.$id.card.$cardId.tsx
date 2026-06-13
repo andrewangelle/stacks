@@ -21,7 +21,6 @@ export const Route = createFileRoute('/board/$id/card/$cardId')({
   },
 
   component() {
-    const { cardId } = Route.useParams();
-    return <Card cardId={cardId} />;
+    return <Card />;
   },
 });
