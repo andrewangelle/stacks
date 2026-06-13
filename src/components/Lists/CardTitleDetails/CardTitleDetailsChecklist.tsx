@@ -4,7 +4,6 @@ import {
   CheckboxSkeleton,
   ChecklistLabelSkeleton,
 } from '~/components/ChecklistItem/ChecklistItem.styled';
-import { ChecklistItemSkeleton } from '~/components/ChecklistItem/ChecklistItemSkeleton';
 import {
   CardTitleDetailsChecklistCheckbox,
   CardTitleDetailsChecklistCheckboxIndicator,
@@ -76,7 +75,19 @@ export function CardTitleDetailsChecklist({
   if (isLoading) {
     return (
       <CardTitleDetailsChecklistContainer data-testid="CardTitleDetailsChecklistContainer">
-        <ChecklistItemSkeleton />
+        <div
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: '8px',
+          }}
+        >
+          <CheckboxSkeleton data-testid="CheckboxSkeleton" />
+          <ChecklistLabelSkeleton
+            data-testid="ChecklistLabelSkeleton"
+            style={{ width: '83%' }}
+          />
+        </div>
       </CardTitleDetailsChecklistContainer>
     );
   }

@@ -7,7 +7,13 @@ export function ListHeader({ id: listId }: { id: string }) {
   const [editedListTitle, setEditedListTitle] = useState('');
 
   return (
-    <>
+    <div
+      style={{
+        display: 'flex',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+      }}
+    >
       <EditableListName
         listId={listId}
         isEditingListName={isEditingListName}
@@ -17,6 +23,6 @@ export function ListHeader({ id: listId }: { id: string }) {
       />
 
       {!isEditingListName && <DeleteList id={listId} />}
-    </>
+    </div>
   );
 }
