@@ -30,28 +30,48 @@ async function openCard(page: Page, request: APIRequestContext) {
 
 async function addComment(page: Page, text: string) {
   const activityColumn = page.getByTestId('CardActivityColumn');
+
   await activityColumn.getByTestId('AddCommentInput').fill(text);
-  await activityColumn.getByTestId('SaveCommentButton').click();
 
-  const commentContainer = activityColumn
-    .getByTestId('ActivityCommentContainer')
-    .filter({ hasText: text });
+  let commentContainerIndex = -1;
 
-  await expect(
-    commentContainer.getByTestId('ActivityCommentContent'),
-  ).toHaveText(text);
+  await waitForHydratedAction(
+    () =>
+      activityColumn
+        .locator('[data-testid="SaveCommentButton"]:not([disabled])')
+        .click(),
+    async () => {
+      const containers = activityColumn.getByTestId('ActivityContainer');
+      const count = await containers.count();
 
-  return commentContainer;
+      for (let i = 0; i < count; i++) {
+        const content = containers.nth(i).getByTestId('ActivityCommentContent');
+        if (
+          (await content.count()) > 0 &&
+          (await content.textContent()) === text
+        ) {
+          commentContainerIndex = i;
+          return true;
+        }
+      }
+
+      return false;
+    },
+  );
+
+  return activityColumn
+    .getByTestId('ActivityContainer')
+    .nth(commentContainerIndex);
 }
 
-async function waitForSaveButton(activityColumn: Locator) {
+async function waitForSaveButton(commentContainer: Locator) {
   const trigger = () =>
-    activityColumn
+    commentContainer
       .locator('[data-testid="SaveCommentButton"]:not([disabled])')
       .click();
 
   const isDone = async () =>
-    (await activityColumn.getByTestId('AddCommentInput').count()) === 0;
+    (await commentContainer.getByTestId('AddCommentInput').count()) === 0;
 
   return waitForHydratedAction(trigger, isDone);
 }
@@ -66,23 +86,22 @@ test.describe('Activity', () => {
   test('edits a comment in the activity column', async ({ page, request }) => {
     await openCard(page, request);
 
-    const activityColumn = page.getByTestId('CardActivityColumn');
-    await addComment(page, 'Looks good');
+    const commentContainer = await addComment(page, 'Looks good');
 
-    await waitForInteractiveTrigger(
-      page,
-      '[data-testid="AddCommentInput"]',
-      '[data-testid="EditCommentLink"]',
+    await waitForHydratedAction(
+      () => commentContainer.getByTestId('EditCommentLink').click(),
+      async () =>
+        (await commentContainer.getByTestId('AddCommentInput').count()) > 0,
     );
 
-    await activityColumn.getByTestId('AddCommentInput').fill('Needs revision');
+    await commentContainer
+      .getByTestId('AddCommentInput')
+      .fill('Needs revision');
 
-    await waitForSaveButton(activityColumn);
+    await waitForSaveButton(commentContainer);
 
     await expect(
-      activityColumn
-        .getByTestId('ActivityCommentContent')
-        .filter({ hasText: 'Needs revision' }),
+      commentContainer.getByTestId('ActivityCommentContent'),
     ).toHaveText('Needs revision');
   });
 
