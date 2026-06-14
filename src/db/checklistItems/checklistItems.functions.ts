@@ -4,6 +4,7 @@ import {
   DeleteChecklistItemSchema,
   GetChecklistItemByIdSchema,
   GetChecklistItemsSchema,
+  MoveChecklistItemSchema,
   ReorderChecklistItemsSchema,
   UpdateChecklistItemSchema,
 } from '~/db/checklistItems/checklistItems.schemas';
@@ -12,6 +13,7 @@ import {
   deleteChecklistItemQuery,
   getChecklistItemByIdQuery,
   getChecklistItemsQuery,
+  moveChecklistItemQuery,
   reorderChecklistItemsQuery,
   updateChecklistItemQuery,
 } from '~/db/checklistItems/checklistItems.server';
@@ -57,4 +59,11 @@ export const reorderChecklistItems = createServerFn({ method: 'POST' })
   .middleware([authMiddleware])
   .handler(async ({ data, context }) =>
     reorderChecklistItemsQuery({ ...data, userId: context.uid }),
+  );
+
+export const moveChecklistItem = createServerFn({ method: 'POST' })
+  .validator(MoveChecklistItemSchema)
+  .middleware([authMiddleware])
+  .handler(async ({ data, context }) =>
+    moveChecklistItemQuery({ ...data, userId: context.uid }),
   );

@@ -4,6 +4,7 @@ import {
   DeleteCardSchema,
   GetCardByIdSchema,
   GetCardsByListIdSchema,
+  MoveCardSchema,
   ReorderCardsSchema,
   UpdateCardSchema,
 } from '~/db/cards/cards.schemas';
@@ -13,6 +14,7 @@ import {
   getBoardIdByCardIdQuery,
   getCardByIdQuery,
   getCardsByListIdQuery,
+  moveCardQuery,
   reorderCardsQuery,
   updateCardQuery,
 } from '~/db/cards/cards.server';
@@ -65,4 +67,11 @@ export const reorderCards = createServerFn({ method: 'POST' })
   .middleware([authMiddleware])
   .handler(async ({ data, context }) =>
     reorderCardsQuery({ ...data, userId: context.uid }),
+  );
+
+export const moveCard = createServerFn({ method: 'POST' })
+  .validator(MoveCardSchema)
+  .middleware([authMiddleware])
+  .handler(async ({ data, context }) =>
+    moveCardQuery({ ...data, userId: context.uid }),
   );
