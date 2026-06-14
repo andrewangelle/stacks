@@ -1,17 +1,5 @@
-import {
-  type HistoryState,
-  useLocation,
-  useNavigate,
-  useParams,
-} from '@tanstack/react-router';
-import {
-  type Dispatch,
-  type SetStateAction,
-  useCallback,
-  useEffect,
-  useRef,
-  useState,
-} from 'react';
+import { useLocation, useParams } from '@tanstack/react-router';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { AiOutlineCheck } from 'react-icons/ai';
 import { GoPaperclip } from 'react-icons/go';
 import {
@@ -23,21 +11,18 @@ import { useGetActivityById } from '~/query/activity';
 import { formatActivityTime } from '~/utils/formatDateTime';
 import { ActivitySkeleton } from './ActivitySkeleton';
 
-type ActivityLocationState = { skipActivityScroll?: boolean };
-
 type ActivityTimestampProps = {
   id: string;
   isSelected: boolean;
-  setIsSelected: Dispatch<SetStateAction<boolean>>;
+  onSelect: () => void;
 };
 
 export function ActivityTimestamp({
   id,
   isSelected,
-  setIsSelected,
+  onSelect,
 }: ActivityTimestampProps) {
   const { isLoading, isSuccess, data } = useGetActivityById({ activityId: id });
-  const navigate = useNavigate();
   const location = useLocation();
   const { cardId } = useParams({ strict: false });
   const ref = useRef<HTMLDivElement>(null);
@@ -51,33 +36,26 @@ export function ActivityTimestamp({
   function highlightAndCopyActivity() {
     setIsCopied(true);
     setWasCopied(true);
+    onSelect();
 
-    const nextLocation = `${window.location.origin}/card/${cardId?.slice(0, 8)}#activity-${id}`;
+    // Copy the canonical shareable permalink. We intentionally do NOT navigate
+    // or touch window.history here: the card view is rendered behind a route
+    // mask, so any router/history update re-parses the masked URL, remounts the
+    // activity subtree, and resets the selected/copied state — hiding the
+    // checkmark and highlight. Deep-linking still works when the copied link is
+    // opened directly (the hash is read on load to select and scroll).
+    const shareableLink = `${window.location.origin}/card/${cardId?.slice(0, 8)}#activity-${id}`;
 
-    navigate({
-      href: `/card/${cardId?.slice(0, 8)}#activity-${id}`,
-      replace: true,
-      resetScroll: false,
-      hashScrollIntoView: false,
-      state: (prev) => ({ ...prev, skipActivityScroll: true }) as HistoryState,
-    });
-
-    navigator.clipboard.writeText(nextLocation);
+    navigator.clipboard.writeText(shareableLink);
   }
 
-  const autoScrollToActivity = useCallback(() => {
+  // Scroll to this entry only when it is deep-linked via the URL hash (fresh
+  // load of a copied link). In-app clicks never set the hash, so they never
+  // trigger a scroll.
+  const scrollToDeepLinkedActivity = useCallback(() => {
     const [, activityId = ''] = location.hash?.split('activity-') ?? [];
-    const isMatch = activityId === id;
-    setIsSelected(isMatch);
 
-    if (!isMatch) {
-      setWasCopied(false);
-    }
-
-    const skipScroll = (location.state as ActivityLocationState)
-      .skipActivityScroll;
-
-    if (!isMatch || skipScroll || !isSuccess || !data) {
+    if (activityId !== id || !isSuccess || !data) {
       return;
     }
 
@@ -86,7 +64,7 @@ export function ActivityTimestamp({
     }, 350);
 
     return () => clearTimeout(timer);
-  }, [location.hash, location.state, id, isSuccess, data, setIsSelected]);
+  }, [location.hash, id, isSuccess, data]);
 
   const clearCopiedCheckmark = useCallback(() => {
     let timer: NodeJS.Timeout | undefined;
@@ -100,8 +78,16 @@ export function ActivityTimestamp({
     return () => clearTimeout(timer);
   }, [showCheckmark]);
 
-  useEffect(autoScrollToActivity, [autoScrollToActivity]);
+  useEffect(scrollToDeepLinkedActivity, [scrollToDeepLinkedActivity]);
   useEffect(clearCopiedCheckmark, [clearCopiedCheckmark]);
+
+  // Once another entry becomes the selected one, drop this entry's lingering
+  // "copied" paperclip so it returns to hover-only behavior.
+  useEffect(() => {
+    if (!isSelected) {
+      setWasCopied(false);
+    }
+  }, [isSelected]);
 
   if (isLoading || !data) {
     return <ActivitySkeleton />;

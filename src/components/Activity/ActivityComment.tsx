@@ -1,5 +1,5 @@
 import { useUser } from '@clerk/tanstack-react-start';
-import { useRef, useState } from 'react';
+import { useRef } from 'react';
 import {
   ActivityAuthorName,
   ActivityCommentContainer,
@@ -13,11 +13,20 @@ import { ActivityTimestamp } from '~/components/Activity/ActivityTimestamp';
 import { EditableComment } from '~/components/Activity/EditableComment';
 import { useGetActivityById } from '~/query/activity';
 
-export function ActivityComment({ id }: { id: string }) {
+type ActivityCommentProps = {
+  id: string;
+  isSelected: boolean;
+  onSelect: () => void;
+};
+
+export function ActivityComment({
+  id,
+  isSelected,
+  onSelect,
+}: ActivityCommentProps) {
   const { isLoading, data } = useGetActivityById({ activityId: id });
   const { user } = useUser();
   const ref = useRef<HTMLDivElement>(null);
-  const [isSelected, setIsSelected] = useState(false);
 
   if (isLoading || !data) {
     return <ActivitySkeleton />;
@@ -42,7 +51,7 @@ export function ActivityComment({ id }: { id: string }) {
             <ActivityTimestamp
               id={data.id}
               isSelected={isSelected}
-              setIsSelected={setIsSelected}
+              onSelect={onSelect}
             />
           </ActivityMeta>
 
