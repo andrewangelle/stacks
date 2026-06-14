@@ -4,6 +4,7 @@ import {
   DeleteChecklistSchema,
   GetChecklistByIdSchema,
   GetChecklistsSchema,
+  ReorderChecklistsSchema,
   UpdateChecklistSchema,
 } from '~/db/checklists/checklists.schemas';
 import {
@@ -12,6 +13,7 @@ import {
   getCardTitleDetailsChecklistsQuery,
   getChecklistByIdQuery,
   getChecklistsQuery,
+  reorderChecklistsQuery,
   updateChecklistQuery,
 } from '~/db/checklists/checklists.server';
 import { authMiddleware } from '~/middleware/auth';
@@ -56,4 +58,11 @@ export const getCardTitleDetailsChecklists = createServerFn({ method: 'GET' })
   .middleware([authMiddleware])
   .handler(async ({ data, context }) =>
     getCardTitleDetailsChecklistsQuery({ ...data, userId: context.uid }),
+  );
+
+export const reorderChecklists = createServerFn({ method: 'POST' })
+  .validator(ReorderChecklistsSchema)
+  .middleware([authMiddleware])
+  .handler(async ({ data, context }) =>
+    reorderChecklistsQuery({ ...data, userId: context.uid }),
   );

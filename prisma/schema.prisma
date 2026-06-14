@@ -77,6 +77,7 @@ model Checklist {
   cardId           String          @map("card_id")
   listId         String          @map("list_id")
   userId         String          @map("user_id")
+  position       Int             @default(0) @map("position")
   createdAt      DateTime        @default(now()) @map("created_at")
   updatedAt      DateTime        @updatedAt @map("updated_at")
   card           Card            @relation(fields: [cardId], references: [id], onDelete: Cascade)

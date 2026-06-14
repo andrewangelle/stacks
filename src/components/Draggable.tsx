@@ -11,12 +11,12 @@ import { useCallback, useMemo } from 'react';
 export type DraggableProps = {
   id: string;
   name: string;
-  type: 'list' | 'card' | 'checklistItem';
+  type: 'list' | 'card' | 'checklist' | 'checklistItem';
   onDrop: (...args: unknown[]) => void;
   children: ReactNode;
 };
 
-const cardPointerSensor = PointerSensor.configure({
+const nestedPointerSensor = PointerSensor.configure({
   preventActivation(event, source) {
     const { target } = event;
 
@@ -45,7 +45,10 @@ export function Draggable({
     id,
     type,
     data: itemData,
-    sensors: type === 'card' ? [cardPointerSensor] : undefined,
+    sensors:
+      type === 'card' || type === 'checklist'
+        ? [nestedPointerSensor]
+        : undefined,
   });
 
   const { ref: droppableRef } = useDroppable({
