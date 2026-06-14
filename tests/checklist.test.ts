@@ -145,30 +145,21 @@ test.describe('Checklist', () => {
   });
 
   test('deletes a checklist in the card modal', async ({ page, request }) => {
-    await resetDb(request);
-    const board = await seedBoard(request, 'Sprint Board');
-    const { card } = await seedListCard(request, {
-      boardId: board.id,
-      listTitle: 'To Do',
-      cardTitle: 'Ship feature',
-      checklists: [
-        { title: 'Launch checklist', items: ['Deploy to staging'] },
-        { title: 'QA checklist', items: ['Run tests'] },
-      ],
-    });
+    await openCardWithChecklists(page, request, [
+      { title: 'Launch checklist', items: ['Deploy to staging'] },
+      { title: 'QA checklist', items: ['Run tests'] },
+    ]);
 
-    await page.goto(`/board/${board.id}/card/${card.id}`);
     await expect(page.getByTestId('ChecklistContainer')).toHaveCount(2);
 
     await waitForInteractiveTrigger(
       page,
       '[data-testid="DeleteChecklistPopoverContent"]',
-      '[data-testid="DeleteChecklistButton"]',
+      '[data-testid="ChecklistHeader"] [data-testid="DeleteChecklistButton"]',
     );
 
     await page
-      .getByTestId('ChecklistHeader')
-      .first()
+      .getByTestId('DeleteChecklistPopoverContent')
       .getByTestId('DeleteChecklistPopoverButton')
       .click();
 
@@ -196,7 +187,7 @@ async function openCardWithChecklists(
 
   await page.goto(`/board/${board.id}/card/${card.id}`);
   await expect(page.getByTestId('CardModalContent')).toBeVisible();
-  await expect(page.getByTestId('ChecklistContainer')).toBeVisible();
+  await expect(page.getByTestId('ChecklistContainer').first()).toBeVisible();
 
   return { board, card };
 }
