@@ -1,10 +1,9 @@
 import { Feedback } from '@dnd-kit/dom';
 import { isSortable } from '@dnd-kit/dom/sortable';
-import type { DragEndEvent } from '@dnd-kit/react';
 import { PointerSensor, useDragDropMonitor } from '@dnd-kit/react';
 import { useSortable } from '@dnd-kit/react/sortable';
 import type { ReactNode } from 'react';
-import { useCallback, useMemo } from 'react';
+import { useMemo } from 'react';
 
 export type DraggableProps = {
   id: string;
@@ -16,7 +15,7 @@ export type DraggableProps = {
   children: ReactNode;
 };
 
-const nestedPointerSensor = PointerSensor.configure({
+const preventParentActivationOnNestedDraggables = PointerSensor.configure({
   preventActivation(event, source) {
     const { target } = event;
 
@@ -50,37 +49,46 @@ export function Draggable({
     group,
     data: itemData,
     accept: type,
-    sensors:
-      type === 'card' || type === 'checklist'
-        ? [nestedPointerSensor]
-        : undefined,
-    plugins: (defaults) => [
-      ...defaults,
-      Feedback.configure({ dropAnimation: null }),
-    ],
+    sensors: getSensors(),
+    plugins(defaults) {
+      return [...defaults, Feedback.configure({ dropAnimation: null })];
+    },
   });
 
-  const handleDragEnd = useCallback(
-    (event: DragEndEvent) => {
-      if (event.canceled) return;
+  function getSensors() {
+    if (type === 'card' || type === 'checklist') {
+      return [preventParentActivationOnNestedDraggables];
+    }
+    return undefined;
+  }
 
-      const { source } = event.operation;
-      if (!source || source.id !== id || !isSortable(source)) return;
-
-      const {
-        initialIndex,
-        index: newIndex,
-        group: itemGroup,
-      } = source.sortable;
-      if (itemGroup !== group || initialIndex === newIndex) return;
-
-      onReorder(initialIndex, newIndex);
-    },
-    [id, group, onReorder],
-  );
-
+  // Restrict the drag end event to only the matching targets
   useDragDropMonitor(
-    useMemo(() => ({ onDragEnd: handleDragEnd }), [handleDragEnd]),
+    useMemo(
+      () => ({
+        onDragEnd(event) {
+          if (event.canceled) return;
+
+          const { source } = event.operation;
+          if (!source || source.id !== id || !isSortable(source)) {
+            return;
+          }
+
+          const {
+            initialIndex,
+            index: newIndex,
+            group: itemGroup,
+          } = source.sortable;
+
+          if (itemGroup !== group || initialIndex === newIndex) {
+            return;
+          }
+
+          onReorder(initialIndex, newIndex);
+        },
+      }),
+      [id, group, onReorder],
+    ),
   );
 
   // Cards/checklist items live in vertical columns and should fill the column

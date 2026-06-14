@@ -14,12 +14,16 @@ import { ActivitySkeleton } from './ActivitySkeleton';
 type ActivityTimestampProps = {
   id: string;
   isSelected: boolean;
+  className?: string;
+  testId?: string;
   onSelect: () => void;
 };
 
 export function ActivityTimestamp({
   id,
   isSelected,
+  className,
+  testId = 'ActivityTimestamp',
   onSelect,
 }: ActivityTimestampProps) {
   const { isLoading, data } = useGetActivityById({ activityId: id });
@@ -75,7 +79,8 @@ export function ActivityTimestamp({
 
   return (
     <ActivityTimestampMeta
-      data-testid="ActivityTimestamp"
+      className={className}
+      data-testid={testId}
       onClick={highlightAndCopyActivity}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}

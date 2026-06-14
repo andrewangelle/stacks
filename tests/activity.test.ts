@@ -79,7 +79,7 @@ test.describe('Activity copy link', () => {
     await openCard(page, request);
 
     const commentContainer = await addComment(page, 'Looks good');
-    const timestamp = commentContainer.getByTestId('ActivityTimestamp');
+    const timestamp = commentContainer.getByTestId('CommentTimestamp');
     const paperclip = commentContainer.getByTestId('PaperclipReveal');
 
     await expect(paperclip).toHaveAttribute('aria-hidden', 'true');
@@ -103,7 +103,7 @@ test.describe('Activity copy link', () => {
 
     const commentContainer = await addComment(page, 'Looks good');
 
-    await commentContainer.getByTestId('ActivityTimestamp').click();
+    await commentContainer.getByTestId('CommentTimestamp').click();
 
     await expect(
       commentContainer.getByTestId('ActivityCopiedCheckmark'),
@@ -122,7 +122,7 @@ test.describe('Activity copy link', () => {
 
     const commentContainer = await addComment(page, 'Looks good');
 
-    await commentContainer.getByTestId('ActivityTimestamp').click();
+    await commentContainer.getByTestId('CommentTimestamp').click();
 
     await expect(
       commentContainer.getByTestId('ActivityCopiedCheckmark'),

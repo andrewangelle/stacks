@@ -1,4 +1,5 @@
 import { styled } from '@pigment-css/react';
+import { ActivityTimestamp } from '~/components/Activity/ActivityTimestamp';
 import { fontFamily } from '~/components/Boards/Boards.styled';
 import { CardModalTitle } from '~/components/Cards/Card.styled';
 import { animationStyles } from '~/styles/animations';
@@ -218,6 +219,11 @@ export const ActivityTimestampMeta = styled.div`
   cursor: pointer;
   text-decoration: underline;
   color: #0000EE;
+`;
+
+export const CommentTimestamp = styled(ActivityTimestamp)`
+  display: inline;
+  margin: 0px 0px 0px 5px;
 `;
 
 export const ActivityLogoSkeleton = styled.div({
