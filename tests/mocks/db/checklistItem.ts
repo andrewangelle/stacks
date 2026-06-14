@@ -97,7 +97,12 @@ export const checklistItemModel = {
 
   async updateMany(args: {
     where: { id: string; userId: string };
-    data: { label?: string; isCompleted?: boolean; position?: number };
+    data: {
+      label?: string;
+      isCompleted?: boolean;
+      checklistId?: string;
+      position?: number;
+    };
   }) {
     const item = getStore().checklistItems.find(
       (record) =>
@@ -114,6 +119,10 @@ export const checklistItemModel = {
 
     if (args.data.isCompleted !== undefined) {
       item.isCompleted = args.data.isCompleted;
+    }
+
+    if (args.data.checklistId !== undefined) {
+      item.checklistId = args.data.checklistId;
     }
 
     if (args.data.position !== undefined) {

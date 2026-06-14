@@ -13,12 +13,14 @@ import {
 import { DeleteChecklist } from '~/components/Checklists/DeleteChecklist';
 import { ToggleCheckedItems } from '~/components/Checklists/ToggleCheckedItems';
 import { Draggable } from '~/components/Draggable';
+import { DropZone } from '~/components/DropZone';
 import {
   reorderChecklistItemsByVisibleIndex,
   useGetChecklistItems,
 } from '~/query/checklistItems';
 import { useGetChecklist } from '~/query/checklists';
 import { useHashChecklistId } from '~/utils/useHashChecklistId';
+import { useMoveItemToNewChecklist } from '~/utils/useMoveItemToNewChecklist';
 
 export function Checklist({ id }: { id: string }) {
   const {
@@ -28,11 +30,12 @@ export function Checklist({ id }: { id: string }) {
   } = useGetChecklist({
     checklistId: id,
   });
+  const { ref, onMove } = useMoveItemToNewChecklist(checklist?.cardId);
   const { isSuccess: isItemsSuccess, data: items } = useGetChecklistItems({
     checklistId: id,
   });
   const hashId = useHashChecklistId();
-  const ref = useRef<HTMLDivElement>(null);
+  const headerRef = useRef<HTMLDivElement>(null);
 
   const hideCheckedItems = checklist?.hideCheckedItems ?? false;
   const visibleItems = hideCheckedItems
@@ -46,7 +49,7 @@ export function Checklist({ id }: { id: string }) {
 
     if (hashId === id && isItemsSuccess && isSuccess) {
       timeoutId = setTimeout(() => {
-        ref.current?.scrollIntoView({ behavior: 'smooth' });
+        headerRef.current?.scrollIntoView({ behavior: 'smooth' });
       }, 350);
     }
 
@@ -59,7 +62,7 @@ export function Checklist({ id }: { id: string }) {
 
   return (
     <ChecklistContainer data-testid="ChecklistContainer">
-      <ChecklistHeader data-testid="ChecklistHeader" key={id} ref={ref}>
+      <ChecklistHeader data-testid="ChecklistHeader" key={id} ref={headerRef}>
         <ChecklistEditableTitle id={id} />
         <ChecklistHeaderActions>
           <ToggleCheckedItems checklistId={id} />
@@ -75,33 +78,39 @@ export function Checklist({ id }: { id: string }) {
         </AllItemsCompleteMessage>
       )}
 
-      {visibleItems?.map((checklistItem, visibleIndex) => {
-        function reorderItems(fromIndex: number, toIndex: number) {
-          if (items && visibleItems) {
-            reorderChecklistItemsByVisibleIndex({
-              checklistId: id,
-              items,
-              visibleItems,
-              fromVisible: fromIndex,
-              toVisible: toIndex,
-            });
+      <div ref={ref} style={{ width: '100%', minWidth: 0 }}>
+        {visibleItems?.map((checklistItem, visibleIndex) => {
+          function reorderItems(fromIndex: number, toIndex: number) {
+            if (items && visibleItems) {
+              reorderChecklistItemsByVisibleIndex({
+                checklistId: id,
+                items,
+                visibleItems,
+                fromVisible: fromIndex,
+                toVisible: toIndex,
+              });
+            }
           }
-        }
+          return (
+            <Draggable
+              key={checklistItem.id}
+              id={checklistItem.id}
+              name={checklistItem.label}
+              type="checklistItem"
+              parentId={id}
+              index={visibleIndex}
+              group={id}
+              onReorder={reorderItems}
+              onMove={onMove}
+            >
+              <ChecklistItem id={checklistItem.id} />
+            </Draggable>
+          );
+        })}
+      </div>
 
-        return (
-          <Draggable
-            key={checklistItem.id}
-            id={checklistItem.id}
-            name={checklistItem.label}
-            type="checklistItem"
-            index={visibleIndex}
-            group={id}
-            onReorder={reorderItems}
-          >
-            <ChecklistItem id={checklistItem.id} />
-          </Draggable>
-        );
-      })}
+      {/* Append target for empty checklists or drops below the last item */}
+      <DropZone id={`checklist-drop:${id}`} type="checklistItem" />
 
       <AddChecklistItem checklistId={id} />
     </ChecklistContainer>

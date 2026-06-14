@@ -4,6 +4,7 @@ import {
   deleteCard,
   getCardById,
   getCardsByListId,
+  moveCard as moveCardServer,
   reorderCards as reorderCardsServer,
   updateCard,
 } from '~/db/cards/cards.functions';
@@ -143,5 +144,55 @@ export function reorderCardsByIndex(
 
   reorderCardsServer({ data: { listId, orderedIds } }).catch(() => {
     queryClient.invalidateQueries({ queryKey: queryKeys.list(listId) });
+  });
+}
+
+/**
+ * Optimistic cache update + server persist for a card moving to another list on the
+ * same board. Called only after afterCrossContainerDrop has reverted the DOM — do not
+ * call directly from dragEnd without that sequence.
+ */
+export function moveCardToNewList({
+  cardId,
+  sourceListId,
+  targetListId,
+  targetIndex,
+}: {
+  cardId: string;
+  sourceListId: string;
+  targetListId: string;
+  targetIndex: number;
+}) {
+  const sourceCache =
+    queryClient.getQueryData<CardListItem[]>(queryKeys.list(sourceListId)) ??
+    [];
+
+  const card = sourceCache.find((item) => item.id === cardId);
+
+  if (!card) {
+    return;
+  }
+
+  queryClient.setQueryData<CardListItem[]>(
+    queryKeys.list(sourceListId),
+    sourceCache.filter((item) => item.id !== cardId),
+  );
+
+  queryClient.setQueryData<CardListItem[]>(
+    queryKeys.list(targetListId),
+    (cache = []) => {
+      const next = [...cache];
+      const clampedIndex = Math.min(Math.max(targetIndex, 0), next.length);
+      next.splice(clampedIndex, 0, card);
+      return next;
+    },
+  );
+
+  moveCardServer({
+    data: { cardId, sourceListId, targetListId, targetIndex },
+  }).catch(() => {
+    queryClient.invalidateQueries({ queryKey: queryKeys.list(sourceListId) });
+    queryClient.invalidateQueries({ queryKey: queryKeys.list(targetListId) });
+    queryClient.invalidateQueries({ queryKey: queryKeys.detail(cardId) });
   });
 }

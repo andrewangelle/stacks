@@ -4,6 +4,7 @@ import {
   deleteChecklistItem,
   getChecklistItemById,
   getChecklistItems,
+  moveChecklistItem as moveChecklistItemServer,
   reorderChecklistItems as reorderChecklistItemsServer,
   updateChecklistItem,
 } from '~/db/checklistItems/checklistItems.functions';
@@ -14,7 +15,7 @@ import type {
   GetChecklistItemsArgs,
   UpdateChecklistItemArgs,
 } from '~/db/checklistItems/checklistItems.schemas';
-import type { ChecklistItem } from '~/generated/prisma/client';
+import type { Checklist, ChecklistItem } from '~/generated/prisma/client';
 import { checklistQueryKeys } from '~/query/checklists';
 import { queryClient } from '~/query/queryClient';
 
@@ -32,7 +33,7 @@ function toChecklistItemListItem(item: ChecklistItem): ChecklistItemListItem {
   };
 }
 
-const queryKeys = {
+export const queryKeys = {
   list: (checklistId: string) => ['checklistItems', checklistId] as const,
   detail: (checklistItemId: string) =>
     ['checklistItem', checklistItemId] as const,
@@ -322,4 +323,109 @@ export function reorderChecklistItemsByVisibleIndex({
   if (fromIndex === -1 || toIndex === -1) return;
 
   reorderChecklistItemsByIndex(checklistId, fromIndex, toIndex);
+}
+
+/** Map a drag index from visible-only UI to the full checklist item order in the database. */
+function resolveTargetFullIndex(
+  targetItems: ChecklistItemListItem[],
+  targetVisibleIndex: number,
+  hideCheckedItems: boolean,
+) {
+  if (!hideCheckedItems) {
+    return Math.min(Math.max(targetVisibleIndex, 0), targetItems.length);
+  }
+
+  const targetVisibleItems = targetItems.filter((item) => !item.isCompleted);
+
+  if (targetVisibleIndex >= targetVisibleItems.length) {
+    return targetItems.length;
+  }
+
+  const anchorId = targetVisibleItems[targetVisibleIndex]?.id;
+  const fullIndex = targetItems.findIndex((item) => item.id === anchorId);
+
+  return fullIndex === -1 ? targetItems.length : fullIndex;
+}
+
+/**
+ * Optimistic cache update + server persist when a checklist item moves to another
+ * checklist on the same card. targetVisibleIndex comes from sortable indices, which
+ * respect hideCheckedItems in the UI; resolveTargetFullIndex maps that to the full
+ * item array order the server stores.
+ */
+export function moveChecklistItemToNewChecklist({
+  itemId,
+  sourceChecklistId,
+  targetChecklistId,
+  targetVisibleIndex,
+  cardId,
+}: {
+  itemId: string;
+  sourceChecklistId: string;
+  targetChecklistId: string;
+  targetVisibleIndex: number;
+  cardId: string;
+}) {
+  const sourceItems =
+    queryClient.getQueryData<ChecklistItemListItem[]>(
+      queryKeys.list(sourceChecklistId),
+    ) ?? [];
+  const item = sourceItems.find((record) => record.id === itemId);
+
+  if (!item) {
+    return;
+  }
+
+  const targetItems =
+    queryClient.getQueryData<ChecklistItemListItem[]>(
+      queryKeys.list(targetChecklistId),
+    ) ?? [];
+
+  const targetChecklist = queryClient.getQueryData<Checklist>(
+    checklistQueryKeys.detail(targetChecklistId),
+  );
+
+  const targetFullIndex = resolveTargetFullIndex(
+    targetItems,
+    targetVisibleIndex,
+    targetChecklist?.hideCheckedItems ?? false,
+  );
+
+  queryClient.setQueryData<ChecklistItemListItem[]>(
+    queryKeys.list(sourceChecklistId),
+    sourceItems.filter((record) => record.id !== itemId),
+  );
+
+  queryClient.setQueryData<ChecklistItemListItem[]>(
+    queryKeys.list(targetChecklistId),
+    (cache = []) => {
+      const next = [...cache];
+      const clampedIndex = Math.min(Math.max(targetFullIndex, 0), next.length);
+      next.splice(clampedIndex, 0, item);
+      return next;
+    },
+  );
+
+  moveChecklistItemServer({
+    data: {
+      itemId,
+      sourceChecklistId,
+      targetChecklistId,
+      targetIndex: targetFullIndex,
+    },
+  })
+    .then(() => {
+      // Card title progress badge reads a separate query — refresh after persist,
+      // not before, or a refetch can overwrite the optimistic item lists above.
+      invalidateCardChecklistView(cardId);
+    })
+    .catch(() => {
+      queryClient.invalidateQueries({
+        queryKey: queryKeys.list(sourceChecklistId),
+      });
+      queryClient.invalidateQueries({
+        queryKey: queryKeys.list(targetChecklistId),
+      });
+      invalidateCardChecklistView(cardId);
+    });
 }

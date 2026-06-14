@@ -30,6 +30,13 @@ export const ReorderChecklistItemsSchema = z.object({
   orderedIds: z.array(z.string()),
 });
 
+export const MoveChecklistItemSchema = z.object({
+  itemId: z.string(),
+  sourceChecklistId: z.string(),
+  targetChecklistId: z.string(),
+  targetIndex: z.number().int().min(0),
+});
+
 export type GetChecklistItemsArgs = z.infer<typeof GetChecklistItemsSchema>;
 export type GetChecklistItemByIdArgs = z.infer<
   typeof GetChecklistItemByIdSchema
@@ -40,3 +47,4 @@ export type DeleteChecklistItemArgs = z.infer<typeof DeleteChecklistItemSchema>;
 export type ReorderChecklistItemsArgs = z.infer<
   typeof ReorderChecklistItemsSchema
 >;
+export type MoveChecklistItemArgs = z.infer<typeof MoveChecklistItemSchema>;
