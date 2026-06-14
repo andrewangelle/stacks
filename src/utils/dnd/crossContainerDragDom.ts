@@ -18,7 +18,7 @@
  * Callers pass element + container refs from the source list/checklist component.
  * See List.tsx / Checklist.tsx onMove handlers.
  */
-import { scheduleAfterSortableSettles } from '~/utils/scheduleAfterSortableSettles';
+import { scheduleAfterSortableSettles } from '~/utils/dnd/scheduleAfterSortableSettles';
 
 /** Move a dragged wrapper back to its pre-drag index inside the source container. */
 export function revertToInitialGroup(
