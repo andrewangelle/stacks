@@ -75,29 +75,33 @@ export function Checklist({ id }: { id: string }) {
         </AllItemsCompleteMessage>
       )}
 
-      {visibleItems?.map((checklistItem, visibleIndex) => (
-        <Draggable
-          key={checklistItem.id}
-          id={checklistItem.id}
-          name={checklistItem.label}
-          type="checklistItem"
-          index={visibleIndex}
-          group={id}
-          onReorder={(from, to) =>
-            items &&
-            visibleItems &&
-            reorderChecklistItemsByVisibleIndex(
-              id,
+      {visibleItems?.map((checklistItem, visibleIndex) => {
+        function reorderItems(fromIndex: number, toIndex: number) {
+          if (items && visibleItems) {
+            reorderChecklistItemsByVisibleIndex({
+              checklistId: id,
               items,
               visibleItems,
-              from,
-              to,
-            )
+              fromVisible: fromIndex,
+              toVisible: toIndex,
+            });
           }
-        >
-          <ChecklistItem id={checklistItem.id} />
-        </Draggable>
-      ))}
+        }
+
+        return (
+          <Draggable
+            key={checklistItem.id}
+            id={checklistItem.id}
+            name={checklistItem.label}
+            type="checklistItem"
+            index={visibleIndex}
+            group={id}
+            onReorder={reorderItems}
+          >
+            <ChecklistItem id={checklistItem.id} />
+          </Draggable>
+        );
+      })}
 
       <AddChecklistItem checklistId={id} />
     </ChecklistContainer>
