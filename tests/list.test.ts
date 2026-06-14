@@ -6,6 +6,9 @@ import { waitForHydratedAction } from '~test/helpers/waitForHydratedAction';
 import { waitForInteractiveTrigger } from '~test/helpers/waitForInteractiveTrigger';
 
 test.describe('List', () => {
+  // First navigation in a run can wait on Vite cold-compile; allow extra time.
+  test.describe.configure({ timeout: 60_000 });
+
   test('truncates checklists and items on a list card', async ({
     page,
     request,
@@ -30,10 +33,7 @@ test.describe('List', () => {
     });
 
     await page.goto(`/board/${board.id}`);
-    await expect(page.getByTestId('ListContainer')).toBeVisible();
-    await expect(page.getByTestId('ListCardContainer')).toContainText(
-      'Launch feature',
-    );
+    await waitForListCard(page, 'Launch feature');
 
     await waitForInteractiveTrigger(
       page,
@@ -93,8 +93,7 @@ test.describe('List', () => {
     });
 
     await page.goto(`/board/${board.id}`);
-    await expect(page.getByTestId('ListContainer')).toBeVisible();
-    await expect(page.getByTestId('ListName')).toHaveText('In Progress');
+    await waitForList(page, 'In Progress');
 
     await waitForInteractiveTrigger(
       page,
@@ -110,7 +109,7 @@ test.describe('List', () => {
     await waitForUpdatedListName(page);
 
     await page.reload();
-    await expect(page.getByTestId('ListName')).toHaveText('Done');
+    await waitForList(page, 'Done');
   });
 
   test('marks a card complete on the list', async ({ page, request }) => {
@@ -126,7 +125,7 @@ test.describe('List', () => {
     });
 
     await page.goto(`/board/${board.id}`);
-    await expect(page.getByTestId('ListCardContainer')).toBeVisible();
+    await waitForListCard(page);
 
     const listCard = page.getByTestId('ListCardContainer');
     const completionCircle = page.getByTestId('CardTitleModalTriggerCircle');
@@ -139,7 +138,7 @@ test.describe('List', () => {
     await expect(listCard).toContainText('Launch feature');
 
     await page.getByTestId('ListCardTitleDetailsContainer').click();
-    await expect(page.getByTestId('CardModalContent')).toBeVisible();
+    await waitForCardModal(page);
     await expectCardCompletionActivity(page, 'marked this card complete');
   });
 
@@ -156,7 +155,7 @@ test.describe('List', () => {
     });
 
     await page.goto(`/board/${board.id}`);
-    await expect(page.getByTestId('ListCardContainer')).toBeVisible();
+    await waitForListCard(page);
 
     const listCard = page.getByTestId('ListCardContainer');
     const completionCircle = page.getByTestId('CardTitleModalTriggerCircle');
@@ -169,7 +168,7 @@ test.describe('List', () => {
     await expect(listCard).toContainText('Launch feature');
 
     await page.getByTestId('ListCardTitleDetailsContainer').click();
-    await expect(page.getByTestId('CardModalContent')).toBeVisible();
+    await waitForCardModal(page);
     await expectCardCompletionActivity(page, 'marked this card incomplete');
   });
 
@@ -186,7 +185,7 @@ test.describe('List', () => {
     });
 
     await page.goto(`/board/${board.id}`);
-    await expect(page.getByTestId('ListContainer')).toBeVisible();
+    await waitForList(page);
 
     await waitForInteractiveTrigger(
       page,
@@ -274,4 +273,30 @@ async function waitForItemToBeVisible(page: Page) {
     (await page.getByTestId('CardTitleDetailsChecklistItemRow').count()) >= 5;
 
   return waitForHydratedAction(trigger, isVisible);
+}
+
+async function waitForList(page: Page, listTitle?: string) {
+  await expect(async () => {
+    await expect(page.getByTestId('ListContainer')).toBeVisible();
+    if (listTitle) {
+      await expect(page.getByTestId('ListName')).toHaveText(listTitle);
+    }
+  }).toPass();
+}
+
+async function waitForListCard(page: Page, cardTitle?: string) {
+  await expect(async () => {
+    await expect(page.getByTestId('ListContainer')).toBeVisible();
+    const listCard = page.getByTestId('ListCardContainer');
+    await expect(listCard).toBeVisible();
+    if (cardTitle) {
+      await expect(listCard).toContainText(cardTitle);
+    }
+  }).toPass();
+}
+
+async function waitForCardModal(page: Page) {
+  await expect(async () => {
+    await expect(page.getByTestId('CardModalContent')).toBeVisible();
+  }).toPass();
 }
