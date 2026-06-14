@@ -5,7 +5,7 @@ import {
   ActivityEntryContent,
   ActivityLogoSkeleton,
   ActivityRow,
-  ActivityTimestamp,
+  ActivityTimestampMeta,
   ActivityTimestampSkeleton,
 } from '~/components/Activity/Activity.styled';
 
@@ -20,9 +20,9 @@ export function ActivitySkeleton() {
             <ActivityContentSkeleton data-testid="ActivityContentSkeleton" />
           </ActivityEntryContent>
 
-          <ActivityTimestamp data-testid="ActivityTimestamp">
+          <ActivityTimestampMeta data-testid="ActivityTimestamp">
             <ActivityTimestampSkeleton data-testid="ActivityTimestampSkeleton" />
-          </ActivityTimestamp>
+          </ActivityTimestampMeta>
         </ActivityCommentContainer>
       </ActivityRow>
     </ActivityContainer>

@@ -213,7 +213,7 @@ export const EditCommentActionsSeperator = styled.div`
   top: 1px;
 `;
 
-export const ActivityTimestamp = styled.div`
+export const ActivityTimestampMeta = styled.div`
   margin-top: 8px;
   cursor: pointer;
   text-decoration: underline;
