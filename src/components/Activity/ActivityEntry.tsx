@@ -1,5 +1,5 @@
 import { useUser } from '@clerk/tanstack-react-start';
-import { useRef, useState } from 'react';
+import { useRef } from 'react';
 import {
   ActivityAuthorName,
   ActivityCommentContainer,
@@ -12,11 +12,20 @@ import { ActivitySkeleton } from '~/components/Activity/ActivitySkeleton';
 import { ActivityTimestamp } from '~/components/Activity/ActivityTimestamp';
 import { useGetActivityById } from '~/query/activity';
 
-export function ActivityEntry({ id }: { id: string }) {
+type ActivityEntryProps = {
+  id: string;
+  isSelected: boolean;
+  onSelect: () => void;
+};
+
+export function ActivityEntry({
+  id,
+  isSelected,
+  onSelect,
+}: ActivityEntryProps) {
   const { user } = useUser();
   const { isLoading, data } = useGetActivityById({ activityId: id });
   const ref = useRef<HTMLDivElement>(null);
-  const [isSelected, setIsSelected] = useState(false);
 
   if (isLoading || !data) {
     return <ActivitySkeleton />;
@@ -41,7 +50,7 @@ export function ActivityEntry({ id }: { id: string }) {
             <ActivityTimestamp
               id={data.id}
               isSelected={isSelected}
-              setIsSelected={setIsSelected}
+              onSelect={onSelect}
             />
           </ActivityEntryContent>
         </ActivityCommentContainer>

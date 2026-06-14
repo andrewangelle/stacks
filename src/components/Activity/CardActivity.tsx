@@ -1,4 +1,5 @@
-import { useState } from 'react';
+import { useLocation } from '@tanstack/react-router';
+import { useEffect, useState } from 'react';
 import { BiCommentDetail } from 'react-icons/bi';
 import {
   ActivityHeader,
@@ -15,9 +16,24 @@ import { useCurrentCardId } from '~/utils/useCurrentCardId';
 
 export function CardActivity() {
   const cardId = useCurrentCardId();
+  const location = useLocation();
   const [showActivity, setShowActivity] = useState(true);
+  // Single source of truth for which activity entry is highlighted, so only one
+  // can ever be selected at a time. Clicks set it directly; deep links seed it
+  // from the URL hash on load.
+  const [selectedActivityId, setSelectedActivityId] = useState<string | null>(
+    null,
+  );
   const { data } = useGetActivity({ cardId });
   const { data: comments } = useGetComments({ cardId });
+
+  useEffect(() => {
+    const [, activityId = ''] = location.hash?.split('activity-') ?? [];
+
+    if (activityId) {
+      setSelectedActivityId(activityId);
+    }
+  }, [location.hash]);
 
   return (
     <ActivityPanel data-testid="ActivityPanel">
@@ -45,15 +61,30 @@ export function CardActivity() {
 
       {!showActivity &&
         comments?.map((comment) => (
-          <ActivityComment key={comment.id} id={comment.id} />
+          <ActivityComment
+            key={comment.id}
+            id={comment.id}
+            isSelected={selectedActivityId === comment.id}
+            onSelect={() => setSelectedActivityId(comment.id)}
+          />
         ))}
 
       {showActivity &&
         data?.map((entry) =>
           entry?.type === 'feed' ? (
-            <ActivityEntry key={entry.id} id={entry.id} />
+            <ActivityEntry
+              key={entry.id}
+              id={entry.id}
+              isSelected={selectedActivityId === entry.id}
+              onSelect={() => setSelectedActivityId(entry.id)}
+            />
           ) : (
-            <ActivityComment key={entry.id} id={entry.id} />
+            <ActivityComment
+              key={entry.id}
+              id={entry.id}
+              isSelected={selectedActivityId === entry.id}
+              onSelect={() => setSelectedActivityId(entry.id)}
+            />
           ),
         )}
     </ActivityPanel>
