@@ -16,7 +16,7 @@ test.describe('Card', () => {
     });
 
     await page.goto(`/board/${board.id}/card/${card.id}`);
-    await expect(page.getByTestId('CardModalContent')).toBeVisible();
+    await waitForCardModal(page);
     await expect(
       page.getByTestId('CardModalTitleContainer').getByTestId('CardModalTitle'),
     ).toHaveText('Write docs');
@@ -46,7 +46,7 @@ test.describe('Card', () => {
     });
 
     await page.goto(`/board/${board.id}/card/${card.id}`);
-    await expect(page.getByTestId('CardModalContent')).toBeVisible();
+    await waitForCardModal(page);
 
     await expect(
       page.getByTestId('CardModalTitleContainer').getByTestId('CardModalTitle'),
@@ -83,7 +83,7 @@ test.describe('Card', () => {
     });
 
     await page.goto(`/board/${board.id}/card/${card.id}`);
-    await expect(page.getByTestId('CardModalContent')).toBeVisible();
+    await waitForCardModal(page);
 
     const completionCircle = page
       .getByTestId('CardModalTitleContainer')
@@ -110,7 +110,7 @@ test.describe('Card', () => {
     });
 
     await page.goto(`/board/${board.id}/card/${card.id}`);
-    await expect(page.getByTestId('CardModalContent')).toBeVisible();
+    await waitForCardModal(page);
 
     const completionCircle = page
       .getByTestId('CardModalTitleContainer')
@@ -134,7 +134,7 @@ test.describe('Card', () => {
     });
 
     await page.goto(`/board/${board.id}/card/${card.id}`);
-    await expect(page.getByTestId('CardModalContent')).toBeVisible();
+    await waitForCardModal(page);
 
     await waitForInteractiveTrigger(
       page,
@@ -206,4 +206,10 @@ async function waitForCardTitleToBeUpdated(page: Page) {
     (await cardTitle.textContent())?.trim() === 'Write E2E docs';
 
   return waitForHydratedAction(trigger, isDone);
+}
+
+async function waitForCardModal(page: Page) {
+  await expect(async () => {
+    await expect(page.getByTestId('CardModalContent')).toBeVisible();
+  }).toPass();
 }

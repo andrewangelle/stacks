@@ -10,109 +10,6 @@ import { seedBoard, seedCard } from '~test/helpers/seed';
 import { waitForHydratedAction } from '~test/helpers/waitForHydratedAction';
 import { waitForInteractiveTrigger } from '~test/helpers/waitForInteractiveTrigger';
 
-async function openCard(page: Page, request: APIRequestContext) {
-  await resetDb(request);
-  const board = await seedBoard(request, 'Sprint Board');
-  const { card } = await seedCard(request, {
-    boardId: board.id,
-    listTitle: 'To Do',
-    cardTitle: 'Ship feature',
-  });
-
-  await page.goto(`/board/${board.id}/card/${card.id}`);
-  await expect(async () => {
-    await expect(page.getByTestId('CardModalContent')).toBeVisible();
-  }).toPass();
-  await expect(page.getByTestId('CardActivityColumn')).toBeVisible();
-
-  return { board, card };
-}
-
-async function addComment(page: Page, text: string) {
-  const activityColumn = page.getByTestId('CardActivityColumn');
-
-  await activityColumn.getByTestId('AddCommentInput').fill(text);
-
-  let commentContainerIndex = -1;
-
-  await waitForHydratedAction(
-    () =>
-      activityColumn
-        .locator('[data-testid="SaveCommentButton"]:not([disabled])')
-        .click(),
-    async () => {
-      const containers = activityColumn.getByTestId('ActivityContainer');
-      const count = await containers.count();
-
-      for (let i = 0; i < count; i++) {
-        const content = containers.nth(i).getByTestId('ActivityCommentContent');
-        if (
-          (await content.count()) > 0 &&
-          (await content.textContent()) === text
-        ) {
-          commentContainerIndex = i;
-          return true;
-        }
-      }
-
-      return false;
-    },
-  );
-
-  return activityColumn
-    .getByTestId('ActivityContainer')
-    .nth(commentContainerIndex);
-}
-
-async function waitForSaveButton(commentContainer: Locator) {
-  const trigger = () =>
-    commentContainer
-      .locator('[data-testid="SaveCommentButton"]:not([disabled])')
-      .click();
-
-  const isDone = async () =>
-    (await commentContainer.getByTestId('AddCommentInput').count()) === 0;
-
-  return waitForHydratedAction(trigger, isDone);
-}
-
-// Captures whatever the app writes to the clipboard into window.__copiedText so
-// the copy behavior can be asserted without relying on per-browser clipboard
-// permissions. Must be installed before the page navigates.
-async function installClipboardSpy(page: Page) {
-  await page.addInitScript(() => {
-    (window as unknown as { __copiedText: string }).__copiedText = '';
-
-    const record = (text: string) => {
-      (window as unknown as { __copiedText: string }).__copiedText = text;
-    };
-
-    try {
-      Object.defineProperty(navigator, 'clipboard', {
-        configurable: true,
-        value: {
-          writeText: (text: string) => {
-            record(text);
-            return Promise.resolve();
-          },
-          readText: () =>
-            Promise.resolve(
-              (window as unknown as { __copiedText: string }).__copiedText,
-            ),
-        },
-      });
-    } catch {
-      // Clipboard not configurable in this browser; tests fall back to the URL.
-    }
-  });
-}
-
-function readCopiedText(page: Page) {
-  return page.evaluate(
-    () => (window as unknown as { __copiedText: string }).__copiedText,
-  );
-}
-
 test.describe('Activity', () => {
   test('adds a comment in the activity column', async ({ page, request }) => {
     await openCard(page, request);
@@ -241,3 +138,110 @@ test.describe('Activity copy link', () => {
     }).toPass();
   });
 });
+
+declare global {
+  var __copiedText: string;
+}
+
+/**
+ * Local utils
+ */
+
+async function openCard(page: Page, request: APIRequestContext) {
+  await resetDb(request);
+  const board = await seedBoard(request, 'Sprint Board');
+  const { card } = await seedCard(request, {
+    boardId: board.id,
+    listTitle: 'To Do',
+    cardTitle: 'Ship feature',
+  });
+
+  await page.goto(`/board/${board.id}/card/${card.id}`);
+  await expect(async () => {
+    await expect(page.getByTestId('CardModalContent')).toBeVisible();
+  }).toPass();
+  await expect(page.getByTestId('CardActivityColumn')).toBeVisible();
+
+  return { board, card };
+}
+
+async function addComment(page: Page, text: string) {
+  const activityColumn = page.getByTestId('CardActivityColumn');
+
+  await activityColumn.getByTestId('AddCommentInput').fill(text);
+
+  let commentContainerIndex = -1;
+
+  const trigger = () =>
+    activityColumn
+      .locator('[data-testid="SaveCommentButton"]:not([disabled])')
+      .click();
+
+  async function waitForCommentToBeAdded() {
+    const containers = activityColumn.getByTestId('ActivityContainer');
+    const count = await containers.count();
+
+    for (let i = 0; i < count; i++) {
+      const content = containers.nth(i).getByTestId('ActivityCommentContent');
+      if (
+        (await content.count()) > 0 &&
+        (await content.textContent()) === text
+      ) {
+        commentContainerIndex = i;
+        return true;
+      }
+    }
+
+    return false;
+  }
+
+  await waitForHydratedAction(trigger, waitForCommentToBeAdded);
+
+  return activityColumn
+    .getByTestId('ActivityContainer')
+    .nth(commentContainerIndex);
+}
+
+async function waitForSaveButton(commentContainer: Locator) {
+  const trigger = () =>
+    commentContainer
+      .locator('[data-testid="SaveCommentButton"]:not([disabled])')
+      .click();
+
+  const isDone = async () =>
+    (await commentContainer.getByTestId('AddCommentInput').count()) === 0;
+
+  return waitForHydratedAction(trigger, isDone);
+}
+
+// Captures whatever the app writes to the clipboard into window.__copiedText so
+// the copy behavior can be asserted without relying on per-browser clipboard
+// permissions. Must be installed before the page navigates.
+async function installClipboardSpy(page: Page) {
+  await page.addInitScript(() => {
+    window.__copiedText = '';
+
+    const record = (text: string) => {
+      window.__copiedText = text;
+    };
+
+    try {
+      Object.defineProperty(navigator, 'clipboard', {
+        configurable: true,
+        value: {
+          writeText: (text: string) => {
+            record(text);
+            return Promise.resolve();
+          },
+          readText: () => Promise.resolve(window.__copiedText),
+        },
+      });
+    } catch {
+      // Clipboard not configurable in this browser; tests fall back to the URL.
+    }
+  });
+}
+
+function readCopiedText(page: Page) {
+  return page.evaluate(() => window.__copiedText);
+}
