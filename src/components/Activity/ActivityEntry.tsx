@@ -49,7 +49,7 @@ export function ActivityEntry({
             <ActivityAuthorName data-testid="ActivityAuthorName">
               {user?.firstName} {user?.lastName}
             </ActivityAuthorName>{' '}
-            {data.content}
+            <span style={{ fontSize: '14px' }}>{data.content} </span>
             <ActivityTimestamp
               id={data.id}
               isSelected={isSelected}

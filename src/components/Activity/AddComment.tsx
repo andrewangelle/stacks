@@ -7,7 +7,6 @@ import {
   EditCommentActionsRow,
   SaveCommentButton,
 } from '~/components/Activity/Activity.styled';
-import { ActivityLogo } from '~/components/Activity/ActivityLogo';
 import { useCreateActivity } from '~/query/activity';
 import { useGetCardById } from '~/query/cards';
 import { useCurrentBoardId } from '~/utils/useCurrentBoardId';
@@ -34,8 +33,6 @@ export function AddComment() {
   return (
     <AddCommentContainer data-testid="AddCommentContainer">
       <ActivityRow data-testid="ActivityRow">
-        <ActivityLogo />
-
         <AddCommentForm onSubmit={(event) => event.preventDefault()}>
           <AddCommentInput
             data-testid="AddCommentInput"

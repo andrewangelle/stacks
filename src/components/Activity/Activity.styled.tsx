@@ -122,11 +122,11 @@ export const ActivityMeta = styled.div`
 
 export const ActivityAuthorName = styled.span`
   font-weight: 600;
+  font-size: 14px;
 `;
 
 export const ActivityMetaTime = styled.span`
   margin-left: 4px;
-    /* margin-top: 8px; */
   cursor: pointer;
   text-decoration: underline;
   color: #0000EE;
@@ -215,7 +215,7 @@ export const EditCommentActionsSeperator = styled.div`
 `;
 
 export const ActivityTimestampMeta = styled.div`
-  margin-top: 8px;
+  margin-top: 4px;
   cursor: pointer;
   text-decoration: underline;
   color: #0000EE;
