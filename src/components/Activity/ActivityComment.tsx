@@ -11,6 +11,7 @@ import { ActivityLogo } from '~/components/Activity/ActivityLogo';
 import { ActivitySkeleton } from '~/components/Activity/ActivitySkeleton';
 import { ActivityTimestamp } from '~/components/Activity/ActivityTimestamp';
 import { EditableComment } from '~/components/Activity/EditableComment';
+import { useScrollToActivityHash } from '~/components/Activity/useScrollToActivityHash';
 import { useGetActivityById } from '~/query/activity';
 
 type ActivityCommentProps = {
@@ -27,6 +28,8 @@ export function ActivityComment({
   const { isLoading, data } = useGetActivityById({ activityId: id });
   const { user } = useUser();
   const ref = useRef<HTMLDivElement>(null);
+
+  useScrollToActivityHash(id, ref, !!data);
 
   if (isLoading || !data) {
     return <ActivitySkeleton />;

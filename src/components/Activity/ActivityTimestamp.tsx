@@ -1,5 +1,5 @@
-import { useLocation, useParams } from '@tanstack/react-router';
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useParams } from '@tanstack/react-router';
+import { useCallback, useEffect, useState } from 'react';
 import { AiOutlineCheck } from 'react-icons/ai';
 import { GoPaperclip } from 'react-icons/go';
 import {
@@ -22,10 +22,8 @@ export function ActivityTimestamp({
   isSelected,
   onSelect,
 }: ActivityTimestampProps) {
-  const { isLoading, isSuccess, data } = useGetActivityById({ activityId: id });
-  const location = useLocation();
+  const { isLoading, data } = useGetActivityById({ activityId: id });
   const { cardId } = useParams({ strict: false });
-  const ref = useRef<HTMLDivElement>(null);
   const [isCopied, setIsCopied] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
   const [wasCopied, setWasCopied] = useState(false);
@@ -49,23 +47,6 @@ export function ActivityTimestamp({
     navigator.clipboard.writeText(shareableLink);
   }
 
-  // Scroll to this entry only when it is deep-linked via the URL hash (fresh
-  // load of a copied link). In-app clicks never set the hash, so they never
-  // trigger a scroll.
-  const scrollToDeepLinkedActivity = useCallback(() => {
-    const [, activityId = ''] = location.hash?.split('activity-') ?? [];
-
-    if (activityId !== id || !isSuccess || !data) {
-      return;
-    }
-
-    const timer = setTimeout(() => {
-      ref.current?.scrollIntoView({ behavior: 'smooth' });
-    }, 350);
-
-    return () => clearTimeout(timer);
-  }, [location.hash, id, isSuccess, data]);
-
   const clearCopiedCheckmark = useCallback(() => {
     let timer: NodeJS.Timeout | undefined;
 
@@ -78,7 +59,6 @@ export function ActivityTimestamp({
     return () => clearTimeout(timer);
   }, [showCheckmark]);
 
-  useEffect(scrollToDeepLinkedActivity, [scrollToDeepLinkedActivity]);
   useEffect(clearCopiedCheckmark, [clearCopiedCheckmark]);
 
   // Once another entry becomes the selected one, drop this entry's lingering
