@@ -6,10 +6,10 @@ import {
   ActivityContainer,
   ActivityMeta,
   ActivityRow,
+  CommentTimestamp,
 } from '~/components/Activity/Activity.styled';
 import { ActivityLogo } from '~/components/Activity/ActivityLogo';
 import { ActivitySkeleton } from '~/components/Activity/ActivitySkeleton';
-import { ActivityTimestamp } from '~/components/Activity/ActivityTimestamp';
 import { EditableComment } from '~/components/Activity/EditableComment';
 import { useScrollToActivityHash } from '~/components/Activity/useScrollToActivityHash';
 import { useGetActivityById } from '~/query/activity';
@@ -51,7 +51,8 @@ export function ActivityComment({
               {user?.firstName} {user?.lastName}
             </ActivityAuthorName>
 
-            <ActivityTimestamp
+            <CommentTimestamp
+              testId="CommentTimestamp"
               id={data.id}
               isSelected={isSelected}
               onSelect={onSelect}
