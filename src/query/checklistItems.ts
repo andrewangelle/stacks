@@ -271,25 +271,17 @@ export function useDeleteChecklistItem() {
   return mutation.mutate;
 }
 
-export const reorderChecklistItems = (
-  item: { id: string },
+export const reorderChecklistItemsByIndex = (
   checklistId: string,
-  droppedId: string,
+  fromIndex: number,
+  toIndex: number,
 ) => {
   queryClient.setQueryData<ChecklistItemListItem[]>(
     queryKeys.list(checklistId),
     (cache = []) => {
-      const cacheArray = [...cache];
-      const draggedIndex = cacheArray.findIndex(
-        (cacheItem) => cacheItem.id === item.id,
-      );
-      const droppedIndex = cacheArray.findIndex(
-        (cacheItem) => cacheItem.id === droppedId,
-      );
-
-      cacheArray.splice(droppedIndex, 0, cacheArray.splice(draggedIndex, 1)[0]);
-
-      return cacheArray;
+      const next = [...cache];
+      next.splice(toIndex, 0, next.splice(fromIndex, 1)[0]);
+      return next;
     },
   );
 
@@ -306,3 +298,22 @@ export const reorderChecklistItems = (
     },
   );
 };
+
+export function reorderChecklistItemsByVisibleIndex(
+  checklistId: string,
+  items: ChecklistItemListItem[],
+  visibleItems: ChecklistItemListItem[],
+  fromVisible: number,
+  toVisible: number,
+) {
+  const fromIndex = items.findIndex(
+    (item) => item.id === visibleItems[fromVisible]?.id,
+  );
+  const toIndex = items.findIndex(
+    (item) => item.id === visibleItems[toVisible]?.id,
+  );
+
+  if (fromIndex === -1 || toIndex === -1) return;
+
+  reorderChecklistItemsByIndex(checklistId, fromIndex, toIndex);
+}

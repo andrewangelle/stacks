@@ -122,25 +122,17 @@ export function useDeleteCard() {
   return mutation.mutate;
 }
 
-export function reorderCards(
-  item: { id: string },
+export function reorderCardsByIndex(
   listId: string,
-  droppedId: string,
+  fromIndex: number,
+  toIndex: number,
 ) {
   queryClient.setQueryData<CardListItem[]>(
     queryKeys.list(listId),
     (cache = []) => {
-      const cacheArray = [...cache];
-      const draggedIndex = cacheArray.findIndex(
-        (cacheItem) => cacheItem.id === item.id,
-      );
-      const droppedIndex = cacheArray.findIndex(
-        (cacheItem) => cacheItem.id === droppedId,
-      );
-
-      cacheArray.splice(droppedIndex, 0, cacheArray.splice(draggedIndex, 1)[0]);
-
-      return cacheArray;
+      const next = [...cache];
+      next.splice(toIndex, 0, next.splice(fromIndex, 1)[0]);
+      return next;
     },
   );
 

@@ -6,7 +6,7 @@ import {
 } from '~/components/Lists/List.styled';
 import { ListCard } from '~/components/Lists/ListCard';
 import { ListHeader } from '~/components/Lists/ListHeader';
-import { reorderCards, useGetCardsByListId } from '~/query/cards';
+import { reorderCardsByIndex, useGetCardsByListId } from '~/query/cards';
 import { useGetListById } from '~/query/lists';
 
 export function List({ id: listId }: { id: string }) {
@@ -27,13 +27,17 @@ export function List({ id: listId }: { id: string }) {
     <ListContainer data-testid="ListContainer" key={listId}>
       <ListHeader id={listId} />
 
-      {cards?.map((card) => (
+      {cards?.map((card, index) => (
         <Draggable
           key={card.id}
           id={card.id}
           name={card.cardTitle}
           type="card"
-          onDrop={(item: { id: string }) => reorderCards(item, listId, card.id)}
+          index={index}
+          group={listId}
+          onReorder={(fromIndex, toIndex) =>
+            reorderCardsByIndex(listId, fromIndex, toIndex)
+          }
         >
           <ListCard id={card.id} />
         </Draggable>
