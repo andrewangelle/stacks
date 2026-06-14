@@ -23,7 +23,6 @@ import { useMoveItemToNewChecklist } from '~/utils/dnd/useMoveItemToNewChecklist
 import { useHashChecklistId } from '~/utils/useHashChecklistId';
 
 export function Checklist({ id }: { id: string }) {
-  const { ref, moveItemToNewChecklist } = useMoveItemToNewChecklist(id);
   const {
     isLoading,
     isSuccess,
@@ -31,6 +30,9 @@ export function Checklist({ id }: { id: string }) {
   } = useGetChecklist({
     checklistId: id,
   });
+  const { ref, moveItemToNewChecklist } = useMoveItemToNewChecklist(
+    checklist?.cardId,
+  );
   const { isSuccess: isItemsSuccess, data: items } = useGetChecklistItems({
     checklistId: id,
   });

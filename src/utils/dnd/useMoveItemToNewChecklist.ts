@@ -1,18 +1,14 @@
 import { useRef } from 'react';
 import type { CrossGroupMoveArgs } from '~/components/Draggable';
 import { applyMoveChecklistItemToChecklist } from '~/query/checklistItems';
-import { useGetChecklist } from '~/query/checklists';
 import { afterCrossContainerDrop } from './crossContainerDragDom';
 
-export function useMoveItemToNewChecklist(checklistId: string) {
+export function useMoveItemToNewChecklist(cardId?: string) {
   // Same role as sortableGroupRef in List.tsx — see crossContainerDragDom.ts.
   const ref = useRef<HTMLDivElement>(null);
-  const { data: checklist } = useGetChecklist({
-    checklistId,
-  });
 
   function moveItemToNewChecklist(args: CrossGroupMoveArgs) {
-    if (!checklist) {
+    if (!cardId) {
       return;
     }
 
@@ -28,7 +24,7 @@ export function useMoveItemToNewChecklist(checklistId: string) {
           sourceChecklistId: args.sourceGroupId,
           targetChecklistId: args.targetGroupId,
           targetVisibleIndex: args.toIndex,
-          cardId: checklist.cardId,
+          cardId,
         }),
     });
   }
