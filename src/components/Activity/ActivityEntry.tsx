@@ -5,14 +5,18 @@ import {
   useNavigate,
   useParams,
 } from '@tanstack/react-router';
-import { useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
+import { AiOutlineCheck } from 'react-icons/ai';
+import { GoPaperclip } from 'react-icons/go';
 import {
   ActivityAuthorName,
   ActivityCommentContainer,
   ActivityContainer,
+  ActivityCopiedCheckmark,
   ActivityEntryContent,
   ActivityRow,
   ActivityTimestamp,
+  PaperclipReveal,
 } from '~/components/Activity/Activity.styled';
 import { ActivityLogo } from '~/components/Activity/ActivityLogo';
 import { useGetActivityById } from '~/query/activity';
@@ -29,8 +33,16 @@ export function ActivityEntry({ id }: { id: string }) {
   const { cardId } = useParams({ strict: false });
   const ref = useRef<HTMLDivElement>(null);
   const [isSelected, setIsSelected] = useState(false);
+  const [isCopied, setIsCopied] = useState(false);
+  const [isHovered, setIsHovered] = useState(false);
+  const [wasCopied, setWasCopied] = useState(false);
+
+  const showCheckmark = isSelected && isCopied;
+  const showPaperclipIcon = !showCheckmark && (isHovered || wasCopied);
 
   function highlightAndCopyActivity() {
+    setIsCopied(true);
+    setWasCopied(true);
     const nextLocation = `${window.location.origin}/card/${cardId?.slice(0, 8)}#activity-${id}`;
 
     navigate({
@@ -46,10 +58,14 @@ export function ActivityEntry({ id }: { id: string }) {
     navigator.clipboard.writeText(nextLocation);
   }
 
-  useEffect(() => {
+  const autoScrollToActivity = useCallback(() => {
     const [, activityId = ''] = location.hash?.split('activity-') ?? [];
     const isMatch = activityId === id;
     setIsSelected(isMatch);
+
+    if (!isMatch) {
+      setWasCopied(false);
+    }
 
     const skipScroll = (location.state as ActivityLocationState)
       .skipActivityScroll;
@@ -64,6 +80,21 @@ export function ActivityEntry({ id }: { id: string }) {
 
     return () => clearTimeout(timeoutId);
   }, [location.hash, location.state, id, isSuccess, data]);
+
+  const clearCopiedCheckmark = useCallback(() => {
+    let timeoutId: NodeJS.Timeout | undefined;
+
+    if (showCheckmark) {
+      timeoutId = setTimeout(() => {
+        setIsCopied(false);
+      }, 3000);
+    }
+
+    return () => clearTimeout(timeoutId);
+  }, [showCheckmark]);
+
+  useEffect(autoScrollToActivity, [autoScrollToActivity]);
+  useEffect(clearCopiedCheckmark, [clearCopiedCheckmark]);
 
   if (isLoading || !data) {
     return <ActivitySkeleton />;
@@ -80,15 +111,45 @@ export function ActivityEntry({ id }: { id: string }) {
         <ActivityLogo />
 
         <ActivityCommentContainer data-testid="ActivityCommentContainer">
-          <ActivityEntryContent>
-            <ActivityAuthorName>
+          <ActivityEntryContent data-testid="ActivityEntryContent">
+            <ActivityAuthorName data-testid="ActivityAuthorName">
               {user?.firstName} {user?.lastName}
             </ActivityAuthorName>{' '}
             {data.content}
           </ActivityEntryContent>
 
-          <ActivityTimestamp onClick={highlightAndCopyActivity}>
+          <ActivityTimestamp
+            data-testid="ActivityTimestamp"
+            onClick={highlightAndCopyActivity}
+            onMouseEnter={() => setIsHovered(true)}
+            onMouseLeave={() => setIsHovered(false)}
+          >
             {formatActivityTime(data?.createdAt)}
+
+            <PaperclipReveal
+              isVisible={showPaperclipIcon}
+              aria-hidden={!showPaperclipIcon}
+            >
+              <GoPaperclip
+                size={12}
+                data-testid="GoPaperclip"
+                style={{ marginLeft: '4px', color: 'black' }}
+              />
+            </PaperclipReveal>
+
+            {showCheckmark && (
+              <ActivityCopiedCheckmark data-testid="ActivityCopiedCheckmark">
+                <AiOutlineCheck
+                  size={8}
+                  data-testid="CardCompletedIndicatorCheckmark"
+                  style={{
+                    top: '1px',
+                    position: 'relative',
+                    left: '1px',
+                  }}
+                />
+              </ActivityCopiedCheckmark>
+            )}
           </ActivityTimestamp>
         </ActivityCommentContainer>
       </ActivityRow>
