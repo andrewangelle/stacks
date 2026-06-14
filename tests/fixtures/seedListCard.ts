@@ -65,6 +65,7 @@ export function seedListCard(data: {
       cardId: card.id,
       listId: list.id,
       userId,
+      position: checklists.length,
       createdAt: timestamp,
       updatedAt: timestamp,
     };

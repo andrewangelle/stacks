@@ -5,6 +5,7 @@ import {
   getCardTitleDetailsChecklists,
   getChecklistById,
   getChecklists,
+  reorderChecklists as reorderChecklistsServer,
   updateChecklist,
 } from '~/db/checklists/checklists.functions';
 import type {
@@ -17,10 +18,17 @@ import type {
 import type { Checklist } from '~/generated/prisma/client';
 import { queryClient } from '~/query/queryClient';
 
-export type ChecklistListItem = Pick<Checklist, 'id' | 'createdAt'>;
+export type ChecklistListItem = Pick<
+  Checklist,
+  'id' | 'checklistTitle' | 'createdAt'
+>;
 
 function toChecklistListItem(item: Checklist): ChecklistListItem {
-  return { id: item.id, createdAt: item.createdAt };
+  return {
+    id: item.id,
+    checklistTitle: item.checklistTitle,
+    createdAt: item.createdAt,
+  };
 }
 
 const queryKeys = {
@@ -164,3 +172,42 @@ export function useGetCardTitleDetailsChecklists(data: GetChecklistsArgs) {
     },
   });
 }
+
+export const reorderChecklists = (
+  item: { id: string },
+  cardId: string,
+  droppedId: string,
+) => {
+  queryClient.setQueryData<ChecklistListItem[]>(
+    queryKeys.list(cardId),
+    (cache = []) => {
+      const cacheArray = [...cache];
+
+      const draggedIndex = cacheArray.findIndex(
+        (cacheItem) => cacheItem.id === item.id,
+      );
+
+      const droppedIndex = cacheArray.findIndex(
+        (cacheItem) => cacheItem.id === droppedId,
+      );
+
+      cacheArray.splice(droppedIndex, 0, cacheArray.splice(draggedIndex, 1)[0]);
+
+      return cacheArray;
+    },
+  );
+
+  const orderedIds =
+    queryClient
+      .getQueryData<ChecklistListItem[]>(queryKeys.list(cardId))
+      ?.map((checklist) => checklist.id) ?? [];
+
+  reorderChecklistsServer({ data: { cardId, orderedIds } })
+    .then(() => {
+      invalidateCardChecklistView(cardId);
+    })
+    .catch(() => {
+      queryClient.invalidateQueries({ queryKey: queryKeys.list(cardId) });
+      invalidateCardChecklistView(cardId);
+    });
+};

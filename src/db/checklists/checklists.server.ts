@@ -3,6 +3,7 @@ import type {
   DeleteChecklistArgs,
   GetChecklistByIdArgs,
   GetChecklistsArgs,
+  ReorderChecklistsArgs,
   UpdateChecklistArgs,
 } from '~/db/checklists/checklists.schemas';
 import { prisma } from '~/db/prisma';
@@ -14,8 +15,8 @@ export function getChecklistsQuery(data: WithUserId<GetChecklistsArgs>) {
       cardId: data.cardId,
       card: { list: { board: { userId: data.userId } } },
     },
-    orderBy: { createdAt: 'asc' },
-    select: { id: true, createdAt: true },
+    orderBy: [{ position: 'asc' }, { createdAt: 'asc' }],
+    select: { id: true, checklistTitle: true, createdAt: true },
   });
 }
 
@@ -48,7 +49,7 @@ export async function getCardTitleDetailsChecklistsQuery(
         },
       },
     },
-    orderBy: { createdAt: 'asc' },
+    orderBy: [{ position: 'asc' }, { createdAt: 'asc' }],
   });
 
   let completedItemsForCard = 0;
@@ -94,12 +95,20 @@ export async function createChecklistQuery(
     throw new Error('Forbidden');
   }
 
+  const position = await prisma.checklist.count({
+    where: {
+      cardId: data.cardId,
+      card: { list: { board: { userId: data.userId } } },
+    },
+  });
+
   const result = await prisma.checklist.create({
     data: {
       checklistTitle: data.checklistTitle,
       cardId: data.cardId,
       userId: data.userId,
       listId: data.listId,
+      position,
     },
   });
 
@@ -152,4 +161,42 @@ export async function updateChecklistQuery(
     where: { id: data.checklistId, userId: data.userId },
     data: patch,
   });
+}
+
+export async function reorderChecklistsQuery(
+  data: WithUserId<ReorderChecklistsArgs>,
+) {
+  const existingChecklists = await prisma.checklist.findMany({
+    where: {
+      cardId: data.cardId,
+      card: { list: { board: { userId: data.userId } } },
+    },
+    select: { id: true },
+    orderBy: [{ position: 'asc' }, { createdAt: 'asc' }],
+  });
+
+  const existingIds = new Set(
+    existingChecklists.map((checklist) => checklist.id),
+  );
+
+  if (
+    data.orderedIds.length !== existingIds.size ||
+    !data.orderedIds.every((id) => existingIds.has(id))
+  ) {
+    throw new Error('Invalid reorder');
+  }
+
+  await prisma.$transaction(
+    data.orderedIds.map((id, position) =>
+      prisma.checklist.updateMany({
+        where: { id, userId: data.userId },
+        data: { position },
+      }),
+    ),
+  );
+
+  return {
+    code: 'checklists:reorder:success',
+    message: 'success',
+  };
 }

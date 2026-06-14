@@ -3,7 +3,7 @@ import {
   getStore,
   id,
   now,
-  sortByCreatedAt,
+  sortByPosition,
   type Timestamps,
 } from '~test/mocks/memoryPrisma';
 
@@ -14,6 +14,7 @@ export type ChecklistRecord = {
   cardId: string;
   listId: string;
   userId: string;
+  position: number;
 } & Timestamps;
 
 function checklistBelongsToUser(checklist: ChecklistRecord, userId: string) {
@@ -96,7 +97,9 @@ export const checklistModel = {
       card?: { list: { board: { userId: string } } };
       items?: { some: { cardId: string } };
     };
-    orderBy?: { createdAt: 'asc' };
+    orderBy?:
+      | { createdAt: 'asc' }
+      | [{ position: 'asc' }, { createdAt: 'asc' }];
     select?: {
       id?: boolean;
       checklistTitle?: boolean;
@@ -106,7 +109,7 @@ export const checklistModel = {
       };
     };
   }) {
-    const checklists = sortByCreatedAt(filterChecklists(args.where));
+    const checklists = sortByPosition(filterChecklists(args.where));
 
     if (args.select) {
       return projectChecklists(checklists, args.select);
@@ -136,6 +139,9 @@ export const checklistModel = {
     };
   }) {
     const timestamp = now();
+    const position = getStore().checklists.filter(
+      (checklist) => checklist.cardId === args.data.cardId,
+    ).length;
 
     const created: ChecklistRecord = {
       id: id(),
@@ -144,6 +150,7 @@ export const checklistModel = {
       cardId: args.data.cardId,
       listId: args.data.listId,
       userId: args.data.userId,
+      position,
       createdAt: timestamp,
       updatedAt: timestamp,
     };
@@ -176,6 +183,47 @@ export const checklistModel = {
     checklist.updatedAt = now();
 
     return checklist;
+  },
+
+  async updateMany(args: {
+    where: { id: string; userId: string };
+    data: {
+      checklistTitle?: string;
+      hideCheckedItems?: boolean;
+      position?: number;
+    };
+  }) {
+    const checklist = getStore().checklists.find(
+      (item) => item.id === args.where.id && item.userId === args.where.userId,
+    );
+
+    if (!checklist) {
+      return { count: 0 };
+    }
+
+    if (args.data.checklistTitle !== undefined) {
+      checklist.checklistTitle = args.data.checklistTitle;
+    }
+
+    if (args.data.hideCheckedItems !== undefined) {
+      checklist.hideCheckedItems = args.data.hideCheckedItems;
+    }
+
+    if (args.data.position !== undefined) {
+      checklist.position = args.data.position;
+    }
+
+    checklist.updatedAt = now();
+    return { count: 1 };
+  },
+
+  async count(args: {
+    where: {
+      cardId: string;
+      card?: { list: { board: { userId: string } } };
+    };
+  }) {
+    return filterChecklists(args.where).length;
   },
 
   async delete(args: { where: { id: string } }) {
