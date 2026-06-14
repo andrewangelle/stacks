@@ -87,6 +87,7 @@ export function useCreateActivity() {
         queryKeys.list(variables.cardId),
         (cache = []) => [...cache, toActivityListItem(result)],
       );
+      queryClient.setQueryData(queryKeys.detail(result.id), result);
     },
   });
 
