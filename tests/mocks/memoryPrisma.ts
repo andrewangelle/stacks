@@ -82,5 +82,13 @@ export const prisma = {
   checklist: checklistModel,
   checklistItem: checklistItemModel,
   activity: activityModel,
-  $transaction: async <T>(operations: Promise<T>[]) => Promise.all(operations),
+  $transaction: async <T>(
+    arg: Promise<T>[] | ((client: PrismaClient) => Promise<T>),
+  ) => {
+    if (typeof arg === 'function') {
+      return arg(prisma as PrismaClient);
+    }
+
+    return Promise.all(arg);
+  },
 } as unknown as PrismaClient;

@@ -12,15 +12,20 @@ import {
 } from '~/components/Checklists/Checklists.styled';
 import { DeleteChecklist } from '~/components/Checklists/DeleteChecklist';
 import { ToggleCheckedItems } from '~/components/Checklists/ToggleCheckedItems';
-import { Draggable } from '~/components/Draggable';
+import { type CrossGroupMoveArgs, Draggable } from '~/components/Draggable';
+import { DropZone } from '~/components/DropZone';
 import {
+  applyMoveChecklistItemToChecklist,
   reorderChecklistItemsByVisibleIndex,
   useGetChecklistItems,
 } from '~/query/checklistItems';
 import { useGetChecklist } from '~/query/checklists';
+import { afterCrossContainerDrop } from '~/utils/crossContainerDragDom';
 import { useHashChecklistId } from '~/utils/useHashChecklistId';
 
 export function Checklist({ id }: { id: string }) {
+  // Same role as sortableGroupRef in List.tsx — see crossContainerDragDom.ts.
+  const sortableGroupRef = useRef<HTMLDivElement>(null);
   const {
     isLoading,
     isSuccess,
@@ -32,7 +37,7 @@ export function Checklist({ id }: { id: string }) {
     checklistId: id,
   });
   const hashId = useHashChecklistId();
-  const ref = useRef<HTMLDivElement>(null);
+  const headerRef = useRef<HTMLDivElement>(null);
 
   const hideCheckedItems = checklist?.hideCheckedItems ?? false;
   const visibleItems = hideCheckedItems
@@ -46,7 +51,7 @@ export function Checklist({ id }: { id: string }) {
 
     if (hashId === id && isItemsSuccess && isSuccess) {
       timeoutId = setTimeout(() => {
-        ref.current?.scrollIntoView({ behavior: 'smooth' });
+        headerRef.current?.scrollIntoView({ behavior: 'smooth' });
       }, 350);
     }
 
@@ -59,7 +64,7 @@ export function Checklist({ id }: { id: string }) {
 
   return (
     <ChecklistContainer data-testid="ChecklistContainer">
-      <ChecklistHeader data-testid="ChecklistHeader" key={id} ref={ref}>
+      <ChecklistHeader data-testid="ChecklistHeader" key={id} ref={headerRef}>
         <ChecklistEditableTitle id={id} />
         <ChecklistHeaderActions>
           <ToggleCheckedItems checklistId={id} />
@@ -75,33 +80,62 @@ export function Checklist({ id }: { id: string }) {
         </AllItemsCompleteMessage>
       )}
 
-      {visibleItems?.map((checklistItem, visibleIndex) => {
-        function reorderItems(fromIndex: number, toIndex: number) {
-          if (items && visibleItems) {
-            reorderChecklistItemsByVisibleIndex({
-              checklistId: id,
-              items,
-              visibleItems,
-              fromVisible: fromIndex,
-              toVisible: toIndex,
+      <div ref={sortableGroupRef} style={{ width: '100%', minWidth: 0 }}>
+        {visibleItems?.map((checklistItem, visibleIndex) => {
+          function reorderItems(fromIndex: number, toIndex: number) {
+            if (items && visibleItems) {
+              reorderChecklistItemsByVisibleIndex({
+                checklistId: id,
+                items,
+                visibleItems,
+                fromVisible: fromIndex,
+                toVisible: toIndex,
+              });
+            }
+          }
+
+          function moveItemToNewChecklist(args: CrossGroupMoveArgs) {
+            if (!checklist) {
+              return;
+            }
+
+            // Checklist items may only move between checklists on the same card.
+            // Server enforces that too; client routing is via onMove on the source item.
+            afterCrossContainerDrop({
+              element: args.element,
+              sourceContainer: sortableGroupRef.current,
+              fromIndex: args.fromIndex,
+              applyMove: () =>
+                applyMoveChecklistItemToChecklist({
+                  itemId: args.itemId,
+                  sourceChecklistId: args.sourceGroupId,
+                  targetChecklistId: args.targetGroupId,
+                  targetVisibleIndex: args.toIndex,
+                  cardId: checklist.cardId,
+                }),
             });
           }
-        }
 
-        return (
-          <Draggable
-            key={checklistItem.id}
-            id={checklistItem.id}
-            name={checklistItem.label}
-            type="checklistItem"
-            index={visibleIndex}
-            group={id}
-            onReorder={reorderItems}
-          >
-            <ChecklistItem id={checklistItem.id} />
-          </Draggable>
-        );
-      })}
+          return (
+            <Draggable
+              key={checklistItem.id}
+              id={checklistItem.id}
+              name={checklistItem.label}
+              type="checklistItem"
+              parentId={id}
+              index={visibleIndex}
+              group={id}
+              onReorder={reorderItems}
+              onMove={moveItemToNewChecklist}
+            >
+              <ChecklistItem id={checklistItem.id} />
+            </Draggable>
+          );
+        })}
+      </div>
+
+      {/* Append target for empty checklists or drops below the last item */}
+      <DropZone id={`checklist-drop:${id}`} type="checklistItem" />
 
       <AddChecklistItem checklistId={id} />
     </ChecklistContainer>

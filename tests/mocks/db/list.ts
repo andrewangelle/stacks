@@ -36,9 +36,22 @@ export const listModel = {
     where:
       | { id: string; userId: string }
       | { id: string; board: { userId: string } }
-      | { id: string; userId: string; board: { userId: string } };
+      | { id: string; userId: string; board: { userId: string } }
+      | { id: string; boardId: string; board: { userId: string } };
   }) {
     const where = args.where;
+
+    if ('boardId' in where && 'board' in where) {
+      const userId = where.board.userId;
+      return (
+        getStore().lists.find(
+          (list) =>
+            list.id === where.id &&
+            list.boardId === where.boardId &&
+            listBelongsToUser(list, userId),
+        ) ?? null
+      );
+    }
 
     if ('userId' in where && !('board' in where)) {
       return (

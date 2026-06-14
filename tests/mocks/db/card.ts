@@ -129,6 +129,7 @@ export const cardModel = {
       cardDescription?: string;
       cardTitle?: string;
       isCompleted?: boolean;
+      listId?: string;
       position?: number;
     };
   }) {
@@ -150,6 +151,10 @@ export const cardModel = {
 
     if (args.data.isCompleted !== undefined) {
       card.isCompleted = args.data.isCompleted;
+    }
+
+    if (args.data.listId !== undefined) {
+      card.listId = args.data.listId;
     }
 
     if (args.data.position !== undefined) {

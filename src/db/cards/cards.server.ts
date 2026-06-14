@@ -3,6 +3,7 @@ import type {
   DeleteCardArgs,
   GetCardByIdArgs,
   GetCardsByListIdArgs,
+  MoveCardArgs,
   ReorderCardsArgs,
   UpdateCardArgs,
 } from '~/db/cards/cards.schemas';
@@ -192,6 +193,95 @@ export async function reorderCardsQuery(data: WithUserId<ReorderCardsArgs>) {
 
   return {
     code: 'cards:reorder:success',
+    message: 'success',
+  };
+}
+
+/**
+ * Move a card to another list on the same board. Updates listId and rewrites position
+ * on both source and target lists so order stays contiguous. Validates board ownership
+ * so cards cannot hop between boards.
+ */
+export async function moveCardQuery(data: WithUserId<MoveCardArgs>) {
+  const card = await prisma.card.findFirst({
+    where: {
+      id: data.cardId,
+      listId: data.sourceListId,
+      userId: data.userId,
+      list: { board: { userId: data.userId } },
+    },
+    select: {
+      id: true,
+      list: { select: { boardId: true } },
+    },
+  });
+
+  if (!card) {
+    throw new Error('Forbidden');
+  }
+
+  const targetList = await prisma.list.findFirst({
+    where: {
+      id: data.targetListId,
+      boardId: card.list.boardId,
+      board: { userId: data.userId },
+    },
+  });
+
+  if (!targetList || data.sourceListId === data.targetListId) {
+    throw new Error('Invalid move');
+  }
+
+  await prisma.$transaction(async (tx) => {
+    const listOwnership = {
+      list: { board: { userId: data.userId } },
+    };
+
+    const sourceCards = await tx.card.findMany({
+      where: { listId: data.sourceListId, ...listOwnership },
+      orderBy: [{ position: 'asc' }, { createdAt: 'asc' }],
+      select: { id: true },
+    });
+
+    const targetCards = await tx.card.findMany({
+      where: { listId: data.targetListId, ...listOwnership },
+      orderBy: [{ position: 'asc' }, { createdAt: 'asc' }],
+      select: { id: true },
+    });
+
+    await tx.card.updateMany({
+      where: { id: data.cardId, userId: data.userId },
+      data: { listId: data.targetListId },
+    });
+
+    const remainingSource = sourceCards.filter(
+      (sourceCard) => sourceCard.id !== data.cardId,
+    );
+
+    for (let position = 0; position < remainingSource.length; position++) {
+      await tx.card.updateMany({
+        where: { id: remainingSource[position].id, userId: data.userId },
+        data: { position },
+      });
+    }
+
+    const targetIds = targetCards.map((targetCard) => targetCard.id);
+    const clampedIndex = Math.min(
+      Math.max(data.targetIndex, 0),
+      targetIds.length,
+    );
+    targetIds.splice(clampedIndex, 0, data.cardId);
+
+    for (let position = 0; position < targetIds.length; position++) {
+      await tx.card.updateMany({
+        where: { id: targetIds[position], userId: data.userId },
+        data: { position },
+      });
+    }
+  });
+
+  return {
+    code: 'cards:move:success',
     message: 'success',
   };
 }
