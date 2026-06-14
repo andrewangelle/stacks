@@ -299,13 +299,19 @@ export const reorderChecklistItemsByIndex = (
   );
 };
 
-export function reorderChecklistItemsByVisibleIndex(
-  checklistId: string,
-  items: ChecklistItemListItem[],
-  visibleItems: ChecklistItemListItem[],
-  fromVisible: number,
-  toVisible: number,
-) {
+export function reorderChecklistItemsByVisibleIndex({
+  checklistId,
+  items,
+  visibleItems,
+  fromVisible,
+  toVisible,
+}: {
+  checklistId: string;
+  items: ChecklistItemListItem[];
+  visibleItems: ChecklistItemListItem[];
+  fromVisible: number;
+  toVisible: number;
+}) {
   const fromIndex = items.findIndex(
     (item) => item.id === visibleItems[fromVisible]?.id,
   );
