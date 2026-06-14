@@ -173,27 +173,17 @@ export function useGetCardTitleDetailsChecklists(data: GetChecklistsArgs) {
   });
 }
 
-export const reorderChecklists = (
-  item: { id: string },
+export const reorderChecklistsByIndex = (
   cardId: string,
-  droppedId: string,
+  fromIndex: number,
+  toIndex: number,
 ) => {
   queryClient.setQueryData<ChecklistListItem[]>(
     queryKeys.list(cardId),
     (cache = []) => {
-      const cacheArray = [...cache];
-
-      const draggedIndex = cacheArray.findIndex(
-        (cacheItem) => cacheItem.id === item.id,
-      );
-
-      const droppedIndex = cacheArray.findIndex(
-        (cacheItem) => cacheItem.id === droppedId,
-      );
-
-      cacheArray.splice(droppedIndex, 0, cacheArray.splice(draggedIndex, 1)[0]);
-
-      return cacheArray;
+      const next = [...cache];
+      next.splice(toIndex, 0, next.splice(fromIndex, 1)[0]);
+      return next;
     },
   );
 

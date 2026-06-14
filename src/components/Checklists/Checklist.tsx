@@ -14,7 +14,7 @@ import { DeleteChecklist } from '~/components/Checklists/DeleteChecklist';
 import { ToggleCheckedItems } from '~/components/Checklists/ToggleCheckedItems';
 import { Draggable } from '~/components/Draggable';
 import {
-  reorderChecklistItems,
+  reorderChecklistItemsByVisibleIndex,
   useGetChecklistItems,
 } from '~/query/checklistItems';
 import { useGetChecklist } from '~/query/checklists';
@@ -75,14 +75,24 @@ export function Checklist({ id }: { id: string }) {
         </AllItemsCompleteMessage>
       )}
 
-      {visibleItems?.map((checklistItem) => (
+      {visibleItems?.map((checklistItem, visibleIndex) => (
         <Draggable
           key={checklistItem.id}
           id={checklistItem.id}
           name={checklistItem.label}
           type="checklistItem"
-          onDrop={(item: { id: string }) =>
-            reorderChecklistItems(item, id, checklistItem.id)
+          index={visibleIndex}
+          group={id}
+          onReorder={(from, to) =>
+            items &&
+            visibleItems &&
+            reorderChecklistItemsByVisibleIndex(
+              id,
+              items,
+              visibleItems,
+              from,
+              to,
+            )
           }
         >
           <ChecklistItem id={checklistItem.id} />

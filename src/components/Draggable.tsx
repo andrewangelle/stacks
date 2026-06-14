@@ -1,10 +1,8 @@
+import { Feedback } from '@dnd-kit/dom';
+import { isSortable } from '@dnd-kit/dom/sortable';
 import type { DragEndEvent } from '@dnd-kit/react';
-import {
-  PointerSensor,
-  useDragDropMonitor,
-  useDraggable,
-  useDroppable,
-} from '@dnd-kit/react';
+import { PointerSensor, useDragDropMonitor } from '@dnd-kit/react';
+import { useSortable } from '@dnd-kit/react/sortable';
 import type { ReactNode } from 'react';
 import { useCallback, useMemo } from 'react';
 
@@ -12,7 +10,9 @@ export type DraggableProps = {
   id: string;
   name: string;
   type: 'list' | 'card' | 'checklist' | 'checklistItem';
-  onDrop: (...args: unknown[]) => void;
+  index: number;
+  group: string;
+  onReorder: (fromIndex: number, toIndex: number) => void;
   children: ReactNode;
 };
 
@@ -36,46 +36,47 @@ export function Draggable({
   type,
   id,
   name,
-  onDrop,
+  index,
+  group,
+  onReorder,
   children,
 }: DraggableProps) {
   const itemData = useMemo(() => ({ id, name }), [id, name]);
 
-  const { ref: draggableRef } = useDraggable({
+  const { ref } = useSortable({
     id,
     type,
+    index,
+    group,
     data: itemData,
+    accept: type,
     sensors:
       type === 'card' || type === 'checklist'
         ? [nestedPointerSensor]
         : undefined,
+    plugins: (defaults) => [
+      ...defaults,
+      Feedback.configure({ dropAnimation: null }),
+    ],
   });
-
-  const { ref: droppableRef } = useDroppable({
-    id,
-    type,
-    accept: type,
-  });
-
-  const setRef = useCallback(
-    (node: HTMLDivElement | null) => {
-      draggableRef(node);
-      droppableRef(node);
-    },
-    [draggableRef, droppableRef],
-  );
 
   const handleDragEnd = useCallback(
     (event: DragEndEvent) => {
       if (event.canceled) return;
 
-      const { source, target } = event.operation;
-      if (!source || !target || target.id !== id) return;
-      if (source.id === id) return;
+      const { source } = event.operation;
+      if (!source || source.id !== id || !isSortable(source)) return;
 
-      onDrop(source.data);
+      const {
+        initialIndex,
+        index: newIndex,
+        group: itemGroup,
+      } = source.sortable;
+      if (itemGroup !== group || initialIndex === newIndex) return;
+
+      onReorder(initialIndex, newIndex);
     },
-    [id, onDrop],
+    [id, group, onReorder],
   );
 
   useDragDropMonitor(
@@ -96,7 +97,7 @@ export function Draggable({
     // the drag preview (so it keeps its real content), while a placeholder
     // clone is left in place and styled as a shadow via global drag styles.
     <div
-      ref={setRef}
+      ref={ref}
       role="presentation"
       style={{
         minWidth: 0,

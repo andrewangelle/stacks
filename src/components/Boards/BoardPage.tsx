@@ -5,7 +5,7 @@ import { AddLists } from '~/components/Lists/AddList';
 import { List } from '~/components/Lists/List';
 import { BoardPageBackground } from '~/components/Nav/Nav.styled';
 import { boardByIdQueryOptions } from '~/query/boards';
-import { listsQueryOptions, reorderLists } from '~/query/lists';
+import { listsQueryOptions, reorderListsByIndex } from '~/query/lists';
 import { useCurrentBoardId } from '~/utils/useCurrentBoardId';
 
 export function BoardPage({ children }: { children?: ReactNode }) {
@@ -18,14 +18,16 @@ export function BoardPage({ children }: { children?: ReactNode }) {
       data-testid="BoardPageBackground"
       background={board?.boardColor}
     >
-      {lists?.map((list) => (
+      {lists?.map((list, index) => (
         <Draggable
           key={list.id}
           id={list.id}
           name={list.listTitle}
           type="list"
-          onDrop={(item: { id: string }) =>
-            reorderLists(item, boardId, list.id)
+          index={index}
+          group={boardId}
+          onReorder={(fromIndex, toIndex) =>
+            reorderListsByIndex(boardId, fromIndex, toIndex)
           }
         >
           <List id={list.id} />

@@ -1,7 +1,7 @@
 import { Checklist } from '~/components/Checklists/Checklist';
 import { ChecklistsContainer } from '~/components/Checklists/Checklists.styled';
 import { Draggable } from '~/components/Draggable';
-import { reorderChecklists, useGetChecklists } from '~/query/checklists';
+import { reorderChecklistsByIndex, useGetChecklists } from '~/query/checklists';
 import { useCurrentCardId } from '~/utils/useCurrentCardId';
 
 export function CardChecklists() {
@@ -10,14 +10,16 @@ export function CardChecklists() {
 
   return (
     <ChecklistsContainer data-testid="ChecklistsContainer">
-      {data?.map((checklist) => (
+      {data?.map((checklist, index) => (
         <Draggable
           key={checklist.id}
           id={checklist.id}
           name={checklist.checklistTitle}
           type="checklist"
-          onDrop={(item: { id: string }) =>
-            reorderChecklists(item, cardId, checklist.id)
+          index={index}
+          group={cardId}
+          onReorder={(fromIndex, toIndex) =>
+            reorderChecklistsByIndex(cardId, fromIndex, toIndex)
           }
         >
           <Checklist id={checklist.id} />
