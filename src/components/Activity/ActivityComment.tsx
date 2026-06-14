@@ -11,8 +11,8 @@ import {
 import { ActivityLogo } from '~/components/Activity/ActivityLogo';
 import { ActivitySkeleton } from '~/components/Activity/ActivitySkeleton';
 import { EditableComment } from '~/components/Activity/EditableComment';
-import { useScrollToActivityHash } from '~/components/Activity/useScrollToActivityHash';
 import { useGetActivityById } from '~/query/activity';
+import { useScrollToActivityHash } from '~/utils/useScrollToActivityHash';
 
 type ActivityCommentProps = {
   id: string;
