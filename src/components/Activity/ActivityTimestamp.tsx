@@ -117,6 +117,7 @@ export function ActivityTimestamp({
       {formatActivityTime(data?.createdAt)}
 
       <PaperclipReveal
+        data-testid="PaperclipReveal"
         isVisible={showPaperclipIcon}
         aria-hidden={!showPaperclipIcon}
       >
