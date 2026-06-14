@@ -17,6 +17,19 @@ export type CardRecord = {
   isCompleted: boolean;
 } & Timestamps;
 
+// Mirrors the subset of Prisma's string filters the card queries rely on. The
+// `startsWith` form backs lookups by the truncated 8-char id used in copied
+// activity links.
+type CardIdFilter = string | { startsWith: string };
+
+function matchesCardId(cardId: string, filter: CardIdFilter) {
+  if (typeof filter === 'string') {
+    return cardId === filter;
+  }
+
+  return cardId.startsWith(filter.startsWith);
+}
+
 export const cardModel = {
   async findMany(args: {
     where: {
@@ -43,26 +56,40 @@ export const cardModel = {
 
   async findFirst(args: {
     where:
-      | { id: string; userId: string }
-      | { id: string; list: { board: { userId: string } } };
+      | { id: CardIdFilter; userId: string }
+      | { id: CardIdFilter; list: { board: { userId: string } } };
+    select?: { id?: boolean; list?: { select?: { boardId?: boolean } } };
   }) {
     const where = args.where;
 
-    if ('userId' in where) {
-      return (
-        getStore().cards.find(
-          (card) => card.id === where.id && card.userId === where.userId,
-        ) ?? null
-      );
+    const match =
+      'userId' in where
+        ? getStore().cards.find(
+            (card) =>
+              matchesCardId(card.id, where.id) && card.userId === where.userId,
+          )
+        : getStore().cards.find(
+            (card) =>
+              matchesCardId(card.id, where.id) &&
+              cardBelongsToUser(card, where.list.board.userId),
+          );
+
+    if (!match) {
+      return null;
     }
 
-    const userId = where.list.board.userId;
+    // Honor the nested `select` used by getBoardIdByCardIdQuery, which reads
+    // `card.list.boardId`. The lists store maps the card's listId to a boardId.
+    if (args.select?.list) {
+      const list = getStore().lists.find((item) => item.id === match.listId);
 
-    return (
-      getStore().cards.find(
-        (card) => card.id === where.id && cardBelongsToUser(card, userId),
-      ) ?? null
-    );
+      return {
+        id: match.id,
+        list: { boardId: list?.boardId },
+      };
+    }
+
+    return match;
   },
 
   async create(args: {

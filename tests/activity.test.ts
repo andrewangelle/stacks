@@ -76,6 +76,43 @@ async function waitForSaveButton(commentContainer: Locator) {
   return waitForHydratedAction(trigger, isDone);
 }
 
+// Captures whatever the app writes to the clipboard into window.__copiedText so
+// the copy behavior can be asserted without relying on per-browser clipboard
+// permissions. Must be installed before the page navigates.
+async function installClipboardSpy(page: Page) {
+  await page.addInitScript(() => {
+    (window as unknown as { __copiedText: string }).__copiedText = '';
+
+    const record = (text: string) => {
+      (window as unknown as { __copiedText: string }).__copiedText = text;
+    };
+
+    try {
+      Object.defineProperty(navigator, 'clipboard', {
+        configurable: true,
+        value: {
+          writeText: (text: string) => {
+            record(text);
+            return Promise.resolve();
+          },
+          readText: () =>
+            Promise.resolve(
+              (window as unknown as { __copiedText: string }).__copiedText,
+            ),
+        },
+      });
+    } catch {
+      // Clipboard not configurable in this browser; tests fall back to the URL.
+    }
+  });
+}
+
+function readCopiedText(page: Page) {
+  return page.evaluate(
+    () => (window as unknown as { __copiedText: string }).__copiedText,
+  );
+}
+
 test.describe('Activity', () => {
   test('adds a comment in the activity column', async ({ page, request }) => {
     await openCard(page, request);
@@ -125,5 +162,82 @@ test.describe('Activity', () => {
       .click();
 
     await expect(page.getByTestId('ActivityCommentContent')).toHaveCount(0);
+  });
+});
+
+test.describe('Activity copy link', () => {
+  test('shows the paperclip when hovering the timestamp', async ({
+    page,
+    request,
+  }) => {
+    await installClipboardSpy(page);
+    await openCard(page, request);
+
+    const commentContainer = await addComment(page, 'Looks good');
+    const timestamp = commentContainer.getByTestId('ActivityTimestamp');
+    const paperclip = commentContainer.getByTestId('PaperclipReveal');
+
+    await expect(paperclip).toHaveAttribute('aria-hidden', 'true');
+
+    await timestamp.hover();
+
+    await expect(paperclip).toHaveAttribute('aria-hidden', 'false');
+
+    // Moving away from the timestamp hides it again.
+    await commentContainer.getByTestId('ActivityCommentContent').hover();
+
+    await expect(paperclip).toHaveAttribute('aria-hidden', 'true');
+  });
+
+  test('copies the activity url and shows the checkmark on click', async ({
+    page,
+    request,
+  }) => {
+    await installClipboardSpy(page);
+    const { card } = await openCard(page, request);
+
+    const commentContainer = await addComment(page, 'Looks good');
+
+    await commentContainer.getByTestId('ActivityTimestamp').click();
+
+    await expect(
+      commentContainer.getByTestId('ActivityCopiedCheckmark'),
+    ).toBeVisible();
+
+    const copied = await readCopiedText(page);
+    expect(copied).toContain(`/card/${card.id.slice(0, 8)}#activity-`);
+  });
+
+  test('navigating to the copied url reveals the activity entry', async ({
+    page,
+    request,
+  }) => {
+    await installClipboardSpy(page);
+    await openCard(page, request);
+
+    const commentContainer = await addComment(page, 'Looks good');
+
+    await commentContainer.getByTestId('ActivityTimestamp').click();
+
+    await expect(
+      commentContainer.getByTestId('ActivityCopiedCheckmark'),
+    ).toBeVisible();
+
+    const copied = await readCopiedText(page);
+    expect(copied).not.toEqual('');
+
+    // Visit the copied link directly as a fresh navigation.
+    await page.goto(copied);
+
+    const linkedComment = page
+      .getByTestId('ActivityContainer')
+      .filter({ hasText: 'Looks good' });
+
+    await expect(async () => {
+      await expect(
+        linkedComment.getByTestId('ActivityCommentContent'),
+      ).toBeVisible();
+      await expect(linkedComment).toBeInViewport();
+    }).toPass();
   });
 });
