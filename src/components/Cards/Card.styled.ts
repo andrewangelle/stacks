@@ -94,6 +94,7 @@ export const ResizeableCardColumnHandle = styled.div`
   position: relative;
   user-select: none;
 
+
   &::after {
     content: '';
     position: absolute;
@@ -102,11 +103,12 @@ export const ResizeableCardColumnHandle = styled.div`
     left: 100%;
     transform: translateX(-50%);
     background: rgba(0, 0, 0, 0.2);
+    width: 1px;
   }
 
   &:hover::after {
     background: ${focusRingBlue}; 
-    width: 4px;
+    width: 2px;
   }
 
   ${cardModalBreakpoint} {
@@ -131,7 +133,7 @@ export const CardActivityColumn = styled.div`
   min-width: 0;
   min-height: 0;
   padding: 12px;
-  background: #ebecf0;
+  background:rgb(248, 248, 248); 
   overflow-y: auto;
   padding: 0;
 

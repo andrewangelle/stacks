@@ -1,9 +1,9 @@
 import { useEffect, useState } from 'react';
 
-export const ACTIVITY_COLUMN_DEFAULT_WIDTH = 350;
+export const ACTIVITY_COLUMN_DEFAULT_WIDTH = 460;
 export const CARD_MODAL_WIDE_LAYOUT_QUERY = '(min-width: 851px)';
-export const ACTIVITY_COLUMN_MIN_WIDTH = 300;
-export const ACTIVITY_COLUMN_MAX_WIDTH = 480;
+export const ACTIVITY_COLUMN_MIN_WIDTH = 350;
+export const ACTIVITY_COLUMN_MAX_WIDTH = 620;
 
 export function useCardColumnWidth() {
   const [columnWidth, setColumnWidth] = useState(ACTIVITY_COLUMN_DEFAULT_WIDTH);
