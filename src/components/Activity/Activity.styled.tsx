@@ -3,7 +3,7 @@ import { fontFamily } from '~/components/Boards/Boards.styled';
 import { CardModalTitle } from '~/components/Cards/Card.styled';
 import { animationStyles } from '~/styles/animations';
 import { Button, secondaryButtonStyles } from '~/styles/Page.styled';
-import { blue } from '~/styles/tokens';
+import { blue, completedGreen } from '~/styles/tokens';
 
 const activitySidebarLayout = '@media (min-width: 851px)';
 
@@ -255,4 +255,29 @@ export const ActivityTimestampSkeleton = styled.div({
   width: '25%',
   position: 'relative',
   ...animationStyles.pulse,
+});
+
+export const PaperclipReveal = styled.span<{ isVisible?: boolean }>({
+  display: 'inline-flex',
+  alignItems: 'center',
+  verticalAlign: 'middle',
+  overflow: 'hidden',
+  maxWidth: ({ isVisible }) => (isVisible ? '20px' : '0px'),
+  opacity: ({ isVisible }) => (isVisible ? 1 : 0),
+  transform: ({ isVisible }) =>
+    isVisible ? 'translateX(0)' : 'translateX(-6px)',
+  transition: 'max-width 350ms ease, opacity 350ms ease, transform 350ms ease',
+});
+
+export const ActivityCopiedCheckmark = styled.span({
+  backgroundColor: 'transparent',
+  border: `1px solid ${completedGreen}`,
+  borderRadius: '100%',
+  flexShrink: 0,
+  height: 10,
+  width: 10,
+  position: 'relative',
+  color: completedGreen,
+  display: 'inline-flex',
+  margin: '0 0 0 4px',
 });

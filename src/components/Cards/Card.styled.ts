@@ -286,17 +286,19 @@ export const CardDescriptionText = styled.div`
   margin-top: 15px;
 `;
 
-export const EditDescriptionButton = styled(Button)` 
-  border: none;
-  padding: 8px 10px;
-  color: black;
-  margin: -4px 0px 0px 0px;
-  background: transparent;
-  border: 1px solid rgba(0,0,0, 0.5);
-  &:hover {
-    color: black;
-  }
-`;
+export const EditDescriptionButton = styled(Button)({
+  ...secondaryButtonStyles,
+  color: 'rgba(9, 30, 66, 0.725)',
+  border: '1px solid rgba(9, 30, 66, 0.2)',
+  padding: '8px 10px',
+  margin: 0,
+  fontSize: '14px',
+  flexShrink: 0,
+
+  '&:hover:not(:disabled)': {
+    color: secondaryButtonStyles.color,
+  },
+});
 
 export const EditCardTitleForm = styled.form`
   position: relative;
