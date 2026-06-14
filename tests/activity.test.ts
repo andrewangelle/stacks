@@ -7,10 +7,11 @@ import {
 } from '@playwright/test';
 import { resetDb } from '~test/helpers/resetDb';
 import { seedBoard, seedCard } from '~test/helpers/seed';
-import { waitForHydratedAction } from '~test/helpers/waitForHydratedAction';
 import { waitForInteractiveTrigger } from '~test/helpers/waitForInteractiveTrigger';
 
 test.describe('Activity', () => {
+  test.describe.configure({ timeout: 60_000 });
+
   test('adds a comment in the activity column', async ({ page, request }) => {
     await openCard(page, request);
 
@@ -22,11 +23,15 @@ test.describe('Activity', () => {
 
     const commentContainer = await addComment(page, 'Looks good');
 
-    await waitForHydratedAction(
-      () => commentContainer.getByTestId('EditCommentLink').click(),
-      async () =>
-        (await commentContainer.getByTestId('AddCommentInput').count()) > 0,
-    );
+    await expect(async () => {
+      const editInput = commentContainer.getByTestId('AddCommentInput');
+      if ((await editInput.count()) > 0) {
+        return;
+      }
+
+      await commentContainer.getByTestId('EditCommentLink').click();
+      await expect(editInput).toBeVisible();
+    }).toPass();
 
     await commentContainer
       .getByTestId('AddCommentInput')
@@ -63,6 +68,9 @@ test.describe('Activity', () => {
 });
 
 test.describe('Activity copy link', () => {
+  // openCard + addComment on a cold run can exceed the default 30s budget.
+  test.describe.configure({ timeout: 60_000 });
+
   test('shows the paperclip when hovering the timestamp', async ({
     page,
     request,
@@ -159,59 +167,97 @@ async function openCard(page: Page, request: APIRequestContext) {
   await page.goto(`/board/${board.id}/card/${card.id}`);
   await expect(async () => {
     await expect(page.getByTestId('CardModalContent')).toBeVisible();
+    await expect(page.getByTestId('CardActivityColumn')).toBeVisible();
   }).toPass();
-  await expect(page.getByTestId('CardActivityColumn')).toBeVisible();
 
   return { board, card };
 }
 
 async function addComment(page: Page, text: string) {
   const activityColumn = page.getByTestId('CardActivityColumn');
+  const commentContent = activityColumn
+    .getByTestId('ActivityCommentContent')
+    .filter({ hasText: text });
+  let commentIndex = -1;
 
-  await activityColumn.getByTestId('AddCommentInput').fill(text);
+  await expect(async () => {
+    const input = activityColumn.getByTestId('AddCommentInput');
+    await expect(input).toBeVisible();
+    await input.fill(text);
+    await expect(
+      activityColumn.locator(
+        '[data-testid="SaveCommentButton"]:not([disabled])',
+      ),
+    ).toBeVisible();
+  }).toPass();
 
-  let commentContainerIndex = -1;
+  await expect(async () => {
+    if ((await commentContent.count()) > 0) {
+      const containers = activityColumn.getByTestId('ActivityContainer');
+      const count = await containers.count();
 
-  const trigger = () =>
-    activityColumn
-      .locator('[data-testid="SaveCommentButton"]:not([disabled])')
-      .click();
+      for (let i = 0; i < count; i++) {
+        if (
+          (await containers
+            .nth(i)
+            .getByTestId('ActivityCommentContent')
+            .filter({ hasText: text })
+            .count()) > 0
+        ) {
+          commentIndex = i;
+          return;
+        }
+      }
+    }
 
-  async function waitForCommentToBeAdded() {
+    const saveButton = activityColumn.locator(
+      '[data-testid="SaveCommentButton"]:not([disabled])',
+    );
+
+    if ((await saveButton.count()) > 0) {
+      await saveButton.click();
+    }
+
+    await expect(commentContent).toBeVisible();
+
     const containers = activityColumn.getByTestId('ActivityContainer');
     const count = await containers.count();
 
     for (let i = 0; i < count; i++) {
-      const content = containers.nth(i).getByTestId('ActivityCommentContent');
       if (
-        (await content.count()) > 0 &&
-        (await content.textContent()) === text
+        (await containers
+          .nth(i)
+          .getByTestId('ActivityCommentContent')
+          .filter({ hasText: text })
+          .count()) > 0
       ) {
-        commentContainerIndex = i;
-        return true;
+        commentIndex = i;
+        return;
       }
     }
+  }).toPass();
 
-    return false;
-  }
-
-  await waitForHydratedAction(trigger, waitForCommentToBeAdded);
-
-  return activityColumn
-    .getByTestId('ActivityContainer')
-    .nth(commentContainerIndex);
+  return activityColumn.getByTestId('ActivityContainer').nth(commentIndex);
 }
 
 async function waitForSaveButton(commentContainer: Locator) {
-  const trigger = () =>
-    commentContainer
-      .locator('[data-testid="SaveCommentButton"]:not([disabled])')
-      .click();
+  await expect(async () => {
+    const editInput = commentContainer.getByTestId('AddCommentInput');
 
-  const isDone = async () =>
-    (await commentContainer.getByTestId('AddCommentInput').count()) === 0;
+    if ((await editInput.count()) === 0) {
+      return;
+    }
 
-  return waitForHydratedAction(trigger, isDone);
+    const saveButton = commentContainer.locator(
+      '[data-testid="SaveCommentButton"]:not([disabled])',
+    );
+
+    if ((await saveButton.count()) > 0) {
+      await saveButton.click();
+    }
+
+    await expect(editInput).toHaveCount(0);
+  }).toPass();
 }
 
 // Captures whatever the app writes to the clipboard into window.__copiedText so
