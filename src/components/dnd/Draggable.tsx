@@ -132,14 +132,17 @@ export function Draggable({
           return;
         }
 
+        // dropped on the same position
         if (initialIndex === newIndex) {
           return;
         }
 
+        // dropped in the same container
         onReorder(initialIndex, newIndex);
         return;
       }
 
+      // cross-container move
       if (onMove) {
         onMove({
           itemId: id,
