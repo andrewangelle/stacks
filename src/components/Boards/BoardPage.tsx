@@ -1,6 +1,6 @@
 import { useSuspenseQuery } from '@tanstack/react-query';
 import type { ReactNode } from 'react';
-import { Draggable } from '~/components/Draggable';
+import { Draggable } from '~/components/dnd/Draggable';
 import { AddLists } from '~/components/Lists/AddList';
 import { List } from '~/components/Lists/List';
 import { BoardPageBackground } from '~/components/Nav/Nav.styled';
