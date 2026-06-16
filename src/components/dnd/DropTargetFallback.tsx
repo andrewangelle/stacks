@@ -16,6 +16,18 @@ type DropZoneProps = {
  * The id prefix (`list-drop:` / `checklist-drop:`) is parsed in Draggable.handleDragEnd
  * to route the drop to onMove with the correct target container.
  */
+
+const baseStyles = {
+  width: '100%',
+  minHeight: 1,
+  flexShrink: 0,
+};
+
+const placeholderElementStyles = {
+  backgroundColor: 'rgba(0, 0, 0, 0.1)',
+  borderRadius: '8px',
+};
+
 export function DropTargetFallback({ id, type, isEmpty }: DropZoneProps) {
   const { ref } = useDroppable({
     id,
@@ -23,11 +35,6 @@ export function DropTargetFallback({ id, type, isEmpty }: DropZoneProps) {
     accept: type,
   });
 
-  const baseStyles = {
-    width: '100%',
-    minHeight: 1,
-    flexShrink: 0,
-  };
   const [styles, setStyles] = useState<CSSProperties>(baseStyles);
   const stylesMemod = useMemo(() => styles, [styles]);
 
@@ -40,8 +47,7 @@ export function DropTargetFallback({ id, type, isEmpty }: DropZoneProps) {
       if (isActive && isEmpty) {
         setStyles((prev) => ({
           ...prev,
-          backgroundColor: 'rgba(0, 0, 0, 0.1)',
-          borderRadius: '8px',
+          ...placeholderElementStyles,
           height: type === 'card' ? '30px' : '40px',
         }));
       } else {
