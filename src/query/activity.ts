@@ -85,7 +85,7 @@ export function useCreateActivity() {
     onSuccess(result, variables) {
       queryClient.setQueryData<ActivityListItem[]>(
         queryKeys.list(variables.cardId),
-        (cache = []) => [...cache, toActivityListItem(result)],
+        (cache = []) => [toActivityListItem(result), ...cache],
       );
       queryClient.setQueryData(queryKeys.detail(result.id), result);
     },
