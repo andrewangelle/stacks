@@ -1,6 +1,14 @@
 import { useEffect, useRef } from 'react';
-import type { CrossGroupMoveArgs } from '~/components/Draggable';
 import { afterCrossContainerDrop } from './dnd';
+
+export type CrossGroupMoveArgs = {
+  itemId: string;
+  sourceGroupId: string;
+  targetGroupId: string;
+  fromIndex: number;
+  toIndex: number;
+  element: HTMLDivElement | null;
+};
 
 type OnMoveCallback = (args: CrossGroupMoveArgs) => void;
 

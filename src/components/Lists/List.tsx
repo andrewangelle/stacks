@@ -1,5 +1,5 @@
-import { Draggable } from '~/components/Draggable';
-import { DropZone } from '~/components/DropZone';
+import { Draggable } from '~/components/dnd/Draggable';
+import { DropTargetFallback } from '~/components/dnd/DropTargetFallback';
 import { AddNewCard } from '~/components/Lists/AddNewCard';
 import {
   ListCardSkeleton,
@@ -51,7 +51,11 @@ export function List({ id: listId }: { id: string }) {
       </div>
 
       {/* Append target when dropping below the last card — see DropZone.tsx */}
-      <DropZone id={`list-drop:${listId}`} type="card" />
+      <DropTargetFallback
+        id={`list-drop:${listId}`}
+        type="card"
+        isEmpty={cards?.length === 0}
+      />
 
       <AddNewCard listId={listId} />
     </ListContainer>

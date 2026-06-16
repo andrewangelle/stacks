@@ -12,8 +12,8 @@ import {
 } from '~/components/Checklists/Checklists.styled';
 import { DeleteChecklist } from '~/components/Checklists/DeleteChecklist';
 import { ToggleCheckedItems } from '~/components/Checklists/ToggleCheckedItems';
-import { Draggable } from '~/components/Draggable';
-import { DropZone } from '~/components/DropZone';
+import { Draggable } from '~/components/dnd/Draggable';
+import { DropTargetFallback } from '~/components/dnd/DropTargetFallback';
 import {
   reorderChecklistItemsByVisibleIndex,
   useGetChecklistItems,
@@ -109,8 +109,11 @@ export function Checklist({ id }: { id: string }) {
         })}
       </div>
 
-      {/* Append target for empty checklists or drops below the last item */}
-      <DropZone id={`checklist-drop:${id}`} type="checklistItem" />
+      <DropTargetFallback
+        id={`checklist-drop:${id}`}
+        type="checklistItem"
+        isEmpty={visibleItems?.length === 0}
+      />
 
       <AddChecklistItem checklistId={id} />
     </ChecklistContainer>
