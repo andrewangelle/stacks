@@ -1,5 +1,5 @@
 import { useEffect, useRef } from 'react';
-import { afterCrossContainerDrop } from './dnd';
+import { afterCrossContainerDrop } from '~/utils/dnd';
 
 export type CrossGroupMoveArgs = {
   itemId: string;

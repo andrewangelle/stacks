@@ -8,6 +8,17 @@ type DropZoneProps = {
   isEmpty?: boolean;
 };
 
+const baseStyles = {
+  width: '100%',
+  minHeight: 1,
+  flexShrink: 0,
+};
+
+const dropTargetStyles = {
+  backgroundColor: 'rgba(0, 0, 0, 0.1)',
+  borderRadius: '8px',
+};
+
 /**
  * Drop target at the bottom of a list or checklist.
  *
@@ -17,18 +28,7 @@ type DropZoneProps = {
  * to route the drop to onMove with the correct target container.
  */
 
-const baseStyles = {
-  width: '100%',
-  minHeight: 1,
-  flexShrink: 0,
-};
-
-const placeholderElementStyles = {
-  backgroundColor: 'rgba(0, 0, 0, 0.1)',
-  borderRadius: '8px',
-};
-
-export function DropTargetFallback({ id, type, isEmpty }: DropZoneProps) {
+export function DropTargetFallback({ id, type }: DropZoneProps) {
   const { ref } = useDroppable({
     id,
     type,
@@ -44,10 +44,10 @@ export function DropTargetFallback({ id, type, isEmpty }: DropZoneProps) {
       const isActive = target?.id === id;
 
       // show fallback when dragging over an empty container
-      if (isActive && isEmpty) {
+      if (isActive) {
         setStyles((prev) => ({
           ...prev,
-          ...placeholderElementStyles,
+          ...dropTargetStyles,
           height: type === 'card' ? '30px' : '40px',
         }));
       } else {
@@ -55,6 +55,7 @@ export function DropTargetFallback({ id, type, isEmpty }: DropZoneProps) {
         setStyles(baseStyles);
       }
     },
+
     onDragEnd(event) {
       // reset after drop
       const { target } = event.operation;
