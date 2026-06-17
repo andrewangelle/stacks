@@ -311,7 +311,7 @@ export const EditCardTitleForm = styled.form`
 export const EditCardTitleInput = styled.input` 
   border: none;
   margin: 0 16px;
-  font-size: 20px;
+  font-size: 28px;
   font-weight: 700;
   font-family: ${fontFamily};
 `;

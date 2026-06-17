@@ -18,9 +18,6 @@ export function CardActivity() {
   const cardId = useCurrentCardId();
   const location = useLocation();
   const [showActivity, setShowActivity] = useState(true);
-  // Single source of truth for which activity entry is highlighted, so only one
-  // can ever be selected at a time. Clicks set it directly; deep links seed it
-  // from the URL hash on load.
   const [selectedActivityId, setSelectedActivityId] = useState<string | null>(
     null,
   );
