@@ -15,11 +15,12 @@ import { ToggleCheckedItems } from '~/components/Checklists/ToggleCheckedItems';
 import { Draggable } from '~/components/dnd/Draggable';
 import { DropTargetFallback } from '~/components/dnd/DropTargetFallback';
 import {
+  moveChecklistItemToNewChecklist,
   reorderChecklistItemsByVisibleIndex,
   useGetChecklistItems,
 } from '~/query/checklistItems';
 import { useGetChecklist } from '~/query/checklists';
-import { useMoveItemToNewChecklist } from '~/utils/useMoveItemToNewChecklist';
+import { useCrossContainerMove } from '~/utils/useCrossContainerMove';
 import { useScrollToHashId } from '~/utils/useScrollToHashId';
 
 export function Checklist({ id }: { id: string }) {
@@ -30,10 +31,18 @@ export function Checklist({ id }: { id: string }) {
   } = useGetChecklist({
     checklistId: id,
   });
-  const { ref, onMove } = useMoveItemToNewChecklist(checklist?.cardId);
   const { isSuccess: isItemsSuccess, data: items } = useGetChecklistItems({
     checklistId: id,
   });
+  const { ref, onMove } = useCrossContainerMove((args) =>
+    moveChecklistItemToNewChecklist({
+      itemId: args.itemId,
+      sourceChecklistId: args.sourceGroupId,
+      targetChecklistId: args.targetGroupId,
+      targetVisibleIndex: args.toIndex,
+      cardId: checklist?.cardId ?? '',
+    }),
+  );
   const headerRef = useRef<HTMLDivElement>(null);
 
   const visibleItems = checklist?.hideCheckedItems
