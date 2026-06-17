@@ -210,7 +210,7 @@ export const CardModalTitleContainer = styled.div`
 
 export const CardModalTitle = styled(Dialog.Title)({
   margin: '0 16px',
-  fontSize: '20px',
+  fontSize: '28px',
   color: 'black',
   '&[data-completed]': {
     color: 'rgba(0,0,0, 0.5)',
