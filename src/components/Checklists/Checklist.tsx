@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react';
+import { useRef } from 'react';
 import { AddChecklistItem } from '~/components/ChecklistItem/AddChecklistItem';
 import { ChecklistItem } from '~/components/ChecklistItem/ChecklistItem';
 import { ChecklistEditableTitle } from '~/components/Checklists/ChecklistEditableTitle';
@@ -19,8 +19,8 @@ import {
   useGetChecklistItems,
 } from '~/query/checklistItems';
 import { useGetChecklist } from '~/query/checklists';
-import { useHashChecklistId } from '~/utils/useHashChecklistId';
 import { useMoveItemToNewChecklist } from '~/utils/useMoveItemToNewChecklist';
+import { useScrollToChecklist } from '~/utils/useScrollToChecklist';
 
 export function Checklist({ id }: { id: string }) {
   const {
@@ -34,27 +34,18 @@ export function Checklist({ id }: { id: string }) {
   const { isSuccess: isItemsSuccess, data: items } = useGetChecklistItems({
     checklistId: id,
   });
-  const hashId = useHashChecklistId();
   const headerRef = useRef<HTMLDivElement>(null);
 
-  const hideCheckedItems = checklist?.hideCheckedItems ?? false;
-  const visibleItems = hideCheckedItems
+  const visibleItems = checklist?.hideCheckedItems
     ? items?.filter((item) => !item.isCompleted)
     : items;
+
   const showAllItemsCompleteMessage =
-    hideCheckedItems && (items?.length ?? 0) > 0 && visibleItems?.length === 0;
+    checklist?.hideCheckedItems &&
+    (items?.length ?? 0) > 0 &&
+    visibleItems?.length === 0;
 
-  useEffect(() => {
-    let timeoutId: NodeJS.Timeout | undefined;
-
-    if (hashId === id && isItemsSuccess && isSuccess) {
-      timeoutId = setTimeout(() => {
-        headerRef.current?.scrollIntoView({ behavior: 'smooth' });
-      }, 350);
-    }
-
-    return () => clearTimeout(timeoutId);
-  }, [hashId, id, isSuccess, isItemsSuccess]);
+  useScrollToChecklist(id, headerRef, isSuccess && isItemsSuccess);
 
   if (isLoading) {
     return <ChecklistSkeleton />;
@@ -109,11 +100,7 @@ export function Checklist({ id }: { id: string }) {
         })}
       </div>
 
-      <DropTargetFallback
-        id={`checklist-drop:${id}`}
-        type="checklistItem"
-        isEmpty={visibleItems?.length === 0}
-      />
+      <DropTargetFallback id={`checklist-drop:${id}`} type="checklistItem" />
 
       <AddChecklistItem checklistId={id} />
     </ChecklistContainer>

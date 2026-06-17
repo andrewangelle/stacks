@@ -2,7 +2,7 @@ import { useDragDropMonitor, useDroppable } from '@dnd-kit/react';
 import type { CSSProperties } from 'react';
 import { useMemo, useState } from 'react';
 
-type DropZoneProps = {
+type DropTargetFallbackProps = {
   id: string;
   type: 'card' | 'checklistItem';
   isEmpty?: boolean;
@@ -28,7 +28,7 @@ const dropTargetStyles = {
  * to route the drop to onMove with the correct target container.
  */
 
-export function DropTargetFallback({ id, type }: DropZoneProps) {
+export function DropTargetFallback({ id, type }: DropTargetFallbackProps) {
   const { ref } = useDroppable({
     id,
     type,
