@@ -121,7 +121,7 @@ export const ActivityMeta = styled.div`
 `;
 
 export const ActivityAuthorName = styled.span`
-  font-weight: 600;
+  font-weight: 700;
   font-size: 14px;
 `;
 
