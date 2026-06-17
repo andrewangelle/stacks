@@ -12,7 +12,7 @@ import { ActivityLogo } from '~/components/Activity/ActivityLogo';
 import { ActivitySkeleton } from '~/components/Activity/ActivitySkeleton';
 import { EditableComment } from '~/components/Activity/EditableComment';
 import { useGetActivityById } from '~/query/activity';
-import { useScrollToActivityHash } from '~/utils/useScrollToActivityHash';
+import { useScrollToHashId } from '~/utils/useScrollToHashId';
 
 type ActivityCommentProps = {
   id: string;
@@ -29,7 +29,7 @@ export function ActivityComment({
   const { user } = useUser();
   const ref = useRef<HTMLDivElement>(null);
 
-  useScrollToActivityHash(id, ref, !!data);
+  useScrollToHashId(id, ref, !!data);
 
   if (isLoading || !data) {
     return <ActivitySkeleton />;

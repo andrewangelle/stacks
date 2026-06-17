@@ -11,7 +11,7 @@ import { ActivityLogo } from '~/components/Activity/ActivityLogo';
 import { ActivitySkeleton } from '~/components/Activity/ActivitySkeleton';
 import { ActivityTimestamp } from '~/components/Activity/ActivityTimestamp';
 import { useGetActivityById } from '~/query/activity';
-import { useScrollToActivityHash } from '~/utils/useScrollToActivityHash';
+import { useScrollToHashId } from '~/utils/useScrollToHashId';
 
 type ActivityEntryProps = {
   id: string;
@@ -28,7 +28,7 @@ export function ActivityEntry({
   const { isLoading, data } = useGetActivityById({ activityId: id });
   const ref = useRef<HTMLDivElement>(null);
 
-  useScrollToActivityHash(id, ref, !!data);
+  useScrollToHashId(id, ref, !!data);
 
   if (isLoading || !data) {
     return <ActivitySkeleton />;
