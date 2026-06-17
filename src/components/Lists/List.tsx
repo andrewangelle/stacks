@@ -7,12 +7,23 @@ import {
 } from '~/components/Lists/List.styled';
 import { ListCard } from '~/components/Lists/ListCard';
 import { ListHeader } from '~/components/Lists/ListHeader';
-import { reorderCardsByIndex, useGetCardsByListId } from '~/query/cards';
+import {
+  moveCardToNewList,
+  reorderCardsByIndex,
+  useGetCardsByListId,
+} from '~/query/cards';
 import { useGetListById } from '~/query/lists';
-import { useMoveCardToNewList } from '~/utils/useMoveCardToNewList';
+import { useCrossContainerMove } from '~/utils/useCrossContainerMove';
 
 export function List({ id: listId }: { id: string }) {
-  const { ref, onMove } = useMoveCardToNewList();
+  const { ref, onMove } = useCrossContainerMove((args) => {
+    moveCardToNewList({
+      cardId: args.itemId,
+      sourceListId: args.sourceGroupId,
+      targetListId: args.targetGroupId,
+      targetIndex: args.toIndex,
+    });
+  });
   const { isLoading } = useGetListById({ id: listId });
   const { data: cards } = useGetCardsByListId({
     listId,
