@@ -5,11 +5,11 @@ import { GoPaperclip } from 'react-icons/go';
 import {
   ActivityCopiedCheckmark,
   ActivityTimestampMeta,
+  ActivityTimestampSkeleton,
   PaperclipReveal,
 } from '~/components/Activity/Activity.styled';
 import { useGetActivityById } from '~/query/activity';
 import { formatActivityTime } from '~/utils/formatDateTime';
-import { ActivitySkeleton } from './ActivitySkeleton';
 
 type ActivityTimestampProps = {
   id: string;
@@ -74,7 +74,11 @@ export function ActivityTimestamp({
   }, [isSelected]);
 
   if (isLoading || !data) {
-    return <ActivitySkeleton />;
+    return (
+      <ActivityTimestampMeta data-testid="ActivityTimestamp">
+        <ActivityTimestampSkeleton data-testid="ActivityTimestampSkeleton" />
+      </ActivityTimestampMeta>
+    );
   }
 
   return (
