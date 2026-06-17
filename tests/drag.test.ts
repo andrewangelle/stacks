@@ -32,6 +32,12 @@ test.describe('Drag and drop', () => {
       .getByTestId('DraggableCard')
       .filter({ hasText: 'Stay here' });
 
+    const movePersisted = page.waitForResponse(
+      (res) =>
+        res.url().includes('_serverFn') &&
+        res.request().method() === 'POST' &&
+        res.status() === 200,
+    );
     await dragToLocator(page, card, targetCard);
 
     await expect(async () => {
@@ -39,10 +45,11 @@ test.describe('Drag and drop', () => {
       await expectCardInList(page, 'Done', ['Move me', 'Stay here']);
     }).toPass();
 
-    // await page.reload();
-    // await expect(page.getByTestId('ListContainer')).toHaveCount(2);
-    // await expectCardInList(page, 'To Do', []);
-    // await expectCardInList(page, 'Done', ['Move me', 'Stay here']);
+    await movePersisted;
+    await page.reload();
+    await expect(page.getByTestId('ListContainer')).toHaveCount(2);
+    await expectCardInList(page, 'To Do', []);
+    await expectCardInList(page, 'Done', ['Move me', 'Stay here']);
   });
 
   test('moves a checklist item to another checklist on the same card', async ({
@@ -71,6 +78,12 @@ test.describe('Drag and drop', () => {
       .getByTestId('DraggableChecklistItem')
       .filter({ hasText: 'Existing item' });
 
+    const movePersisted = page.waitForResponse(
+      (res) =>
+        res.url().includes('_serverFn') &&
+        res.request().method() === 'POST' &&
+        res.status() === 200,
+    );
     await dragToLocator(page, itemToMove, targetItem);
 
     const prepChecklist = page.getByTestId('ChecklistContainer').filter({
@@ -90,10 +103,11 @@ test.describe('Drag and drop', () => {
       ).toBeVisible();
     }).toPass();
 
-    // await page.reload();
-    // await expect(page.getByTestId('CardModalContent')).toBeVisible();
-    // await expect(prepChecklist.getByTestId('CheckboxLabel')).toHaveCount(0);
-    // await expect(qaChecklist.getByTestId('CheckboxLabel')).toHaveCount(2);
+    await movePersisted;
+    await page.reload();
+    await expect(page.getByTestId('CardModalContent')).toBeVisible();
+    await expect(prepChecklist.getByTestId('CheckboxLabel')).toHaveCount(0);
+    await expect(qaChecklist.getByTestId('CheckboxLabel')).toHaveCount(2);
   });
 });
 
