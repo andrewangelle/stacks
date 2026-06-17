@@ -20,7 +20,7 @@ import {
 } from '~/query/checklistItems';
 import { useGetChecklist } from '~/query/checklists';
 import { useMoveItemToNewChecklist } from '~/utils/useMoveItemToNewChecklist';
-import { useScrollToChecklist } from '~/utils/useScrollToChecklist';
+import { useScrollToHashId } from '~/utils/useScrollToHashId';
 
 export function Checklist({ id }: { id: string }) {
   const {
@@ -45,7 +45,7 @@ export function Checklist({ id }: { id: string }) {
     (items?.length ?? 0) > 0 &&
     visibleItems?.length === 0;
 
-  useScrollToChecklist(id, headerRef, isSuccess && isItemsSuccess);
+  useScrollToHashId(id, headerRef, isSuccess && isItemsSuccess);
 
   if (isLoading) {
     return <ChecklistSkeleton />;
