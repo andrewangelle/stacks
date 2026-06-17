@@ -13,7 +13,7 @@ globalCss`
 
   body {
     font-family: ${fontFamily};
-    font-weight: 300;
+    font-weight: 400;
     font-style: normal;
     padding: 0;
     margin: 0;
