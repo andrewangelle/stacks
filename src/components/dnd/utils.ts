@@ -3,49 +3,63 @@ import { PointerSensor } from '@dnd-kit/react';
 import { isSortable } from '@dnd-kit/react/sortable';
 import type { DraggableProps } from '~/components/dnd/Draggable';
 
-export const preventParentActivationOnNestedDraggables =
-  PointerSensor.configure({
-    preventActivation(event, source) {
-      const { target } = event;
+export function getSensors(type: DraggableProps['type']) {
+  if (type === 'card') {
+    return [preventListActivation];
+  }
 
-      if (target === source.element || target === source.handle) {
-        return false;
-      }
+  if (type === 'list' || type === 'checklist') {
+    return [preventCardOrChecklistItemActivation];
+  }
 
-      if (target instanceof Element && source.element?.contains(target)) {
-        return false;
-      }
+  if (type === 'checklistItem') {
+    return [preventCheckboxActivation];
+  }
 
-      return true;
-    },
-  });
+  return undefined;
+}
 
-export const preventActivationOnNestedSortableChildren =
-  PointerSensor.configure({
-    preventActivation(event, source) {
-      const { target } = event;
+const preventListActivation = PointerSensor.configure({
+  preventActivation(event, source) {
+    const { target } = event;
 
-      if (target === source.element || target === source.handle) {
-        return false;
-      }
-
-      if (!(target instanceof Element) || !source.element?.contains(target)) {
-        return true;
-      }
-
-      if (target.closest('[data-testid="DraggableCard"]')) {
-        return true;
-      }
-
-      if (target.closest('[data-testid="DraggableChecklistItem"]')) {
-        return true;
-      }
-
+    if (target === source.element || target === source.handle) {
       return false;
-    },
-  });
+    }
 
-export const preventChecklistItemControlActivation = PointerSensor.configure({
+    if (target instanceof Element && source.element?.contains(target)) {
+      return false;
+    }
+
+    return true;
+  },
+});
+
+const preventCardOrChecklistItemActivation = PointerSensor.configure({
+  preventActivation(event, source) {
+    const { target } = event;
+
+    if (target === source.element || target === source.handle) {
+      return false;
+    }
+
+    if (!(target instanceof Element) || !source.element?.contains(target)) {
+      return true;
+    }
+
+    if (target.closest('[data-testid="DraggableCard"]')) {
+      return true;
+    }
+
+    if (target.closest('[data-testid="DraggableChecklistItem"]')) {
+      return true;
+    }
+
+    return false;
+  },
+});
+
+const preventCheckboxActivation = PointerSensor.configure({
   preventActivation(event, source) {
     const { target } = event;
 
@@ -69,22 +83,6 @@ export const preventChecklistItemControlActivation = PointerSensor.configure({
   },
 });
 
-export function getSensors(type: DraggableProps['type']) {
-  if (type === 'card') {
-    return [preventParentActivationOnNestedDraggables];
-  }
-
-  if (type === 'list' || type === 'checklist') {
-    return [preventActivationOnNestedSortableChildren];
-  }
-
-  if (type === 'checklistItem') {
-    return [preventChecklistItemControlActivation];
-  }
-
-  return undefined;
-}
-
 // biome-ignore lint/suspicious/noExplicitAny: <>
 type Data = Record<string, any>;
 
@@ -99,9 +97,7 @@ export function getTargetSortableGroup<DataType extends Data>(
   return null;
 }
 
-export function dropZoneGroupId(targetId: string) {
-  // DropZone ids are prefixed so Draggable can tell an empty-container target
-  // apart from a sortable item target (see handleDragEnd below).
+export function dropTargetFallbackGroupId(targetId: string) {
   if (targetId.startsWith('list-drop:')) {
     return targetId.slice('list-drop:'.length);
   }
@@ -117,7 +113,7 @@ export function getTargetDropZoneGroup<DataType extends Data>(
   target: Droppable<DataType> | null,
 ) {
   if (target && !isSortable(target)) {
-    return dropZoneGroupId(String(target.id));
+    return dropTargetFallbackGroupId(String(target.id));
   }
 
   return null;
