@@ -16,7 +16,7 @@ export const cardModalContentIndent = '40px';
 export const CardModalRoot = styled(Dialog.Root)``;
 export const CardModalPortal = styled(Dialog.Portal)``;
 export const CardModalOverlay = styled(Dialog.Overlay)` 
-  background: rgba(0 0 0 / 0.5);
+  background: rgba(0 0 0 / 0.8);
   position: fixed;
   top: 0;
   left: 0;
