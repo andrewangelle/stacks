@@ -61,12 +61,7 @@ export function List({ id: listId }: { id: string }) {
         ))}
       </div>
 
-      {/* Append target when dropping below the last card — see DropZone.tsx */}
-      <DropTargetFallback
-        id={`list-drop:${listId}`}
-        type="card"
-        isEmpty={cards?.length === 0}
-      />
+      <DropTargetFallback id={`list-drop:${listId}`} type="card" />
 
       <AddNewCard listId={listId} />
     </ListContainer>
