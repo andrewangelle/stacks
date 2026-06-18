@@ -5,7 +5,6 @@ import { useMemo, useState } from 'react';
 type DropTargetFallbackProps = {
   id: string;
   type: 'card' | 'checklistItem';
-  isEmpty?: boolean;
 };
 
 const baseStyles = {
