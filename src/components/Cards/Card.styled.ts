@@ -54,23 +54,21 @@ export const CardActionsContainer = styled.div`
   margin: 12px 12px 0px 44px;
 `;
 
-export const CardModalActionButton = styled.div`
-  font-family: ${fontFamily};
-  background: #091e420a;
-  border-radius: 8px;
-  padding: 12px;
-  display: flex;
-  cursor: pointer;
-  white-space: nowrap;
+export const CardModalActionButton = styled(Button)({
+  ...secondaryButtonStyles,
+  padding: '8px 10px',
+  margin: 0,
+  color: 'rgba(9, 30, 66, 0.725)',
+  border: '1px solid rgba(9, 30, 66, 0.2)',
 
-  &:hover {
-    background: rgba(0,0,0, 0.1);
-  }
-`;
+  '&:hover:not(:disabled)': {
+    color: secondaryButtonStyles.color,
+  },
+});
 
 export const CardModalSiderButtonText = styled.span` 
   font-family: ${fontFamily};
-  font-size: 12px;
+  font-size: 14px;
 `;
 
 export const CreateChecklistPopoverTrigger = styled(Popover.Trigger)` 

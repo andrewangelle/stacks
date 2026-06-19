@@ -1,8 +1,24 @@
-import { formatRelative } from 'date-fns';
+import { differenceInMinutes, formatRelative } from 'date-fns';
 import { enUS } from 'date-fns/locale';
 
 export function formatActivityTime(createdAt: Date) {
-  return formatRelative(new Date(createdAt), new Date(), {
+  const date = new Date(createdAt);
+  const now = new Date();
+  const minutesAgo = differenceInMinutes(now, date);
+
+  if (minutesAgo >= 0 && minutesAgo < 2) {
+    return 'just now';
+  }
+
+  if (minutesAgo >= 2 && minutesAgo < 60) {
+    return `${minutesAgo} minutes ago`;
+  }
+
+  if (minutesAgo >= 60 && minutesAgo < 120) {
+    return '1 hour ago';
+  }
+
+  return formatRelative(date, now, {
     locale: {
       ...enUS,
       formatRelative: (token) => {

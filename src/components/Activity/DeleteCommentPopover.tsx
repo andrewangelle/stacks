@@ -1,5 +1,5 @@
 import * as Popover from '@radix-ui/react-popover';
-import { EditCommentLink } from '~/components/Activity/Activity.styled';
+import { DeleteCommentLink } from '~/components/Activity/Activity.styled';
 import {
   CreateBoardCloseBorder,
   PopoverClose,
@@ -26,12 +26,9 @@ export function DeleteCommentPopover(props: Pick<Activity, 'id'>) {
   return (
     <Popover.Root>
       <Popover.Trigger asChild>
-        <EditCommentLink
-          type="button"
-          data-testid="DeleteChecklistPopoverTrigger"
-        >
+        <DeleteCommentLink type="button" data-testid="DeleteCommentLink">
           {strings.deleteCommentButton}
-        </EditCommentLink>
+        </DeleteCommentLink>
       </Popover.Trigger>
 
       <DeleteChecklistPopoverContent data-testid="DeleteChecklistPopoverContent">

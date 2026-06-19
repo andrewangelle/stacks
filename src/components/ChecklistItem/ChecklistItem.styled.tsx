@@ -1,6 +1,7 @@
 import { styled } from '@pigment-css/react';
 import * as Checkbox from '@radix-ui/react-checkbox';
 import * as Popover from '@radix-ui/react-popover';
+import { AiOutlineEllipsis } from 'react-icons/ai';
 import { fontFamily, red } from '~/components/Boards/Boards.styled';
 import { cardModalContentIndent } from '~/components/Cards/Card.styled';
 import { animationStyles } from '~/styles/animations';
@@ -61,9 +62,10 @@ export const CheckboxLabel = styled('label')<CheckboxLabelProps>({
   margin: 0,
   fontFamily: fontFamily,
   fontSize: '14px',
-  width: '100%',
+  width: '80%',
   cursor: 'pointer',
   textDecoration: (props) => (props.checked ? 'line-through' : 'none'),
+  wordWrap: 'break-word',
 });
 
 export const EditChecklistItemContainer = styled.div`
@@ -76,7 +78,6 @@ export const AddChecklistButton = styled(Button)`
   padding: 8px 10px;
   margin: 0 10px 0 0px;
 `;
-
 export const DeleteChecklistPopoverButton = styled(Button)` 
   background: ${red};
   width: 100%;
@@ -99,7 +100,9 @@ export const ChecklistCheckboxContentColumn = styled(
   position: 'relative',
   display: 'flex',
   justifyContent: 'space-between',
-  padding: '10px 5px 10px 0px',
+  alignItems: 'center',
+  padding: '8px',
+  minHeight: '25px',
   variants: [
     {
       props: { isHovering: true },
@@ -119,7 +122,6 @@ type ChecklistCheckboxContainerProps = {
 export const ChecklistCheckboxContainer = styled('div')({
   display: 'grid',
   gridTemplateColumns: checklistRowColumns,
-  margin: '10px 0px',
   position: 'relative',
   cursor: 'pointer',
 });
@@ -128,7 +130,7 @@ export const CheckboxRoot = styled(Checkbox.Root)({
   width: '16px',
   height: '16px',
   verticalAlign: 'top',
-  top: '11px',
+  top: '12px',
   position: 'relative',
   cursor: 'pointer',
   variants: [
@@ -148,17 +150,38 @@ export const CheckboxRoot = styled(Checkbox.Root)({
   },
 });
 
-export const DeleteChecklistPopoverTrigger = styled(Popover.Trigger)` 
+export const DeleteChecklistItemPopoverTrigger = styled(Popover.Trigger)` 
   border: none;
   background: transparent;
   cursor: pointer;
   height: 100%;
-
+  border: 1px solid rgba(0,0,0,0.2);
+  border-radius: 100%; 
   &:hover {
     position: relative;
     background: rgba(0,0,0,0.1);
   }
+
+  &[data-state='open'] {
+    background: black;
+  }
 `;
+
+export const DeleteChecklistPopoverTrigger = styled(Popover.Trigger)({
+  border: 'none',
+  background: 'transparent',
+  cursor: 'pointer',
+  height: '100%',
+  '&:hover': {
+    position: 'relative',
+    background: 'rgba(0,0,0,0.1)',
+  },
+});
+
+export const DeleteChecklistItemEllipsis = styled(AiOutlineEllipsis)({
+  position: 'relative',
+  top: '1px',
+});
 
 export const ChecklistItemSkeletonContainer = styled.div({});
 
@@ -172,7 +195,6 @@ export const CheckboxSkeleton = styled.div({
   borderRadius: '2px',
   flexShrink: 0,
   position: 'relative',
-  // margin: '12px 0',
   ...animationStyles.pulse,
 });
 

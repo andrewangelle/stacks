@@ -9,14 +9,13 @@ import {
   ChecklistProgressRow,
 } from '~/components/Checklists/Checklists.styled';
 import { useGetChecklistItems } from '~/query/checklistItems';
-import { completedGreen } from '~/styles/tokens';
 
 export function ChecklistProgress({ checklistId }: { checklistId: string }) {
   const { data } = useGetChecklistItems({ checklistId });
   const completedItems = data?.filter((item) => item.isCompleted);
   const progressPercent = getPercent(data?.length, completedItems?.length);
   const progressFill =
-    completedItems?.length === data?.length ? completedGreen : 'black';
+    completedItems?.length === data?.length ? 'rgb(81, 132, 90)' : 'black';
 
   return (
     <ChecklistProgressRow data-testid="ChecklistProgressRow">

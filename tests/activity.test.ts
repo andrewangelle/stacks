@@ -55,7 +55,7 @@ test.describe('Activity', () => {
     await waitForInteractiveTrigger(
       page,
       '[data-testid="DeleteChecklistPopoverContent"]',
-      '[data-testid="ActivityCommentContainer"] [data-testid="DeleteChecklistPopoverTrigger"]',
+      '[data-testid="ActivityCommentContainer"] [data-testid="DeleteCommentLink"]',
     );
 
     await page
