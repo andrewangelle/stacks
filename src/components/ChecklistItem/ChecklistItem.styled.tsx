@@ -1,4 +1,4 @@
-import { styled } from '@pigment-css/react';
+import { css, styled } from '@pigment-css/react';
 import * as Checkbox from '@radix-ui/react-checkbox';
 import * as Popover from '@radix-ui/react-popover';
 import { AiOutlineEllipsis } from 'react-icons/ai';
@@ -181,7 +181,7 @@ export const DeleteChecklistItemEllipsis = styled(AiOutlineEllipsis)({
 
 export const ChecklistItemSkeletonContainer = styled.div({});
 
-export const CheckboxSkeleton = styled.div({
+const pulseStyles = css({
   background: 'rgba(9, 30, 66, 0.25)',
   cursor: 'default',
   pointerEvents: 'none',
@@ -194,19 +194,9 @@ export const CheckboxSkeleton = styled.div({
   ...animationStyles.pulse,
 });
 
-export const ChecklistLabelSkeleton = styled.div({
-  background: 'rgba(9, 30, 66, 0.25)',
-  cursor: 'default',
-  pointerEvents: 'none',
-  minHeight: '16px',
-  width: '100%',
-  height: '8px',
-  borderRadius: '8px',
-  flexShrink: 0,
-  position: 'relative',
-  margin: '12px 0',
-  ...animationStyles.pulse,
-});
+export const CheckboxSkeleton = styled.div`${pulseStyles}`;
+
+export const ChecklistLabelSkeleton = styled.div`${pulseStyles}`;
 
 export const AddChecklistButtonSkeleton = styled.div({
   background: 'rgba(9, 30, 66, 0.25)',
