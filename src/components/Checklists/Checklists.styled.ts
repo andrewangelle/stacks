@@ -10,6 +10,7 @@ import {
 } from '~/components/Cards/Card.styled';
 import { animationStyles } from '~/styles/animations';
 import { Button, secondaryButtonStyles } from '~/styles/Page.styled';
+import { CardModalActionButton } from '../Cards/Card.styled';
 
 const checklistRowColumns = `${cardModalContentIndent} minmax(0, 1fr)`;
 
@@ -22,9 +23,7 @@ export const ChecklistContainer = styled.div`
 `;
 
 export const ChecklistPopoverContent = styled(Popover.Content)` 
-  height: 227px;
   width: 304px;
-  border: 2px solid rgba(9, 30, 66, 0.08);
   border-radius: 8px; 
   font-family: ${fontFamily};
   font-size: 14px;
@@ -32,6 +31,7 @@ export const ChecklistPopoverContent = styled(Popover.Content)`
   display: flex;
   flex-direction: column;
   z-index: 1;
+  box-shadow: 0px 8px 12px #1E1F2126, 0px 0px 1px #1E1F214F;
 `;
 
 export const DeleteChecklistPopoverContent = styled(ChecklistPopoverContent)` 
@@ -68,7 +68,7 @@ export const CreateChecklistAddButton = styled(Button)`
   margin: 8px;
 `;
 
-export const DeleteChecklistButton = styled(Button)` 
+export const DeleteChecklistButton2 = styled(Button)` 
   border: 1px solid black;
   padding: 8px 10px;
   color: black;
@@ -80,7 +80,11 @@ export const DeleteChecklistButton = styled(Button)`
   &:hover:not(:disabled) {
     color: ${red};
   }
+
+
 `;
+
+export const DeleteChecklistButton = styled(CardModalActionButton)``;
 
 export const ChecklistHeaderActions = styled.div`
   display: flex;

@@ -24,6 +24,7 @@ import { useCurrentBoardId } from '~/utils/useCurrentBoardId';
 import { useCurrentCardId } from '~/utils/useCurrentCardId';
 
 export function CreateChecklist() {
+  const [open, setOpen] = useState(false);
   const cardId = useCurrentCardId();
   const boardId = useCurrentBoardId();
   const { data } = useGetCardById({ id: cardId });
@@ -46,12 +47,18 @@ export function CreateChecklist() {
       type: 'feed',
       content: `added ${checklistTitle} to this card`,
     });
+
+    setChecklistTitle('');
+    setOpen(false);
   }
 
   return (
-    <Popover.Root>
+    <Popover.Root open={open} onOpenChange={setOpen}>
       <CreateChecklistPopoverTrigger data-testid="CreateChecklistPopoverTrigger">
-        <CardModalActionButton data-testid="CardModalActionButton">
+        <CardModalActionButton
+          data-testid="CardModalActionButton"
+          isOpen={open}
+        >
           <Bs.BsCheck2Square
             style={{ marginRight: '4px', position: 'relative', top: '2px' }}
           />
@@ -61,7 +68,13 @@ export function CreateChecklist() {
         </CardModalActionButton>
       </CreateChecklistPopoverTrigger>
 
-      <ChecklistPopoverContent data-testid="ChecklistPopoverContent">
+      <ChecklistPopoverContent
+        data-testid="ChecklistPopoverContent"
+        side="bottom"
+        align="start"
+        sideOffset={8}
+        alignOffset={4}
+      >
         <ChecklistPopoverHeader data-testid="ChecklistPopoverHeader">
           Add checklist
           <PopoverClose data-testid="PopoverClose">X</PopoverClose>

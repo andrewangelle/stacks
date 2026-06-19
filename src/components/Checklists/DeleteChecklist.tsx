@@ -1,4 +1,5 @@
 import * as Popover from '@radix-ui/react-popover';
+import { useState } from 'react';
 import {
   CreateBoardCloseBorder,
   PopoverClose,
@@ -17,6 +18,7 @@ import { useDeleteChecklist, useGetChecklist } from '~/query/checklists';
 import { useCurrentBoardId } from '~/utils/useCurrentBoardId';
 
 export function DeleteChecklist({ id }: { id: string }) {
+  const [open, setOpen] = useState(false);
   const { data: checklist } = useGetChecklist({ checklistId: id });
   const deleteChecklist = useDeleteChecklist();
   const createActivity = useCreateActivity();
@@ -25,17 +27,23 @@ export function DeleteChecklist({ id }: { id: string }) {
   if (!checklist) return null;
 
   return (
-    <Popover.Root>
-      <DeleteChecklistPopoverTrigger
-        asChild
-        data-testid="DeleteChecklistPopoverTrigger"
-      >
-        <DeleteChecklistButton data-testid="DeleteChecklistButton" secondary>
+    <Popover.Root open={open} onOpenChange={setOpen}>
+      <DeleteChecklistPopoverTrigger data-testid="DeleteChecklistPopoverTrigger">
+        <DeleteChecklistButton
+          data-testid="DeleteChecklistButton"
+          isOpen={open}
+        >
           Delete
         </DeleteChecklistButton>
       </DeleteChecklistPopoverTrigger>
 
-      <DeleteChecklistPopoverContent data-testid="DeleteChecklistPopoverContent">
+      <DeleteChecklistPopoverContent
+        data-testid="DeleteChecklistPopoverContent"
+        side="bottom"
+        align="start"
+        sideOffset={8}
+        alignOffset={4}
+      >
         <ChecklistPopoverHeader data-testid="ChecklistPopoverHeader">
           {`Delete ${checklist.checklistTitle}`}
           <PopoverClose data-testid="PopoverClose">X</PopoverClose>
