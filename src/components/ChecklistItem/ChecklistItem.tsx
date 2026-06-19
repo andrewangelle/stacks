@@ -43,16 +43,16 @@ export function ChecklistItem({ id }: { id: string }) {
         isCompleted: !checklistItem.isCompleted,
       });
 
-      const contentNextState = checklistItem.isCompleted
-        ? 'incomplete'
-        : 'complete';
+      const content = checklistItem.isCompleted
+        ? `marked ${checklistItem.label} incomplete on this card`
+        : `completed ${checklistItem.label} on this card`;
 
       createActivity({
         cardId: checklistItem.cardId,
         listId: checklistItem.listId,
         boardId,
         type: 'feed',
-        content: `marked ${checklistItem.label} ${contentNextState} on this card`,
+        content,
       });
     }
   }

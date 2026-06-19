@@ -1,6 +1,6 @@
 import { globalCss } from '@pigment-css/react';
 
-import { fontFamily } from './tokens';
+import { fontFamily } from '~/styles/tokens';
 
 globalCss`
   @font-face {

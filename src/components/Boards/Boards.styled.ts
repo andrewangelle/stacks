@@ -13,7 +13,7 @@ import {
   lightGreen,
   orange,
   red,
-} from '../../styles/tokens';
+} from '~/styles/tokens';
 
 export { blue, darkGray, fontFamily, green, lightGreen, orange, red };
 
