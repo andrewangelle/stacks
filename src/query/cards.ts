@@ -54,7 +54,7 @@ export function useGetCardById(args: { id: string }) {
 }
 
 export function useCreateCard() {
-  const mutation = useMutation({
+  return useMutation({
     mutationFn({ cardTitle, listId }: CreateCardArgs) {
       return createCard({ data: { cardTitle, listId } });
     },
@@ -66,8 +66,6 @@ export function useCreateCard() {
       );
     },
   });
-
-  return mutation.mutate;
 }
 
 export function useUpdateCard() {
