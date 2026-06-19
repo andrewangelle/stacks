@@ -3,6 +3,7 @@ import * as Popover from '@radix-ui/react-popover';
 import * as Progress from '@radix-ui/react-progress';
 import { fontFamily, red } from '~/components/Boards/Boards.styled';
 import {
+  CardModalActionButton,
   CardModalTitle,
   cardModalContentIndent,
   EditCardTitleForm,
@@ -10,7 +11,6 @@ import {
 } from '~/components/Cards/Card.styled';
 import { animationStyles } from '~/styles/animations';
 import { Button, secondaryButtonStyles } from '~/styles/Page.styled';
-import { CardModalActionButton } from '../Cards/Card.styled';
 
 const checklistRowColumns = `${cardModalContentIndent} minmax(0, 1fr)`;
 
