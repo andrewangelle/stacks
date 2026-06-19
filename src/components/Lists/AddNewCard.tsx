@@ -1,12 +1,14 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import {
   AddCardButton,
   AddCardInput,
   AddCardText,
   CloseAddCardButton,
 } from '~/components/Lists/List.styled';
+import { useCreateActivity } from '~/query/activity';
 import { useCreateCard } from '~/query/cards';
 import { Flex } from '~/styles/Page.styled';
+import { useCurrentBoardId } from '~/utils/useCurrentBoardId';
 
 type AddNewCardProps = {
   listId: string;
@@ -15,7 +17,14 @@ type AddNewCardProps = {
 export function AddNewCard({ listId }: AddNewCardProps) {
   const [isAddingCard, setIsAddingCard] = useState(false);
   const [newCardTitle, setNewCardTitle] = useState('');
-  const createCard = useCreateCard();
+  const {
+    mutate: createCard,
+    isSuccess,
+    data: response,
+    reset,
+  } = useCreateCard();
+  const createActivity = useCreateActivity();
+  const boardId = useCurrentBoardId();
 
   function onCardCreate() {
     createCard({
@@ -25,6 +34,20 @@ export function AddNewCard({ listId }: AddNewCardProps) {
     setIsAddingCard(false);
     setNewCardTitle('');
   }
+
+  useEffect(() => {
+    if (isSuccess) {
+      const card = response.data[0];
+      createActivity({
+        boardId,
+        cardId: card.id,
+        listId: card.listId,
+        type: 'feed',
+        content: 'added this card',
+      });
+      reset();
+    }
+  }, [isSuccess, response, boardId, createActivity, reset]);
 
   return (
     <>
