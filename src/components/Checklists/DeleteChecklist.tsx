@@ -24,6 +24,23 @@ export function DeleteChecklist({ id }: { id: string }) {
   const createActivity = useCreateActivity();
   const boardId = useCurrentBoardId();
 
+  function applyDelete() {
+    if (checklist) {
+      deleteChecklist({
+        checklistId: id,
+        cardId: checklist.cardId,
+      });
+
+      createActivity({
+        cardId: checklist.cardId,
+        listId: checklist.listId,
+        boardId,
+        type: 'feed',
+        content: `removed ${checklist.checklistTitle} from this card`,
+      });
+    }
+  }
+
   if (!checklist) return null;
 
   return (
@@ -52,20 +69,7 @@ export function DeleteChecklist({ id }: { id: string }) {
         Deleting a checklist is permanent and there is no way to get it back.
         <DeleteChecklistPopoverButton
           data-testid="DeleteChecklistPopoverButton"
-          onClick={() => {
-            deleteChecklist({
-              checklistId: id,
-              cardId: checklist.cardId,
-            });
-
-            createActivity({
-              cardId: checklist.cardId,
-              listId: checklist.listId,
-              boardId,
-              type: 'feed',
-              content: `removed ${checklist.checklistTitle} from this card`,
-            });
-          }}
+          onClick={applyDelete}
         >
           Delete
         </DeleteChecklistPopoverButton>
