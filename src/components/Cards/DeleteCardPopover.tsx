@@ -15,7 +15,7 @@ import {
   ChecklistPopoverHeader,
   DeleteChecklistPopoverContent,
 } from '~/components/Checklists/Checklists.styled';
-import { useDeleteCard, useGetCardById } from '~/query/cards';
+import { useDeleteCard, useGetCardById } from '~/db/cards/cards.query';
 import { useCurrentBoardId } from '~/utils/useCurrentBoardId';
 import { useCurrentCardId } from '~/utils/useCurrentCardId';
 

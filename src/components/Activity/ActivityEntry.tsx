@@ -10,7 +10,7 @@ import {
 import { ActivityLogo } from '~/components/Activity/ActivityLogo';
 import { ActivitySkeleton } from '~/components/Activity/ActivitySkeleton';
 import { ActivityTimestamp } from '~/components/Activity/ActivityTimestamp';
-import { useGetActivityById } from '~/query/activity';
+import { useGetActivityById } from '~/db/activity/activity.query';
 import { useScrollToHashId } from '~/utils/useScrollToHashId';
 
 type ActivityEntryProps = {

@@ -1,6 +1,9 @@
 import { ToggleCheckedItemsButton } from '~/components/Checklists/Checklists.styled';
-import { useGetChecklistItems } from '~/query/checklistItems';
-import { useGetChecklist, useUpdateChecklist } from '~/query/checklists';
+import { useGetChecklistItems } from '~/db/checklistItems/checklistItems.query';
+import {
+  useGetChecklist,
+  useUpdateChecklist,
+} from '~/db/checklists/checklists.query';
 
 export function ToggleCheckedItems({ checklistId }: { checklistId: string }) {
   const { data: checklist } = useGetChecklist({ checklistId });

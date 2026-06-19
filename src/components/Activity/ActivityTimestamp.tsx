@@ -8,7 +8,7 @@ import {
   ActivityTimestampSkeleton,
   PaperclipReveal,
 } from '~/components/Activity/Activity.styled';
-import { useGetActivityById } from '~/query/activity';
+import { useGetActivityById } from '~/db/activity/activity.query';
 import { formatActivityTime } from '~/utils/formatDateTime';
 
 type ActivityTimestampProps = {

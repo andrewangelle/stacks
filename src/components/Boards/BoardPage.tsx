@@ -4,8 +4,8 @@ import { Draggable } from '~/components/dnd/Draggable';
 import { AddLists } from '~/components/Lists/AddList';
 import { List } from '~/components/Lists/List';
 import { BoardPageBackground } from '~/components/Nav/Nav.styled';
-import { boardByIdQueryOptions } from '~/query/boards';
-import { listsQueryOptions, reorderListsByIndex } from '~/query/lists';
+import { boardByIdQueryOptions } from '~/db/boards/boards.query';
+import { listsQueryOptions, reorderListsByIndex } from '~/db/lists/lists.query';
 import { useCurrentBoardId } from '~/utils/useCurrentBoardId';
 
 export function BoardPage({ children }: { children?: ReactNode }) {

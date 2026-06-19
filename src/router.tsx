@@ -2,7 +2,7 @@ import { createRouter } from '@tanstack/react-router';
 import { setupRouterSsrQueryIntegration } from '@tanstack/react-router-ssr-query';
 import { AppError } from '~/components/AppError';
 import { NotFound } from '~/components/NotFound';
-import { queryClient } from '~/query/queryClient';
+import { queryClient } from '~/queryClient';
 import { initSentry } from '~/sentry.config';
 import { boardIDMask, cardMask } from '~/utils/routeMasks';
 import { routeTree } from './routeTree.gen';

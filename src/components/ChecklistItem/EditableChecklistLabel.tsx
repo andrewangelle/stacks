@@ -10,7 +10,7 @@ import {
 import {
   useGetChecklistItem,
   useUpdateChecklistItem,
-} from '~/query/checklistItems';
+} from '~/db/checklistItems/checklistItems.query';
 
 type EditableChecklistLabelProps = {
   id: string;

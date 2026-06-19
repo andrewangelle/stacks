@@ -15,7 +15,7 @@ import type {
   UpdateActivityArgs,
 } from '~/db/activity/activity.schemas';
 import type { Activity } from '~/generated/prisma/client';
-import { queryClient } from '~/query/queryClient';
+import { queryClient } from '~/queryClient';
 
 export type ActivityListItem = Pick<Activity, 'id' | 'type' | 'createdAt'>;
 

@@ -5,7 +5,7 @@ import {
   EditBoardTitleForm,
   EditBoardTitleInput,
 } from '~/components/Nav/Nav.styled';
-import { useGetBoard, useUpdateBoard } from '~/query/boards';
+import { useGetBoard, useUpdateBoard } from '~/db/boards/boards.query';
 import { useBoardBackgroundColor } from '~/utils/useBoardBackgroundColor';
 import { useOutsideClick } from '~/utils/useOutsideClick';
 

@@ -13,7 +13,7 @@ import {
   ChecklistPopoverHeader,
   DeleteChecklistPopoverContent,
 } from '~/components/Checklists/Checklists.styled';
-import { useDeleteChecklistItem } from '~/query/checklistItems';
+import { useDeleteChecklistItem } from '~/db/checklistItems/checklistItems.query';
 import { useOutsideClick } from '~/utils/useOutsideClick';
 
 export function DeleteChecklistItem({

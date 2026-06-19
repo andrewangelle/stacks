@@ -1,11 +1,11 @@
 import { createFileRoute, redirect } from '@tanstack/react-router';
 import { BoardPage } from '~/components/Boards/BoardPage';
 import { Card } from '~/components/Cards/Card';
+import { boardByIdQueryOptions } from '~/db/boards/boards.query';
 import { getBoardIdByCardId } from '~/db/cards/cards.functions';
+import { cardByIdQueryOptions } from '~/db/cards/cards.query';
+import { listsQueryOptions } from '~/db/lists/lists.query';
 import { fetchUserId } from '~/middleware/auth';
-import { boardByIdQueryOptions } from '~/query/boards';
-import { cardByIdQueryOptions } from '~/query/cards';
-import { listsQueryOptions } from '~/query/lists';
 
 export const Route = createFileRoute('/card/$cardId')({
   wrapInSuspense: true,

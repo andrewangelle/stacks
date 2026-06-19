@@ -5,8 +5,8 @@ import { CardCompletedIndicator } from '~/components/Cards/CardCompletedIndicato
 import { ListCardTitleDetailsContainer } from '~/components/Lists/CardTitleDetails/CardTitleDetails.styled';
 import { CardTitleDetailsChecklists } from '~/components/Lists/CardTitleDetails/CardTitleDetailsChecklists';
 import { ListCardContainer } from '~/components/Lists/List.styled';
-import { useGetCardById } from '~/query/cards';
-import { useGetCardTitleDetailsChecklists } from '~/query/checklists';
+import { useGetCardById } from '~/db/cards/cards.query';
+import { useGetCardTitleDetailsChecklists } from '~/db/checklists/checklists.query';
 import { useCurrentBoardId } from '~/utils/useCurrentBoardId';
 
 export function CardTitleDetails({ id }: { id: string }) {

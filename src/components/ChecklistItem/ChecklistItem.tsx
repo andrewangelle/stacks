@@ -10,11 +10,11 @@ import {
 import { ChecklistItemSkeleton } from '~/components/ChecklistItem/ChecklistItemSkeleton';
 import { DeleteChecklistItem } from '~/components/ChecklistItem/DeleteChecklistItem';
 import { EditableChecklistLabel } from '~/components/ChecklistItem/EditableChecklistLabel';
-import { useCreateActivity } from '~/query/activity';
+import { useCreateActivity } from '~/db/activity/activity.query';
 import {
   useGetChecklistItem,
   useUpdateChecklistItem,
-} from '~/query/checklistItems';
+} from '~/db/checklistItems/checklistItems.query';
 import { useCurrentBoardId } from '~/utils/useCurrentBoardId';
 
 const AiOutlineCheck = AiIcons.AiOutlineCheck;

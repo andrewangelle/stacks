@@ -1,6 +1,6 @@
 import type { Dispatch, SetStateAction } from 'react';
 import { EditListNameInput, ListName } from '~/components/Lists/List.styled';
-import { useGetListById, useUpdateList } from '~/query/lists';
+import { useGetListById, useUpdateList } from '~/db/lists/lists.query';
 import { useCurrentBoardId } from '~/utils/useCurrentBoardId';
 import { useOutsideClick } from '~/utils/useOutsideClick';
 

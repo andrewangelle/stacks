@@ -18,8 +18,8 @@ import {
   moveChecklistItemToNewChecklist,
   reorderChecklistItemsByVisibleIndex,
   useGetChecklistItems,
-} from '~/query/checklistItems';
-import { useGetChecklist } from '~/query/checklists';
+} from '~/db/checklistItems/checklistItems.query';
+import { useGetChecklist } from '~/db/checklists/checklists.query';
 import { useCrossContainerMove } from '~/utils/useCrossContainerMove';
 import { useScrollToHashId } from '~/utils/useScrollToHashId';
 

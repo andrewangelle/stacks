@@ -1,7 +1,10 @@
 import { Checklist } from '~/components/Checklists/Checklist';
 import { ChecklistsContainer } from '~/components/Checklists/Checklists.styled';
 import { Draggable } from '~/components/dnd/Draggable';
-import { reorderChecklistsByIndex, useGetChecklists } from '~/query/checklists';
+import {
+  reorderChecklistsByIndex,
+  useGetChecklists,
+} from '~/db/checklists/checklists.query';
 import { useCurrentCardId } from '~/utils/useCurrentCardId';
 
 export function CardChecklists() {

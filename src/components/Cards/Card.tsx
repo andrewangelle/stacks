@@ -19,7 +19,7 @@ import { CardEditableTitle } from '~/components/Cards/CardEditableTitle';
 import { DeleteCardPopover } from '~/components/Cards/DeleteCardPopover';
 import { CardChecklists } from '~/components/Checklists/Checklists';
 import { CreateChecklist } from '~/components/Checklists/CreateChecklist';
-import { useGetCardById } from '~/query/cards';
+import { useGetCardById } from '~/db/cards/cards.query';
 import { useCardColumnWidth } from '~/utils/useCardColumnWidth';
 import { useCurrentBoardId } from '~/utils/useCurrentBoardId';
 import { useCurrentCardId } from '~/utils/useCurrentCardId';

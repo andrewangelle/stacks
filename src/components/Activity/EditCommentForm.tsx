@@ -5,8 +5,8 @@ import {
   SaveCommentButton,
 } from '~/components/Activity/Activity.styled';
 import { CloseAddCardButton } from '~/components/Lists/List.styled';
+import { useUpdateActivity } from '~/db/activity/activity.query';
 import type { Activity } from '~/generated/prisma/client';
-import { useUpdateActivity } from '~/query/activity';
 import { useCurrentCardId } from '~/utils/useCurrentCardId';
 
 type EditCommentFormProps = Pick<Activity, 'id' | 'content'> & {
