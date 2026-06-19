@@ -204,6 +204,8 @@ export const EditCommentLink = styled.button`
   color: inherit;
 `;
 
+export const DeleteCommentLink = styled(EditCommentLink)``;
+
 export const EditCommentActionsSeperator = styled.div`
   width: 3.5px;
   height: 3.5px;

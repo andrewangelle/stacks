@@ -52,7 +52,9 @@ export function CreateChecklist() {
     <Popover.Root>
       <CreateChecklistPopoverTrigger data-testid="CreateChecklistPopoverTrigger">
         <CardModalActionButton data-testid="CardModalActionButton">
-          <Bs.BsCheck2Square style={{ marginRight: '4px' }} />
+          <Bs.BsCheck2Square
+            style={{ marginRight: '4px', position: 'relative', top: '2px' }}
+          />
           <CardModalSiderButtonText data-testid="CardModalSiderButtonText">
             Checklist
           </CardModalSiderButtonText>

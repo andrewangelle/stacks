@@ -88,7 +88,9 @@ export function ChecklistItem({ id }: { id: string }) {
           setIsEditingLabel={setIsEditingLabel}
         />
 
-        {!isEditingLabel && <DeleteChecklistItem id={id} />}
+        {!isEditingLabel && (
+          <DeleteChecklistItem id={id} isHovering={isHovering} />
+        )}
       </ChecklistCheckboxContentColumn>
     </ChecklistCheckboxContainer>
   );

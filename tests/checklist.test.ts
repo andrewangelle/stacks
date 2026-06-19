@@ -75,15 +75,19 @@ test.describe('Checklist', () => {
 
     await expect(page.getByTestId('CheckboxLabel')).toHaveCount(2);
 
-    await page.getByTestId('ChecklistCheckboxContainer').first().hover();
+    const firstItem = page.getByTestId('ChecklistCheckboxContainer').first();
+    await firstItem.getByTestId('ChecklistContentColumn').hover();
 
     await waitForInteractiveTrigger(
       page,
       '[data-testid="DeleteChecklistPopoverContent"]',
-      '[data-testid="DeleteChecklistPopoverTrigger"] svg',
+      '[data-testid="ChecklistCheckboxContainer"] [data-testid="DeleteChecklistItemEllipsis"]',
     );
 
-    await page.getByTestId('DeleteChecklistPopoverButton').click();
+    await page
+      .getByTestId('DeleteChecklistPopoverContent')
+      .getByTestId('DeleteChecklistPopoverButton')
+      .click();
 
     await expect(page.getByTestId('CheckboxLabel')).toHaveCount(1);
     await expect(page.getByTestId('CheckboxLabel')).toHaveText('Notify team');

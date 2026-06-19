@@ -1,13 +1,13 @@
 import * as Popover from '@radix-ui/react-popover';
 import { useState } from 'react';
-import * as AiIcons from 'react-icons/ai';
 import {
   CreateBoardCloseBorder,
   PopoverClose,
 } from '~/components/Boards/Boards.styled';
 import {
+  DeleteChecklistItemEllipsis,
+  DeleteChecklistItemPopoverTrigger,
   DeleteChecklistPopoverButton,
-  DeleteChecklistPopoverTrigger,
 } from '~/components/ChecklistItem/ChecklistItem.styled';
 import {
   ChecklistPopoverHeader,
@@ -16,9 +16,13 @@ import {
 import { useDeleteChecklistItem } from '~/query/checklistItems';
 import { useOutsideClick } from '~/utils/useOutsideClick';
 
-const AiOutlineEllipsis = AiIcons.AiOutlineEllipsis;
-
-export function DeleteChecklistItem({ id }: { id: string }) {
+export function DeleteChecklistItem({
+  id,
+  isHovering,
+}: {
+  id: string;
+  isHovering: boolean;
+}) {
   const [isDeleteOpen, setDeleteOpen] = useState(false);
   const deleteChecklistItem = useDeleteChecklistItem();
   const clickOutsideDeletePopoverRef = useOutsideClick(
@@ -26,18 +30,25 @@ export function DeleteChecklistItem({ id }: { id: string }) {
     isDeleteOpen,
   );
   return (
-    <div ref={clickOutsideDeletePopoverRef}>
+    <div ref={clickOutsideDeletePopoverRef} data-testid="DeleteChecklistItem">
       <Popover.Root open={isDeleteOpen}>
-        <DeleteChecklistPopoverTrigger data-testid="DeleteChecklistPopoverTrigger">
-          <AiOutlineEllipsis
-            onClick={() => setDeleteOpen(true)}
-            style={{ position: 'relative', top: '1px' }}
-          />
-        </DeleteChecklistPopoverTrigger>
+        {(isHovering || isDeleteOpen) && (
+          <DeleteChecklistItemPopoverTrigger
+            data-testid="DeleteChecklistItemPopoverTrigger"
+            asChild
+          >
+            <DeleteChecklistItemEllipsis
+              data-testid="DeleteChecklistItemEllipsis"
+              onClick={() => setDeleteOpen((prev) => !prev)}
+              style={{ fill: isDeleteOpen ? 'white' : 'black' }}
+            />
+          </DeleteChecklistItemPopoverTrigger>
+        )}
 
         <DeleteChecklistPopoverContent
           data-testid="DeleteChecklistPopoverContent"
-          side="right"
+          side="bottom"
+          align="start"
         >
           <ChecklistPopoverHeader data-testid="ChecklistPopoverHeader">
             Item actions
