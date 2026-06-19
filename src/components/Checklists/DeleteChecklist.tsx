@@ -13,8 +13,11 @@ import {
   DeleteChecklistButton,
   DeleteChecklistPopoverContent,
 } from '~/components/Checklists/Checklists.styled';
-import { useCreateActivity } from '~/query/activity';
-import { useDeleteChecklist, useGetChecklist } from '~/query/checklists';
+import { useCreateActivity } from '~/db/activity/activity.query';
+import {
+  useDeleteChecklist,
+  useGetChecklist,
+} from '~/db/checklists/checklists.query';
 import { useCurrentBoardId } from '~/utils/useCurrentBoardId';
 
 export function DeleteChecklist({ id }: { id: string }) {

@@ -5,7 +5,10 @@ import {
   EditChecklistTitleForm,
   EditChecklistTitleInput,
 } from '~/components/Checklists/Checklists.styled';
-import { useGetChecklist, useUpdateChecklist } from '~/query/checklists';
+import {
+  useGetChecklist,
+  useUpdateChecklist,
+} from '~/db/checklists/checklists.query';
 import { Flex } from '~/styles/Page.styled';
 import { useOutsideClick } from '~/utils/useOutsideClick';
 

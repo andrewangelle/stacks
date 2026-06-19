@@ -7,8 +7,8 @@ import {
   EditCommentActionsRow,
   SaveCommentButton,
 } from '~/components/Activity/Activity.styled';
-import { useCreateActivity } from '~/query/activity';
-import { useGetCardById } from '~/query/cards';
+import { useCreateActivity } from '~/db/activity/activity.query';
+import { useGetCardById } from '~/db/cards/cards.query';
 import { useCurrentBoardId } from '~/utils/useCurrentBoardId';
 import { useCurrentCardId } from '~/utils/useCurrentCardId';
 

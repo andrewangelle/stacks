@@ -14,7 +14,7 @@ import {
 import type { ReactNode } from 'react';
 import { DevTools } from '~/components/DevTools';
 import { NavBar } from '~/components/Nav/NavBar';
-import { queryClient } from '~/query/queryClient';
+import { queryClient } from '~/queryClient';
 import GlobalFonts from '~/styles/GlobalFonts';
 
 type RouterContext = {

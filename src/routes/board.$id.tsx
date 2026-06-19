@@ -1,9 +1,9 @@
 import { createFileRoute, Outlet, redirect } from '@tanstack/react-router';
 import { BoardPage } from '~/components/Boards/BoardPage';
 import { BoardPageBackground } from '~/components/Nav/Nav.styled';
+import { boardByIdQueryOptions } from '~/db/boards/boards.query';
+import { listsQueryOptions } from '~/db/lists/lists.query';
 import { fetchUserId } from '~/middleware/auth';
-import { boardByIdQueryOptions } from '~/query/boards';
-import { listsQueryOptions } from '~/query/lists';
 
 export const Route = createFileRoute('/board/$id')({
   wrapInSuspense: true,

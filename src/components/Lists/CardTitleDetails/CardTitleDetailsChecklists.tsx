@@ -8,7 +8,7 @@ import {
 } from '~/components/Lists/CardTitleDetails/CardTitleDetails.styled';
 import { CardTitleDetailsChecklist } from '~/components/Lists/CardTitleDetails/CardTitleDetailsChecklist';
 import { CardTitleDetailsChecklistAccordion } from '~/components/Lists/CardTitleDetails/CardTitleDetailsChecklistAccordion';
-import { useGetCardTitleDetailsChecklists } from '~/query/checklists';
+import { useGetCardTitleDetailsChecklists } from '~/db/checklists/checklists.query';
 
 const MAX_VISIBLE_CHECKLISTS = 3;
 

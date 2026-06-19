@@ -9,7 +9,7 @@ import {
   CardTitleDetailsChecklistAccordionTrigger,
 } from '~/components/Lists/CardTitleDetails/CardTitleDetails.styled';
 import { CardTitleDetailsChecklist } from '~/components/Lists/CardTitleDetails/CardTitleDetailsChecklist';
-import { useGetCardTitleDetailsChecklists } from '~/query/checklists';
+import { useGetCardTitleDetailsChecklists } from '~/db/checklists/checklists.query';
 
 type CardTitleDetailsChecklistAccordionProps = {
   cardId: string;

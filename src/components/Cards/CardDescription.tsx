@@ -11,7 +11,7 @@ import {
   EditDescriptionButton,
   SaveDescriptionButton,
 } from '~/components/Cards/Card.styled';
-import { useGetCardById, useUpdateCard } from '~/query/cards';
+import { useGetCardById, useUpdateCard } from '~/db/cards/cards.query';
 import { Flex } from '~/styles/Page.styled';
 import { useCurrentCardId } from '~/utils/useCurrentCardId';
 

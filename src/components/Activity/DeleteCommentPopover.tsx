@@ -9,8 +9,8 @@ import {
   ChecklistPopoverHeader,
   DeleteChecklistPopoverContent,
 } from '~/components/Checklists/Checklists.styled';
+import { useDeleteActivity } from '~/db/activity/activity.query';
 import type { Activity } from '~/generated/prisma/client';
-import { useDeleteActivity } from '~/query/activity';
 import { useCurrentCardId } from '~/utils/useCurrentCardId';
 
 const strings = {

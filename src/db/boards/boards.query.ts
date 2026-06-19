@@ -7,7 +7,7 @@ import {
 } from '~/db/boards/boards.functions';
 import type { CreateBoardArgs } from '~/db/boards/boards.schemas';
 import type { Stack } from '~/generated/prisma/client';
-import { queryClient } from '~/query/queryClient';
+import { queryClient } from '~/queryClient';
 import { useCurrentBoardId } from '~/utils/useCurrentBoardId';
 
 const queryKeys = {

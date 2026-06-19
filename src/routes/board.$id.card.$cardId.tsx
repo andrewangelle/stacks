@@ -1,7 +1,7 @@
 import { createFileRoute, redirect } from '@tanstack/react-router';
 import { Card } from '~/components/Cards/Card';
+import { cardByIdQueryOptions } from '~/db/cards/cards.query';
 import { fetchUserId } from '~/middleware/auth';
-import { cardByIdQueryOptions } from '~/query/cards';
 
 export const Route = createFileRoute('/board/$id/card/$cardId')({
   async beforeLoad() {

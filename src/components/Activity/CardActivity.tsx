@@ -11,7 +11,7 @@ import {
 import { ActivityComment } from '~/components/Activity/ActivityComment';
 import { ActivityEntry } from '~/components/Activity/ActivityEntry';
 import { AddComment } from '~/components/Activity/AddComment';
-import { useGetActivity, useGetComments } from '~/query/activity';
+import { useGetActivity, useGetComments } from '~/db/activity/activity.query';
 import { useCurrentCardId } from '~/utils/useCurrentCardId';
 
 export function CardActivity() {

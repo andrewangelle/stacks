@@ -15,7 +15,7 @@ import type {
   UpdateCardArgs,
 } from '~/db/cards/cards.schemas';
 import type { Card } from '~/generated/prisma/client';
-import { queryClient } from '~/query/queryClient';
+import { queryClient } from '~/queryClient';
 
 export type CardListItem = Pick<Card, 'id' | 'cardTitle' | 'createdAt'>;
 

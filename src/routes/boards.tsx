@@ -8,8 +8,8 @@ import {
   BoardsContainer,
 } from '~/components/Boards/Boards.styled';
 import { CreateBoard } from '~/components/Boards/CreateBoard';
+import { boardsQueryOptions } from '~/db/boards/boards.query';
 import { fetchUserId } from '~/middleware/auth';
-import { boardsQueryOptions } from '~/query/boards';
 
 export const Route = createFileRoute('/boards')({
   wrapInSuspense: true,

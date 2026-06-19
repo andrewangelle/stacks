@@ -6,7 +6,7 @@ import {
   EditCardTitleInput,
 } from '~/components/Cards/Card.styled';
 import { CardCompletedIndicator } from '~/components/Cards/CardCompletedIndicator';
-import { useGetCardById, useUpdateCard } from '~/query/cards';
+import { useGetCardById, useUpdateCard } from '~/db/cards/cards.query';
 import { useCurrentCardId } from '~/utils/useCurrentCardId';
 import { useOutsideClick } from '~/utils/useOutsideClick';
 

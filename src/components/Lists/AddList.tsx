@@ -6,7 +6,7 @@ import {
   CreateListButton,
 } from '~/components/Boards/Board.styled';
 import { AddListButton } from '~/components/Lists/List.styled';
-import { useCreateList } from '~/query/lists';
+import { useCreateList } from '~/db/lists/lists.query';
 import { Flex } from '~/styles/Page.styled';
 import { useCurrentBoardId } from '~/utils/useCurrentBoardId';
 import { useOutsideClick } from '~/utils/useOutsideClick';

@@ -5,8 +5,8 @@ import {
   AddCardText,
   CloseAddCardButton,
 } from '~/components/Lists/List.styled';
-import { useCreateActivity } from '~/query/activity';
-import { useCreateCard } from '~/query/cards';
+import { useCreateActivity } from '~/db/activity/activity.query';
+import { useCreateCard } from '~/db/cards/cards.query';
 import { Flex } from '~/styles/Page.styled';
 import { useCurrentBoardId } from '~/utils/useCurrentBoardId';
 

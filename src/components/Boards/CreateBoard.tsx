@@ -15,7 +15,7 @@ import {
   CreateBoardTitleInput,
   PopoverClose,
 } from '~/components/Boards/Boards.styled';
-import { useCreateBoard } from '~/query/boards';
+import { useCreateBoard } from '~/db/boards/boards.query';
 
 import { Center } from '~/styles/Page.styled';
 

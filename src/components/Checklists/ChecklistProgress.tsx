@@ -8,7 +8,7 @@ import {
   ChecklistProgressRoot,
   ChecklistProgressRow,
 } from '~/components/Checklists/Checklists.styled';
-import { useGetChecklistItems } from '~/query/checklistItems';
+import { useGetChecklistItems } from '~/db/checklistItems/checklistItems.query';
 
 export function ChecklistProgress({ checklistId }: { checklistId: string }) {
   const { data } = useGetChecklistItems({ checklistId });

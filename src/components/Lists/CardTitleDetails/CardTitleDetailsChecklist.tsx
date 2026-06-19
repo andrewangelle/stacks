@@ -12,12 +12,12 @@ import {
   CardTitleDetailsChecklistItemRow,
   CardTitleDetailsChecklistShowMore,
 } from '~/components/Lists/CardTitleDetails/CardTitleDetails.styled';
-import { useCreateActivity } from '~/query/activity';
+import { useCreateActivity } from '~/db/activity/activity.query';
 import {
   useGetChecklistItems,
   useUpdateChecklistItem,
-} from '~/query/checklistItems';
-import { useGetChecklist } from '~/query/checklists';
+} from '~/db/checklistItems/checklistItems.query';
+import { useGetChecklist } from '~/db/checklists/checklists.query';
 import { useCurrentBoardId } from '~/utils/useCurrentBoardId';
 
 const INITIAL_VISIBLE = 3;

@@ -11,8 +11,8 @@ import {
   moveCardToNewList,
   reorderCardsByIndex,
   useGetCardsByListId,
-} from '~/query/cards';
-import { useGetListById } from '~/query/lists';
+} from '~/db/cards/cards.query';
+import { useGetListById } from '~/db/lists/lists.query';
 import { useCrossContainerMove } from '~/utils/useCrossContainerMove';
 
 export function List({ id: listId }: { id: string }) {

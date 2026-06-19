@@ -16,7 +16,7 @@ import type {
   UpdateChecklistArgs,
 } from '~/db/checklists/checklists.schemas';
 import type { Checklist } from '~/generated/prisma/client';
-import { queryClient } from '~/query/queryClient';
+import { queryClient } from '~/queryClient';
 
 export type ChecklistListItem = Pick<
   Checklist,

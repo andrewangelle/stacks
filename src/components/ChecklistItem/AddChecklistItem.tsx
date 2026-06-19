@@ -7,8 +7,8 @@ import {
   ChecklistItemActionsIndented,
   EditChecklistItemContainer,
 } from '~/components/ChecklistItem/ChecklistItem.styled';
-import { useCreateChecklistItem } from '~/query/checklistItems';
-import { useGetChecklist } from '~/query/checklists';
+import { useCreateChecklistItem } from '~/db/checklistItems/checklistItems.query';
+import { useGetChecklist } from '~/db/checklists/checklists.query';
 
 export function AddChecklistItem({ checklistId }: { checklistId: string }) {
   const { data: checklist } = useGetChecklist({ checklistId });

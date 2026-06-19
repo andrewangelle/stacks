@@ -3,8 +3,8 @@ import { ActivityCommentContent } from '~/components/Activity/Activity.styled';
 import { ActivitySkeleton } from '~/components/Activity/ActivitySkeleton';
 import { EditCommentActions } from '~/components/Activity/EditCommentActions';
 import { EditCommentForm } from '~/components/Activity/EditCommentForm';
+import { useGetActivityById } from '~/db/activity/activity.query';
 import type { Activity } from '~/generated/prisma/client';
-import { useGetActivityById } from '~/query/activity';
 
 type EditableCommentProps = Pick<Activity, 'id'>;
 

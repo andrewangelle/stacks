@@ -17,9 +17,9 @@ import {
   CreateChecklistInput,
   CreateChecklistTitle,
 } from '~/components/Checklists/Checklists.styled';
-import { useCreateActivity } from '~/query/activity';
-import { useGetCardById } from '~/query/cards';
-import { useCreateChecklist } from '~/query/checklists';
+import { useCreateActivity } from '~/db/activity/activity.query';
+import { useGetCardById } from '~/db/cards/cards.query';
+import { useCreateChecklist } from '~/db/checklists/checklists.query';
 import { useCurrentBoardId } from '~/utils/useCurrentBoardId';
 import { useCurrentCardId } from '~/utils/useCurrentCardId';
 

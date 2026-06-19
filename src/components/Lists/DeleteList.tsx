@@ -10,7 +10,7 @@ import {
   DeleteChecklistPopoverContent,
 } from '~/components/Checklists/Checklists.styled';
 import { DeleteListIcon } from '~/components/Lists/List.styled';
-import { useDeleteList, useGetListById } from '~/query/lists';
+import { useDeleteList, useGetListById } from '~/db/lists/lists.query';
 import { useCurrentBoardId } from '~/utils/useCurrentBoardId';
 
 type DeleteListProps = {

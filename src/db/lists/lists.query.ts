@@ -13,7 +13,7 @@ import type {
   UpdateListArgs,
 } from '~/db/lists/lists.schemas';
 import type { List } from '~/generated/prisma/client';
-import { queryClient } from '~/query/queryClient';
+import { queryClient } from '~/queryClient';
 import { useCurrentBoardId } from '~/utils/useCurrentBoardId';
 
 export type ListListItem = Pick<List, 'id' | 'listTitle' | 'createdAt'>;
