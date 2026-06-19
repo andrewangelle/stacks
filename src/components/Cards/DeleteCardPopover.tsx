@@ -1,5 +1,6 @@
 import * as Popover from '@radix-ui/react-popover';
 import { useNavigate } from '@tanstack/react-router';
+import { useState } from 'react';
 import {
   CreateBoardCloseBorder,
   PopoverClose,
@@ -19,27 +20,36 @@ import { useCurrentBoardId } from '~/utils/useCurrentBoardId';
 import { useCurrentCardId } from '~/utils/useCurrentCardId';
 
 export function DeleteCardPopover() {
+  const [open, setOpen] = useState(false);
   const id = useCurrentCardId();
   const boardId = useCurrentBoardId();
   const { data } = useGetCardById({ id });
   const deleteCard = useDeleteCard();
   const navigate = useNavigate();
   return (
-    <Popover.Root>
+    <Popover.Root open={open} onOpenChange={setOpen}>
       <DeleteCardPopoverTrigger data-testid="DeleteCardPopoverTrigger">
-        <CardModalActionButton data-testid="CardModalSiderButton">
+        <CardModalActionButton data-testid="CardModalSiderButton" isOpen={open}>
           <CardModalSiderButtonText data-testid="CardModalSiderButtonText">
             Delete Card
           </CardModalSiderButtonText>
         </CardModalActionButton>
       </DeleteCardPopoverTrigger>
 
-      <DeleteChecklistPopoverContent data-testid="DeleteChecklistPopoverContent">
+      <DeleteChecklistPopoverContent
+        data-testid="DeleteChecklistPopoverContent"
+        side="bottom"
+        align="start"
+        sideOffset={8}
+        alignOffset={4}
+      >
         <ChecklistPopoverHeader data-testid="ChecklistPopoverHeader">
           {`Delete ${data?.cardTitle ?? ''}`}
           <PopoverClose data-testid="PopoverClose">X</PopoverClose>
         </ChecklistPopoverHeader>
+        {/** */}
         <CreateBoardCloseBorder data-testid="CreateBoardCloseBorder" />
+        {/** */}
         Deleting a card is permanent and there is no way to get it back.
         <DeleteChecklistPopoverButton
           data-testid="DeleteChecklistPopoverButton"

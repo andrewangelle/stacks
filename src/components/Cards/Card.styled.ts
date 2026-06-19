@@ -54,7 +54,10 @@ export const CardActionsContainer = styled.div`
   margin: 12px 12px 0px 44px;
 `;
 
-export const CardModalActionButton = styled.div({
+type IsOpenProps = {
+  isOpen: boolean;
+};
+export const CardModalActionButton = styled.div<IsOpenProps>({
   position: 'relative',
   overflow: 'hidden',
   borderRadius: '8px',
@@ -64,6 +67,10 @@ export const CardModalActionButton = styled.div({
   textAlign: 'center',
   justifyContent: 'center',
   whiteSpace: 'nowrap',
+  border: '1px solid rgba(9, 30, 66, 0.2)',
+  cursor: 'pointer',
+  fontWeight: 600,
+  padding: '8px 10px',
 
   // applies hover effect to the button
   '&::before': {
@@ -77,10 +84,6 @@ export const CardModalActionButton = styled.div({
     transition: 'opacity 0.15s ease',
   },
 
-  '&:hover:not(:disabled)::before': {
-    opacity: 0.1,
-  },
-
   '&:disabled': {
     background: 'rgba(9, 30, 66, 0.02)',
     color: 'rgba(9, 30, 66, 0.2)',
@@ -88,14 +91,14 @@ export const CardModalActionButton = styled.div({
     cursor: 'not-allowed',
   },
 
-  ...secondaryButtonStyles,
-  padding: '8px 10px',
-  color: 'rgba(9, 30, 66, 0.725)',
-  border: '1px solid rgba(9, 30, 66, 0.2)',
-
-  '&:hover:not(:disabled)': {
-    color: secondaryButtonStyles.color,
+  '&:hover': {
+    background: (props) =>
+      props.isOpen ? 'rgba(0, 0, 0, 0.8)' : 'rgba(9, 30, 66, 0.04)',
+    color: (props) => (props.isOpen ? 'white' : 'rgba(9, 30, 66, 0.9)'),
   },
+
+  color: (props) => (props.isOpen ? 'white' : 'rgba(9, 30, 66, 0.9)'),
+  background: (props) => (props.isOpen ? 'rgba(0, 0, 0, 0.8)' : 'transparent'),
 });
 
 export const CardModalSiderButtonText = styled.span` 

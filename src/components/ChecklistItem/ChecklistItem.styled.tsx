@@ -172,10 +172,6 @@ export const DeleteChecklistPopoverTrigger = styled(Popover.Trigger)({
   background: 'transparent',
   cursor: 'pointer',
   height: '100%',
-  '&:hover': {
-    position: 'relative',
-    background: 'rgba(0,0,0,0.1)',
-  },
 });
 
 export const DeleteChecklistItemEllipsis = styled(AiOutlineEllipsis)({
