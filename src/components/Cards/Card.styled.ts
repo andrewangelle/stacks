@@ -54,10 +54,42 @@ export const CardActionsContainer = styled.div`
   margin: 12px 12px 0px 44px;
 `;
 
-export const CardModalActionButton = styled(Button)({
+export const CardModalActionButton = styled.div({
+  position: 'relative',
+  overflow: 'hidden',
+  borderRadius: '8px',
+  margin: 'auto',
+  display: 'flex',
+  alignSelf: 'center',
+  textAlign: 'center',
+  justifyContent: 'center',
+  whiteSpace: 'nowrap',
+
+  // applies hover effect to the button
+  '&::before': {
+    content: '""',
+    position: 'absolute',
+    inset: 0,
+    borderRadius: 'inherit',
+    backgroundColor: '#000',
+    opacity: 0,
+    pointerEvents: 'none',
+    transition: 'opacity 0.15s ease',
+  },
+
+  '&:hover:not(:disabled)::before': {
+    opacity: 0.1,
+  },
+
+  '&:disabled': {
+    background: 'rgba(9, 30, 66, 0.02)',
+    color: 'rgba(9, 30, 66, 0.2)',
+    border: '1px solid rgba(9, 30, 66, 0.2)',
+    cursor: 'not-allowed',
+  },
+
   ...secondaryButtonStyles,
   padding: '8px 10px',
-  margin: 0,
   color: 'rgba(9, 30, 66, 0.725)',
   border: '1px solid rgba(9, 30, 66, 0.2)',
 
