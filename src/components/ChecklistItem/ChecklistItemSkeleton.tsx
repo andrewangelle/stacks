@@ -8,7 +8,12 @@ export function ChecklistItemSkeleton() {
   return (
     <ChecklistCheckboxContainer
       data-testid="ChecklistCheckboxContainer"
-      style={{ display: 'flex', alignItems: 'center', gap: '12px' }}
+      style={{
+        display: 'flex',
+        alignItems: 'center',
+        gap: '12px',
+        margin: '8px 0px',
+      }}
     >
       <CheckboxSkeleton data-testid="CheckboxSkeleton" />
       <ChecklistLabelSkeleton
