@@ -34,11 +34,12 @@ export const ChecklistPopoverContent = styled(Popover.Content)`
   box-shadow: 0px 8px 12px #1E1F2126, 0px 0px 1px #1E1F214F;
 `;
 
-export const DeleteChecklistPopoverContent = styled(ChecklistPopoverContent)` 
+export const ChecklistItemOptionsContent = styled(ChecklistPopoverContent)` 
   height: 130px;
   padding: 10px;
 `;
-export const ChecklistPopoverHeader = styled.div` 
+export const ChecklistPopoverHeader = styled.div`
+  font-weight: 600;
   display: flex;
   justify-content: center;
   color: rgba(9, 30, 66, .75);

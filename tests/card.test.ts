@@ -138,7 +138,7 @@ test.describe('Card', () => {
 
     await waitForInteractiveTrigger(
       page,
-      '[data-testid="DeleteChecklistPopoverContent"]',
+      '[data-testid="PopoverOptionsContent"]',
       '[data-testid="CardActionsContainer"] [data-testid="DeleteCardPopoverTrigger"]',
     );
 
