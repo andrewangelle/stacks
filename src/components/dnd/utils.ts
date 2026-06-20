@@ -70,7 +70,7 @@ const preventCheckboxActivation = PointerSensor.configure({
     if (target instanceof Element && source.element?.contains(target)) {
       if (
         target.closest(
-          '[data-testid="CheckboxRoot"], [data-testid="DeleteChecklistPopoverTrigger"]',
+          '[data-testid="CheckboxRoot"], [data-testid="DeleteChecklistItemButton"], [data-testid="ConvertChecklistItemToCardButton"]',
         )
       ) {
         return true;
