@@ -3,17 +3,19 @@ import type { ReactNode } from 'react';
 import { useState } from 'react';
 import { TooltipContent } from '~/components/Tooltip/Tooltip.styled';
 
+type TooltipProps = {
+  portal?: boolean;
+  disabled?: boolean;
+  content: ReactNode;
+  children: ReactNode;
+};
+
 export function Tooltip({
   portal = true,
   disabled,
   content,
   children,
-}: {
-  portal?: boolean;
-  disabled?: boolean;
-  content: ReactNode;
-  children: ReactNode;
-}) {
+}: TooltipProps) {
   const [isOpen, setIsOpen] = useState(false);
 
   return (
@@ -22,7 +24,9 @@ export function Tooltip({
         open={isOpen}
         onOpenChange={(nextIsOpen) => !disabled && setIsOpen(nextIsOpen)}
       >
-        <Trigger asChild>{children}</Trigger>
+        <Trigger asChild style={{ zIndex: 1 }}>
+          {children}
+        </Trigger>
         {portal && (
           <Portal>
             <TooltipContent side="bottom" sideOffset={8}>

@@ -17,6 +17,7 @@ import {
   CreateChecklistInput,
   CreateChecklistTitle,
 } from '~/components/Checklists/Checklists.styled';
+import { Tooltip } from '~/components/Tooltip/Tooltip';
 import { useCreateActivity } from '~/db/activity/activity.query';
 import { useGetCardById } from '~/db/cards/cards.query';
 import { useCreateChecklist } from '~/db/checklists/checklists.query';
@@ -55,17 +56,19 @@ export function CreateChecklist() {
   return (
     <Popover.Root open={open} onOpenChange={setOpen}>
       <CreateChecklistPopoverTrigger data-testid="CreateChecklistPopoverTrigger">
-        <CardModalActionButton
-          data-testid="CardModalActionButton"
-          isOpen={open}
-        >
-          <Bs.BsCheck2Square
-            style={{ marginRight: '4px', position: 'relative', top: '2px' }}
-          />
-          <CardModalSiderButtonText data-testid="CardModalSiderButtonText">
-            Checklist
-          </CardModalSiderButtonText>
-        </CardModalActionButton>
+        <Tooltip portal={false} content="Create checklist">
+          <CardModalActionButton
+            data-testid="CardModalActionButton"
+            isOpen={open}
+          >
+            <Bs.BsCheck2Square
+              style={{ marginRight: '4px', position: 'relative', top: '2px' }}
+            />
+            <CardModalSiderButtonText data-testid="CardModalSiderButtonText">
+              Checklist
+            </CardModalSiderButtonText>
+          </CardModalActionButton>
+        </Tooltip>
       </CreateChecklistPopoverTrigger>
 
       <ChecklistPopoverContent

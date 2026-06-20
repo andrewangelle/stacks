@@ -9,6 +9,7 @@ import {
 } from '~/components/Cards/Card.styled';
 import { DeleteChecklistPopoverButton } from '~/components/ChecklistItem/ChecklistItem.styled';
 import { ChecklistPopoverHeader } from '~/components/Checklists/Checklists.styled';
+import { Tooltip } from '~/components/Tooltip/Tooltip';
 import { useDeleteCard, useGetCardById } from '~/db/cards/cards.query';
 import {
   PopoverOptionsContent,
@@ -36,11 +37,16 @@ export function DeleteCardPopover() {
   return (
     <Popover.Root open={open} onOpenChange={setOpen}>
       <DeleteCardPopoverTrigger data-testid="DeleteCardPopoverTrigger">
-        <CardModalActionButton data-testid="CardModalSiderButton" isOpen={open}>
-          <CardModalSiderButtonText data-testid="CardModalSiderButtonText">
-            Delete Card
-          </CardModalSiderButtonText>
-        </CardModalActionButton>
+        <Tooltip portal={false} content="Delete card">
+          <CardModalActionButton
+            data-testid="CardModalSiderButton"
+            isOpen={open}
+          >
+            <CardModalSiderButtonText data-testid="CardModalSiderButtonText">
+              Delete Card
+            </CardModalSiderButtonText>
+          </CardModalActionButton>
+        </Tooltip>
       </DeleteCardPopoverTrigger>
 
       <PopoverOptionsContent
