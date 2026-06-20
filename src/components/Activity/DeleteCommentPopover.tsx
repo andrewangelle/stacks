@@ -1,16 +1,14 @@
 import * as Popover from '@radix-ui/react-popover';
 import { DeleteCommentLink } from '~/components/Activity/Activity.styled';
-import {
-  CreateBoardCloseBorder,
-  PopoverClose,
-} from '~/components/Boards/Boards.styled';
+import { PopoverClose } from '~/components/Boards/Boards.styled';
 import { DeleteChecklistPopoverButton } from '~/components/ChecklistItem/ChecklistItem.styled';
-import {
-  ChecklistPopoverHeader,
-  DeleteChecklistPopoverContent,
-} from '~/components/Checklists/Checklists.styled';
+import { ChecklistPopoverHeader } from '~/components/Checklists/Checklists.styled';
 import { useDeleteActivity } from '~/db/activity/activity.query';
 import type { Activity } from '~/generated/prisma/client';
+import {
+  PopoverOptionsContent,
+  PopoverOptionsContentContainer,
+} from '~/styles/Page.styled';
 import { useCurrentCardId } from '~/utils/useCurrentCardId';
 
 const strings = {
@@ -31,29 +29,29 @@ export function DeleteCommentPopover(props: Pick<Activity, 'id'>) {
         </DeleteCommentLink>
       </Popover.Trigger>
 
-      <DeleteChecklistPopoverContent data-testid="DeleteChecklistPopoverContent">
+      <PopoverOptionsContent data-testid="PopoverOptionsContent">
         <ChecklistPopoverHeader data-testid="ChecklistPopoverHeader">
-          {strings.deleteComment}
+          <div style={{ fontWeight: 600 }}>{strings.deleteComment}?</div>
 
           <PopoverClose data-testid="PopoverClose">X</PopoverClose>
         </ChecklistPopoverHeader>
 
-        <CreateBoardCloseBorder data-testid="CreateBoardCloseBorder" />
+        <PopoverOptionsContentContainer>
+          {strings.deleteCommentConfirmation}
 
-        {strings.deleteCommentConfirmation}
-
-        <DeleteChecklistPopoverButton
-          data-testid="DeleteChecklistPopoverButton"
-          onClick={() =>
-            deleteActivity({
-              activityId: props.id,
-              cardId,
-            })
-          }
-        >
-          {strings.deleteCommentButton}
-        </DeleteChecklistPopoverButton>
-      </DeleteChecklistPopoverContent>
+          <DeleteChecklistPopoverButton
+            data-testid="DeleteChecklistPopoverButton"
+            onClick={() =>
+              deleteActivity({
+                activityId: props.id,
+                cardId,
+              })
+            }
+          >
+            {strings.deleteCommentButton}
+          </DeleteChecklistPopoverButton>
+        </PopoverOptionsContentContainer>
+      </PopoverOptionsContent>
     </Popover.Root>
   );
 }

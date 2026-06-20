@@ -1,7 +1,8 @@
 import { styled } from '@pigment-css/react';
+import * as Popover from '@radix-ui/react-popover';
 import { Link } from '@tanstack/react-router';
 import type { ReactNode } from 'react';
-import { blue } from '~/styles/tokens';
+import { blue, fontFamily } from '~/styles/tokens';
 
 type PaddingProps = {
   padding: string;
@@ -107,3 +108,20 @@ export const LogoLink = styled(Link)({
   gap: '8px',
   minHeight: 'unset',
 });
+
+export const PopoverOptionsContent = styled(Popover.Content)` 
+  width: 304px;
+  border-radius: 8px; 
+  font-family: ${fontFamily};
+  font-size: 14px;
+  background: #fff;
+  display: flex;
+  flex-direction: column;
+  z-index: 1;
+  box-shadow: 0px 8px 12px #1E1F2126, 0px 0px 1px #1E1F214F;
+  padding: 10px 0px;
+`;
+
+export const PopoverOptionsContentContainer = styled.div`
+  padding: 0px 10px;
+`;

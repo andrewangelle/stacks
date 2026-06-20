@@ -80,13 +80,13 @@ test.describe('Checklist', () => {
 
     await waitForInteractiveTrigger(
       page,
-      '[data-testid="DeleteChecklistPopoverContent"]',
-      '[data-testid="ChecklistCheckboxContainer"] [data-testid="DeleteChecklistItemEllipsis"]',
+      '[data-testid="PopoverOptionsContent"]',
+      '[data-testid="ChecklistCheckboxContainer"] [data-testid="ChecklistItemOptionsEllipsis"]',
     );
 
     await page
-      .getByTestId('DeleteChecklistPopoverContent')
-      .getByTestId('DeleteChecklistPopoverButton')
+      .getByTestId('PopoverOptionsContent')
+      .getByTestId('DeleteChecklistItemButton')
       .click();
 
     await expect(page.getByTestId('CheckboxLabel')).toHaveCount(1);
@@ -158,12 +158,12 @@ test.describe('Checklist', () => {
 
     await waitForInteractiveTrigger(
       page,
-      '[data-testid="DeleteChecklistPopoverContent"]',
+      '[data-testid="PopoverOptionsContent"]',
       '[data-testid="ChecklistHeader"] [data-testid="DeleteChecklistButton"]',
     );
 
     await page
-      .getByTestId('DeleteChecklistPopoverContent')
+      .getByTestId('PopoverOptionsContent')
       .getByTestId('DeleteChecklistPopoverButton')
       .click();
 

@@ -1,9 +1,6 @@
 import * as Popover from '@radix-ui/react-popover';
 import { useState } from 'react';
-import {
-  CreateBoardCloseBorder,
-  PopoverClose,
-} from '~/components/Boards/Boards.styled';
+import { PopoverClose } from '~/components/Boards/Boards.styled';
 import {
   DeleteChecklistPopoverButton,
   DeleteChecklistPopoverTrigger,
@@ -11,13 +8,16 @@ import {
 import {
   ChecklistPopoverHeader,
   DeleteChecklistButton,
-  DeleteChecklistPopoverContent,
 } from '~/components/Checklists/Checklists.styled';
 import { useCreateActivity } from '~/db/activity/activity.query';
 import {
   useDeleteChecklist,
   useGetChecklist,
 } from '~/db/checklists/checklists.query';
+import {
+  PopoverOptionsContent,
+  PopoverOptionsContentContainer,
+} from '~/styles/Page.styled';
 import { useCurrentBoardId } from '~/utils/useCurrentBoardId';
 
 export function DeleteChecklist({ id }: { id: string }) {
@@ -57,26 +57,30 @@ export function DeleteChecklist({ id }: { id: string }) {
         </DeleteChecklistButton>
       </DeleteChecklistPopoverTrigger>
 
-      <DeleteChecklistPopoverContent
-        data-testid="DeleteChecklistPopoverContent"
+      <PopoverOptionsContent
+        data-testid="PopoverOptionsContent"
         side="bottom"
         align="start"
         sideOffset={8}
         alignOffset={4}
       >
         <ChecklistPopoverHeader data-testid="ChecklistPopoverHeader">
-          {`Delete ${checklist.checklistTitle}`}
+          <div
+            style={{ fontWeight: 600 }}
+          >{`Delete ${checklist.checklistTitle}?`}</div>
           <PopoverClose data-testid="PopoverClose">X</PopoverClose>
         </ChecklistPopoverHeader>
-        <CreateBoardCloseBorder data-testid="CreateBoardCloseBorder" />
-        Deleting a checklist is permanent and there is no way to get it back.
-        <DeleteChecklistPopoverButton
-          data-testid="DeleteChecklistPopoverButton"
-          onClick={applyDelete}
-        >
-          Delete
-        </DeleteChecklistPopoverButton>
-      </DeleteChecklistPopoverContent>
+
+        <PopoverOptionsContentContainer>
+          Deleting a checklist is permanent and there is no way to get it back.
+          <DeleteChecklistPopoverButton
+            data-testid="DeleteChecklistPopoverButton"
+            onClick={applyDelete}
+          >
+            Delete checklist
+          </DeleteChecklistPopoverButton>
+        </PopoverOptionsContentContainer>
+      </PopoverOptionsContent>
     </Popover.Root>
   );
 }

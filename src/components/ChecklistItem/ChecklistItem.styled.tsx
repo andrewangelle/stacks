@@ -150,7 +150,7 @@ export const CheckboxRoot = styled(Checkbox.Root)({
   },
 });
 
-export const DeleteChecklistItemPopoverTrigger = styled(Popover.Trigger)` 
+export const ChecklistItemOptionsPopoverTrigger = styled(Popover.Trigger)` 
   border: none;
   background: transparent;
   cursor: pointer;
@@ -174,7 +174,7 @@ export const DeleteChecklistPopoverTrigger = styled(Popover.Trigger)({
   height: '100%',
 });
 
-export const DeleteChecklistItemEllipsis = styled(AiOutlineEllipsis)({
+export const ChecklistItemOptionsEllipsis = styled(AiOutlineEllipsis)({
   position: 'relative',
   top: '1px',
 });
@@ -211,3 +211,26 @@ export const AddChecklistButtonSkeleton = styled.div({
   margin: '12px 0',
   ...animationStyles.pulse,
 });
+
+export const ChecklistItemOptionsListContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+`;
+
+export const ChecklistItemOptionsListItem = styled.button`
+  padding: 8px 10px;
+  cursor: pointer;
+  border: none;
+  background: transparent;
+  text-align: left;
+  width: 100%;
+  font-size: 14px;
+
+  &:hover {
+    background: rgba(0,0,0,0.05);
+  }
+
+  &:active {
+    background: rgba(0,0,0,0.1);
+  }
+`;

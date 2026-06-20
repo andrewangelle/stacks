@@ -7,6 +7,7 @@ import {
   ActivityEntryContent,
   ActivityRow,
 } from '~/components/Activity/Activity.styled';
+import { ActivityLinkTemplate } from '~/components/Activity/ActivityLinkTemplate';
 import { ActivityLogo } from '~/components/Activity/ActivityLogo';
 import { ActivitySkeleton } from '~/components/Activity/ActivitySkeleton';
 import { ActivityTimestamp } from '~/components/Activity/ActivityTimestamp';
@@ -49,7 +50,9 @@ export function ActivityEntry({
             <ActivityAuthorName data-testid="ActivityAuthorName">
               {user?.firstName} {user?.lastName}
             </ActivityAuthorName>{' '}
-            <span style={{ fontSize: '14px' }}>{data.content} </span>
+            <span style={{ fontSize: '14px' }}>
+              <ActivityLinkTemplate>{data.content}</ActivityLinkTemplate>
+            </span>
             <ActivityTimestamp
               id={data.id}
               isSelected={isSelected}

@@ -223,6 +223,13 @@ export const ActivityTimestampMeta = styled.div`
   color: #0000EE;
 `;
 
+export const ActivityLinkToCard = styled.span`
+  margin-top: 4px;
+  cursor: pointer;
+  text-decoration: underline;
+  color: #0000EE;
+`;
+
 export const CommentTimestamp = styled(ActivityTimestamp)`
   display: inline;
   margin: 0px 0px 0px 5px;

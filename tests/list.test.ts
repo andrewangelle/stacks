@@ -189,7 +189,7 @@ test.describe('List', () => {
 
     await waitForInteractiveTrigger(
       page,
-      '[data-testid="DeleteChecklistPopoverContent"]',
+      '[data-testid="PopoverOptionsContent"]',
       '[data-testid="ListContainer"] [data-testid="DeleteListIcon"]',
     );
 

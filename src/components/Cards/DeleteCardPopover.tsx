@@ -1,21 +1,19 @@
 import * as Popover from '@radix-ui/react-popover';
 import { useNavigate } from '@tanstack/react-router';
 import { useState } from 'react';
-import {
-  CreateBoardCloseBorder,
-  PopoverClose,
-} from '~/components/Boards/Boards.styled';
+import { PopoverClose } from '~/components/Boards/Boards.styled';
 import {
   CardModalActionButton,
   CardModalSiderButtonText,
   DeleteCardPopoverTrigger,
 } from '~/components/Cards/Card.styled';
 import { DeleteChecklistPopoverButton } from '~/components/ChecklistItem/ChecklistItem.styled';
-import {
-  ChecklistPopoverHeader,
-  DeleteChecklistPopoverContent,
-} from '~/components/Checklists/Checklists.styled';
+import { ChecklistPopoverHeader } from '~/components/Checklists/Checklists.styled';
 import { useDeleteCard, useGetCardById } from '~/db/cards/cards.query';
+import {
+  PopoverOptionsContent,
+  PopoverOptionsContentContainer,
+} from '~/styles/Page.styled';
 import { useCurrentBoardId } from '~/utils/useCurrentBoardId';
 import { useCurrentCardId } from '~/utils/useCurrentCardId';
 
@@ -26,6 +24,15 @@ export function DeleteCardPopover() {
   const { data } = useGetCardById({ id });
   const deleteCard = useDeleteCard();
   const navigate = useNavigate();
+
+  function applyDelete() {
+    deleteCard({
+      cardId: id,
+      listId: data?.listId ?? '',
+    });
+    navigate({ to: '/board/$id', params: { id: boardId }, hash: '' });
+  }
+
   return (
     <Popover.Root open={open} onOpenChange={setOpen}>
       <DeleteCardPopoverTrigger data-testid="DeleteCardPopoverTrigger">
@@ -36,34 +43,30 @@ export function DeleteCardPopover() {
         </CardModalActionButton>
       </DeleteCardPopoverTrigger>
 
-      <DeleteChecklistPopoverContent
-        data-testid="DeleteChecklistPopoverContent"
+      <PopoverOptionsContent
+        data-testid="PopoverOptionsContent"
         side="bottom"
         align="start"
         sideOffset={8}
         alignOffset={4}
       >
         <ChecklistPopoverHeader data-testid="ChecklistPopoverHeader">
-          {`Delete ${data?.cardTitle ?? ''}`}
+          <div style={{ fontWeight: 600 }}>
+            {`Delete ${data?.cardTitle ?? ''}?`}
+          </div>
           <PopoverClose data-testid="PopoverClose">X</PopoverClose>
         </ChecklistPopoverHeader>
-        {/** */}
-        <CreateBoardCloseBorder data-testid="CreateBoardCloseBorder" />
-        {/** */}
-        Deleting a card is permanent and there is no way to get it back.
-        <DeleteChecklistPopoverButton
-          data-testid="DeleteChecklistPopoverButton"
-          onClick={() => {
-            deleteCard({
-              cardId: id,
-              listId: data?.listId ?? '',
-            });
-            navigate({ to: '/board/$id', params: { id: boardId }, hash: '' });
-          }}
-        >
-          Delete
-        </DeleteChecklistPopoverButton>
-      </DeleteChecklistPopoverContent>
+
+        <PopoverOptionsContentContainer>
+          Deleting a card is permanent and there is no way to get it back.
+          <DeleteChecklistPopoverButton
+            data-testid="DeleteChecklistPopoverButton"
+            onClick={applyDelete}
+          >
+            Delete card
+          </DeleteChecklistPopoverButton>
+        </PopoverOptionsContentContainer>
+      </PopoverOptionsContent>
     </Popover.Root>
   );
 }

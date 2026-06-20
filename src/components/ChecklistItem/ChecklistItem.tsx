@@ -7,8 +7,8 @@ import {
   ChecklistCheckboxContentColumn,
   ChecklistLeadingColumn,
 } from '~/components/ChecklistItem/ChecklistItem.styled';
+import { ChecklistItemOptions } from '~/components/ChecklistItem/ChecklistItemOptions';
 import { ChecklistItemSkeleton } from '~/components/ChecklistItem/ChecklistItemSkeleton';
-import { DeleteChecklistItem } from '~/components/ChecklistItem/DeleteChecklistItem';
 import { EditableChecklistLabel } from '~/components/ChecklistItem/EditableChecklistLabel';
 import { useCreateActivity } from '~/db/activity/activity.query';
 import {
@@ -89,7 +89,7 @@ export function ChecklistItem({ id }: { id: string }) {
         />
 
         {!isEditingLabel && (
-          <DeleteChecklistItem id={id} isHovering={isHovering} />
+          <ChecklistItemOptions id={id} isHovering={isHovering} />
         )}
       </ChecklistCheckboxContentColumn>
     </ChecklistCheckboxContainer>
