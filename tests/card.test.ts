@@ -1,5 +1,6 @@
 import { expect, type Page, test } from '@playwright/test';
 import { expectCardCompletionActivity } from '~test/helpers/expectCardCompletionActivity';
+import { expectListCardCount } from '~test/helpers/expectListHeaderCardCount';
 import { resetDb } from '~test/helpers/resetDb';
 import { seedBoard, seedCard } from '~test/helpers/seed';
 import { waitForHydratedAction } from '~test/helpers/waitForHydratedAction';
@@ -148,7 +149,7 @@ test.describe('Card', () => {
       .click();
 
     await page.goto(`/board/${board.id}`);
-    await expect(page.getByTestId('ListCardContainer')).toHaveCount(0);
+    await expectListCardCount(page.getByTestId('ListContainer'), 0);
   });
 });
 

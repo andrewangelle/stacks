@@ -1,3 +1,4 @@
+import { Fragment } from 'react';
 import { Draggable } from '~/components/dnd/Draggable';
 import { DropTargetFallback } from '~/components/dnd/DropTargetFallback';
 import { AddNewCard } from '~/components/Lists/AddNewCard';
@@ -45,9 +46,8 @@ export function List({ id: listId }: { id: string }) {
       <div ref={ref} style={{ width: '100%', minWidth: 0 }}>
         {cards?.map((card, index, cards) => {
           return (
-            <>
+            <Fragment key={card.id}>
               <Draggable
-                key={card.id}
                 id={card.id}
                 name={card.cardTitle}
                 type="card"
@@ -65,7 +65,7 @@ export function List({ id: listId }: { id: string }) {
               {index !== cards.length - 1 && (
                 <AddNewCardAtPosition listId={listId} position={index} />
               )}
-            </>
+            </Fragment>
           );
         })}
       </div>

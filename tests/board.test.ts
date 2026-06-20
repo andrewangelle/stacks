@@ -1,4 +1,5 @@
 import { expect, test } from '@playwright/test';
+import { expectListCardCount } from '~test/helpers/expectListHeaderCardCount';
 import { resetDb } from '~test/helpers/resetDb';
 import { seedBoard } from '~test/helpers/seed';
 import { waitForInteractiveTrigger } from '~test/helpers/waitForInteractiveTrigger';
@@ -21,11 +22,13 @@ test.describe('Board', () => {
     await page.getByTestId('CreateListButton').click();
 
     await expect(page.getByTestId('ListContainer')).toBeVisible();
+    await expectListCardCount(page.getByTestId('ListContainer'), 0);
 
     await page.getByTestId('AddCardText').click();
     await page.getByTestId('AddCardInput').fill('Write E2E tests');
     await page.getByTestId('AddCardButton').click();
 
+    await expectListCardCount(page.getByTestId('ListContainer'), 1);
     await expect(page.getByTestId('ListCardContainer')).toHaveText(
       'Write E2E tests',
     );
