@@ -8,6 +8,7 @@ import {
 } from '~/components/Lists/CardTitleDetails/CardTitleDetails.styled';
 import { CardTitleDetailsChecklist } from '~/components/Lists/CardTitleDetails/CardTitleDetailsChecklist';
 import { CardTitleDetailsChecklistAccordion } from '~/components/Lists/CardTitleDetails/CardTitleDetailsChecklistAccordion';
+import { Tooltip } from '~/components/Tooltip/Tooltip';
 import { useGetCardTitleDetailsChecklists } from '~/db/checklists/checklists.query';
 
 const MAX_VISIBLE_CHECKLISTS = 3;
@@ -36,6 +37,12 @@ export function CardTitleDetailsChecklists({
       ? openChecklistId
       : '';
 
+  const tooltipText = data?.isAllCompleted
+    ? 'Checklist items'
+    : isOpen
+      ? 'Collapse checklists'
+      : 'Expand checklists';
+
   function toggleOpen(event: MouseEvent<HTMLDivElement>) {
     event.preventDefault();
     event.stopPropagation();
@@ -54,15 +61,21 @@ export function CardTitleDetailsChecklists({
 
   return (
     <>
-      <CardTitleDetailsChecklistTotalsContainer
-        data-testid="CardTitleDetailsChecklistTotalsContainer"
-        isAllCompleted={data?.isAllCompleted ?? false}
-        isOpen={isOpen}
-        onClick={toggleOpen}
+      <Tooltip
+        trigger={
+          <CardTitleDetailsChecklistTotalsContainer
+            data-testid="CardTitleDetailsChecklistTotalsContainer"
+            isAllCompleted={data?.isAllCompleted ?? false}
+            isOpen={isOpen}
+            onClick={toggleOpen}
+          >
+            <RiCheckboxLine size={14} />
+            {data?.completedItemsForCard} / {data?.totalItemsForCard}
+          </CardTitleDetailsChecklistTotalsContainer>
+        }
       >
-        <RiCheckboxLine size={14} />
-        {data?.completedItemsForCard} / {data?.totalItemsForCard}
-      </CardTitleDetailsChecklistTotalsContainer>
+        {tooltipText}
+      </Tooltip>
 
       {isOpen && checklists.length > 0 && (
         <>
