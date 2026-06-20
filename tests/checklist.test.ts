@@ -62,6 +62,74 @@ test.describe('Checklist', () => {
     );
   });
 
+  test('converts a checklist item to a card in the card modal', async ({
+    page,
+    request,
+  }) => {
+    const { board } = await openCardWithChecklists(page, request, [
+      {
+        title: 'Launch checklist',
+        items: ['Deploy to staging', 'Notify team'],
+      },
+    ]);
+
+    await expect(page.getByTestId('CheckboxLabel')).toHaveCount(2);
+
+    const firstItem = page.getByTestId('ChecklistCheckboxContainer').first();
+    await firstItem.getByTestId('ChecklistContentColumn').hover();
+
+    await waitForInteractiveTrigger(
+      page,
+      '[data-testid="PopoverOptionsContent"]',
+      '[data-testid="ChecklistCheckboxContainer"] [data-testid="ChecklistItemOptionsEllipsis"]',
+    );
+
+    await waitForChecklistItemConverted(page);
+
+    await expect(page.getByTestId('CheckboxLabel')).toHaveCount(1);
+    await expect(page.getByTestId('CheckboxLabel')).toHaveText('Notify team');
+
+    await page.goto(`/board/${board.id}`);
+
+    await expect(page.getByTestId('ListCardContainer')).toHaveCount(2);
+    await expect(
+      page
+        .getByTestId('ListCardContainer')
+        .filter({ hasText: 'Deploy to staging' }),
+    ).toBeVisible();
+    await expect(
+      page.getByTestId('ListCardContainer').filter({ hasText: 'Ship feature' }),
+    ).toBeVisible();
+
+    await page
+      .getByTestId('ListCardContainer')
+      .filter({ hasText: 'Deploy to staging' })
+      .click();
+
+    await expect(page.getByTestId('CardModalContent')).toBeVisible();
+    await expect(
+      page.getByTestId('CardModalTitleContainer').getByTestId('CardModalTitle'),
+    ).toHaveText('Deploy to staging');
+
+    const activityColumn = page.getByTestId('CardActivityColumn');
+    const toggleButton = activityColumn.getByTestId('HideActivityButton');
+
+    if (await toggleButton.getByText('Show details').isVisible()) {
+      await toggleButton.click();
+    }
+
+    await expect(
+      activityColumn
+        .getByTestId('ActivityCommentContainer')
+        .filter({ hasText: 'converted this card from a checklist item' }),
+    ).toBeVisible();
+    await expect(
+      activityColumn
+        .getByTestId('ActivityCommentContainer')
+        .filter({ hasText: 'Ship feature' }),
+    ).toBeVisible();
+  });
+
   test('deletes a checklist item in the card modal', async ({
     page,
     request,
@@ -234,6 +302,21 @@ function waitForTitleToBeUpdated(page: Page) {
     (await title.textContent())?.trim() === 'Release checklist';
 
   return waitForHydratedAction(trigger, isUpdated);
+}
+
+function waitForChecklistItemConverted(page: Page) {
+  const trigger = () =>
+    page
+      .getByTestId('PopoverOptionsContent')
+      .getByTestId('ConvertChecklistItemToCardButton')
+      .click();
+
+  const isConverted = async () =>
+    (await page.getByTestId('CheckboxLabel').count()) === 1 &&
+    (await page.getByTestId('CheckboxLabel').first().textContent())?.trim() ===
+      'Notify team';
+
+  return waitForHydratedAction(trigger, isConverted);
 }
 
 function waitForToggleCheckedItems(page: Page) {

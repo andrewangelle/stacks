@@ -108,7 +108,7 @@ export function ChecklistItemOptions({
 
           <ChecklistItemOptionsListContainer data-testid="ChecklistItemOptionsListContainer">
             <ChecklistItemOptionsListItem
-              data-testid="ChecklistItemOptionsListItem"
+              data-testid="ConvertChecklistItemToCardButton"
               onClick={convertToCard}
             >
               Convert to card
