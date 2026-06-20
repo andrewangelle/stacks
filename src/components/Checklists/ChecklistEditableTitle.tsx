@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import * as Bs from 'react-icons/bs';
+import { BsCheck2Square } from 'react-icons/bs';
 import {
   ChecklistTitle,
   EditChecklistTitleForm,
@@ -45,7 +45,7 @@ export function ChecklistEditableTitle({ id }: ChecklistEditableTitleProps) {
 
   return (
     <Flex data-testid="Flex" style={{ alignItems: 'center' }}>
-      <Bs.BsCheck2Square size={24} />
+      <BsCheck2Square size={24} />
 
       {!isEditingTitle && (
         <ChecklistTitle data-testid="ChecklistTitle" onClick={openEditTitle}>

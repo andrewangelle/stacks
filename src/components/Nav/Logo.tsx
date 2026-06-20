@@ -1,10 +1,10 @@
-import * as Ri from 'react-icons/ri';
+import { RiTrelloFill } from 'react-icons/ri';
 import { LogoLink } from '~/styles/Page.styled';
 
 export function Logo() {
   return (
     <LogoLink to="/boards" data-testid="LogoLink">
-      <Ri.RiTrelloFill
+      <RiTrelloFill
         size={18}
         style={{
           color: 'white',

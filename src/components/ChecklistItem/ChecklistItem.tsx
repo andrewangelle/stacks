@@ -1,5 +1,5 @@
 import { type CSSProperties, useState } from 'react';
-import * as AiIcons from 'react-icons/ai';
+import { AiOutlineCheck } from 'react-icons/ai';
 import {
   CheckboxIndicator,
   CheckboxRoot,
@@ -16,8 +16,6 @@ import {
   useUpdateChecklistItem,
 } from '~/db/checklistItems/checklistItems.query';
 import { useCurrentBoardId } from '~/utils/useCurrentBoardId';
-
-const AiOutlineCheck = AiIcons.AiOutlineCheck;
 
 export function ChecklistItem({ id }: { id: string }) {
   const boardId = useCurrentBoardId();

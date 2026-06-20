@@ -1,6 +1,6 @@
 import * as Popover from '@radix-ui/react-popover';
 import { useState } from 'react';
-import * as Bs from 'react-icons/bs';
+import { BsCheck2Square } from 'react-icons/bs';
 import {
   CreateBoardCloseBorder,
   PopoverClose,
@@ -61,7 +61,7 @@ export function CreateChecklist() {
             data-testid="CardModalActionButton"
             isOpen={open}
           >
-            <Bs.BsCheck2Square
+            <BsCheck2Square
               style={{ marginRight: '4px', position: 'relative', top: '2px' }}
             />
             <CardModalSiderButtonText data-testid="CardModalSiderButtonText">

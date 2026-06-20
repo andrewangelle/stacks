@@ -1,4 +1,4 @@
-import * as Bs from 'react-icons/bs';
+import { BsCheck2Square } from 'react-icons/bs';
 import {
   ChecklistContentColumn,
   ChecklistLeadingColumn,
@@ -18,7 +18,7 @@ export function ChecklistSkeleton() {
     <ChecklistContainer data-testid="ChecklistContainer">
       <ChecklistHeader data-testid="ChecklistHeader">
         <ChecklistNameSkeletonContainer data-testid="ChecklistNameSkeletonContainer">
-          <Bs.BsCheck2Square size={24} />
+          <BsCheck2Square size={24} />
           <ChecklistNameSkeleton data-testid="ChecklistNameSkeleton" />
         </ChecklistNameSkeletonContainer>
         <DeleteChecklistSkeleton data-testid="DeleteChecklistSkeleton" />
