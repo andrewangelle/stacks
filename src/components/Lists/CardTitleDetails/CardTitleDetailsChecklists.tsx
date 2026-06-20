@@ -61,20 +61,16 @@ export function CardTitleDetailsChecklists({
 
   return (
     <>
-      <Tooltip
-        trigger={
-          <CardTitleDetailsChecklistTotalsContainer
-            data-testid="CardTitleDetailsChecklistTotalsContainer"
-            isAllCompleted={data?.isAllCompleted ?? false}
-            isOpen={isOpen}
-            onClick={toggleOpen}
-          >
-            <RiCheckboxLine size={14} />
-            {data?.completedItemsForCard} / {data?.totalItemsForCard}
-          </CardTitleDetailsChecklistTotalsContainer>
-        }
-      >
-        {tooltipText}
+      <Tooltip content={tooltipText}>
+        <CardTitleDetailsChecklistTotalsContainer
+          data-testid="CardTitleDetailsChecklistTotalsContainer"
+          isAllCompleted={data?.isAllCompleted ?? false}
+          isOpen={isOpen}
+          onClick={toggleOpen}
+        >
+          <RiCheckboxLine size={14} />
+          {data?.completedItemsForCard} / {data?.totalItemsForCard}
+        </CardTitleDetailsChecklistTotalsContainer>
       </Tooltip>
 
       {isOpen && checklists.length > 0 && (

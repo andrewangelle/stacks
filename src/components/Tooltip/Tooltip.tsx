@@ -5,13 +5,13 @@ import { TooltipContent } from '~/components/Tooltip/Tooltip.styled';
 
 export function Tooltip({
   portal = true,
-  trigger,
   disabled,
+  content,
   children,
 }: {
   portal?: boolean;
   disabled?: boolean;
-  trigger: ReactNode;
+  content: ReactNode;
   children: ReactNode;
 }) {
   const [isOpen, setIsOpen] = useState(false);
@@ -22,17 +22,18 @@ export function Tooltip({
         open={isOpen}
         onOpenChange={(nextIsOpen) => !disabled && setIsOpen(nextIsOpen)}
       >
-        <Trigger asChild>{trigger}</Trigger>
+        <Trigger asChild>{children}</Trigger>
         {portal && (
           <Portal>
             <TooltipContent side="bottom" sideOffset={8}>
-              {children}
+              {content}
             </TooltipContent>
           </Portal>
         )}
+
         {!portal && (
           <TooltipContent side="bottom" sideOffset={8}>
-            {children}
+            {content}
           </TooltipContent>
         )}
       </Root>

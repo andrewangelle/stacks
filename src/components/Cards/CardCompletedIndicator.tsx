@@ -51,26 +51,24 @@ export function CardCompletedIndicator({
   return (
     <Tooltip
       portal={false}
-      trigger={
-        <CardCompletedIndicatorCircle
-          circleSize={circleSize}
-          aria-label="Mark card complete"
-          data-completed={isCompleted ? '' : undefined}
-          data-testid="CardTitleModalTriggerCircle"
-          data-visible={visible ? '' : undefined}
-          onClick={toggleCardCompletion}
-          type="button"
-        >
-          {isCompleted && (
-            <AiOutlineCheck
-              size={10}
-              data-testid="CardCompletedIndicatorCheckmark"
-            />
-          )}
-        </CardCompletedIndicatorCircle>
-      }
+      content={isCompleted ? 'Mark incomplete' : 'Mark complete'}
     >
-      {isCompleted ? 'Mark incomplete' : 'Mark complete'}
+      <CardCompletedIndicatorCircle
+        circleSize={circleSize}
+        aria-label="Mark card complete"
+        data-completed={isCompleted ? '' : undefined}
+        data-testid="CardTitleModalTriggerCircle"
+        data-visible={visible ? '' : undefined}
+        onClick={toggleCardCompletion}
+        type="button"
+      >
+        {isCompleted && (
+          <AiOutlineCheck
+            size={10}
+            data-testid="CardCompletedIndicatorCheckmark"
+          />
+        )}
+      </CardCompletedIndicatorCircle>
     </Tooltip>
   );
 }
