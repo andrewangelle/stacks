@@ -1,4 +1,8 @@
 import { expect, type Locator, type Page, test } from '@playwright/test';
+import {
+  expectListCardCount,
+  listByTitle,
+} from '~test/helpers/expectListHeaderCardCount';
 import { resetDb } from '~test/helpers/resetDb';
 import { seedBoard, seedCard, seedListCard } from '~test/helpers/seed';
 
@@ -111,21 +115,13 @@ test.describe('Drag and drop', () => {
   });
 });
 
-function listByTitle(page: Page, listTitle: string) {
-  return page.getByTestId('ListContainer').filter({
-    has: page.getByTestId('ListName').filter({ hasText: listTitle }),
-  });
-}
-
 async function expectCardInList(
   page: Page,
   listTitle: string,
   cardTitles: string[],
 ) {
   const list = listByTitle(page, listTitle);
-  await expect(list.getByTestId('ListCardContainer')).toHaveCount(
-    cardTitles.length,
-  );
+  await expectListCardCount(list, cardTitles.length);
 
   for (const title of cardTitles) {
     await expect(

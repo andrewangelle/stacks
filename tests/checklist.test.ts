@@ -4,6 +4,7 @@ import {
   type Page,
   test,
 } from '@playwright/test';
+import { expectListCardCount } from '~test/helpers/expectListHeaderCardCount';
 import { resetDb } from '~test/helpers/resetDb';
 import { seedBoard, seedListCard } from '~test/helpers/seed';
 import { waitForHydratedAction } from '~test/helpers/waitForHydratedAction';
@@ -91,7 +92,7 @@ test.describe('Checklist', () => {
 
     await page.goto(`/board/${board.id}`);
 
-    await expect(page.getByTestId('ListCardContainer')).toHaveCount(2);
+    await expectListCardCount(page.getByTestId('ListContainer'), 2);
     await expect(
       page
         .getByTestId('ListCardContainer')

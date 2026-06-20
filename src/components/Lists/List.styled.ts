@@ -135,7 +135,7 @@ export const ListCardSkeleton = styled(ListCardContainer)({
 
 export const DeleteListIcon = styled(Ti.TiDelete)` 
   position: relative;
-  top: -4px;
+  top: 1px;
   cursor: pointer;
 
   &:hover {

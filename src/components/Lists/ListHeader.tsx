@@ -1,6 +1,8 @@
 import { useState } from 'react';
 import { DeleteList } from '~/components/Lists/DeleteList';
 import { EditableListName } from '~/components/Lists/EditableListName';
+import { ListHeaderCardCount } from '~/components/Lists/ListHeaderCardCount';
+import { Flex } from '~/styles/Page.styled';
 
 export function ListHeader({ id: listId }: { id: string }) {
   const [isEditingListName, setIsEditingListName] = useState(false);
@@ -11,7 +13,7 @@ export function ListHeader({ id: listId }: { id: string }) {
       style={{
         display: 'flex',
         justifyContent: 'space-between',
-        alignItems: 'center',
+        alignItems: 'baseline',
       }}
     >
       <EditableListName
@@ -22,7 +24,10 @@ export function ListHeader({ id: listId }: { id: string }) {
         setEditedListTitle={setEditedListTitle}
       />
 
-      {!isEditingListName && <DeleteList id={listId} />}
+      <Flex data-testid="Flex" style={{ gap: '8px' }}>
+        <ListHeaderCardCount listId={listId} />
+        {!isEditingListName && <DeleteList id={listId} />}
+      </Flex>
     </div>
   );
 }

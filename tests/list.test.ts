@@ -1,5 +1,6 @@
 import { expect, type Locator, type Page, test } from '@playwright/test';
 import { expectCardCompletionActivity } from '~test/helpers/expectCardCompletionActivity';
+import { expectListCardCount } from '~test/helpers/expectListHeaderCardCount';
 import { resetDb } from '~test/helpers/resetDb';
 import { seedBoard, seedCard, seedListCard } from '~test/helpers/seed';
 import { waitForHydratedAction } from '~test/helpers/waitForHydratedAction';
@@ -184,9 +185,10 @@ test.describe('List', () => {
 
     await page.goto(`/board/${board.id}`);
     await waitForListCard(page, 'Alpha');
+    await expectListCardCount(page.getByTestId('ListContainer'), 1);
 
     await addCardAtEnd(page, 'Charlie');
-    await expect(page.getByTestId('ListCardContainer')).toHaveCount(2);
+    await expectListCardCount(page.getByTestId('ListContainer'), 2);
 
     const slot = page.getByTestId('AddNewCardAtPosition-0');
     await openAddCardAtPosition(slot);
@@ -194,7 +196,7 @@ test.describe('List', () => {
     await slot.getByTestId('AddCardInput').fill('Bravo');
     await slot.getByTestId('AddCardButton').click();
 
-    await expect(page.getByTestId('ListCardContainer')).toHaveCount(3);
+    await expectListCardCount(page.getByTestId('ListContainer'), 3);
 
     const cards = page.getByTestId('ListCardContainer');
     await expect(cards.nth(0)).toContainText('Alpha');
