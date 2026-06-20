@@ -1,6 +1,7 @@
 import type { MouseEvent } from 'react';
 import { AiOutlineCheck } from 'react-icons/ai';
 import { CardCompletedIndicatorCircle } from '~/components/Lists/CardTitleDetails/CardTitleDetails.styled';
+import { Tooltip } from '~/components/Tooltip/Tooltip';
 import { useCreateActivity } from '~/db/activity/activity.query';
 import { useGetCardById, useUpdateCard } from '~/db/cards/cards.query';
 import { useCurrentBoardId } from '~/utils/useCurrentBoardId';
@@ -48,21 +49,28 @@ export function CardCompletedIndicator({
   }
 
   return (
-    <CardCompletedIndicatorCircle
-      circleSize={circleSize}
-      aria-label="Mark card complete"
-      data-completed={isCompleted ? '' : undefined}
-      data-testid="CardTitleModalTriggerCircle"
-      data-visible={visible ? '' : undefined}
-      onClick={toggleCardCompletion}
-      type="button"
+    <Tooltip
+      portal={false}
+      trigger={
+        <CardCompletedIndicatorCircle
+          circleSize={circleSize}
+          aria-label="Mark card complete"
+          data-completed={isCompleted ? '' : undefined}
+          data-testid="CardTitleModalTriggerCircle"
+          data-visible={visible ? '' : undefined}
+          onClick={toggleCardCompletion}
+          type="button"
+        >
+          {isCompleted && (
+            <AiOutlineCheck
+              size={10}
+              data-testid="CardCompletedIndicatorCheckmark"
+            />
+          )}
+        </CardCompletedIndicatorCircle>
+      }
     >
-      {isCompleted && (
-        <AiOutlineCheck
-          size={10}
-          data-testid="CardCompletedIndicatorCheckmark"
-        />
-      )}
-    </CardCompletedIndicatorCircle>
+      {isCompleted ? 'Mark incomplete' : 'Mark complete'}
+    </Tooltip>
   );
 }
