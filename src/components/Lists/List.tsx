@@ -1,6 +1,7 @@
 import { Draggable } from '~/components/dnd/Draggable';
 import { DropTargetFallback } from '~/components/dnd/DropTargetFallback';
 import { AddNewCard } from '~/components/Lists/AddNewCard';
+import { AddNewCardAtPosition } from '~/components/Lists/AddNewCardAtPosition';
 import {
   ListCardSkeleton,
   ListContainer,
@@ -42,23 +43,31 @@ export function List({ id: listId }: { id: string }) {
       <ListHeader id={listId} />
 
       <div ref={ref} style={{ width: '100%', minWidth: 0 }}>
-        {cards?.map((card, index) => (
-          <Draggable
-            key={card.id}
-            id={card.id}
-            name={card.cardTitle}
-            type="card"
-            parentId={listId}
-            index={index}
-            group={listId}
-            onReorder={(fromIndex, toIndex) =>
-              reorderCardsByIndex(listId, fromIndex, toIndex)
-            }
-            onMove={onMove}
-          >
-            <ListCard id={card.id} />
-          </Draggable>
-        ))}
+        {cards?.map((card, index, cards) => {
+          return (
+            <>
+              <Draggable
+                key={card.id}
+                id={card.id}
+                name={card.cardTitle}
+                type="card"
+                parentId={listId}
+                index={index}
+                group={listId}
+                onReorder={(fromIndex, toIndex) =>
+                  reorderCardsByIndex(listId, fromIndex, toIndex)
+                }
+                onMove={onMove}
+              >
+                <ListCard id={card.id} />
+              </Draggable>
+
+              {index !== cards.length - 1 && (
+                <AddNewCardAtPosition listId={listId} position={index} />
+              )}
+            </>
+          );
+        })}
       </div>
 
       <DropTargetFallback id={`list-drop:${listId}`} type="card" />

@@ -7,6 +7,7 @@ export const red = '#ca3521';
 export const focusRingBlue = '#2F80ED';
 export const fontFamily = "'App Sans', sans-serif";
 export const completedGreen = '#1f845a';
+export const userNameIconBlue = '#1558BC';
 
 /** References gradients in `board-gradient.css` — edit that file to tune. */
 export const boardGradientVars = {

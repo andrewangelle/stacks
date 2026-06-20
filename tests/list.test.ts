@@ -1,7 +1,7 @@
-import { expect, type Page, test } from '@playwright/test';
+import { expect, type Locator, type Page, test } from '@playwright/test';
 import { expectCardCompletionActivity } from '~test/helpers/expectCardCompletionActivity';
 import { resetDb } from '~test/helpers/resetDb';
-import { seedBoard, seedListCard } from '~test/helpers/seed';
+import { seedBoard, seedCard, seedListCard } from '~test/helpers/seed';
 import { waitForHydratedAction } from '~test/helpers/waitForHydratedAction';
 import { waitForInteractiveTrigger } from '~test/helpers/waitForInteractiveTrigger';
 
@@ -172,6 +172,36 @@ test.describe('List', () => {
     await expectCardCompletionActivity(page, 'marked this card incomplete');
   });
 
+  test('inserts a card between existing cards', async ({ page, request }) => {
+    await resetDb(request);
+
+    const board = await seedBoard(request, 'Sprint Board');
+    await seedCard(request, {
+      boardId: board.id,
+      listTitle: 'To Do',
+      cardTitle: 'Alpha',
+    });
+
+    await page.goto(`/board/${board.id}`);
+    await waitForListCard(page, 'Alpha');
+
+    await addCardAtEnd(page, 'Charlie');
+    await expect(page.getByTestId('ListCardContainer')).toHaveCount(2);
+
+    const slot = page.getByTestId('AddNewCardAtPosition-0');
+    await openAddCardAtPosition(slot);
+
+    await slot.getByTestId('AddCardInput').fill('Bravo');
+    await slot.getByTestId('AddCardButton').click();
+
+    await expect(page.getByTestId('ListCardContainer')).toHaveCount(3);
+
+    const cards = page.getByTestId('ListCardContainer');
+    await expect(cards.nth(0)).toContainText('Alpha');
+    await expect(cards.nth(1)).toContainText('Bravo');
+    await expect(cards.nth(2)).toContainText('Charlie');
+  });
+
   test('deletes a list', async ({ page, request }) => {
     await resetDb(request);
 
@@ -207,6 +237,30 @@ test.describe('List', () => {
 /**
  * Local utils
  */
+async function addCardAtEnd(page: Page, cardTitle: string) {
+  await waitForInteractiveTrigger(
+    page,
+    '[data-testid="AddCardInput"]',
+    '[data-testid="AddCardText"]',
+  );
+
+  await page.getByTestId('AddCardInput').fill(cardTitle);
+  await page.getByTestId('AddCardButton').click();
+
+  await expect(
+    page.getByTestId('ListCardContainer').filter({ hasText: cardTitle }),
+  ).toBeVisible();
+}
+
+async function openAddCardAtPosition(slot: Locator) {
+  await slot.hover();
+
+  return waitForHydratedAction(
+    () => slot.getByTestId('AddNewCardAtPositionPlus').click(),
+    async () => (await slot.getByTestId('AddCardInput').count()) > 0,
+  );
+}
+
 async function waitForCardCompletedOnList(page: Page) {
   return waitForCardCompletionOnList(page, true);
 }

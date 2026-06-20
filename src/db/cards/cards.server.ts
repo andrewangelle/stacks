@@ -88,20 +88,66 @@ export async function createCardQuery(data: WithUserId<CreateCardArgs>) {
     throw new Error('Forbidden');
   }
 
-  const position = await prisma.card.count({
-    where: {
-      listId: data.listId,
-      list: { board: { userId: data.userId } },
-    },
-  });
+  const listOwnership = {
+    listId: data.listId,
+    list: { board: { userId: data.userId } },
+  };
 
-  const result = await prisma.card.create({
-    data: {
-      cardTitle: data.cardTitle,
-      listId: data.listId,
-      userId: data.userId,
-      position,
-    },
+  if (data.position === undefined) {
+    const position = await prisma.card.count({
+      where: listOwnership,
+    });
+
+    const result = await prisma.card.create({
+      data: {
+        cardTitle: data.cardTitle,
+        listId: data.listId,
+        userId: data.userId,
+        position,
+      },
+    });
+
+    return {
+      code: 'cards:create:success',
+      message: 'success',
+      data: [result],
+    };
+  }
+
+  const insertPosition = data.position;
+
+  const result = await prisma.$transaction(async (tx) => {
+    const existingCards = await tx.card.findMany({
+      where: listOwnership,
+      orderBy: [{ position: 'asc' }, { createdAt: 'asc' }],
+      select: { id: true },
+    });
+
+    const clampedPosition = Math.min(
+      Math.max(insertPosition, 0),
+      existingCards.length,
+    );
+
+    const newCard = await tx.card.create({
+      data: {
+        cardTitle: data.cardTitle,
+        listId: data.listId,
+        userId: data.userId,
+        position: clampedPosition,
+      },
+    });
+
+    const orderedIds = existingCards.map((card) => card.id);
+    orderedIds.splice(clampedPosition, 0, newCard.id);
+
+    for (let position = 0; position < orderedIds.length; position++) {
+      await tx.card.updateMany({
+        where: { id: orderedIds[position], userId: data.userId },
+        data: { position },
+      });
+    }
+
+    return { ...newCard, position: clampedPosition };
   });
 
   return {

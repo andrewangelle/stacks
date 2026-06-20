@@ -55,14 +55,25 @@ export function useGetCardById(args: { id: string }) {
 
 export function useCreateCard() {
   return useMutation({
-    mutationFn({ cardTitle, listId }: CreateCardArgs) {
-      return createCard({ data: { cardTitle, listId } });
+    mutationFn({ cardTitle, listId, position }: CreateCardArgs) {
+      return createCard({ data: { cardTitle, listId, position } });
     },
 
     onSuccess(result, variables) {
       queryClient.setQueryData<CardListItem[]>(
         queryKeys.list(variables.listId),
-        (cache = []) => [...cache, toCardListItem(result.data[0])],
+        (cache = []) => {
+          const newItem = toCardListItem(result.data[0]);
+
+          if (variables.position === undefined) {
+            return [...cache, newItem];
+          }
+
+          const next = [...cache];
+          const index = Math.min(Math.max(variables.position, 0), next.length);
+          next.splice(index, 0, newItem);
+          return next;
+        },
       );
     },
   });
