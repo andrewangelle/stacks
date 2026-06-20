@@ -4,7 +4,7 @@ import { fontFamily } from '~/components/Boards/Boards.styled';
 import { CardModalTitle } from '~/components/Cards/Card.styled';
 import { animationStyles } from '~/styles/animations';
 import { Button, secondaryButtonStyles } from '~/styles/Page.styled';
-import { blue, completedGreen } from '~/styles/tokens';
+import { completedGreen, userNameIconBlue } from '~/styles/tokens';
 
 const activitySidebarLayout = '@media (min-width: 851px)';
 
@@ -134,7 +134,7 @@ export const ActivityMetaTime = styled.span`
 
 export const ActivityNameCircle = styled.div` 
   border-radius: 100%;
-  background: ${blue};
+  background: ${userNameIconBlue};
   color: white;
   flex-shrink: 0;
   height: 32px;

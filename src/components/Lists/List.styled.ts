@@ -4,6 +4,7 @@ import { fontFamily } from '~/components/Boards/Boards.styled';
 import { animationStyles } from '~/styles/animations';
 import { Button } from '~/styles/Page.styled';
 import { focusRingBlue } from '~/styles/tokens';
+import { activityFieldStyles } from '../Activity/Activity.styled';
 
 export const ListGridContainer = styled.div` 
   display: grid;
@@ -83,6 +84,7 @@ export const AddCardInput = styled.input`
   padding: 9px;
   box-shadow: 0 1px 0 #091e4240;
   margin: 4px 0px 8px;
+  width: stretch;
 `;
 
 export const CloseAddCardButton = styled(Button)` 
@@ -104,7 +106,6 @@ export const ListCardContainer = styled.div`
   font-family: ${fontFamily};
   font-size: 14px;
   padding: 8px;
-  margin: 4px 0px;
   box-shadow: 0 1px 0 #091e4240;
   display: flex;
   flex-direction: column;
@@ -141,4 +142,36 @@ export const DeleteListIcon = styled(Ti.TiDelete)`
     background: rgba(0,0,0, 0.3);
     border-radius: 15px;
   }
+`;
+
+export const DottedLine = styled.div`
+  position: relative;
+  top: 3px;
+  flex: 50%;
+  width: 100%;
+  height: 0;
+  border-top: 2px dashed #b3b9c4;
+`;
+
+export const AddNewCardAtPositionContainer = styled.div`
+  position: relative;
+  min-height: 8px;
+  height: auto;
+  cursor: pointer;
+`;
+
+export const AddNewCardAtPositionPlus = styled.div`
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 12px;
+  background: #fff;
+  padding: 2px 6px 0px;
+  color: rgba(0, 0, 0, 0.7);
+  border-radius: 2px;
+  box-shadow: 0.5px 0.5px 0.5px 0.5px #091e4240; 
+  border: ${activityFieldStyles.border};
+  border-radius: 5px;
+  z-index: 1;
 `;

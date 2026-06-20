@@ -11,6 +11,7 @@ export const GetCardByIdSchema = z.object({
 export const CreateCardSchema = z.object({
   listId: z.string(),
   cardTitle: z.string(),
+  position: z.number().int().min(0).optional(),
 });
 
 export const UpdateCardSchema = z.object({
