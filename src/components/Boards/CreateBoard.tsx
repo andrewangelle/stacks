@@ -1,6 +1,6 @@
 import * as Popover from '@radix-ui/react-popover';
 import { useState } from 'react';
-import * as Fa from 'react-icons/fa';
+import { FaCheck } from 'react-icons/fa';
 import {
   type BoardBackground,
   CreateBoardBackgroundChoice,
@@ -85,7 +85,7 @@ export function CreateBoard() {
             >
               {color === selectedColor && (
                 <Center data-testid="Center">
-                  <Fa.FaCheck />
+                  <FaCheck />
                 </Center>
               )}
             </CreateBoardBackgroundChoice>

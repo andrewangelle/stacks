@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import * as Io from 'react-icons/io';
+import { IoMdList } from 'react-icons/io';
 import {
   CardDescriptionText,
   CloseDescriptionButton,
@@ -43,7 +43,7 @@ export function CardDescription() {
     <DescriptionContainer data-testid="DescriptionContainer">
       <DescriptionHeadingRow data-testid="DescriptionHeadingRow">
         <Flex data-testid="Flex" style={{ alignItems: 'center' }}>
-          <Io.IoMdList size={24} />
+          <IoMdList size={24} />
 
           <DescriptionTitle data-testid="DescriptionTitle">
             Description

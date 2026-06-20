@@ -1,5 +1,5 @@
 import { styled } from '@pigment-css/react';
-import * as Ti from 'react-icons/ti';
+import { TiDelete } from 'react-icons/ti';
 import { fontFamily } from '~/components/Boards/Boards.styled';
 import { animationStyles } from '~/styles/animations';
 import { Button } from '~/styles/Page.styled';
@@ -133,7 +133,7 @@ export const ListCardSkeleton = styled(ListCardContainer)({
   ...animationStyles.pulse,
 });
 
-export const DeleteListIcon = styled(Ti.TiDelete)` 
+export const DeleteListIcon = styled(TiDelete)` 
   position: relative;
   top: 1px;
   cursor: pointer;
