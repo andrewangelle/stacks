@@ -11,7 +11,9 @@ export function ListHeaderCardCount({ listId }: { listId: string }) {
         data-testid="ListHeaderCardCount"
         style={{ color: 'rgba(0,0,0, 0.7)', cursor: 'default' }}
       >
-        <Tooltip trigger={<span>{cardCount}</span>}>Total cards</Tooltip>
+        <Tooltip content="Total cards">
+          <span>{cardCount}</span>
+        </Tooltip>
       </div>
     );
   }
