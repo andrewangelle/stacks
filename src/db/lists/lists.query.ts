@@ -15,9 +15,9 @@ import type { List } from '~/generated/prisma/client';
 import { queryClient } from '~/queryClient';
 import { useCurrentBoardId } from '~/utils/useCurrentBoardId';
 
-export type ListListItem = Pick<List, 'id' | 'listTitle' | 'createdAt'>;
+export type ListItem = Pick<List, 'id' | 'listTitle' | 'createdAt'>;
 
-function toListListItem(item: List): ListListItem {
+function toListItem(item: List): ListItem {
   return { id: item.id, listTitle: item.listTitle, createdAt: item.createdAt };
 }
 
@@ -70,7 +70,7 @@ export function useUpdateList() {
         }),
       );
 
-      queryClient.setQueryData<ListListItem[]>(
+      queryClient.setQueryData<ListItem[]>(
         queryKeys.list(variables.boardId),
         (cache = []) =>
           cache.map((item) =>
@@ -91,9 +91,9 @@ export function useCreateList() {
       return createList({ data: args });
     },
     onSuccess(result, variables) {
-      queryClient.setQueryData<ListListItem[]>(
+      queryClient.setQueryData<ListItem[]>(
         queryKeys.list(variables.boardId),
-        (cache = []) => [...cache, toListListItem(result.data[0])],
+        (cache = []) => [...cache, toListItem(result.data[0])],
       );
     },
   });
@@ -108,7 +108,7 @@ export function useDeleteList() {
     },
 
     onSuccess(_result, variables) {
-      queryClient.setQueryData<ListListItem[]>(
+      queryClient.setQueryData<ListItem[]>(
         queryKeys.list(variables.boardId),
         (cache = []) => cache.filter((item) => item.id !== variables.listId),
       );
@@ -123,7 +123,7 @@ export const reorderListsByIndex = (
   fromIndex: number,
   toIndex: number,
 ) => {
-  queryClient.setQueryData<ListListItem[]>(
+  queryClient.setQueryData<ListItem[]>(
     queryKeys.list(boardId),
     (cache = []) => {
       const next = [...cache];
@@ -134,7 +134,7 @@ export const reorderListsByIndex = (
 
   const orderedIds =
     queryClient
-      .getQueryData<ListListItem[]>(queryKeys.list(boardId))
+      .getQueryData<ListItem[]>(queryKeys.list(boardId))
       ?.map((list) => list.id) ?? [];
 
   reorderListsServer({ data: { boardId, orderedIds } }).catch(() => {
