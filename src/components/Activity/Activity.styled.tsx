@@ -8,7 +8,7 @@ import { completedGreen, userNameIconBlue } from '~/styles/tokens';
 
 const activitySidebarLayout = '@media (min-width: 851px)';
 
-export const ActivityPanel = styled.div`
+export const ActivityPanelContainer = styled.div`
   box-sizing: border-box;
   min-width: 0;
   width: 100%;

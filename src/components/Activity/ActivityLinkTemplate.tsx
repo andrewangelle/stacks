@@ -8,21 +8,27 @@ export function ActivityLinkTemplate({ children }: { children: string }) {
   function parse(text: string): ReactNode[] {
     const regex = /\{\{\s*linkTo:([0-9a-fA-F-]+)\s*\}\}/g;
     const parts: ReactNode[] = [];
+
     let lastIndex = 0;
     let match: RegExpExecArray | null;
+
     while ((match = regex.exec(text)) !== null) {
       if (match.index > lastIndex) {
         parts.push(text.slice(lastIndex, match.index));
       }
+
       const id = match[1];
       parts.push(<LinkToCard key={id} id={id} />);
       lastIndex = regex.lastIndex;
     }
+
     if (lastIndex < text.length) {
       parts.push(text.slice(lastIndex));
     }
+
     return parts;
   }
+
   return <>{parse(children)}</>;
 }
 

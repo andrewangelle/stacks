@@ -227,6 +227,7 @@ export const CardTitleDetailsChecklistContainer = styled.div`
   flex-direction: column;
   gap: 2px;
   padding: 2px 0 4px 18px;
+  width: stretch;
 `;
 
 export const CardTitleDetailsChecklistItemRow = styled.div`
@@ -302,3 +303,12 @@ export const CardTitleDetailsChecklistShowMore = styled.button`
     border-radius: 2px;
   }
 `;
+
+export const CardTitleDetailsContentTriggersContainer = styled.div<{
+  commentsCount: number;
+}>({
+  display: 'flex',
+  alignItems: 'baseline',
+  gap: '8px',
+  paddingLeft: ({ commentsCount }) => (commentsCount > 0 ? '2px' : '0'),
+});

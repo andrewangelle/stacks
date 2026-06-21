@@ -19,7 +19,7 @@ export function Tooltip({
   const [isOpen, setIsOpen] = useState(false);
 
   return (
-    <Provider>
+    <Provider delayDuration={250}>
       <Root
         open={isOpen}
         onOpenChange={(nextIsOpen) => !disabled && setIsOpen(nextIsOpen)}

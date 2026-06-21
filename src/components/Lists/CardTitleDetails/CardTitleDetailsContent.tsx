@@ -1,27 +1,25 @@
 import { type MouseEvent, useState } from 'react';
-import { RiCheckboxLine } from 'react-icons/ri';
 import {
   CardTitleDetailsChecklistAccordionRoot,
   CardTitleDetailsChecklistDivider,
   CardTitleDetailsChecklistShowMore,
-  CardTitleDetailsChecklistTotalsContainer,
 } from '~/components/Lists/CardTitleDetails/CardTitleDetails.styled';
 import { CardTitleDetailsChecklist } from '~/components/Lists/CardTitleDetails/CardTitleDetailsChecklist';
 import { CardTitleDetailsChecklistAccordion } from '~/components/Lists/CardTitleDetails/CardTitleDetailsChecklistAccordion';
-import { Tooltip } from '~/components/Tooltip/Tooltip';
+import { CardTitleDetailsContentTriggers } from '~/components/Lists/CardTitleDetails/CardTitleDetailsContentTriggers';
 import { useGetCardTitleDetailsChecklists } from '~/db/checklists/checklists.query';
 
 const MAX_VISIBLE_CHECKLISTS = 3;
 
-type CardTitleDetailsChecklistDetailsProps = {
+type CardTitleDetailsContentProps = {
   cardId: string;
   onShowMore: (checklistId: string) => void;
 };
 
-export function CardTitleDetailsChecklists({
+export function CardTitleDetailsContent({
   cardId,
   onShowMore,
-}: CardTitleDetailsChecklistDetailsProps) {
+}: CardTitleDetailsContentProps) {
   const { data } = useGetCardTitleDetailsChecklists({
     cardId,
   });
@@ -36,12 +34,6 @@ export function CardTitleDetailsChecklists({
     checklists.some((checklist) => checklist.id === openChecklistId)
       ? openChecklistId
       : '';
-
-  const tooltipText = data?.isAllCompleted
-    ? 'Checklist items'
-    : isOpen
-      ? 'Collapse checklists'
-      : 'Expand checklists';
 
   function toggleOpen(event: MouseEvent<HTMLDivElement>) {
     event.preventDefault();
@@ -61,17 +53,11 @@ export function CardTitleDetailsChecklists({
 
   return (
     <>
-      <Tooltip content={tooltipText}>
-        <CardTitleDetailsChecklistTotalsContainer
-          data-testid="CardTitleDetailsChecklistTotalsContainer"
-          isAllCompleted={data?.isAllCompleted ?? false}
-          isOpen={isOpen}
-          onClick={toggleOpen}
-        >
-          <RiCheckboxLine size={14} />
-          {data?.completedItemsForCard} / {data?.totalItemsForCard}
-        </CardTitleDetailsChecklistTotalsContainer>
-      </Tooltip>
+      <CardTitleDetailsContentTriggers
+        cardId={cardId}
+        isOpen={isOpen}
+        toggleOpen={toggleOpen}
+      />
 
       {isOpen && checklists.length > 0 && (
         <>
