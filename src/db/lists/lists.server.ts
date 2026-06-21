@@ -1,7 +1,6 @@
 import type {
   CreateListArgs,
   DeleteListArgs,
-  GetListByIdArgs,
   GetListsArgs,
   ReorderListsArgs,
   UpdateListArgs,
@@ -16,13 +15,6 @@ export function getListsQuery(data: WithUserId<GetListsArgs>) {
       board: { userId: data.userId },
     },
     orderBy: [{ position: 'asc' }, { createdAt: 'asc' }],
-    select: { id: true, listTitle: true, createdAt: true },
-  });
-}
-
-export function getListByIdQuery(data: WithUserId<GetListByIdArgs>) {
-  return prisma.list.findFirst({
-    where: { id: data.id, userId: data.userId },
   });
 }
 
