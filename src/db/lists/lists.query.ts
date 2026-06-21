@@ -2,7 +2,6 @@ import { useMutation, useQuery } from '@tanstack/react-query';
 import {
   createList,
   deleteList,
-  getListById,
   getLists,
   reorderLists as reorderListsServer,
   updateList,
@@ -43,11 +42,13 @@ export function useGetLists() {
 }
 
 export function useGetListById({ id }: { id: string }) {
+  const boardId = useCurrentBoardId();
+
   return useQuery({
+    ...listsQueryOptions(boardId),
     queryKey: queryKeys.detail(id),
-    enabled: !!id,
-    queryFn() {
-      return getListById({ data: { id } });
+    select(data) {
+      return data.find((item) => item.id === id);
     },
   });
 }

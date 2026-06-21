@@ -2,7 +2,6 @@ import { createServerFn } from '@tanstack/react-start';
 import {
   CreateListSchema,
   DeleteListSchema,
-  GetListByIdSchema,
   GetListsSchema,
   ReorderListsSchema,
   UpdateListSchema,
@@ -10,7 +9,6 @@ import {
 import {
   createListQuery,
   deleteListQuery,
-  getListByIdQuery,
   getListsQuery,
   reorderListsQuery,
   updateListQuery,
@@ -22,13 +20,6 @@ export const getLists = createServerFn({ method: 'GET' })
   .middleware([authMiddleware])
   .handler(async ({ data, context }) =>
     getListsQuery({ ...data, userId: context.uid }),
-  );
-
-export const getListById = createServerFn({ method: 'GET' })
-  .validator(GetListByIdSchema)
-  .middleware([authMiddleware])
-  .handler(async ({ data, context }) =>
-    getListByIdQuery({ ...data, userId: context.uid }),
   );
 
 export const createList = createServerFn({ method: 'POST' })
