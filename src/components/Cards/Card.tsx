@@ -1,6 +1,6 @@
 import { useNavigate } from '@tanstack/react-router';
 import { useRef } from 'react';
-import { CardActivity } from '~/components/Activity/CardActivity';
+import { ActivityPanel } from '~/components/Activity/ActivityPanel';
 import {
   CardActionsContainer,
   CardActivityColumn,
@@ -117,7 +117,7 @@ export function Card() {
               )}
 
               <CardActivityColumn data-testid="CardActivityColumn">
-                <CardActivity />
+                <ActivityPanel />
               </CardActivityColumn>
             </CardModalBody>
           </CardModalContent>

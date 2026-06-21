@@ -4,7 +4,7 @@ import { BiCommentDetail } from 'react-icons/bi';
 import {
   ActivityHeader,
   ActivityHeaderTitle,
-  ActivityPanel,
+  ActivityPanelContainer,
   ActivityTitle,
   HideActivityButton,
 } from '~/components/Activity/Activity.styled';
@@ -14,7 +14,7 @@ import { AddComment } from '~/components/Activity/AddComment';
 import { useGetActivity, useGetComments } from '~/db/activity/activity.query';
 import { useCurrentCardId } from '~/utils/useCurrentCardId';
 
-export function CardActivity() {
+export function ActivityPanel() {
   const cardId = useCurrentCardId();
   const location = useLocation();
   const [showActivity, setShowActivity] = useState(true);
@@ -33,7 +33,7 @@ export function CardActivity() {
   }, [location.hash]);
 
   return (
-    <ActivityPanel data-testid="ActivityPanel">
+    <ActivityPanelContainer data-testid="ActivityPanelContainer">
       <ActivityHeader data-testid="ActivityHeader">
         <ActivityHeaderTitle data-testid="ActivityHeaderTitle">
           <BiCommentDetail
@@ -84,6 +84,6 @@ export function CardActivity() {
             />
           ),
         )}
-    </ActivityPanel>
+    </ActivityPanelContainer>
   );
 }

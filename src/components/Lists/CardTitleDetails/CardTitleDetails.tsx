@@ -3,10 +3,10 @@ import { type FocusEvent, type KeyboardEvent, useRef, useState } from 'react';
 import { CardModalTrigger } from '~/components/Cards/Card.styled';
 import { CardCompletedIndicator } from '~/components/Cards/CardCompletedIndicator';
 import { ListCardTitleDetailsContainer } from '~/components/Lists/CardTitleDetails/CardTitleDetails.styled';
-import { CardTitleDetailsChecklists } from '~/components/Lists/CardTitleDetails/CardTitleDetailsChecklists';
+import { CardTitleDetailsContent } from '~/components/Lists/CardTitleDetails/CardTitleDetailsContent';
+import { useCardTitleDetailsVisibility } from '~/components/Lists/CardTitleDetails/useCardTitleDetailsVisibility';
 import { ListCardContainer } from '~/components/Lists/List.styled';
 import { useGetCardById } from '~/db/cards/cards.query';
-import { useGetCardTitleDetailsChecklists } from '~/db/checklists/checklists.query';
 import { useCurrentBoardId } from '~/utils/useCurrentBoardId';
 
 export function CardTitleDetails({ id }: { id: string }) {
@@ -17,9 +17,7 @@ export function CardTitleDetails({ id }: { id: string }) {
   const triggerRef = useRef<HTMLDivElement>(null);
   const pointerFocusedRef = useRef(false);
   const { data } = useGetCardById({ id });
-  const { isSuccess, data: checklistViews } = useGetCardTitleDetailsChecklists({
-    cardId: id,
-  });
+  const { hasDetailInfo } = useCardTitleDetailsVisibility(id);
 
   const isCircleVisible = isHovering || isFocused;
 
@@ -101,8 +99,8 @@ export function CardTitleDetails({ id }: { id: string }) {
           {data?.cardTitle}
         </ListCardTitleDetailsContainer>
 
-        {isSuccess && checklistViews.totalItemsForCard > 0 && (
-          <CardTitleDetailsChecklists
+        {hasDetailInfo && (
+          <CardTitleDetailsContent
             cardId={id}
             onShowMore={openCardModalToChecklist}
           />
