@@ -24,7 +24,8 @@ export function CardTitleDetailsContentTriggers({
   toggleOpen,
 }: CardTitleDetailsContentTriggersProps) {
   const { data } = useGetCardTitleDetailsChecklists({ cardId });
-  const { commentsCount } = useCardTitleDetailsVisibility(cardId);
+  const { commentsCount, hasChecklistDetails } =
+    useCardTitleDetailsVisibility(cardId);
   const checklistTooltipText = data?.isAllCompleted
     ? 'Checklist items'
     : isOpen
@@ -49,17 +50,19 @@ export function CardTitleDetailsContentTriggers({
         </Tooltip>
       )}
 
-      <Tooltip content={checklistTooltipText}>
-        <CardTitleDetailsChecklistTotalsContainer
-          data-testid="CardTitleDetailsChecklistTotalsContainer"
-          isAllCompleted={data?.isAllCompleted ?? false}
-          isOpen={isOpen}
-          onClick={toggleOpen}
-        >
-          <RiCheckboxLine size={14} />
-          {data?.completedItemsForCard} / {data?.totalItemsForCard}
-        </CardTitleDetailsChecklistTotalsContainer>
-      </Tooltip>
+      {hasChecklistDetails && (
+        <Tooltip content={checklistTooltipText}>
+          <CardTitleDetailsChecklistTotalsContainer
+            data-testid="CardTitleDetailsChecklistTotalsContainer"
+            isAllCompleted={data?.isAllCompleted ?? false}
+            isOpen={isOpen}
+            onClick={toggleOpen}
+          >
+            <RiCheckboxLine size={14} />
+            {data?.completedItemsForCard} / {data?.totalItemsForCard}
+          </CardTitleDetailsChecklistTotalsContainer>
+        </Tooltip>
+      )}
     </CardTitleDetailsContentTriggersContainer>
   );
 }
