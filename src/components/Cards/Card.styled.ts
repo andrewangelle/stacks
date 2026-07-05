@@ -236,6 +236,14 @@ export const CardModalClose = styled(Dialog.Close)`
   }
 `;
 
+export const CardModalCloseSpinnerSlot = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8px;
+  margin: 4px 12px 4px 4px;
+`;
+
 export const CardModalTitleContainer = styled.div`
   display: flex;
   margin: 12px 12px 0px;
@@ -249,6 +257,18 @@ export const CardModalTitle = styled(Dialog.Title)({
     color: 'rgba(0,0,0, 0.5)',
   },
 });
+
+export const CardModalHiddenTitle = styled(Dialog.Title)`
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+`;
 
 export const CardModalListName = styled.div` 
   font-size: 14px;

@@ -7,7 +7,7 @@ import {
 } from '~/db/boards/boards.functions';
 import type { CreateBoardArgs } from '~/db/boards/boards.schemas';
 import type { Stack } from '~/generated/prisma/client';
-import { queryClient } from '~/queryClient';
+import { getQueryClient } from '~/query';
 import { useCurrentBoardId } from '~/utils/useCurrentBoardId';
 
 const queryKeys = {
@@ -42,6 +42,7 @@ export function useGetBoard() {
 }
 
 export function useCreateBoard() {
+  const queryClient = getQueryClient();
   const mutation = useMutation({
     mutationFn(data: CreateBoardArgs) {
       return createBoard({
@@ -63,6 +64,7 @@ export function useCreateBoard() {
 }
 
 export function useUpdateBoard() {
+  const queryClient = getQueryClient();
   const mutation = useMutation({
     mutationFn({ id, boardTitle }: Pick<Stack, 'id' | 'boardTitle'>) {
       return updateBoard({

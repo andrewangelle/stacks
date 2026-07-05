@@ -2,8 +2,6 @@ import { useMutation, useQuery } from '@tanstack/react-query';
 import {
   createChecklistItem,
   deleteChecklistItem,
-  getChecklistItemById,
-  getChecklistItems,
   moveChecklistItem as moveChecklistItemServer,
   reorderChecklistItems as reorderChecklistItemsServer,
   updateChecklistItem,
@@ -15,151 +13,68 @@ import type {
   GetChecklistItemsArgs,
   UpdateChecklistItemArgs,
 } from '~/db/checklistItems/checklistItems.schemas';
-import { checklistQueryKeys } from '~/db/checklists/checklists.query';
+import {
+  checklistByIdQueryOptions,
+  checklistQueryKeys,
+} from '~/db/checklists/checklists.query';
 import type { Checklist, ChecklistItem } from '~/generated/prisma/client';
-import { queryClient } from '~/queryClient';
+import { getQueryClient } from '~/query';
 
-export type ChecklistItemListItem = Pick<
-  ChecklistItem,
-  'id' | 'label' | 'isCompleted' | 'createdAt'
->;
+/**
+ * Checklist items are not stored under their own query key. They live inside the
+ * checklist-by-id cache (`checklistQueryKeys.detail`), which `getChecklistById`
+ * populates with a nested `items` array. Reads select out of that cache and every
+ * mutation patches the same `items` array so updates reflect immediately without a
+ * refetch.
+ */
+type ChecklistWithItems = Checklist & { items: ChecklistItem[] };
 
-function toChecklistItemListItem(item: ChecklistItem): ChecklistItemListItem {
-  return {
-    id: item.id,
-    label: item.label,
-    isCompleted: item.isCompleted,
-    createdAt: item.createdAt,
-  };
-}
-
-export const queryKeys = {
-  list: (checklistId: string) => ['checklistItems', checklistId] as const,
-  detail: (checklistItemId: string) =>
-    ['checklistItem', checklistItemId] as const,
-};
-
-export const checklistItemQueryKeys = queryKeys;
-
-type CardChecklistViewData = {
-  completedItemsForCard: number;
-  totalItemsForCard: number;
-  checklists: {
-    id: string;
-    checklistTitle: string;
-    completedItems: number;
-    totalItems: number;
-    titles: string[];
-  }[];
-};
-
-function extractUpdatedChecklistItem(
-  result: ChecklistItem[] | { data: ChecklistItem[] },
-) {
-  if (Array.isArray(result)) {
-    return result[0] as ChecklistItem | undefined;
-  }
-
-  if (
-    typeof result === 'object' &&
-    result !== null &&
-    'data' in result &&
-    Array.isArray((result as { data?: unknown }).data)
-  ) {
-    return (result as { data: ChecklistItem[] }).data[0];
-  }
-
-  return undefined;
-}
-
-function getCachedChecklistItem(itemId: string, checklistId: string) {
+function getCachedChecklistItems(checklistId: string): ChecklistItem[] {
+  const queryClient = getQueryClient();
   return (
-    queryClient.getQueryData<ChecklistItem>(queryKeys.detail(itemId)) ??
-    queryClient
-      .getQueryData<ChecklistItemListItem[]>(queryKeys.list(checklistId))
-      ?.find((cachedItem) => cachedItem.id === itemId)
+    queryClient.getQueryData<ChecklistWithItems>(
+      checklistQueryKeys.detail(checklistId),
+    )?.items ?? []
   );
 }
 
-function patchCardChecklistViewOnItemUpdate(item: ChecklistItem) {
-  const previousItem = getCachedChecklistItem(item.id, item.checklistId);
-
-  if (!previousItem || previousItem.isCompleted === item.isCompleted) {
-    return;
-  }
-
-  const delta = item.isCompleted ? 1 : -1;
-
-  queryClient.setQueryData<CardChecklistViewData>(
-    checklistQueryKeys.cardChecklistView(item.cardId),
+function patchChecklistItems(
+  checklistId: string,
+  updater: (items: ChecklistItem[]) => ChecklistItem[],
+) {
+  const queryClient = getQueryClient();
+  queryClient.setQueryData<ChecklistWithItems>(
+    checklistQueryKeys.detail(checklistId),
     (cache) => {
       if (!cache) {
         return cache;
       }
-
-      return {
-        ...cache,
-        completedItemsForCard: cache.completedItemsForCard + delta,
-        checklists: cache.checklists.map((checklist) => {
-          if (checklist.id !== item.checklistId) {
-            return checklist;
-          }
-
-          return {
-            ...checklist,
-            completedItems: checklist.completedItems + delta,
-            titles: item.isCompleted
-              ? [...checklist.titles, item.label]
-              : checklist.titles.filter((title) => title !== item.label),
-          };
-        }),
-      };
+      return { ...cache, items: updater(cache.items ?? []) };
     },
   );
 }
 
 function invalidateCardChecklistView(cardId: string) {
+  const queryClient = getQueryClient();
   queryClient.invalidateQueries({
     queryKey: checklistQueryKeys.cardChecklistView(cardId),
   });
 }
 
-function updateChecklistItemCaches(item: ChecklistItem) {
-  patchCardChecklistViewOnItemUpdate(item);
-
-  queryClient.setQueryData<ChecklistItem>(queryKeys.detail(item.id), item);
-
-  const listItem = toChecklistItemListItem(item);
-
-  queryClient.setQueryData<ChecklistItemListItem[]>(
-    queryKeys.list(item.checklistId),
-    (cache = []) =>
-      cache.map((cachedItem) =>
-        cachedItem.id === item.id ? listItem : cachedItem,
-      ),
-  );
-
-  invalidateCardChecklistView(item.cardId);
-}
-
 export function useGetChecklistItem(data: GetChecklistItemByIdArgs) {
   return useQuery({
-    queryKey: queryKeys.detail(data.itemId),
-    queryFn() {
-      return getChecklistItemById({
-        data,
-      });
+    ...checklistByIdQueryOptions({ checklistId: data.checklistId }),
+    select(response) {
+      return response?.items?.find((item) => item.id === data.itemId);
     },
   });
 }
 
 export function useGetChecklistItems(data: GetChecklistItemsArgs) {
   return useQuery({
-    queryKey: queryKeys.list(data.checklistId),
-    queryFn() {
-      return getChecklistItems({
-        data,
-      });
+    ...checklistByIdQueryOptions({ checklistId: data.checklistId }),
+    select(response) {
+      return response?.items ?? [];
     },
   });
 }
@@ -173,10 +88,12 @@ export function useCreateChecklistItem() {
     },
 
     onSuccess(result, variables) {
-      queryClient.setQueryData<ChecklistItemListItem[]>(
-        queryKeys.list(variables.checklistId),
-        (cache = []) => [...cache, toChecklistItemListItem(result.data[0])],
-      );
+      const created = result.data[0];
+
+      patchChecklistItems(variables.checklistId, (items) => [
+        ...items,
+        created,
+      ]);
 
       invalidateCardChecklistView(variables.cardId);
     },
@@ -192,48 +109,18 @@ export function useUpdateChecklistItem() {
         data,
       });
     },
-    onSuccess(result, variables) {
-      const updatedItem = extractUpdatedChecklistItem(result);
+    onSuccess(result) {
+      const updatedItem = result[0];
 
-      if (updatedItem) {
-        updateChecklistItemCaches(updatedItem);
+      if (!updatedItem) {
         return;
       }
 
-      queryClient.setQueryData<ChecklistItem>(
-        queryKeys.detail(variables.itemId),
-        (cache = {} as ChecklistItem) => ({
-          ...cache,
-          isCompleted: variables.isCompleted ?? cache.isCompleted,
-          label: variables.label ?? cache.label,
-        }),
+      patchChecklistItems(updatedItem.checklistId, (items) =>
+        items.map((item) => (item.id === updatedItem.id ? updatedItem : item)),
       );
 
-      const checklistId = queryClient.getQueryData<ChecklistItem>(
-        queryKeys.detail(variables.itemId),
-      )?.checklistId;
-
-      if (checklistId) {
-        queryClient.setQueryData<ChecklistItemListItem[]>(
-          queryKeys.list(checklistId),
-          (cache = []) =>
-            cache.map((cachedItem) =>
-              cachedItem.id === variables.itemId
-                ? {
-                    ...cachedItem,
-                    isCompleted:
-                      variables.isCompleted ?? cachedItem.isCompleted,
-                    label: variables.label ?? cachedItem.label,
-                  }
-                : cachedItem,
-            ),
-        );
-      }
-
-      // Safety net for unexpected server payloads: refresh derived checklist totals.
-      queryClient.invalidateQueries({
-        queryKey: ['cardChecklistView'],
-      });
+      invalidateCardChecklistView(updatedItem.cardId);
     },
   });
 
@@ -248,24 +135,17 @@ export function useDeleteChecklistItem() {
       });
     },
     onSuccess(result, variables) {
-      const deletedItem =
-        result.data[0] ??
-        queryClient.getQueryData<ChecklistItem>(
-          queryKeys.detail(variables.itemId),
-        );
+      const deletedItem = result.data[0];
 
-      const checklistId = deletedItem?.checklistId;
-
-      if (checklistId) {
-        queryClient.setQueryData<ChecklistItemListItem[]>(
-          queryKeys.list(checklistId),
-          (cache = []) => cache.filter((item) => item.id !== variables.itemId),
-        );
+      if (!deletedItem) {
+        return;
       }
 
-      if (deletedItem) {
-        invalidateCardChecklistView(deletedItem.cardId);
-      }
+      patchChecklistItems(deletedItem.checklistId, (items) =>
+        items.filter((item) => item.id !== variables.itemId),
+      );
+
+      invalidateCardChecklistView(deletedItem.cardId);
     },
   });
 
@@ -277,24 +157,22 @@ export const reorderChecklistItemsByIndex = (
   fromIndex: number,
   toIndex: number,
 ) => {
-  queryClient.setQueryData<ChecklistItemListItem[]>(
-    queryKeys.list(checklistId),
-    (cache = []) => {
-      const next = [...cache];
-      next.splice(toIndex, 0, next.splice(fromIndex, 1)[0]);
-      return next;
-    },
-  );
+  const queryClient = getQueryClient();
 
-  const orderedIds =
-    queryClient
-      .getQueryData<ChecklistItemListItem[]>(queryKeys.list(checklistId))
-      ?.map((checklistItem) => checklistItem.id) ?? [];
+  patchChecklistItems(checklistId, (items) => {
+    const next = [...items];
+    next.splice(toIndex, 0, next.splice(fromIndex, 1)[0]);
+    return next;
+  });
+
+  const orderedIds = getCachedChecklistItems(checklistId).map(
+    (checklistItem) => checklistItem.id,
+  );
 
   reorderChecklistItemsServer({ data: { checklistId, orderedIds } }).catch(
     () => {
       queryClient.invalidateQueries({
-        queryKey: queryKeys.list(checklistId),
+        queryKey: checklistQueryKeys.detail(checklistId),
       });
     },
   );
@@ -308,8 +186,8 @@ export function reorderChecklistItemsByVisibleIndex({
   toVisible,
 }: {
   checklistId: string;
-  items: ChecklistItemListItem[];
-  visibleItems: ChecklistItemListItem[];
+  items: ChecklistItem[];
+  visibleItems: ChecklistItem[];
   fromVisible: number;
   toVisible: number;
 }) {
@@ -327,7 +205,7 @@ export function reorderChecklistItemsByVisibleIndex({
 
 /** Map a drag index from visible-only UI to the full checklist item order in the database. */
 function resolveTargetFullIndex(
-  targetItems: ChecklistItemListItem[],
+  targetItems: ChecklistItem[],
   targetVisibleIndex: number,
   hideCheckedItems: boolean,
 ) {
@@ -366,22 +244,17 @@ export function moveChecklistItemToNewChecklist({
   targetVisibleIndex: number;
   cardId: string;
 }) {
-  const sourceItems =
-    queryClient.getQueryData<ChecklistItemListItem[]>(
-      queryKeys.list(sourceChecklistId),
-    ) ?? [];
+  const queryClient = getQueryClient();
+  const sourceItems = getCachedChecklistItems(sourceChecklistId);
   const item = sourceItems.find((record) => record.id === itemId);
 
   if (!item) {
     return;
   }
 
-  const targetItems =
-    queryClient.getQueryData<ChecklistItemListItem[]>(
-      queryKeys.list(targetChecklistId),
-    ) ?? [];
+  const targetItems = getCachedChecklistItems(targetChecklistId);
 
-  const targetChecklist = queryClient.getQueryData<Checklist>(
+  const targetChecklist = queryClient.getQueryData<ChecklistWithItems>(
     checklistQueryKeys.detail(targetChecklistId),
   );
 
@@ -391,20 +264,18 @@ export function moveChecklistItemToNewChecklist({
     targetChecklist?.hideCheckedItems ?? false,
   );
 
-  queryClient.setQueryData<ChecklistItemListItem[]>(
-    queryKeys.list(sourceChecklistId),
-    sourceItems.filter((record) => record.id !== itemId),
+  const movedItem: ChecklistItem = { ...item, checklistId: targetChecklistId };
+
+  patchChecklistItems(sourceChecklistId, (items) =>
+    items.filter((record) => record.id !== itemId),
   );
 
-  queryClient.setQueryData<ChecklistItemListItem[]>(
-    queryKeys.list(targetChecklistId),
-    (cache = []) => {
-      const next = [...cache];
-      const clampedIndex = Math.min(Math.max(targetFullIndex, 0), next.length);
-      next.splice(clampedIndex, 0, item);
-      return next;
-    },
-  );
+  patchChecklistItems(targetChecklistId, (items) => {
+    const next = [...items];
+    const clampedIndex = Math.min(Math.max(targetFullIndex, 0), next.length);
+    next.splice(clampedIndex, 0, movedItem);
+    return next;
+  });
 
   moveChecklistItemServer({
     data: {
@@ -421,10 +292,10 @@ export function moveChecklistItemToNewChecklist({
     })
     .catch(() => {
       queryClient.invalidateQueries({
-        queryKey: queryKeys.list(sourceChecklistId),
+        queryKey: checklistQueryKeys.detail(sourceChecklistId),
       });
       queryClient.invalidateQueries({
-        queryKey: queryKeys.list(targetChecklistId),
+        queryKey: checklistQueryKeys.detail(targetChecklistId),
       });
       invalidateCardChecklistView(cardId);
     });

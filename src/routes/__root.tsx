@@ -1,4 +1,3 @@
-import { type QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import '~/styles/animations.css';
 import '~/styles/board-gradient.css';
 import '~/styles/drag.css';
@@ -13,13 +12,22 @@ import {
 } from '@tanstack/react-router';
 import type { ReactNode } from 'react';
 import { DevTools } from '~/components/DevTools';
-import { NavBar } from '~/components/Nav/NavBar';
-import { queryClient } from '~/queryClient';
+import { type getQueryClient, QueryProvider } from '~/query';
 import GlobalFonts from '~/styles/GlobalFonts';
 
 type RouterContext = {
-  queryClient: QueryClient;
+  queryClient: ReturnType<typeof getQueryClient>;
 };
+
+function Providers({ children }: { children: ReactNode }) {
+  return (
+    <ClerkProvider>
+      <QueryProvider>
+        <DragDropProvider>{children}</DragDropProvider>
+      </QueryProvider>
+    </ClerkProvider>
+  );
+}
 
 export const Route = createRootRouteWithContext<RouterContext>()({
   head() {
@@ -36,33 +44,20 @@ export const Route = createRootRouteWithContext<RouterContext>()({
   },
   component() {
     return (
-      <ClerkProvider>
-        <RootDocument>
-          <Outlet />
-        </RootDocument>
-      </ClerkProvider>
-    );
-  },
-});
-
-function RootDocument({ children }: { children: ReactNode }) {
-  return (
-    <html lang="en">
-      <head>
-        <HeadContent />
-        <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
-      </head>
-      <body>
-        <QueryClientProvider client={queryClient}>
-          <DragDropProvider>
-            <NavBar />
-            {children}
+      <html lang="en">
+        <head>
+          <HeadContent />
+          <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+        </head>
+        <body>
+          <Providers>
+            <Outlet />
             <Scripts />
             <GlobalFonts />
             <DevTools />
-          </DragDropProvider>
-        </QueryClientProvider>
-      </body>
-    </html>
-  );
-}
+          </Providers>
+        </body>
+      </html>
+    );
+  },
+});

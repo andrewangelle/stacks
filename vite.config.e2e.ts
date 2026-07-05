@@ -2,18 +2,31 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { mergeConfig } from 'vite';
 import baseConfig from './vite.config';
+import { suppressLogging, createE2ELogger, suppressKnownConsoleNoise } from './tests/plugins/suppressLogging';
 import { resetInMemoryDB } from './tests/plugins/resetInMemoryDB';
 import { stubDndKitSourcemaps } from './tests/plugins/stubDndKitSourcemaps';
+
+suppressKnownConsoleNoise();
 
 const rootDir = path.dirname(fileURLToPath(import.meta.url));
 
 export default mergeConfig(baseConfig, {
+  define: {
+    'import.meta.env.VITE_E2E': JSON.stringify('true'),
+  },
+  customLogger: createE2ELogger(),
+  logLevel: 'error',
   server: {
     port: 3100,
     strictPort: true,
   },
-  plugins: [stubDndKitSourcemaps(), resetInMemoryDB()],
+  plugins: [
+    stubDndKitSourcemaps(),
+    suppressLogging(),
+    resetInMemoryDB(),
+  ],
   resolve: {
+    dedupe: ['react', 'react-dom'],
     alias: {
       '~/db/prisma': path.resolve(rootDir, 'tests/mocks/memoryPrisma.ts'),
       '@clerk/tanstack-react-start/server': path.resolve(

@@ -1,8 +1,8 @@
 import { useNavigate } from '@tanstack/react-router';
 import type { ReactNode } from 'react';
+import { ActivityLinkToCard } from '~/components/Activity/Activity.styled';
 import { useGetCardById } from '~/db/cards/cards.query';
 import { useCurrentBoardId } from '~/utils/useCurrentBoardId';
-import { ActivityLinkToCard } from './Activity.styled';
 
 export function ActivityLinkTemplate({ children }: { children: string }) {
   function parse(text: string): ReactNode[] {
@@ -22,8 +22,8 @@ export function ActivityLinkTemplate({ children }: { children: string }) {
       lastIndex = regex.lastIndex;
     }
 
-    if (lastIndex < text.length) {
-      parts.push(text.slice(lastIndex));
+    if (lastIndex < text?.length) {
+      parts.push(text?.slice(lastIndex));
     }
 
     return parts;

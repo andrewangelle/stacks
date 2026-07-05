@@ -7,9 +7,18 @@ import {
   fontFamily,
 } from '~/styles/tokens';
 
+const navBackgroundFlashAnimation = {
+  animation: 'nav-background-flash 0.45s ease-out',
+};
+
+const navSolidBackgroundTransition = {
+  transition: 'background-color 0.35s ease-out',
+  ...navBackgroundFlashAnimation,
+};
+
 export const NavBarContainer = styled('div')({
   width: '100%',
-  zIndex: 1,
+  zIndex: 2,
   color: 'white',
   display: 'flex',
   flexDirection: 'column',
@@ -20,6 +29,7 @@ export const NavBarContent = styled.div<BackgroundProps>({
   display: 'flex',
   justifyContent: 'space-between',
   minHeight: '46px',
+  ...navSolidBackgroundTransition,
   variants: [
     {
       props: { background: 'blue' },
@@ -54,10 +64,11 @@ export const NavBarContent = styled.div<BackgroundProps>({
   ],
 });
 
-export const BoardBarContainer = styled(NavBarContainer)<BackgroundProps>({
+export const BoardHeaderContainer = styled(NavBarContainer)<BackgroundProps>({
   padding: '10px',
   zIndex: 1,
   position: 'relative',
+  ...navSolidBackgroundTransition,
   variants: [
     {
       props: { background: 'blue' },
@@ -110,6 +121,7 @@ export const BoardPageBackground = styled('div')<BoardPageBackgroundProps>({
   top: 66,
   display: 'flex',
   padding: '50px 30px 30px',
+  ...navBackgroundFlashAnimation,
   variants: [
     {
       props: { background: 'blue' },

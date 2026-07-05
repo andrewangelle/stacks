@@ -1,10 +1,8 @@
-import { useMutation, useQuery } from '@tanstack/react-query';
-import { useMemo } from 'react';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import {
   createActivity,
   deleteActivity,
   getActivity,
-  getActivityById,
   updateActivity,
 } from '~/db/activity/activity.functions';
 import type {
@@ -15,12 +13,11 @@ import type {
   UpdateActivityArgs,
 } from '~/db/activity/activity.schemas';
 import type { Activity } from '~/generated/prisma/client';
-import { queryClient } from '~/queryClient';
 
 export type ActivityListItem = Pick<Activity, 'id' | 'type' | 'createdAt'>;
 
 function toActivityListItem(item: Activity): ActivityListItem {
-  return { id: item.id, type: item.type, createdAt: item.createdAt };
+  return item;
 }
 
 const queryKeys = {
@@ -43,33 +40,34 @@ export function useGetActivity(data: GetActivityArgs) {
 }
 
 export function useGetActivityFeed(data: GetActivityArgs) {
-  const queryOptions = useMemo(() => activityListQueryOptions(data), [data]);
   return useQuery({
-    ...queryOptions,
+    ...activityListQueryOptions(data),
     select(data) {
       return data?.filter((item) => item.type === 'feed');
     },
   });
 }
 
-export function activityByIdQueryOptions(data: GetActivityByIdArgs) {
+export function activityByIdQueryOptions(
+  data: GetActivityByIdArgs & GetActivityArgs,
+) {
   return {
-    queryKey: queryKeys.detail(data.activityId),
-    enabled: !!data.activityId,
-    queryFn() {
-      return getActivityById({ data });
+    ...activityListQueryOptions(data),
+    select(response: Activity[]) {
+      return response?.find((item) => item.id === data.activityId);
     },
   };
 }
 
-export function useGetActivityById(data: GetActivityByIdArgs) {
+export function useGetActivityById(
+  data: GetActivityByIdArgs & GetActivityArgs,
+) {
   return useQuery(activityByIdQueryOptions(data));
 }
 
 export function useGetComments(data: GetActivityArgs) {
-  const queryOptions = useMemo(() => activityListQueryOptions(data), [data]);
   return useQuery({
-    ...queryOptions,
+    ...activityListQueryOptions(data),
     select(data) {
       return data?.filter((item) => item.type === 'comment');
     },
@@ -77,6 +75,7 @@ export function useGetComments(data: GetActivityArgs) {
 }
 
 export function useCreateActivity() {
+  const queryClient = useQueryClient();
   const mutation = useMutation({
     mutationFn(data: CreateActivityArgs) {
       return createActivity({ data });
@@ -95,6 +94,7 @@ export function useCreateActivity() {
 }
 
 export function useUpdateActivity() {
+  const queryClient = useQueryClient();
   const mutation = useMutation({
     mutationFn(data: UpdateActivityArgs) {
       return updateActivity({
@@ -103,6 +103,21 @@ export function useUpdateActivity() {
     },
 
     onSuccess(_result, variables) {
+      queryClient.setQueryData<ActivityListItem[]>(
+        queryKeys.list(variables.cardId),
+        (cache) => {
+          if (cache) {
+            return cache.map((item) => {
+              if (item.id === variables.activityId) {
+                return { ...item, content: variables.content };
+              }
+              return item;
+            });
+          }
+          return cache;
+        },
+      );
+
       queryClient.setQueryData<Activity>(
         queryKeys.detail(variables.activityId),
         (cache) => (cache ? { ...cache, content: variables.content } : cache),
@@ -114,6 +129,7 @@ export function useUpdateActivity() {
 }
 
 export function useDeleteActivity() {
+  const queryClient = useQueryClient();
   const mutation = useMutation({
     mutationFn(data: DeleteActivityArgs) {
       return deleteActivity({ data });

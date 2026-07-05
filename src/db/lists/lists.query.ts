@@ -1,4 +1,4 @@
-import { useMutation, useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import {
   createList,
   deleteList,
@@ -12,7 +12,6 @@ import type {
   UpdateListArgs,
 } from '~/db/lists/lists.schemas';
 import type { List } from '~/generated/prisma/client';
-import { queryClient } from '~/queryClient';
 import { useCurrentBoardId } from '~/utils/useCurrentBoardId';
 
 export type ListItem = Pick<List, 'id' | 'listTitle' | 'createdAt'>;
@@ -54,6 +53,7 @@ export function useGetListById({ id }: { id: string }) {
 }
 
 export function useUpdateList() {
+  const queryClient = useQueryClient();
   const mutation = useMutation({
     mutationFn(data: UpdateListArgs) {
       return updateList({
@@ -86,6 +86,7 @@ export function useUpdateList() {
 }
 
 export function useCreateList() {
+  const queryClient = useQueryClient();
   const mutation = useMutation({
     mutationFn(args: CreateListArgs) {
       return createList({ data: args });
@@ -102,6 +103,7 @@ export function useCreateList() {
 }
 
 export function useDeleteList() {
+  const queryClient = useQueryClient();
   const mutation = useMutation({
     mutationFn(data: DeleteListArgs) {
       return deleteList({ data });
@@ -123,6 +125,7 @@ export const reorderListsByIndex = (
   fromIndex: number,
   toIndex: number,
 ) => {
+  const queryClient = useQueryClient();
   queryClient.setQueryData<ListItem[]>(
     queryKeys.list(boardId),
     (cache = []) => {

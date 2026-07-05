@@ -1,37 +1,12 @@
 import type {
   CreateChecklistItemArgs,
   DeleteChecklistItemArgs,
-  GetChecklistItemByIdArgs,
-  GetChecklistItemsArgs,
   MoveChecklistItemArgs,
   ReorderChecklistItemsArgs,
   UpdateChecklistItemArgs,
 } from '~/db/checklistItems/checklistItems.schemas';
 import { prisma } from '~/db/prisma';
 import type { WithUserId } from '~/db/withUserId';
-
-export function getChecklistItemsQuery(
-  data: WithUserId<GetChecklistItemsArgs>,
-) {
-  return prisma.checklistItem.findMany({
-    where: {
-      checklistId: data.checklistId,
-      checklist: {
-        card: { list: { board: { userId: data.userId } } },
-      },
-    },
-    orderBy: [{ position: 'asc' }, { createdAt: 'asc' }],
-    select: { id: true, label: true, isCompleted: true, createdAt: true },
-  });
-}
-
-export function getChecklistItemByIdQuery(
-  data: WithUserId<GetChecklistItemByIdArgs>,
-) {
-  return prisma.checklistItem.findFirst({
-    where: { id: data.itemId, userId: data.userId },
-  });
-}
 
 export async function createChecklistItemQuery(
   data: WithUserId<CreateChecklistItemArgs>,

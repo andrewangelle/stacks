@@ -12,6 +12,7 @@ import { ActivityLogo } from '~/components/Activity/ActivityLogo';
 import { ActivitySkeleton } from '~/components/Activity/ActivitySkeleton';
 import { EditableComment } from '~/components/Activity/EditableComment';
 import { useGetActivityById } from '~/db/activity/activity.query';
+import { useCurrentCardId } from '~/utils/useCurrentCardId';
 import { useScrollToHashId } from '~/utils/useScrollToHashId';
 
 type ActivityCommentProps = {
@@ -25,7 +26,8 @@ export function ActivityComment({
   isSelected,
   onSelect,
 }: ActivityCommentProps) {
-  const { isLoading, data } = useGetActivityById({ activityId: id });
+  const cardId = useCurrentCardId();
+  const { isLoading, data } = useGetActivityById({ activityId: id, cardId });
   const { user } = useUser();
   const ref = useRef<HTMLDivElement>(null);
 

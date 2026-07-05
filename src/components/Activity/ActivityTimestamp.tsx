@@ -1,4 +1,3 @@
-import { useParams } from '@tanstack/react-router';
 import { useCallback, useEffect, useState } from 'react';
 import { AiOutlineCheck } from 'react-icons/ai';
 import { GoPaperclip } from 'react-icons/go';
@@ -10,6 +9,7 @@ import {
 } from '~/components/Activity/Activity.styled';
 import { useGetActivityById } from '~/db/activity/activity.query';
 import { formatActivityTime } from '~/utils/formatDateTime';
+import { useCurrentCardId } from '~/utils/useCurrentCardId';
 
 type ActivityTimestampProps = {
   id: string;
@@ -26,8 +26,8 @@ export function ActivityTimestamp({
   testId = 'ActivityTimestamp',
   onSelect,
 }: ActivityTimestampProps) {
-  const { isLoading, data } = useGetActivityById({ activityId: id });
-  const { cardId } = useParams({ strict: false });
+  const cardId = useCurrentCardId();
+  const { isLoading, data } = useGetActivityById({ activityId: id, cardId });
   const [isCopied, setIsCopied] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
   const [wasCopied, setWasCopied] = useState(false);

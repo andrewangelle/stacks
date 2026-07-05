@@ -5,8 +5,22 @@ import type { Plugin } from 'vite';
 
 const EMPTY_MAP = '{"version":3,"sources":[],"names":[],"mappings":""}';
 
+const DND_KIT_PACKAGES = ['@dnd-kit/react', '@dnd-kit/dom'];
+
+function stubPackageSourcemaps(require: NodeRequire, pkgName: string) {
+  const pkgDir = dirname(require.resolve(pkgName));
+
+  for (const file of readdirSync(pkgDir)) {
+    if (!file.endsWith('.js')) continue;
+    const mapPath = join(pkgDir, `${file}.map`);
+    if (!existsSync(mapPath)) {
+      writeFileSync(mapPath, EMPTY_MAP);
+    }
+  }
+}
+
 /**
- * @dnd-kit/react references .map files that are not published. Vite SSR logs
+ * @dnd-kit packages reference .map files that are not published. Vite SSR logs
  * ENOENT for each one; write minimal stubs once the e2e dev server starts.
  */
 export function stubDndKitSourcemaps(): Plugin {
@@ -14,14 +28,9 @@ export function stubDndKitSourcemaps(): Plugin {
     name: 'e2e-stub-dnd-kit-sourcemaps',
     buildStart() {
       const require = createRequire(import.meta.url);
-      const pkgDir = dirname(require.resolve('@dnd-kit/react'));
 
-      for (const file of readdirSync(pkgDir)) {
-        if (!file.endsWith('.js')) continue;
-        const mapPath = join(pkgDir, `${file}.map`);
-        if (!existsSync(mapPath)) {
-          writeFileSync(mapPath, EMPTY_MAP);
-        }
+      for (const pkgName of DND_KIT_PACKAGES) {
+        stubPackageSourcemaps(require, pkgName);
       }
     },
   };

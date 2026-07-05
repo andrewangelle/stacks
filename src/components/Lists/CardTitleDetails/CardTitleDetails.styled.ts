@@ -312,3 +312,29 @@ export const CardTitleDetailsContentTriggersContainer = styled.div<{
   gap: '8px',
   paddingLeft: ({ commentsCount }) => (commentsCount > 0 ? '2px' : '0'),
 });
+
+export const CardTitleDetailsSpinnerContainer = styled.div`
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: inherit;
+  background: rgba(255, 255, 255, 0.72);
+  z-index: 1;
+`;
+
+export const CardTitleDetailsSpinner = styled.div`
+  width: 16px;
+  height: 16px;
+  border: 2px solid rgba(9, 30, 66, 0.15);
+  border-top-color: ${blue};
+  border-radius: 50%;
+  animation: cardTitleDetailsSpin 0.6s linear infinite;
+
+  @keyframes cardTitleDetailsSpin {
+    to {
+      transform: rotate(360deg);
+    }
+  }
+`;

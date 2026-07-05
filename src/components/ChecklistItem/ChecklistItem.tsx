@@ -17,10 +17,22 @@ import {
 } from '~/db/checklistItems/checklistItems.query';
 import { useCurrentBoardId } from '~/utils/useCurrentBoardId';
 
-export function ChecklistItem({ id }: { id: string }) {
+export function ChecklistItem({
+  id,
+  checklistId,
+}: {
+  id: string;
+  checklistId: string;
+}) {
   const boardId = useCurrentBoardId();
-  const { isLoading, data: checklistItem } = useGetChecklistItem({
+  const {
+    isLoading,
+    data: checklistItem,
+    isFetching,
+    isRefetching,
+  } = useGetChecklistItem({
     itemId: id,
+    checklistId,
   });
   const updateItem = useUpdateChecklistItem();
   const [isEditingLabel, setIsEditingLabel] = useState(false);
@@ -55,7 +67,7 @@ export function ChecklistItem({ id }: { id: string }) {
     }
   }
 
-  if (isLoading || !checklistItem) {
+  if (isLoading || isFetching || isRefetching) {
     return <ChecklistItemSkeleton />;
   }
 
@@ -65,7 +77,7 @@ export function ChecklistItem({ id }: { id: string }) {
         <CheckboxRoot
           data-testid="CheckboxRoot"
           data-editing={isEditingLabel ? '' : undefined}
-          checked={checklistItem.isCompleted}
+          checked={checklistItem?.isCompleted}
           onClick={toggleCheckbox}
         >
           <CheckboxIndicator data-testid="CheckboxIndicator">
@@ -82,12 +94,17 @@ export function ChecklistItem({ id }: { id: string }) {
       >
         <EditableChecklistLabel
           id={id}
+          checklistId={checklistId}
           isEditingLabel={isEditingLabel}
           setIsEditingLabel={setIsEditingLabel}
         />
 
         {!isEditingLabel && (
-          <ChecklistItemOptions id={id} isHovering={isHovering} />
+          <ChecklistItemOptions
+            id={id}
+            checklistId={checklistId}
+            isHovering={isHovering}
+          />
         )}
       </ChecklistCheckboxContentColumn>
     </ChecklistCheckboxContainer>

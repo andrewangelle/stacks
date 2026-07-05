@@ -101,6 +101,7 @@ export const CloseAddCardButton = styled(Button)`
 `;
 
 export const ListCardContainer = styled.div` 
+  position: relative;
   border-radius: 8px;
   background: #fff;
   font-family: ${fontFamily};

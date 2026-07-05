@@ -1,8 +1,18 @@
-import { useNavigate } from '@tanstack/react-router';
-import { type FocusEvent, type KeyboardEvent, useRef, useState } from 'react';
+import { useNavigate, useRouterState } from '@tanstack/react-router';
+import {
+  type FocusEvent,
+  type KeyboardEvent,
+  useEffect,
+  useRef,
+  useState,
+} from 'react';
 import { CardModalTrigger } from '~/components/Cards/Card.styled';
 import { CardCompletedIndicator } from '~/components/Cards/CardCompletedIndicator';
-import { ListCardTitleDetailsContainer } from '~/components/Lists/CardTitleDetails/CardTitleDetails.styled';
+import {
+  CardTitleDetailsSpinner,
+  CardTitleDetailsSpinnerContainer,
+  ListCardTitleDetailsContainer,
+} from '~/components/Lists/CardTitleDetails/CardTitleDetails.styled';
 import { CardTitleDetailsContent } from '~/components/Lists/CardTitleDetails/CardTitleDetailsContent';
 import { useCardTitleDetailsVisibility } from '~/components/Lists/CardTitleDetails/useCardTitleDetailsVisibility';
 import { ListCardContainer } from '~/components/Lists/List.styled';
@@ -12,8 +22,10 @@ import { useCurrentBoardId } from '~/utils/useCurrentBoardId';
 export function CardTitleDetails({ id }: { id: string }) {
   const boardId = useCurrentBoardId();
   const navigate = useNavigate();
+  const { isLoading } = useRouterState();
   const [isHovering, setHovering] = useState(false);
   const [isFocused, setIsFocused] = useState(false);
+  const [isOpeningCard, setIsOpeningCard] = useState(false);
   const triggerRef = useRef<HTMLDivElement>(null);
   const pointerFocusedRef = useRef(false);
   const { data } = useGetCardById({ id });
@@ -21,7 +33,14 @@ export function CardTitleDetails({ id }: { id: string }) {
 
   const isCircleVisible = isHovering || isFocused;
 
+  useEffect(() => {
+    if (!isLoading) {
+      setIsOpeningCard(false);
+    }
+  }, [isLoading]);
+
   function openCardModal() {
+    setIsOpeningCard(true);
     navigate({
       to: '/board/$id/card/$cardId',
       params: { id: boardId, cardId: id },
@@ -104,6 +123,12 @@ export function CardTitleDetails({ id }: { id: string }) {
             cardId={id}
             onShowMore={openCardModalToChecklist}
           />
+        )}
+
+        {isLoading && isOpeningCard && (
+          <CardTitleDetailsSpinnerContainer data-testid="CardTitleDetailsSpinnerContainer">
+            <CardTitleDetailsSpinner data-testid="CardTitleDetailsSpinner" />
+          </CardTitleDetailsSpinnerContainer>
         )}
       </ListCardContainer>
     </CardModalTrigger>

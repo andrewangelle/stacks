@@ -1,5 +1,5 @@
-import { useNavigate } from '@tanstack/react-router';
-import { useRef } from 'react';
+import { useNavigate, useRouterState } from '@tanstack/react-router';
+import { useEffect, useRef, useState } from 'react';
 import { ActivityPanel } from '~/components/Activity/ActivityPanel';
 import {
   CardActionsContainer,
@@ -8,7 +8,9 @@ import {
   CardModalBody,
   CardModalClose,
   CardModalCloseContainer,
+  CardModalCloseSpinnerSlot,
   CardModalContent,
+  CardModalHiddenTitle,
   CardModalOverlay,
   CardModalPortal,
   CardModalRoot,
@@ -19,6 +21,7 @@ import { CardEditableTitle } from '~/components/Cards/CardEditableTitle';
 import { DeleteCardPopover } from '~/components/Cards/DeleteCardPopover';
 import { CardChecklists } from '~/components/Checklists/Checklists';
 import { CreateChecklist } from '~/components/Checklists/CreateChecklist';
+import { CardTitleDetailsSpinner } from '~/components/Lists/CardTitleDetails/CardTitleDetails.styled';
 import { useGetCardById } from '~/db/cards/cards.query';
 import { useCardColumnWidth } from '~/utils/useCardColumnWidth';
 import { useCurrentBoardId } from '~/utils/useCurrentBoardId';
@@ -36,23 +39,32 @@ export function Card() {
   const cardId = useCurrentCardId();
   const boardId = useCurrentBoardId();
   const navigate = useNavigate();
-  const { isLoading } = useGetCardById({ id: cardId });
+  const { isLoading: isRouteLoading } = useRouterState();
+  const { isLoading: isCardLoading } = useGetCardById({ id: cardId });
+  const [isClosingCard, setIsClosingCard] = useState(false);
   const { columnWidth, setColumnWidth, isWideLayout } = useCardColumnWidth();
   const mainColumnRef = useRef<HTMLDivElement>(null);
 
   const gridTemplateColumns = `minmax(0, 1fr) 8px ${columnWidth}px`;
   const cardModalBodyStyle = isWideLayout ? { gridTemplateColumns } : undefined;
 
+  useEffect(() => {
+    if (!isRouteLoading) {
+      setIsClosingCard(false);
+    }
+  }, [isRouteLoading]);
+
   function handleOpenChange(open: boolean) {
     if (open) {
       return;
     }
 
+    setIsClosingCard(true);
     navigate({ to: '/board/$id', params: { id: boardId }, hash: '' });
     focusCardTrigger(cardId);
   }
 
-  if (isLoading) {
+  if (isCardLoading) {
     return (
       <CardModalRoot
         data-testid="CardModalRoot"
@@ -65,7 +77,7 @@ export function Card() {
               data-testid="CardModalContent"
               aria-describedby={undefined}
             >
-              {null}
+              <CardModalHiddenTitle>Loading card</CardModalHiddenTitle>
             </CardModalContent>
           </CardModalOverlay>
         </CardModalPortal>
@@ -89,7 +101,15 @@ export function Card() {
             }}
           >
             <CardModalCloseContainer data-testid="CardModalCloseContainer">
-              <CardModalClose data-testid="CardModalClose">X</CardModalClose>
+              {isRouteLoading && isClosingCard && (
+                <CardModalCloseSpinnerSlot data-testid="CardModalCloseSpinner">
+                  <CardTitleDetailsSpinner />
+                </CardModalCloseSpinnerSlot>
+              )}
+
+              {!isRouteLoading && !isClosingCard && (
+                <CardModalClose data-testid="CardModalClose">X</CardModalClose>
+              )}
             </CardModalCloseContainer>
 
             <CardModalBody
