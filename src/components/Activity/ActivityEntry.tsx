@@ -12,6 +12,7 @@ import { ActivityLogo } from '~/components/Activity/ActivityLogo';
 import { ActivitySkeleton } from '~/components/Activity/ActivitySkeleton';
 import { ActivityTimestamp } from '~/components/Activity/ActivityTimestamp';
 import { useGetActivityById } from '~/db/activity/activity.query';
+import { useCurrentCardId } from '~/utils/useCurrentCardId';
 import { useScrollToHashId } from '~/utils/useScrollToHashId';
 
 type ActivityEntryProps = {
@@ -25,8 +26,9 @@ export function ActivityEntry({
   isSelected,
   onSelect,
 }: ActivityEntryProps) {
+  const cardId = useCurrentCardId();
   const { user } = useUser();
-  const { isLoading, data } = useGetActivityById({ activityId: id });
+  const { isLoading, data } = useGetActivityById({ activityId: id, cardId });
   const ref = useRef<HTMLDivElement>(null);
 
   useScrollToHashId(id, ref, !!data);

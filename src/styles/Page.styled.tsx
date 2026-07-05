@@ -109,6 +109,14 @@ export const LogoLink = styled(Link)({
   minHeight: 'unset',
 });
 
+export const LogoIconSlot = styled.span`
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 18px;
+  height: 18px;
+`;
+
 export const PopoverOptionsContent = styled(Popover.Content)` 
   width: 304px;
   border-radius: 8px; 

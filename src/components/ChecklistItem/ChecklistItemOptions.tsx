@@ -15,11 +15,13 @@ import { useOutsideClick } from '~/utils/useOutsideClick';
 
 type ChecklistItemOptionsProps = {
   id: string;
+  checklistId: string;
   isHovering: boolean;
 };
 
 export function ChecklistItemOptions({
   id,
+  checklistId,
   isHovering,
 }: ChecklistItemOptionsProps) {
   const [isOpen, setOpen] = useState(false);
@@ -61,7 +63,10 @@ export function ChecklistItemOptions({
           </ChecklistPopoverHeader>
 
           <ChecklistItemOptionsListContainer data-testid="ChecklistItemOptionsListContainer">
-            <ConvertChecklistItemToCardButton id={id} />
+            <ConvertChecklistItemToCardButton
+              id={id}
+              checklistId={checklistId}
+            />
 
             <ChecklistItemOptionsListItem
               data-testid="DeleteChecklistItemButton"

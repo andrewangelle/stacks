@@ -2,8 +2,6 @@ import { createServerFn } from '@tanstack/react-start';
 import {
   CreateChecklistItemSchema,
   DeleteChecklistItemSchema,
-  GetChecklistItemByIdSchema,
-  GetChecklistItemsSchema,
   MoveChecklistItemSchema,
   ReorderChecklistItemsSchema,
   UpdateChecklistItemSchema,
@@ -11,27 +9,11 @@ import {
 import {
   createChecklistItemQuery,
   deleteChecklistItemQuery,
-  getChecklistItemByIdQuery,
-  getChecklistItemsQuery,
   moveChecklistItemQuery,
   reorderChecklistItemsQuery,
   updateChecklistItemQuery,
 } from '~/db/checklistItems/checklistItems.server';
 import { authMiddleware } from '~/middleware/auth';
-
-export const getChecklistItems = createServerFn({ method: 'GET' })
-  .validator(GetChecklistItemsSchema)
-  .middleware([authMiddleware])
-  .handler(async ({ data, context }) =>
-    getChecklistItemsQuery({ ...data, userId: context.uid }),
-  );
-
-export const getChecklistItemById = createServerFn({ method: 'GET' })
-  .validator(GetChecklistItemByIdSchema)
-  .middleware([authMiddleware])
-  .handler(async ({ data, context }) =>
-    getChecklistItemByIdQuery({ ...data, userId: context.uid }),
-  );
 
 export const createChecklistItem = createServerFn({ method: 'POST' })
   .validator(CreateChecklistItemSchema)

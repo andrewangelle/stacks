@@ -37,6 +37,21 @@ export async function getBoardIdByCardIdQuery(
     list: { board: { userId: data.userId } },
   };
 
+  const board = await prisma.stack.findFirst({
+    where: {
+      lists: {
+        some: {
+          cards: {
+            some: { id: data.cardId },
+          },
+        },
+      },
+    },
+    select: {
+      boardColor: true,
+    },
+  });
+
   let card = await prisma.card.findFirst({
     where: {
       id: data.cardId,
@@ -76,6 +91,7 @@ export async function getBoardIdByCardIdQuery(
   return {
     boardId: card.list.boardId,
     cardId: card.id,
+    boardColor: board?.boardColor,
   };
 }
 

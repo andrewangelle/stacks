@@ -1,3 +1,4 @@
+import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import { lazy, Suspense } from 'react';
 
 function createDevTools() {
@@ -15,9 +16,16 @@ function createDevTools() {
 const TanStackRouterDevtools = createDevTools();
 
 export function DevTools() {
+  if (import.meta.env.VITE_E2E) {
+    return null;
+  }
+
   return (
-    <Suspense fallback={null}>
-      <TanStackRouterDevtools />
-    </Suspense>
+    <>
+      <ReactQueryDevtools />
+      <Suspense fallback={null}>
+        <TanStackRouterDevtools />
+      </Suspense>
+    </>
   );
 }

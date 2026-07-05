@@ -16,7 +16,7 @@ export function getChecklistsQuery(data: WithUserId<GetChecklistsArgs>) {
       card: { list: { board: { userId: data.userId } } },
     },
     orderBy: [{ position: 'asc' }, { createdAt: 'asc' }],
-    select: { id: true, checklistTitle: true, createdAt: true },
+    select: { id: true, checklistTitle: true, createdAt: true, items: true },
   });
 }
 
@@ -25,6 +25,18 @@ export function getChecklistByIdQuery(data: WithUserId<GetChecklistByIdArgs>) {
     where: {
       id: data.checklistId,
       userId: data.userId,
+    },
+    select: {
+      cardId: true,
+      listId: true,
+      userId: true,
+      checklistTitle: true,
+      createdAt: true,
+      position: true,
+      hideCheckedItems: true,
+      items: {
+        where: { checklistId: data.checklistId },
+      },
     },
   });
 }

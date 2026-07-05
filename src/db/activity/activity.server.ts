@@ -15,7 +15,6 @@ export function getActivityQuery(data: WithUserId<GetActivityArgs>) {
       card: { list: { board: { userId: data.userId } } },
     },
     orderBy: { createdAt: 'desc' },
-    select: { id: true, type: true, createdAt: true },
   });
 }
 

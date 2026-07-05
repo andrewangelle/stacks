@@ -6,14 +6,18 @@ export function useBoardBackgroundColor(): BoardBackground {
   const location = useLocation();
   const board = useGetBoard();
 
-  const boardBackground = board.data?.boardColor ?? 'blue';
-  const onAuthPath = location.pathname.startsWith('/auth');
-  const background =
+  const shouldUseDefault =
     location.pathname === '/boards' ||
     location.pathname === '/signin' ||
-    onAuthPath
-      ? 'blue'
-      : boardBackground;
+    location.pathname.startsWith('/auth');
 
-  return background as BoardBackground;
+  if (shouldUseDefault) {
+    return 'blue';
+  }
+
+  if (board.data) {
+    return board.data.boardColor as BoardBackground;
+  }
+
+  return 'blue';
 }

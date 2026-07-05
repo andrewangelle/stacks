@@ -6,6 +6,7 @@ export const GetChecklistItemsSchema = z.object({
 
 export const GetChecklistItemByIdSchema = z.object({
   itemId: z.string(),
+  checklistId: z.string(),
 });
 
 export const CreateChecklistItemSchema = z.object({

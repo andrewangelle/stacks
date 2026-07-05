@@ -1,17 +1,14 @@
 import { useState } from 'react';
 import {
-  BoardBarContainer,
   BoardTitle,
   EditBoardTitleForm,
   EditBoardTitleInput,
 } from '~/components/Nav/Nav.styled';
 import { useGetBoard, useUpdateBoard } from '~/db/boards/boards.query';
-import { useBoardBackgroundColor } from '~/utils/useBoardBackgroundColor';
 import { useOutsideClick } from '~/utils/useOutsideClick';
 
-export function BoardBar() {
+export function BoardHeader() {
   const board = useGetBoard();
-  const background = useBoardBackgroundColor();
   const [isEditing, setEditing] = useState(false);
   const [editedBoardTitle, setEditedBoardTitle] = useState(' ');
   const outsideClickRef = useOutsideClick(onOutsideNameEditClick, isEditing);
@@ -34,7 +31,7 @@ export function BoardBar() {
   }
 
   return (
-    <BoardBarContainer background={background} data-testid="BoardBarContainer">
+    <>
       {!isEditing && (
         <BoardTitle data-testid="BoardTitle" onClick={toggleEditBoardTitleForm}>
           {board.data?.boardTitle}
@@ -53,6 +50,6 @@ export function BoardBar() {
           />
         </EditBoardTitleForm>
       )}
-    </BoardBarContainer>
+    </>
   );
 }

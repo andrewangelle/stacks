@@ -1,4 +1,4 @@
-import { useMutation, useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import {
   createCard,
   deleteCard,
@@ -15,7 +15,7 @@ import type {
   UpdateCardArgs,
 } from '~/db/cards/cards.schemas';
 import type { Card } from '~/generated/prisma/client';
-import { queryClient } from '~/queryClient';
+import { getQueryClient } from '~/query';
 
 export type CardListItem = Pick<Card, 'id' | 'cardTitle' | 'createdAt'>;
 
@@ -28,15 +28,17 @@ export const queryKeys = {
   detail: (cardId: string) => ['card', cardId] as const,
 };
 
-export function useGetCardsByListId(data: GetCardsByListIdArgs) {
-  return useQuery({
-    queryKey: queryKeys.list(data.listId),
+export function cardsByListIdQueryOptions(listId: string) {
+  return {
+    queryKey: queryKeys.list(listId),
     queryFn() {
-      return getCardsByListId({
-        data,
-      });
+      return getCardsByListId({ data: { listId } });
     },
-  });
+  };
+}
+
+export function useGetCardsByListId(data: GetCardsByListIdArgs) {
+  return useQuery(cardsByListIdQueryOptions(data.listId));
 }
 
 export function cardByIdQueryOptions(cardId: string) {
@@ -54,6 +56,7 @@ export function useGetCardById(args: { id: string }) {
 }
 
 export function useCreateCard() {
+  const queryClient = useQueryClient();
   return useMutation({
     mutationFn({ cardTitle, listId, position }: CreateCardArgs) {
       return createCard({ data: { cardTitle, listId, position } });
@@ -80,6 +83,7 @@ export function useCreateCard() {
 }
 
 export function useUpdateCard() {
+  const queryClient = useQueryClient();
   const mutation = useMutation({
     mutationFn(data: UpdateCardArgs) {
       return updateCard({
@@ -117,6 +121,7 @@ export function useUpdateCard() {
 }
 
 export function useDeleteCard() {
+  const queryClient = useQueryClient();
   const mutation = useMutation({
     mutationFn(data: DeleteCardArgs) {
       return deleteCard({ data });
@@ -137,6 +142,7 @@ export function reorderCardsByIndex(
   fromIndex: number,
   toIndex: number,
 ) {
+  const queryClient = getQueryClient();
   queryClient.setQueryData<CardListItem[]>(
     queryKeys.list(listId),
     (cache = []) => {
@@ -172,6 +178,7 @@ export function moveCardToNewList({
   targetListId: string;
   targetIndex: number;
 }) {
+  const queryClient = getQueryClient();
   const sourceCache =
     queryClient.getQueryData<CardListItem[]>(queryKeys.list(sourceListId)) ??
     [];

@@ -22,10 +22,10 @@
     "db:deploy": "prisma migrate deploy",
     "db:studio": "prisma studio",
     "update:tsr": "pnpm add @tanstack/react-start@latest @tanstack/react-router@latest @tanstack/react-router-devtools@latest",
-    "test": "playwright test --project=chromium",
-    "test:ui": "playwright test --ui --project=chromium",
-    "test:headed": "playwright test --headed --ui --project=chromium",
-    "test:debug": "playwright test --debug --project=chromium",
+    "test": "cross-env FORCE_COLOR=0 playwright test --project=chromium",
+    "test:ui": "cross-env FORCE_COLOR=0 playwright test --ui --project=chromium",
+    "test:headed": "cross-env FORCE_COLOR=0 playwright test --headed --ui --project=chromium",
+    "test:debug": "cross-env FORCE_COLOR=0 playwright test --debug --project=chromium",
     "test:report": "playwright show-report"
   },
   "dependencies": {
@@ -47,6 +47,7 @@
     "@radix-ui/react-tooltip": "^1.2.10",
     "@sentry/tanstackstart-react": "^10.53.1",
     "@tanstack/react-query": "^5.90.3",
+    "@tanstack/react-query-devtools": "^5.101.2",
     "@tanstack/react-router": "^1.170.15",
     "@tanstack/react-router-devtools": "^1.167.0",
     "@tanstack/react-router-ssr-query": "^1.167.1",
@@ -64,6 +65,7 @@
     "@biomejs/biome": "^2.4.13",
     "@clerk/testing": "^2.0.34",
     "@faker-js/faker": "^10.4.0",
+    "@mui/utils": "^6.4.9",
     "@pigment-css/vite-plugin": "^0.0.30",
     "@playwright/test": "^1.60.0",
     "@types/node": "^25.6.2",
@@ -79,6 +81,7 @@
     "lint-staged": "^16.4.0",
     "netlify-cli": "^17.38.1",
     "prisma": "^7.8.0",
+    "react-is": "18.3.1",
     "typescript": "^6.0.3",
     "vite": "^8.0.10"
   },

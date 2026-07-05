@@ -1,4 +1,4 @@
-import { useMutation, useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import {
   createChecklist,
   deleteChecklist,
@@ -16,14 +16,14 @@ import type {
   UpdateChecklistArgs,
 } from '~/db/checklists/checklists.schemas';
 import type { Checklist } from '~/generated/prisma/client';
-import { queryClient } from '~/queryClient';
+import { getQueryClient } from '~/query';
 
-export type ChecklistListItem = Pick<
+export type ChecklistItem = Pick<
   Checklist,
   'id' | 'checklistTitle' | 'createdAt'
 >;
 
-function toChecklistListItem(item: Checklist): ChecklistListItem {
+function toChecklistItem(item: Checklist): ChecklistItem {
   return {
     id: item.id,
     checklistTitle: item.checklistTitle,
@@ -40,34 +40,43 @@ const queryKeys = {
 export const checklistQueryKeys = queryKeys;
 
 function invalidateCardChecklistView(cardId: string) {
+  const queryClient = getQueryClient();
   queryClient.invalidateQueries({
     queryKey: queryKeys.cardChecklistView(cardId),
   });
 }
 
-export function useGetChecklist(data: GetChecklistByIdArgs) {
-  return useQuery({
+export function checklistByIdQueryOptions(data: GetChecklistByIdArgs) {
+  return {
     queryKey: queryKeys.detail(data.checklistId),
     queryFn() {
       return getChecklistById({
         data,
       });
     },
-  });
+  };
 }
 
-export function useGetChecklists(data: GetChecklistsArgs) {
-  return useQuery({
-    queryKey: queryKeys.list(data.cardId),
+export function useGetChecklist(data: GetChecklistByIdArgs) {
+  return useQuery(checklistByIdQueryOptions(data));
+}
+
+export function checklistsQueryOptions(cardId: string) {
+  return {
+    queryKey: queryKeys.list(cardId),
     queryFn() {
       return getChecklists({
-        data,
+        data: { cardId },
       });
     },
-  });
+  };
+}
+export function useGetChecklists(data: GetChecklistsArgs) {
+  return useQuery(checklistsQueryOptions(data.cardId));
 }
 
 export function useCreateChecklist() {
+  const queryClient = useQueryClient();
   const mutation = useMutation({
     mutationFn(data: CreateChecklistArgs) {
       return createChecklist({
@@ -76,9 +85,9 @@ export function useCreateChecklist() {
     },
 
     onSuccess(result, variables) {
-      queryClient.setQueryData<ChecklistListItem[]>(
+      queryClient.setQueryData<ChecklistItem[]>(
         queryKeys.list(variables.cardId),
-        (cache = []) => [...cache, toChecklistListItem(result.data[0])],
+        (cache = []) => [...cache, toChecklistItem(result.data[0])],
       );
       invalidateCardChecklistView(variables.cardId);
     },
@@ -88,6 +97,7 @@ export function useCreateChecklist() {
 }
 
 export function useDeleteChecklist() {
+  const queryClient = useQueryClient();
   const mutation = useMutation({
     mutationFn(data: DeleteChecklistArgs) {
       return deleteChecklist({
@@ -96,7 +106,7 @@ export function useDeleteChecklist() {
     },
 
     onSuccess(_result, variables) {
-      queryClient.setQueryData<ChecklistListItem[]>(
+      queryClient.setQueryData<ChecklistItem[]>(
         queryKeys.list(variables.cardId),
         (cache = []) =>
           cache.filter((item) => item.id !== variables.checklistId),
@@ -112,6 +122,7 @@ export function useDeleteChecklist() {
 }
 
 export function useUpdateChecklist() {
+  const queryClient = useQueryClient();
   return useMutation({
     mutationFn(data: UpdateChecklistArgs) {
       return updateChecklist({
@@ -178,7 +189,8 @@ export const reorderChecklistsByIndex = (
   fromIndex: number,
   toIndex: number,
 ) => {
-  queryClient.setQueryData<ChecklistListItem[]>(
+  const queryClient = getQueryClient();
+  queryClient.setQueryData<ChecklistItem[]>(
     queryKeys.list(cardId),
     (cache = []) => {
       const next = [...cache];
@@ -189,7 +201,7 @@ export const reorderChecklistsByIndex = (
 
   const orderedIds =
     queryClient
-      .getQueryData<ChecklistListItem[]>(queryKeys.list(cardId))
+      .getQueryData<ChecklistItem[]>(queryKeys.list(cardId))
       ?.map((checklist) => checklist.id) ?? [];
 
   reorderChecklistsServer({ data: { cardId, orderedIds } })

@@ -2,11 +2,11 @@ import { Draggable } from '~/components/dnd/Draggable';
 import { DropTargetFallback } from '~/components/dnd/DropTargetFallback';
 import { AddNewCard } from '~/components/Lists/AddNewCard';
 import { AddNewCardAtPosition } from '~/components/Lists/AddNewCardAtPosition';
+import { CardTitleDetails } from '~/components/Lists/CardTitleDetails/CardTitleDetails';
 import {
   ListCardSkeleton,
   ListContainer,
 } from '~/components/Lists/List.styled';
-import { ListCard } from '~/components/Lists/ListCard';
 import { ListHeader } from '~/components/Lists/ListHeader';
 import {
   moveCardToNewList,
@@ -58,7 +58,7 @@ export function List({ id: listId }: { id: string }) {
               }
               onMove={onMove}
             >
-              <ListCard id={card.id} />
+              <CardTitleDetails id={card.id} />
 
               {index !== cards.length - 1 && (
                 <AddNewCardAtPosition listId={listId} position={index} />

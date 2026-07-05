@@ -5,11 +5,13 @@ import { EditCommentActions } from '~/components/Activity/EditCommentActions';
 import { EditCommentForm } from '~/components/Activity/EditCommentForm';
 import { useGetActivityById } from '~/db/activity/activity.query';
 import type { Activity } from '~/generated/prisma/client';
+import { useCurrentCardId } from '~/utils/useCurrentCardId';
 
 type EditableCommentProps = Pick<Activity, 'id'>;
 
 export function EditableComment({ id }: EditableCommentProps) {
-  const { isLoading, data } = useGetActivityById({ activityId: id });
+  const cardId = useCurrentCardId();
+  const { isLoading, data } = useGetActivityById({ activityId: id, cardId });
   const [isEditing, setIsEditing] = useState(false);
 
   if (isLoading || !data) {

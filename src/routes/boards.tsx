@@ -1,15 +1,19 @@
 import { useSuspenseQuery } from '@tanstack/react-query';
-import { createFileRoute, redirect, useNavigate } from '@tanstack/react-router';
+import { createFileRoute, redirect } from '@tanstack/react-router';
+import { CompositeComponent } from '@tanstack/react-start/rsc';
+import { Board } from '~/components/Boards/Board';
 import {
-  type BoardBackground,
-  BoardCardContainer,
   BoardCardSkeleton,
-  BoardCardTitle,
   BoardsContainer,
 } from '~/components/Boards/Boards.styled';
 import { CreateBoard } from '~/components/Boards/CreateBoard';
+import { NavFallback } from '~/components/Nav/NavFallback';
+import { UserNavContent } from '~/components/Nav/UserNavContent';
+import { getBoardsServer } from '~/components/server/Boards.functions';
+import { getNavBarServer } from '~/components/server/Nav.functions';
 import { boardsQueryOptions } from '~/db/boards/boards.query';
 import { fetchUserId } from '~/middleware/auth';
+import { DehydrateQueryClient } from '~/query';
 
 export const Route = createFileRoute('/boards')({
   wrapInSuspense: true,
@@ -25,40 +29,41 @@ export const Route = createFileRoute('/boards')({
       throw redirect({ to: '/auth/sign-in' });
     }
 
-    await context.queryClient.ensureQueryData(boardsQueryOptions);
-    return { userId: context.userId };
+    return {
+      BoardsServer: await getBoardsServer(),
+      NavBarServer: await getNavBarServer(),
+    };
   },
 
   pendingComponent() {
     return (
-      <BoardsContainer data-testid="BoardsContainer">
-        {(['one', 'two', 'three'] as const).map((id) => (
-          <BoardCardSkeleton data-testid="BoardCardSkeleton" key={id} />
-        ))}
-      </BoardsContainer>
+      <>
+        <NavFallback />
+        <BoardsContainer data-testid="BoardsContainer">
+          {(['one', 'two', 'three'] as const).map((id) => (
+            <BoardCardSkeleton data-testid="BoardCardSkeleton" key={id} />
+          ))}
+        </BoardsContainer>
+      </>
     );
   },
 
   component() {
-    const { data: boards = [] } = useSuspenseQuery(boardsQueryOptions);
-    const navigate = useNavigate();
+    const { BoardsServer, NavBarServer } = Route.useLoaderData();
+    const { data: boards } = useSuspenseQuery(boardsQueryOptions);
     return (
-      <BoardsContainer data-testid="BoardsContainer">
-        {boards.map((board) => (
-          <BoardCardContainer
-            data-testid="BoardCardContainer"
-            key={board.id}
-            background={board.boardColor as BoardBackground}
-            onClick={() => navigate({ to: `/board/${board.id}` })}
-          >
-            <BoardCardTitle data-testid="BoardCardTitle">
-              {board.boardTitle}
-            </BoardCardTitle>
-          </BoardCardContainer>
-        ))}
-
-        <CreateBoard />
-      </BoardsContainer>
+      <DehydrateQueryClient>
+        <CompositeComponent
+          src={NavBarServer.src}
+          renderUserContent={() => <UserNavContent />}
+        />
+        <CompositeComponent src={BoardsServer.src}>
+          {boards.map((board) => (
+            <Board key={board.id} boardId={board.id} />
+          ))}
+          <CreateBoard />
+        </CompositeComponent>
+      </DehydrateQueryClient>
     );
   },
 });

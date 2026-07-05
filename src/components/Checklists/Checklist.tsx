@@ -103,7 +103,7 @@ export function Checklist({ id }: { id: string }) {
               onReorder={reorderItems}
               onMove={onMove}
             >
-              <ChecklistItem id={checklistItem.id} />
+              <ChecklistItem id={checklistItem.id} checklistId={id} />
             </Draggable>
           );
         })}

@@ -48,46 +48,91 @@ function filterChecklists(where: {
   });
 }
 
+/**
+ * Faithfully mirrors the `select` shapes Prisma is called with across the app.
+ * `items` can be requested three ways, each of which real Prisma supports:
+ *   - `true`                          → full item records
+ *   - `{ where }`                     → filtered full item records
+ *   - `{ where, select }`             → filtered, field-projected items
+ */
+type ChecklistItemSelect =
+  | true
+  | {
+      where?: { cardId?: string; checklistId?: string };
+      select?: { label?: boolean; isCompleted?: boolean };
+    };
+
+type ChecklistSelect = {
+  id?: boolean;
+  checklistTitle?: boolean;
+  createdAt?: boolean;
+  cardId?: boolean;
+  listId?: boolean;
+  userId?: boolean;
+  position?: boolean;
+  hideCheckedItems?: boolean;
+  items?: ChecklistItemSelect;
+};
+
+function projectChecklistItems(
+  checklistId: string,
+  itemsSelect: ChecklistItemSelect,
+) {
+  let items = getStore().checklistItems.filter(
+    (item) => item.checklistId === checklistId,
+  );
+
+  const where = itemsSelect === true ? undefined : itemsSelect.where;
+
+  if (where?.cardId) {
+    items = items.filter((item) => item.cardId === where.cardId);
+  }
+
+  if (where?.checklistId) {
+    items = items.filter((item) => item.checklistId === where.checklistId);
+  }
+
+  items = sortByPosition(items);
+
+  const fieldSelect = itemsSelect === true ? undefined : itemsSelect.select;
+
+  if (!fieldSelect) {
+    return items.map((item) => ({ ...item }));
+  }
+
+  return items.map((item) => {
+    const projected: Record<string, unknown> = {};
+    if (fieldSelect.label) projected.label = item.label;
+    if (fieldSelect.isCompleted) projected.isCompleted = item.isCompleted;
+    return projected;
+  });
+}
+
+function projectChecklist(checklist: ChecklistRecord, select: ChecklistSelect) {
+  const result: Record<string, unknown> = {};
+
+  if (select.id) result.id = checklist.id;
+  if (select.checklistTitle) result.checklistTitle = checklist.checklistTitle;
+  if (select.createdAt) result.createdAt = checklist.createdAt;
+  if (select.cardId) result.cardId = checklist.cardId;
+  if (select.listId) result.listId = checklist.listId;
+  if (select.userId) result.userId = checklist.userId;
+  if (select.position) result.position = checklist.position;
+  if (select.hideCheckedItems) {
+    result.hideCheckedItems = checklist.hideCheckedItems;
+  }
+  if (select.items) {
+    result.items = projectChecklistItems(checklist.id, select.items);
+  }
+
+  return result;
+}
+
 function projectChecklists(
   checklists: ChecklistRecord[],
-  select: {
-    id?: boolean;
-    checklistTitle?: boolean;
-    items?: {
-      where?: { cardId: string };
-      select: { label?: boolean; isCompleted?: boolean };
-    };
-  },
+  select: ChecklistSelect,
 ) {
-  return checklists.map((checklist) => {
-    const result: Record<string, unknown> = {};
-
-    if (select.id) result.id = checklist.id;
-    if (select.checklistTitle) result.checklistTitle = checklist.checklistTitle;
-
-    if (select.items) {
-      let items = getStore().checklistItems.filter(
-        (item) => item.checklistId === checklist.id,
-      );
-
-      if (select.items.where?.cardId) {
-        items = items.filter(
-          (item) => item.cardId === select.items?.where?.cardId,
-        );
-      }
-
-      result.items = items.map((item) => {
-        const projected: Record<string, unknown> = {};
-        if (select.items?.select.label) projected.label = item.label;
-        if (select.items?.select.isCompleted) {
-          projected.isCompleted = item.isCompleted;
-        }
-        return projected;
-      });
-    }
-
-    return result;
-  });
+  return checklists.map((checklist) => projectChecklist(checklist, select));
 }
 
 export const checklistModel = {
@@ -100,14 +145,7 @@ export const checklistModel = {
     orderBy?:
       | { createdAt: 'asc' }
       | [{ position: 'asc' }, { createdAt: 'asc' }];
-    select?: {
-      id?: boolean;
-      checklistTitle?: boolean;
-      items?: {
-        where?: { cardId: string };
-        select: { label?: boolean; isCompleted?: boolean };
-      };
-    };
+    select?: ChecklistSelect;
   }) {
     const checklists = sortByPosition(filterChecklists(args.where));
 
@@ -125,9 +163,15 @@ export const checklistModel = {
       cardId?: string;
       listId?: string;
     };
+    select?: ChecklistSelect;
   }) {
-    const matches = filterChecklists(args.where);
-    return matches[0] ?? null;
+    const match = filterChecklists(args.where)[0] ?? null;
+
+    if (!match) {
+      return null;
+    }
+
+    return args.select ? projectChecklist(match, args.select) : match;
   },
 
   async create(args: {

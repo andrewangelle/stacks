@@ -1,5 +1,8 @@
 import { defineConfig, devices } from '@playwright/test';
 
+delete process.env.NO_COLOR;
+process.env.FORCE_COLOR = '0';
+
 /**
  * @see https://playwright.dev/docs/test-configuration
  */
@@ -75,5 +78,9 @@ export default defineConfig({
     url: 'http://localhost:3100/__test/health',
     reuseExistingServer: !process.env.CI,
     timeout: 120_000,
+    env: {
+      ...process.env,
+      FORCE_COLOR: '0',
+    },
   },
 }); 

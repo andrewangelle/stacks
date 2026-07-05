@@ -14,16 +14,21 @@ import {
 
 type EditableChecklistLabelProps = {
   id: string;
+  checklistId: string;
   isEditingLabel: boolean;
   setIsEditingLabel: (isEditingLabel: boolean) => void;
 };
 
 export function EditableChecklistLabel({
   id,
+  checklistId,
   isEditingLabel,
   setIsEditingLabel,
 }: EditableChecklistLabelProps) {
-  const { data: checklistItem } = useGetChecklistItem({ itemId: id });
+  const { data: checklistItem } = useGetChecklistItem({
+    itemId: id,
+    checklistId,
+  });
   const updateItem = useUpdateChecklistItem();
   const [editedLabel, setEditedLabel] = useState(checklistItem?.label);
 

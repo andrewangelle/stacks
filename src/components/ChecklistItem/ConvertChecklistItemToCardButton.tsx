@@ -8,8 +8,17 @@ import {
 } from '~/db/checklistItems/checklistItems.query';
 import { useCurrentBoardId } from '~/utils/useCurrentBoardId';
 
-export function ConvertChecklistItemToCardButton({ id }: { id: string }) {
-  const { data: checklistItem } = useGetChecklistItem({ itemId: id });
+export function ConvertChecklistItemToCardButton({
+  id,
+  checklistId,
+}: {
+  id: string;
+  checklistId: string;
+}) {
+  const { data: checklistItem } = useGetChecklistItem({
+    itemId: id,
+    checklistId,
+  });
   const boardId = useCurrentBoardId();
   const createActivity = useCreateActivity();
   const deleteChecklistItem = useDeleteChecklistItem();
