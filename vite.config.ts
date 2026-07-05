@@ -9,6 +9,8 @@ import rsc from '@vitejs/plugin-rsc'
 
 dotenv.config();
 
+const sentryDsn = process.env.VITE_SENTRY_DSN;
+
 export default defineConfig({
   server: {
     port: 3000,
@@ -63,7 +65,7 @@ export default defineConfig({
       org: "andrewangelle",
       project: "stacks",
       authToken: process.env.SENTRY_AUTH_TOKEN,
-      tunnelRoute: true,
+      tunnelRoute: sentryDsn ? { allowedDsns: [sentryDsn] } : true,
     }),
   ],
 });
