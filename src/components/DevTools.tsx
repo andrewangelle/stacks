@@ -16,7 +16,7 @@ function createDevTools() {
 const TanStackRouterDevtools = createDevTools();
 
 export function DevTools() {
-  if (import.meta.env.VITE_E2E) {
+  if (import.meta.env.PROD || import.meta.env.VITE_E2E) {
     return null;
   }
 

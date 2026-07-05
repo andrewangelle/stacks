@@ -63,6 +63,7 @@ export default defineConfig({
       org: "andrewangelle",
       project: "stacks",
       authToken: process.env.SENTRY_AUTH_TOKEN,
+      tunnelRoute: true,
     }),
   ],
 });
