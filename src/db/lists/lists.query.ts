@@ -12,6 +12,7 @@ import type {
   UpdateListArgs,
 } from '~/db/lists/lists.schemas';
 import type { List } from '~/generated/prisma/client';
+import { getQueryClient } from '~/query';
 import { useCurrentBoardId } from '~/utils/useCurrentBoardId';
 
 export type ListItem = Pick<List, 'id' | 'listTitle' | 'createdAt'>;
@@ -125,7 +126,7 @@ export const reorderListsByIndex = (
   fromIndex: number,
   toIndex: number,
 ) => {
-  const queryClient = useQueryClient();
+  const queryClient = getQueryClient();
   queryClient.setQueryData<ListItem[]>(
     queryKeys.list(boardId),
     (cache = []) => {
