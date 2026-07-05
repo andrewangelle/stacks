@@ -56,6 +56,50 @@ test.describe('Drag and drop', () => {
     await expectCardInList(page, 'Done', ['Move me', 'Stay here']);
   });
 
+  test('reorders lists on the board', async ({ page, request }) => {
+    await resetDb(request);
+    const board = await seedBoard(request, 'Sprint Board');
+    await seedCard(request, {
+      boardId: board.id,
+      listTitle: 'To Do',
+      cardTitle: 'First card',
+    });
+    await seedCard(request, {
+      boardId: board.id,
+      listTitle: 'Done',
+      cardTitle: 'Second card',
+    });
+
+    await page.goto(`/board/${board.id}`);
+    await expect(page.getByTestId('ListContainer')).toHaveCount(2);
+    await expect(page.getByTestId('ListName')).toHaveText(['To Do', 'Done']);
+
+    const reorderPersisted = page.waitForResponse(
+      (res) =>
+        res.url().includes('_serverFn') &&
+        res.request().method() === 'POST' &&
+        res.status() === 200,
+    );
+
+    await dragToLocator(
+      page,
+      listByTitle(page, 'To Do'),
+      listByTitle(page, 'Done'),
+    );
+
+    // Regression guard: reordering a list must not freeze the UI. If the drop
+    // handler threw (e.g. a hook called outside render), the optimistic reorder
+    // below never lands and the board stops responding.
+    await expect(async () => {
+      await expect(page.getByTestId('ListName')).toHaveText(['Done', 'To Do']);
+    }).toPass();
+
+    await reorderPersisted;
+    await page.reload();
+    await expect(page.getByTestId('ListContainer')).toHaveCount(2);
+    await expect(page.getByTestId('ListName')).toHaveText(['Done', 'To Do']);
+  });
+
   test('moves a checklist item to another checklist on the same card', async ({
     page,
     request,
