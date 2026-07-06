@@ -10,6 +10,7 @@ import {
 } from '~/components/Nav/Nav.styled';
 import { getBoardById } from '~/db/boards/boards.functions';
 import { boardByIdQueryOptions } from '~/db/boards/boards.query';
+import { MaybeBoardIdSchema } from '~/db/boards/boards.schemas';
 import { authMiddleware } from '~/middleware/auth';
 import { getQueryClient } from '~/query';
 
@@ -19,13 +20,7 @@ export type NavServerProps = {
 };
 
 export const getNavBarServer = createServerFn()
-  .validator(
-    z
-      .object({
-        boardId: z.string().optional(),
-      })
-      .optional(),
-  )
+  .validator(MaybeBoardIdSchema)
   .middleware([authMiddleware])
   .handler(async ({ data }) => {
     let boardColor: BoardBackground | undefined;

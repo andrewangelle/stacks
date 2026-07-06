@@ -18,6 +18,11 @@ export default defineConfig({
 
   optimizeDeps: {
     include: ['react-is', '@mui/utils/deepmerge', '@pigment-css/react'],
+    // pg and @prisma/client are server-only. Excluding them stops Vite's client
+    // dep scanner from discovering them mid-session and triggering a re-optimize +
+    // full reload, which tears down the shared optimized React/pigment chunks and
+    // causes transient "Invalid hook call" and stale-chunk ENOENT errors.
+    exclude: ['pg', '@prisma/client'],
   },
 
   ssr: {

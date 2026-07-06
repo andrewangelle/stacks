@@ -1,14 +1,11 @@
-import { createFileRoute, Outlet, redirect } from '@tanstack/react-router';
-import { CompositeComponent } from '@tanstack/react-start/rsc';
-import { BoardLists } from '~/components/Boards/BoardLists';
-import { BoardPageNav } from '~/components/Nav/BoardPageNav';
+import { createFileRoute, redirect } from '@tanstack/react-router';
+import { BoardByIdPage } from '~/components/pages/BoardByIdPage';
 import { getBoardPageServer } from '~/components/server/Board.functions';
 import {
   getBoardHeaderServer,
   getNavBarServer,
 } from '~/components/server/Nav.functions';
 import { fetchUserId } from '~/middleware/auth';
-import { DehydrateQueryClient } from '~/query';
 
 export const Route = createFileRoute('/board/$id')({
   async beforeLoad() {
@@ -41,18 +38,5 @@ export const Route = createFileRoute('/board/$id')({
     };
   },
 
-  component() {
-    const { BoardPageServer } = Route.useLoaderData();
-    return (
-      <DehydrateQueryClient>
-        <BoardPageNav />
-
-        <CompositeComponent src={BoardPageServer.src}>
-          <BoardLists>
-            <Outlet />
-          </BoardLists>
-        </CompositeComponent>
-      </DehydrateQueryClient>
-    );
-  },
+  component: BoardByIdPage,
 });

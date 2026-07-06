@@ -1,6 +1,6 @@
 import { Show, SignIn, UserButton } from '@clerk/tanstack-react-start';
 import { createFileRoute, redirect } from '@tanstack/react-router';
-import { NavFallback } from '~/components/Nav/NavFallback';
+import { NavBarClient } from '~/components/Nav/NavBarClient';
 import { fetchUserId } from '~/middleware/auth';
 import { FlexCenter } from '~/styles/Page.styled';
 
@@ -19,7 +19,7 @@ export const Route = createFileRoute('/auth/sign-in')({
   component() {
     return (
       <>
-        <NavFallback />
+        <NavBarClient />
 
         <FlexCenter data-testid="FlexCenter">
           <Show when="signed-in">

@@ -71,7 +71,7 @@
   },
   "overrides": [
     {
-      "includes": ["src/routes/**"],
+      "includes": ["src/routes/board.$id.card.$cardId.tsx"],
       "linter": {
         "rules": {
           "correctness": {
