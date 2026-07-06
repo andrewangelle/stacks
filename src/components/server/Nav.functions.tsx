@@ -8,13 +8,13 @@ import {
   NavBarContainer,
   NavBarContent,
 } from '~/components/Nav/Nav.styled';
-import { getBoardById } from '~/db/boards/boards.functions';
 import { boardByIdQueryOptions } from '~/db/boards/boards.query';
 import { MaybeBoardIdSchema } from '~/db/boards/boards.schemas';
 import { authMiddleware } from '~/middleware/auth';
-import { getQueryClient } from '~/query';
+import { queryClient } from '~/query';
 
 export type NavServerProps = {
+  boardColor: BoardBackground;
   renderUserContent: () => ReactNode;
   children?: ReactNode;
 };
@@ -23,22 +23,13 @@ export const getNavBarServer = createServerFn()
   .validator(MaybeBoardIdSchema)
   .middleware([authMiddleware])
   .handler(async ({ data }) => {
-    let boardColor: BoardBackground | undefined;
-
-    if (data?.boardId) {
-      const board = await getBoardById({ data: { boardId: data.boardId } });
-      boardColor = board?.boardColor as BoardBackground;
-    } else {
-      boardColor = 'blue';
-    }
-
     const src = await createCompositeComponent((props: NavServerProps) => {
       return (
         <NavBarContainer data-testid="NavBarContainer">
           <NavBarContent
-            key={boardColor}
+            key={data?.boardColor ?? props.boardColor}
             data-testid="NavBarContent"
-            background={boardColor}
+            background={data.boardColor as BoardBackground}
           >
             {props.renderUserContent()}
           </NavBarContent>
@@ -62,8 +53,6 @@ export const getBoardHeaderServer = createServerFn()
   )
   .middleware([authMiddleware])
   .handler(async ({ data }) => {
-    const queryClient = getQueryClient();
-
     const board = await queryClient.ensureQueryData(
       boardByIdQueryOptions(data.boardId),
     );

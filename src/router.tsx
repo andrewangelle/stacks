@@ -2,13 +2,12 @@ import { createRouter } from '@tanstack/react-router';
 import { setupRouterSsrQueryIntegration } from '@tanstack/react-router-ssr-query';
 import { AppError } from '~/components/AppError';
 import { NotFound } from '~/components/NotFound';
-import { getQueryClient } from '~/query';
+import { queryClient } from '~/query';
 import { initSentry } from '~/sentry.config';
 import { boardIDMask, cardMask } from '~/utils/routeMasks';
 import { routeTree } from './routeTree.gen';
 
 export function getRouter() {
-  const queryClient = getQueryClient();
   const router = createRouter({
     routeTree,
     defaultErrorComponent: AppError,

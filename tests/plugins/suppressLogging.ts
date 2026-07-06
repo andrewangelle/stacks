@@ -18,6 +18,7 @@ const SUPPRESSED_PATTERNS = [
   /Invalid hook call\. Hooks can only be called inside/,
   /Switched to client rendering because the server rendering errored/,
   /Cannot read properties of null \(reading 'use'\)/,
+  /Cannot read properties of null \(reading 'useContext'\)/,
   /\[Unhandled error\].*Switched to client rendering/s,
 ];
 

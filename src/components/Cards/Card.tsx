@@ -10,7 +10,6 @@ import {
   CardModalCloseContainer,
   CardModalCloseSpinnerSlot,
   CardModalContent,
-  CardModalHiddenTitle,
   CardModalOverlay,
   CardModalPortal,
   CardModalRoot,
@@ -21,8 +20,8 @@ import { CardEditableTitle } from '~/components/Cards/CardEditableTitle';
 import { DeleteCardPopover } from '~/components/Cards/DeleteCardPopover';
 import { CardChecklists } from '~/components/Checklists/Checklists';
 import { CreateChecklist } from '~/components/Checklists/CreateChecklist';
+import { usePreventDevToolsClose } from '~/components/DevTools';
 import { CardTitleDetailsSpinner } from '~/components/Lists/CardTitleDetails/CardTitleDetails.styled';
-import { useGetCardById } from '~/db/cards/cards.query';
 import { useCardColumnWidth } from '~/utils/useCardColumnWidth';
 import { useCurrentBoardId } from '~/utils/useCurrentBoardId';
 import { useCurrentCardId } from '~/utils/useCurrentCardId';
@@ -40,10 +39,10 @@ export function Card() {
   const boardId = useCurrentBoardId();
   const navigate = useNavigate();
   const { isLoading: isRouteLoading } = useRouterState();
-  const { isLoading: isCardLoading } = useGetCardById({ id: cardId });
   const [isClosingCard, setIsClosingCard] = useState(false);
   const { columnWidth, setColumnWidth, isWideLayout } = useCardColumnWidth();
   const mainColumnRef = useRef<HTMLDivElement>(null);
+  const preventDevToolsClose = usePreventDevToolsClose();
 
   const gridTemplateColumns = `minmax(0, 1fr) 8px ${columnWidth}px`;
   const cardModalBodyStyle = isWideLayout ? { gridTemplateColumns } : undefined;
@@ -64,27 +63,6 @@ export function Card() {
     focusCardTrigger(cardId);
   }
 
-  if (isCardLoading) {
-    return (
-      <CardModalRoot
-        data-testid="CardModalRoot"
-        open
-        onOpenChange={handleOpenChange}
-      >
-        <CardModalPortal data-testid="CardModalPortal">
-          <CardModalOverlay data-testid="CardModalOverlay">
-            <CardModalContent
-              data-testid="CardModalContent"
-              aria-describedby={undefined}
-            >
-              <CardModalHiddenTitle>Loading card</CardModalHiddenTitle>
-            </CardModalContent>
-          </CardModalOverlay>
-        </CardModalPortal>
-      </CardModalRoot>
-    );
-  }
-
   return (
     <CardModalRoot
       data-testid="CardModalRoot"
@@ -99,6 +77,7 @@ export function Card() {
             onCloseAutoFocus={(event) => {
               event.preventDefault();
             }}
+            onPointerDownOutside={preventDevToolsClose}
           >
             <CardModalCloseContainer data-testid="CardModalCloseContainer">
               {isRouteLoading && isClosingCard && (

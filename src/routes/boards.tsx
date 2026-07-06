@@ -2,6 +2,7 @@ import { createFileRoute, redirect } from '@tanstack/react-router';
 import { BoardsPage, PendingBoardsPage } from '~/components/pages/BoardsPage';
 import { getBoardsServer } from '~/components/server/Boards.functions';
 import { getNavBarServer } from '~/components/server/Nav.functions';
+import { boardsQueryOptions } from '~/db/boards/boards.query';
 import { fetchUserId } from '~/middleware/auth';
 
 export const Route = createFileRoute('/boards')({
@@ -18,9 +19,11 @@ export const Route = createFileRoute('/boards')({
       throw redirect({ to: '/auth/sign-in' });
     }
 
+    await context.queryClient.prefetchQuery(boardsQueryOptions);
+
     return {
       BoardsServer: await getBoardsServer(),
-      NavBarServer: await getNavBarServer(),
+      NavBarServer: await getNavBarServer({ data: { boardColor: 'blue' } }),
     };
   },
 

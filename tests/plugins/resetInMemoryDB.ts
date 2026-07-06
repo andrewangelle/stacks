@@ -1,4 +1,11 @@
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 import type { Plugin } from 'vite';
+
+const fixturesDir = path.resolve(
+  path.dirname(fileURLToPath(import.meta.url)),
+  '../fixtures',
+);
 
 function readJsonBody<DataType>(
   req: import('http').IncomingMessage,
@@ -34,7 +41,7 @@ export function resetInMemoryDB(): Plugin {
 
         if (req.url === '/__test/reset' && req.method === 'POST') {
           const { resetDB } = await server.ssrLoadModule(
-            '~test/fixtures/reset',
+            path.join(fixturesDir, 'reset.ts'),
           );
           resetDB();
           res.statusCode = 204;
@@ -45,7 +52,7 @@ export function resetInMemoryDB(): Plugin {
         if (req.url === '/__test/seed-board' && req.method === 'POST') {
           try {
             const { seedBoard } = await server.ssrLoadModule(
-              '~test/fixtures/seedBoard',
+              path.join(fixturesDir, 'seedBoard.ts'),
             );
 
             const body = await readJsonBody<{
@@ -71,7 +78,7 @@ export function resetInMemoryDB(): Plugin {
         if (req.url === '/__test/seed-list-card' && req.method === 'POST') {
           try {
             const { seedListCard } = await server.ssrLoadModule(
-              '~test/fixtures/seedListCard',
+              path.join(fixturesDir, 'seedListCard.ts'),
             );
 
             const body = await readJsonBody<{
@@ -96,7 +103,7 @@ export function resetInMemoryDB(): Plugin {
         if (req.url === '/__test/seed-card' && req.method === 'POST') {
           try {
             const { seedCard } = await server.ssrLoadModule(
-              '~test/fixtures/seedCard',
+              path.join(fixturesDir, 'seedCard.ts'),
             );
 
             const body = await readJsonBody<{

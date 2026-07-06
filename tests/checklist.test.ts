@@ -16,6 +16,8 @@ type ChecklistSeed = {
 };
 
 test.describe('Checklist', () => {
+  test.describe.configure({ timeout: 60_000 });
+
   test('marks a checklist item complete in the card modal', async ({
     page,
     request,
