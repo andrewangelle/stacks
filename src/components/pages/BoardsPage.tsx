@@ -1,5 +1,6 @@
 import { getRouteApi } from '@tanstack/react-router';
 import { CompositeComponent } from '@tanstack/react-start/rsc';
+import { Suspense } from 'react';
 import { Boards } from '~/components/Boards/Boards';
 import {
   BoardCardSkeleton,
@@ -14,15 +15,23 @@ const Route = getRouteApi('/boards');
 export function BoardsPage() {
   const { BoardsServer, NavBarServer } = Route.useLoaderData();
   return (
-    <DehydrateQueryClient>
+    <>
       <CompositeComponent
         src={NavBarServer.src}
         renderUserContent={() => <UserNavContent />}
       />
       <CompositeComponent src={BoardsServer.src}>
-        <Boards />
+        <DehydrateQueryClient>
+          <Suspense
+            fallback={(['one', 'two', 'three'] as const).map((id) => (
+              <BoardCardSkeleton data-testid="BoardCardSkeleton" key={id} />
+            ))}
+          >
+            <Boards />
+          </Suspense>
+        </DehydrateQueryClient>
       </CompositeComponent>
-    </DehydrateQueryClient>
+    </>
   );
 }
 
