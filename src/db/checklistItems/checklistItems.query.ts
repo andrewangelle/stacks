@@ -1,4 +1,9 @@
-import { useMutation, useQuery } from '@tanstack/react-query';
+import {
+  type QueryClient,
+  useMutation,
+  useQuery,
+  useQueryClient,
+} from '@tanstack/react-query';
 import {
   createChecklistItem,
   deleteChecklistItem,
@@ -29,8 +34,10 @@ import { getQueryClient } from '~/query';
  */
 type ChecklistWithItems = Checklist & { items: ChecklistItem[] };
 
-function getCachedChecklistItems(checklistId: string): ChecklistItem[] {
-  const queryClient = getQueryClient();
+function getCachedChecklistItems(
+  queryClient: QueryClient,
+  checklistId: string,
+): ChecklistItem[] {
   return (
     queryClient.getQueryData<ChecklistWithItems>(
       checklistQueryKeys.detail(checklistId),
@@ -39,10 +46,10 @@ function getCachedChecklistItems(checklistId: string): ChecklistItem[] {
 }
 
 function patchChecklistItems(
+  queryClient: QueryClient,
   checklistId: string,
   updater: (items: ChecklistItem[]) => ChecklistItem[],
 ) {
-  const queryClient = getQueryClient();
   queryClient.setQueryData<ChecklistWithItems>(
     checklistQueryKeys.detail(checklistId),
     (cache) => {
@@ -54,8 +61,7 @@ function patchChecklistItems(
   );
 }
 
-function invalidateCardChecklistView(cardId: string) {
-  const queryClient = getQueryClient();
+function invalidateCardChecklistView(queryClient: QueryClient, cardId: string) {
   queryClient.invalidateQueries({
     queryKey: checklistQueryKeys.cardChecklistView(cardId),
   });
@@ -80,6 +86,7 @@ export function useGetChecklistItems(data: GetChecklistItemsArgs) {
 }
 
 export function useCreateChecklistItem() {
+  const queryClient = useQueryClient();
   const mutation = useMutation({
     mutationFn(data: CreateChecklistItemArgs) {
       return createChecklistItem({
@@ -90,12 +97,12 @@ export function useCreateChecklistItem() {
     onSuccess(result, variables) {
       const created = result.data[0];
 
-      patchChecklistItems(variables.checklistId, (items) => [
+      patchChecklistItems(queryClient, variables.checklistId, (items) => [
         ...items,
         created,
       ]);
 
-      invalidateCardChecklistView(variables.cardId);
+      invalidateCardChecklistView(queryClient, variables.cardId);
     },
   });
 
@@ -103,6 +110,7 @@ export function useCreateChecklistItem() {
 }
 
 export function useUpdateChecklistItem() {
+  const queryClient = useQueryClient();
   const mutation = useMutation({
     mutationFn(data: UpdateChecklistItemArgs) {
       return updateChecklistItem({
@@ -116,11 +124,11 @@ export function useUpdateChecklistItem() {
         return;
       }
 
-      patchChecklistItems(updatedItem.checklistId, (items) =>
+      patchChecklistItems(queryClient, updatedItem.checklistId, (items) =>
         items.map((item) => (item.id === updatedItem.id ? updatedItem : item)),
       );
 
-      invalidateCardChecklistView(updatedItem.cardId);
+      invalidateCardChecklistView(queryClient, updatedItem.cardId);
     },
   });
 
@@ -128,6 +136,7 @@ export function useUpdateChecklistItem() {
 }
 
 export function useDeleteChecklistItem() {
+  const queryClient = useQueryClient();
   const mutation = useMutation({
     mutationFn(data: DeleteChecklistItemArgs) {
       return deleteChecklistItem({
@@ -141,11 +150,11 @@ export function useDeleteChecklistItem() {
         return;
       }
 
-      patchChecklistItems(deletedItem.checklistId, (items) =>
+      patchChecklistItems(queryClient, deletedItem.checklistId, (items) =>
         items.filter((item) => item.id !== variables.itemId),
       );
 
-      invalidateCardChecklistView(deletedItem.cardId);
+      invalidateCardChecklistView(queryClient, deletedItem.cardId);
     },
   });
 
@@ -159,13 +168,13 @@ export const reorderChecklistItemsByIndex = (
 ) => {
   const queryClient = getQueryClient();
 
-  patchChecklistItems(checklistId, (items) => {
+  patchChecklistItems(queryClient, checklistId, (items) => {
     const next = [...items];
     next.splice(toIndex, 0, next.splice(fromIndex, 1)[0]);
     return next;
   });
 
-  const orderedIds = getCachedChecklistItems(checklistId).map(
+  const orderedIds = getCachedChecklistItems(queryClient, checklistId).map(
     (checklistItem) => checklistItem.id,
   );
 
@@ -245,14 +254,14 @@ export function moveChecklistItemToNewChecklist({
   cardId: string;
 }) {
   const queryClient = getQueryClient();
-  const sourceItems = getCachedChecklistItems(sourceChecklistId);
+  const sourceItems = getCachedChecklistItems(queryClient, sourceChecklistId);
   const item = sourceItems.find((record) => record.id === itemId);
 
   if (!item) {
     return;
   }
 
-  const targetItems = getCachedChecklistItems(targetChecklistId);
+  const targetItems = getCachedChecklistItems(queryClient, targetChecklistId);
 
   const targetChecklist = queryClient.getQueryData<ChecklistWithItems>(
     checklistQueryKeys.detail(targetChecklistId),
@@ -266,11 +275,11 @@ export function moveChecklistItemToNewChecklist({
 
   const movedItem: ChecklistItem = { ...item, checklistId: targetChecklistId };
 
-  patchChecklistItems(sourceChecklistId, (items) =>
+  patchChecklistItems(queryClient, sourceChecklistId, (items) =>
     items.filter((record) => record.id !== itemId),
   );
 
-  patchChecklistItems(targetChecklistId, (items) => {
+  patchChecklistItems(queryClient, targetChecklistId, (items) => {
     const next = [...items];
     const clampedIndex = Math.min(Math.max(targetFullIndex, 0), next.length);
     next.splice(clampedIndex, 0, movedItem);
@@ -288,7 +297,7 @@ export function moveChecklistItemToNewChecklist({
     .then(() => {
       // Card title progress badge reads a separate query — refresh after persist,
       // not before, or a refetch can overwrite the optimistic item lists above.
-      invalidateCardChecklistView(cardId);
+      invalidateCardChecklistView(queryClient, cardId);
     })
     .catch(() => {
       queryClient.invalidateQueries({
@@ -297,6 +306,6 @@ export function moveChecklistItemToNewChecklist({
       queryClient.invalidateQueries({
         queryKey: checklistQueryKeys.detail(targetChecklistId),
       });
-      invalidateCardChecklistView(cardId);
+      invalidateCardChecklistView(queryClient, cardId);
     });
 }

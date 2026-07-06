@@ -1,8 +1,9 @@
 import { createFileRoute, redirect } from '@tanstack/react-router';
 import { CompositeComponent } from '@tanstack/react-start/rsc';
+import { Suspense } from 'react';
 import { Card } from '~/components/Cards/Card';
 import { getCardServer } from '~/components/server/Card.functions';
-// import { prefetchCardModalData } from '~/db/cards/cards.query';
+import { prefetchCardModalData } from '~/db/cards/cards.query';
 import { fetchUserId } from '~/middleware/auth';
 
 export const Route = createFileRoute('/board/$id/card/$cardId')({
@@ -17,7 +18,7 @@ export const Route = createFileRoute('/board/$id/card/$cardId')({
       throw redirect({ to: '/auth/sign-in' });
     }
 
-    // await prefetchCardModalData(context.queryClient, params.cardId);
+    await prefetchCardModalData(context.queryClient, params.cardId);
 
     const CardServer = await getCardServer({
       data: { cardId: params.cardId, boardId: params.id },
@@ -29,9 +30,11 @@ export const Route = createFileRoute('/board/$id/card/$cardId')({
   component() {
     const { CardServer } = Route.useLoaderData();
     return (
-      <CompositeComponent src={CardServer.src}>
-        <Card />
-      </CompositeComponent>
+      <Suspense fallback={null}>
+        <CompositeComponent src={CardServer.src}>
+          <Card />
+        </CompositeComponent>
+      </Suspense>
     );
   },
 });
