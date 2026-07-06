@@ -109,8 +109,7 @@ test.describe('List', () => {
 
     await waitForUpdatedListName(page);
 
-    await page.reload();
-    await waitForList(page, 'Done');
+    await waitForListAfterReload(page, 'Done');
   });
 
   test('marks a card complete on the list', async ({ page, request }) => {
@@ -337,6 +336,19 @@ async function waitForList(page: Page, listTitle?: string) {
     if (listTitle) {
       await expect(page.getByTestId('ListName')).toHaveText(listTitle);
     }
+  }).toPass();
+}
+
+// A single reload can race the rename mutation's persistence to the
+// backend — the client shows the new name optimistically before the write
+// lands, so one reload can still serve the pre-rename value. Re-reload
+// (not just re-check) until the persisted value shows up.
+async function waitForListAfterReload(page: Page, listTitle: string) {
+  await expect(async () => {
+    await page.reload();
+    await expect(page.getByTestId('ListName')).toHaveText(listTitle, {
+      timeout: 5_000,
+    });
   }).toPass();
 }
 

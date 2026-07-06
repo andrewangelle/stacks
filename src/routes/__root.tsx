@@ -12,24 +12,23 @@ import {
 } from '@tanstack/react-router';
 import type { ReactNode } from 'react';
 import { DevTools } from '~/components/DevTools';
-import { type getQueryClient, QueryProvider } from '~/query';
+import type { queryClient } from '~/query';
 import GlobalFonts from '~/styles/GlobalFonts';
 
 type RouterContext = {
-  queryClient: ReturnType<typeof getQueryClient>;
+  queryClient: typeof queryClient;
 };
 
 function Providers({ children }: { children: ReactNode }) {
   return (
     <ClerkProvider>
-      <QueryProvider>
-        <DragDropProvider>{children}</DragDropProvider>
-      </QueryProvider>
+      <DragDropProvider>{children}</DragDropProvider>
     </ClerkProvider>
   );
 }
 
 export const Route = createRootRouteWithContext<RouterContext>()({
+  wrapInSuspense: true,
   head() {
     return {
       meta: [

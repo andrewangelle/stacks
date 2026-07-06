@@ -21,7 +21,7 @@ import type {
   UpdateChecklistArgs,
 } from '~/db/checklists/checklists.schemas';
 import type { Checklist } from '~/generated/prisma/client';
-import { getQueryClient } from '~/query';
+import { queryClient } from '~/query';
 
 export type ChecklistItem = Pick<
   Checklist,
@@ -45,7 +45,6 @@ const queryKeys = {
 export const checklistQueryKeys = queryKeys;
 
 function invalidateCardChecklistView(cardId: string) {
-  const queryClient = getQueryClient();
   queryClient.invalidateQueries({
     queryKey: queryKeys.cardChecklistView(cardId),
   });
@@ -165,14 +164,20 @@ export function useUpdateChecklist() {
   });
 }
 
-export function useGetCardTitleDetailsChecklists(data: GetChecklistsArgs) {
-  return useSuspenseQuery({
-    queryKey: queryKeys.cardChecklistView(data.cardId),
+export function cardTitleDetailsChecklistsQueryOptions(cardId: string) {
+  return {
+    queryKey: queryKeys.cardChecklistView(cardId),
     queryFn() {
       return getCardTitleDetailsChecklists({
-        data,
+        data: { cardId },
       });
     },
+  };
+}
+
+export function useGetCardTitleDetailsChecklists(data: GetChecklistsArgs) {
+  return useSuspenseQuery({
+    ...cardTitleDetailsChecklistsQueryOptions(data.cardId),
     select(data) {
       const checklistsWithIncompleteItems = data.checklists.filter(
         (checklist) => checklist.completedItems < checklist.totalItems,
@@ -194,7 +199,6 @@ export const reorderChecklistsByIndex = (
   fromIndex: number,
   toIndex: number,
 ) => {
-  const queryClient = getQueryClient();
   queryClient.setQueryData<ChecklistItem[]>(
     queryKeys.list(cardId),
     (cache = []) => {

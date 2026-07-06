@@ -58,7 +58,15 @@ export const cardModel = {
     where:
       | { id: CardIdFilter; userId: string }
       | { id: CardIdFilter; list: { board: { userId: string } } };
-    select?: { id?: boolean; list?: { select?: { boardId?: boolean } } };
+    select?: {
+      id?: boolean;
+      list?: {
+        select?: {
+          boardId?: boolean;
+          board?: { select?: { boardColor?: boolean } };
+        };
+      };
+    };
   }) {
     const where = args.where;
 
@@ -82,10 +90,13 @@ export const cardModel = {
     // `card.list.boardId`. The lists store maps the card's listId to a boardId.
     if (args.select?.list) {
       const list = getStore().lists.find((item) => item.id === match.listId);
-
+      const board = getStore().stacks.find((item) => item.id === list?.boardId);
       return {
         id: match.id,
-        list: { boardId: list?.boardId },
+        list: {
+          boardId: list?.boardId,
+          board: { boardColor: board?.boardColor },
+        },
       };
     }
 

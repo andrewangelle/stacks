@@ -1,19 +1,21 @@
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
-import { lazy, Suspense } from 'react';
+import { TanStackRouterDevtools } from '@tanstack/react-router-devtools';
+import { useCallback } from 'react';
 
-function createDevTools() {
-  if (process.env.NODE_ENV === 'production') {
-    return () => null;
-  }
-
-  return lazy(() =>
-    import('@tanstack/react-router-devtools').then((res) => ({
-      default: res.TanStackRouterDevtools,
-    })),
-  );
+type PointerDownOutsideEvent = CustomEvent<{
+  originalEvent: PointerEvent;
+}>;
+export function usePreventDevToolsClose() {
+  return useCallback((event: PointerDownOutsideEvent) => {
+    if (
+      import.meta.env.DEV &&
+      event.target instanceof Element &&
+      event.target.closest('.tsqd-parent-container')
+    ) {
+      event.preventDefault();
+    }
+  }, []);
 }
-
-const TanStackRouterDevtools = createDevTools();
 
 export function DevTools() {
   if (import.meta.env.PROD || import.meta.env.VITE_E2E) {
@@ -21,11 +23,9 @@ export function DevTools() {
   }
 
   return (
-    <>
+    <div style={{ pointerEvents: 'auto' }}>
       <ReactQueryDevtools />
-      <Suspense fallback={null}>
-        <TanStackRouterDevtools />
-      </Suspense>
-    </>
+      <TanStackRouterDevtools />
+    </div>
   );
 }

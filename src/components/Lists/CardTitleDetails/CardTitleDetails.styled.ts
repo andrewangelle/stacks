@@ -1,6 +1,7 @@
 import { styled } from '@pigment-css/react';
 import * as Accordion from '@radix-ui/react-accordion';
 import * as Checkbox from '@radix-ui/react-checkbox';
+import { ListCardSkeleton } from '~/components/Lists/List.styled';
 import {
   blue,
   completedGreen,
@@ -337,4 +338,9 @@ export const CardTitleDetailsSpinner = styled.div`
       transform: rotate(360deg);
     }
   }
+`;
+
+export const CardTitleDetailsContentSkeleton = styled(ListCardSkeleton)`
+  width: 50px;
+  margin-top: 4px;
 `;

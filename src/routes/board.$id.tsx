@@ -5,10 +5,12 @@ import {
   getBoardHeaderServer,
   getNavBarServer,
 } from '~/components/server/Nav.functions';
-import { getBoardById } from '~/db/boards/boards.functions';
+import { boardByIdQueryOptions } from '~/db/boards/boards.query';
 import { fetchUserId } from '~/middleware/auth';
 
 export const Route = createFileRoute('/board/$id')({
+  wrapInSuspense: true,
+
   async beforeLoad() {
     const { userId } = await fetchUserId();
     return { userId };
@@ -20,10 +22,12 @@ export const Route = createFileRoute('/board/$id')({
       throw redirect({ to: '/auth/sign-in' });
     }
 
-    const board = await getBoardById({ data: { boardId: params.id } });
+    const board = await context.queryClient.ensureQueryData(
+      boardByIdQueryOptions(params.id),
+    );
 
     const NavBarServer = await getNavBarServer({
-      data: { boardId: params.id },
+      data: { boardId: params.id, boardColor: board?.boardColor ?? 'blue' },
     });
 
     const BoardPageServer = await getBoardPageServer({

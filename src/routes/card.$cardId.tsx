@@ -10,6 +10,8 @@ import { getBoardIdByCardId } from '~/db/cards/cards.functions';
 import { fetchUserId } from '~/middleware/auth';
 
 export const Route = createFileRoute('/card/$cardId')({
+  wrapInSuspense: true,
+
   async beforeLoad() {
     const { userId } = await fetchUserId();
     return { userId };
@@ -38,7 +40,7 @@ export const Route = createFileRoute('/card/$cardId')({
     });
 
     const NavBarServer = await getNavBarServer({
-      data: { boardId: cardQuery.boardId },
+      data: { boardId: cardQuery.boardId, boardColor: cardQuery.boardColor },
     });
 
     const BoardHeaderServer = await getBoardHeaderServer({

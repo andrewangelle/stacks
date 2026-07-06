@@ -1,9 +1,14 @@
 import {
+  type QueryClient,
   useMutation,
   useQuery,
   useQueryClient,
   useSuspenseQuery,
 } from '@tanstack/react-query';
+import { activityListQueryOptions } from '~/db/activity/activity.query';
+import { boardByIdQueryOptions } from '~/db/boards/boards.query';
+import { cardByIdQueryOptions } from '~/db/cards/cards.query';
+import { cardTitleDetailsChecklistsQueryOptions } from '~/db/checklists/checklists.query';
 import {
   createList,
   deleteList,
@@ -17,7 +22,7 @@ import type {
   UpdateListArgs,
 } from '~/db/lists/lists.schemas';
 import type { Card, List } from '~/generated/prisma/client';
-import { getQueryClient } from '~/query';
+import { queryClient } from '~/query';
 import { useCurrentBoardId } from '~/utils/useCurrentBoardId';
 
 export type ListCardItem = Pick<Card, 'id' | 'cardTitle' | 'createdAt'>;
@@ -41,7 +46,6 @@ function toListItem(item: List): ListItem {
 
 const queryKeys = {
   list: (boardId: string) => ['lists', boardId] as const,
-  detail: (id: string) => ['list', id] as const,
 };
 
 export function listsQueryOptions(boardId: string) {
@@ -54,6 +58,29 @@ export function listsQueryOptions(boardId: string) {
   };
 }
 
+/** Loader prefetch: board, lists, and per-card data shown on the board page. */
+export async function prefetchBoardPageData(
+  queryClient: QueryClient,
+  boardId: string,
+) {
+  await queryClient.ensureQueryData(boardByIdQueryOptions(boardId));
+  const lists = await queryClient.ensureQueryData(listsQueryOptions(boardId));
+
+  await Promise.all(
+    lists.flatMap((list) =>
+      list.cards.flatMap((card) => [
+        queryClient.prefetchQuery(cardByIdQueryOptions(card.id)),
+        queryClient.prefetchQuery(
+          cardTitleDetailsChecklistsQueryOptions(card.id),
+        ),
+        queryClient.prefetchQuery(
+          activityListQueryOptions({ cardId: card.id }),
+        ),
+      ]),
+    ),
+  );
+}
+
 export function useGetLists() {
   const boardId = useCurrentBoardId();
   return useQuery(listsQueryOptions(boardId));
@@ -64,7 +91,6 @@ export function useGetListById({ id }: { id: string }) {
 
   return useSuspenseQuery({
     ...listsQueryOptions(boardId),
-    queryKey: queryKeys.detail(id),
     select(data) {
       return data.find((item) => item.id === id);
     },
@@ -81,14 +107,6 @@ export function useUpdateList() {
     },
 
     onSuccess(_result, variables) {
-      queryClient.setQueryData<List>(
-        queryKeys.detail(variables.listId),
-        (cache = {} as List) => ({
-          ...cache,
-          listTitle: variables.listTitle,
-        }),
-      );
-
       queryClient.setQueryData<ListItem[]>(
         queryKeys.list(variables.boardId),
         (cache = []) =>
@@ -144,7 +162,6 @@ export const reorderListsByIndex = (
   fromIndex: number,
   toIndex: number,
 ) => {
-  const queryClient = getQueryClient();
   queryClient.setQueryData<ListItem[]>(
     queryKeys.list(boardId),
     (cache = []) => {

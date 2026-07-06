@@ -5,6 +5,7 @@ import { fetchUserId } from '~/middleware/auth';
 import { FlexCenter } from '~/styles/Page.styled';
 
 export const Route = createFileRoute('/auth/sign-in')({
+  wrapInSuspense: true,
   async beforeLoad() {
     const { userId } = await fetchUserId();
     return { userId };

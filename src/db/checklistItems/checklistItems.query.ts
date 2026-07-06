@@ -18,7 +18,7 @@ import {
   checklistQueryKeys,
 } from '~/db/checklists/checklists.query';
 import type { Checklist, ChecklistItem } from '~/generated/prisma/client';
-import { getQueryClient } from '~/query';
+import { queryClient } from '~/query';
 
 /**
  * Checklist items are not stored under their own query key. They live inside the
@@ -30,7 +30,6 @@ import { getQueryClient } from '~/query';
 type ChecklistWithItems = Checklist & { items: ChecklistItem[] };
 
 function getCachedChecklistItems(checklistId: string): ChecklistItem[] {
-  const queryClient = getQueryClient();
   return (
     queryClient.getQueryData<ChecklistWithItems>(
       checklistQueryKeys.detail(checklistId),
@@ -42,7 +41,6 @@ function patchChecklistItems(
   checklistId: string,
   updater: (items: ChecklistItem[]) => ChecklistItem[],
 ) {
-  const queryClient = getQueryClient();
   queryClient.setQueryData<ChecklistWithItems>(
     checklistQueryKeys.detail(checklistId),
     (cache) => {
@@ -55,7 +53,6 @@ function patchChecklistItems(
 }
 
 function invalidateCardChecklistView(cardId: string) {
-  const queryClient = getQueryClient();
   queryClient.invalidateQueries({
     queryKey: checklistQueryKeys.cardChecklistView(cardId),
   });
@@ -157,8 +154,6 @@ export const reorderChecklistItemsByIndex = (
   fromIndex: number,
   toIndex: number,
 ) => {
-  const queryClient = getQueryClient();
-
   patchChecklistItems(checklistId, (items) => {
     const next = [...items];
     next.splice(toIndex, 0, next.splice(fromIndex, 1)[0]);
@@ -244,7 +239,6 @@ export function moveChecklistItemToNewChecklist({
   targetVisibleIndex: number;
   cardId: string;
 }) {
-  const queryClient = getQueryClient();
   const sourceItems = getCachedChecklistItems(sourceChecklistId);
   const item = sourceItems.find((record) => record.id === itemId);
 

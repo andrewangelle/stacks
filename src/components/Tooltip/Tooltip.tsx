@@ -24,9 +24,7 @@ export function Tooltip({
         open={isOpen}
         onOpenChange={(nextIsOpen) => !disabled && setIsOpen(nextIsOpen)}
       >
-        <Trigger asChild style={{ zIndex: 1 }}>
-          {children}
-        </Trigger>
+        <Trigger asChild>{children}</Trigger>
         {portal && (
           <Portal>
             <TooltipContent side="bottom" sideOffset={8}>

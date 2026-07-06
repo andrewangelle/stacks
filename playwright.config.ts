@@ -1,23 +1,18 @@
 import { defineConfig, devices } from '@playwright/test';
 
-delete process.env.NO_COLOR;
-process.env.FORCE_COLOR = '0';
-
 /**
  * @see https://playwright.dev/docs/test-configuration
  */
 export default defineConfig({
   testDir: './tests',
   tsconfig: './tests/tsconfig.json',
+  globalSetup: './tests/global-setup.ts',
   // Shared in-memory DB via dev:e2e — one worker avoids cross-test races.
   fullyParallel: false,
+  workers: 1,
   /* Fail the build on CI if you accidentally left test.only in the source code. */
   forbidOnly: !!process.env.CI,
-  /* Retry on CI only */
-  // Avoid long retry loops while the suite is still growing incrementally.
-  retries: 0,
-  /* Opt out of parallel tests on CI. */
-  workers: 1,
+  retries: process.env.CI ? 1 : 0,
   reporter: 'html',
   
   /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
@@ -27,7 +22,7 @@ export default defineConfig({
     /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
     trace: 'on-first-retry',
 
-    video: 'retain-on-failure',
+    video: 'on',
   },
 
     // Longer timeouts for slower CI runners
@@ -78,9 +73,5 @@ export default defineConfig({
     url: 'http://localhost:3100/__test/health',
     reuseExistingServer: !process.env.CI,
     timeout: 120_000,
-    env: {
-      ...process.env,
-      FORCE_COLOR: '0',
-    },
   },
 }); 

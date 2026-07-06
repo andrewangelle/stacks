@@ -1,11 +1,14 @@
 import { createFileRoute, redirect } from '@tanstack/react-router';
 import { CompositeComponent } from '@tanstack/react-start/rsc';
+import { Suspense } from 'react';
 import { Card } from '~/components/Cards/Card';
+import { CardFallback } from '~/components/Cards/CardFallback';
 import { getCardServer } from '~/components/server/Card.functions';
 import { fetchUserId } from '~/middleware/auth';
-import { DehydrateQueryClient } from '~/query';
 
 export const Route = createFileRoute('/board/$id/card/$cardId')({
+  wrapInSuspense: true,
+
   async beforeLoad() {
     const { userId } = await fetchUserId();
     return { userId };
@@ -24,14 +27,16 @@ export const Route = createFileRoute('/board/$id/card/$cardId')({
     return { CardServer };
   },
 
+  pendingComponent: CardFallback,
+
   component() {
     const { CardServer } = Route.useLoaderData();
     return (
-      <DehydrateQueryClient>
-        <CompositeComponent src={CardServer.src}>
+      <CompositeComponent src={CardServer.src}>
+        <Suspense fallback={<CardFallback />}>
           <Card />
-        </CompositeComponent>
-      </DehydrateQueryClient>
+        </Suspense>
+      </CompositeComponent>
     );
   },
 });

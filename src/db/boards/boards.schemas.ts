@@ -14,11 +14,10 @@ export const UpdateBoardSchema = z.object({
   boardTitle: z.string(),
 });
 
-export const MaybeBoardIdSchema = z
-  .object({
-    boardId: z.string().optional(),
-  })
-  .optional();
+export const MaybeBoardIdSchema = z.object({
+  boardId: z.string().optional(),
+  boardColor: z.string().optional(),
+});
 
 export type CreateBoardArgs = z.infer<typeof CreateBoardSchema>;
 export type GetBoardByIdArgs = z.infer<typeof GetBoardByIdSchema>;
