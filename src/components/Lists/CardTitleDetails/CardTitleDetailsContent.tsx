@@ -8,7 +8,7 @@ import { CardTitleDetailsChecklist } from '~/components/Lists/CardTitleDetails/C
 import { CardTitleDetailsChecklistAccordion } from '~/components/Lists/CardTitleDetails/CardTitleDetailsChecklistAccordion';
 import { CardTitleDetailsContentTriggers } from '~/components/Lists/CardTitleDetails/CardTitleDetailsContentTriggers';
 import { useGetCardTitleDetailsChecklists } from '~/db/checklists/checklists.query';
-import { useCardTitleDetailsVisibility } from './useCardTitleDetailsVisibility';
+import { useCardTitleDetailsVisibility } from '~/utils/useCardTitleDetailsVisibility';
 
 const MAX_VISIBLE_CHECKLISTS = 3;
 

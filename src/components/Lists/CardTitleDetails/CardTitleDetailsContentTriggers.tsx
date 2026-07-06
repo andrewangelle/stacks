@@ -5,10 +5,10 @@ import {
   CardTitleDetailsChecklistTotalsContainer,
   CardTitleDetailsContentTriggersContainer,
 } from '~/components/Lists/CardTitleDetails/CardTitleDetails.styled';
-import { useCardTitleDetailsVisibility } from '~/components/Lists/CardTitleDetails/useCardTitleDetailsVisibility';
 import { Tooltip } from '~/components/Tooltip/Tooltip';
 import { useGetCardTitleDetailsChecklists } from '~/db/checklists/checklists.query';
 import { Flex } from '~/styles/Page.styled';
+import { useCardTitleDetailsVisibility } from '~/utils/useCardTitleDetailsVisibility';
 
 type CardTitleDetailsContentTriggersProps = {
   cardId: string;
@@ -26,6 +26,7 @@ export function CardTitleDetailsContentTriggers({
   const { data } = useGetCardTitleDetailsChecklists({ cardId });
   const { commentsCount, hasChecklistDetails } =
     useCardTitleDetailsVisibility(cardId);
+
   const checklistTooltipText = data?.isAllCompleted
     ? 'Checklist items'
     : isOpen

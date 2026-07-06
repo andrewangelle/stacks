@@ -1,12 +1,4 @@
-import { useNavigate, useRouterState } from '@tanstack/react-router';
-import {
-  type FocusEvent,
-  type KeyboardEvent,
-  Suspense,
-  useEffect,
-  useRef,
-  useState,
-} from 'react';
+import { Suspense } from 'react';
 import { CardModalTrigger } from '~/components/Cards/Card.styled';
 import { CardCompletedIndicator } from '~/components/Cards/CardCompletedIndicator';
 import {
@@ -19,109 +11,50 @@ import {
   ListCardContainer,
   ListCardSkeleton,
 } from '~/components/Lists/List.styled';
-import { useCurrentBoardId } from '~/utils/useCurrentBoardId';
+import { useCardModalTrigger } from '~/utils/useCardModalTrigger';
 
-export function CardTitleDetails({
-  id,
-  title,
-}: {
+type CardTitleDetailsProps = {
   id: string;
   listId: string;
   title: string;
-}) {
-  const boardId = useCurrentBoardId();
-  const navigate = useNavigate();
-  const { isLoading } = useRouterState();
-  const [isHovering, setHovering] = useState(false);
-  const [isFocused, setIsFocused] = useState(false);
-  const [isOpeningCard, setIsOpeningCard] = useState(false);
-  const triggerRef = useRef<HTMLDivElement>(null);
-  const pointerFocusedRef = useRef(false);
+};
 
-  const isCircleVisible = isHovering || isFocused;
-
-  useEffect(() => {
-    if (!isLoading) {
-      setIsOpeningCard(false);
-    }
-  }, [isLoading]);
-
-  function openCardModal() {
-    setIsOpeningCard(true);
-    navigate({
-      to: '/board/$id/card/$cardId',
-      params: { id: boardId, cardId: id },
-    });
-  }
-
-  function openCardModalToChecklist(checklistId: string) {
-    navigate({
-      href: `/card/${id.slice(0, 8)}#checklist-${checklistId}`,
-      resetScroll: false,
-      hashScrollIntoView: false,
-    });
-  }
-
-  function handleTriggerFocus() {
-    setIsFocused(true);
-    pointerFocusedRef.current = true;
-  }
-
-  function handleTriggerBlur(event: FocusEvent<HTMLDivElement>) {
-    if (event.currentTarget.contains(event.relatedTarget as Node | null)) {
-      return;
-    }
-    setIsFocused(false);
-    pointerFocusedRef.current = false;
-  }
-
-  function handleListCardMouseEnter() {
-    setHovering(true);
-    pointerFocusedRef.current = true;
-    triggerRef.current?.focus({ preventScroll: true });
-  }
-
-  function handleListCardMouseLeave() {
-    setHovering(false);
-
-    if (
-      pointerFocusedRef.current &&
-      triggerRef.current === document.activeElement
-    ) {
-      triggerRef.current?.blur();
-    }
-
-    pointerFocusedRef.current = false;
-  }
-
-  function handleTriggerKeyDown(event: KeyboardEvent<HTMLDivElement>) {
-    if (event.target !== event.currentTarget) {
-      return;
-    }
-
-    if (event.key === 'Enter' || event.key === ' ') {
-      event.preventDefault();
-      openCardModal();
-    }
-  }
+export function CardTitleDetails({ id, title }: CardTitleDetailsProps) {
+  const {
+    ref,
+    isHovering,
+    isFocused,
+    isLoading,
+    onBlur,
+    onFocus,
+    onKeyDown,
+    onMouseEnter,
+    onMouseLeave,
+    onPointerDown,
+    onShowMore,
+    open,
+  } = useCardModalTrigger(id);
 
   return (
-    <CardModalTrigger data-testid="CardModalTrigger" onClick={openCardModal}>
+    <CardModalTrigger data-testid="CardModalTrigger" onClick={open}>
       <ListCardContainer
-        ref={triggerRef}
+        ref={ref}
         role="button"
         tabIndex={0}
         data-testid="ListCardContainer"
         data-card-id={id}
-        onBlur={handleTriggerBlur}
-        onFocus={handleTriggerFocus}
-        onKeyDown={handleTriggerKeyDown}
-        onMouseEnter={handleListCardMouseEnter}
-        onMouseLeave={handleListCardMouseLeave}
-        onPointerDown={handleTriggerFocus}
+        onBlur={onBlur}
+        onFocus={onFocus}
+        onKeyDown={onKeyDown}
+        onMouseEnter={onMouseEnter}
+        onMouseLeave={onMouseLeave}
+        onPointerDown={onPointerDown}
       >
         <ListCardTitleDetailsContainer data-testid="ListCardTitleDetailsContainer">
-          <CardCompletedIndicator cardId={id} visible={isCircleVisible} />
+          <CardCompletedIndicator
+            cardId={id}
+            visible={isHovering || isFocused}
+          />
           {title}
         </ListCardTitleDetailsContainer>
 
@@ -130,13 +63,10 @@ export function CardTitleDetails({
             <ListCardSkeleton style={{ width: '50px', marginTop: '4px' }} />
           }
         >
-          <CardTitleDetailsContent
-            cardId={id}
-            onShowMore={openCardModalToChecklist}
-          />
+          <CardTitleDetailsContent cardId={id} onShowMore={onShowMore} />
         </Suspense>
 
-        {isLoading && isOpeningCard && (
+        {isLoading && (
           <CardTitleDetailsSpinnerContainer data-testid="CardTitleDetailsSpinnerContainer">
             <CardTitleDetailsSpinner data-testid="CardTitleDetailsSpinner" />
           </CardTitleDetailsSpinnerContainer>
