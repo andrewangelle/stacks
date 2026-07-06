@@ -1,7 +1,7 @@
 import * as Sentry from '@sentry/tanstackstart-react';
 import type { NotFoundRouteProps } from '@tanstack/react-router';
 import { useEffect } from 'react';
-import { NavFallback } from '~/components/Nav/NavFallback';
+import { NavBarClient } from '~/components/Nav/NavBarClient';
 import { FlexCenter } from '~/styles/Page.styled';
 
 export function NotFound(props: NotFoundRouteProps) {
@@ -11,7 +11,7 @@ export function NotFound(props: NotFoundRouteProps) {
 
   return (
     <>
-      <NavFallback />
+      <NavBarClient />
       <FlexCenter data-testid="FlexCenter">
         <h1>Page not found</h1>
       </FlexCenter>

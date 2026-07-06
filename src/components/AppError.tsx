@@ -1,7 +1,7 @@
 import * as Sentry from '@sentry/tanstackstart-react';
 import type { ErrorComponentProps } from '@tanstack/react-router';
 import { useEffect } from 'react';
-import { NavFallback } from '~/components/Nav/NavFallback';
+import { NavBarClient } from '~/components/Nav/NavBarClient';
 import { FlexCenter } from '~/styles/Page.styled';
 
 export function AppError(props: ErrorComponentProps) {
@@ -11,7 +11,7 @@ export function AppError(props: ErrorComponentProps) {
 
   return (
     <>
-      <NavFallback />
+      <NavBarClient />
       <FlexCenter data-testid="FlexCenter" style={{ flexDirection: 'column' }}>
         <h1>Yikes</h1>
         <p>Something went wrong</p>

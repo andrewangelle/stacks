@@ -1,8 +1,5 @@
 import { createFileRoute, redirect } from '@tanstack/react-router';
-import { CompositeComponent } from '@tanstack/react-start/rsc';
-import { BoardLists } from '~/components/Boards/BoardLists';
-import { Card } from '~/components/Cards/Card';
-import { CardPageNav } from '~/components/Nav/CardPageNav';
+import { CardPage } from '~/components/pages/CardPage';
 import { getBoardPageServer } from '~/components/server/Board.functions';
 import { getCardServer } from '~/components/server/Card.functions';
 import {
@@ -11,7 +8,6 @@ import {
 } from '~/components/server/Nav.functions';
 import { getBoardIdByCardId } from '~/db/cards/cards.functions';
 import { fetchUserId } from '~/middleware/auth';
-import { DehydrateQueryClient } from '~/query';
 
 export const Route = createFileRoute('/card/$cardId')({
   async beforeLoad() {
@@ -60,20 +56,5 @@ export const Route = createFileRoute('/card/$cardId')({
     };
   },
 
-  component() {
-    const { CardServer, BoardServer } = Route.useLoaderData();
-    return (
-      <DehydrateQueryClient>
-        <CardPageNav />
-
-        <CompositeComponent src={BoardServer.src}>
-          <BoardLists>
-            <CompositeComponent src={CardServer.src}>
-              <Card />
-            </CompositeComponent>
-          </BoardLists>
-        </CompositeComponent>
-      </DehydrateQueryClient>
-    );
-  },
+  component: CardPage,
 });

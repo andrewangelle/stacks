@@ -1,7 +1,7 @@
-import { Logo } from '~/components/Nav/Logo';
 import { NavBarContainer, NavBarContent } from '~/components/Nav/Nav.styled';
+import { UserNavContent } from '~/components/Nav/UserNavContent';
 
-export function NavFallback() {
+export function NavBarClient() {
   return (
     <NavBarContainer data-testid="NavBarContainer">
       <NavBarContent
@@ -9,9 +9,7 @@ export function NavFallback() {
         data-testid="NavBarContent"
         background={'blue'}
       >
-        <div data-testid="column-placeholder" />
-        <Logo />
-        <div data-testid="column-placeholder" />
+        <UserNavContent />
       </NavBarContent>
     </NavBarContainer>
   );
