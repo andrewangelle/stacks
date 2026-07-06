@@ -11,12 +11,15 @@ import { useCurrentBoardId } from '~/utils/useCurrentBoardId';
 export function useCardModalTrigger(id: string) {
   const boardId = useCurrentBoardId();
   const navigate = useNavigate();
-  const { isLoading } = useRouterState();
+  const routerState = useRouterState();
   const [isHovering, setHovering] = useState(false);
   const [isFocused, setIsFocused] = useState(false);
   const [isOpeningCard, setIsOpeningCard] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
   const pointerFocusedRef = useRef(false);
+
+  const cardIdNavigatingTo = routerState.location?.href.split('card/')?.[1];
+  const isNavigatingToSameCard = cardIdNavigatingTo === id;
 
   function openCardModal() {
     setIsOpeningCard(true);
@@ -75,16 +78,16 @@ export function useCardModalTrigger(id: string) {
   }
 
   useEffect(() => {
-    if (!isLoading) {
+    if (!routerState.isLoading) {
       setIsOpeningCard(false);
     }
-  }, [isLoading]);
+  }, [routerState.isLoading]);
 
   return {
     ref,
     isHovering,
     isFocused,
-    isLoading: isLoading && isOpeningCard,
+    isLoading: routerState.isLoading && isOpeningCard && isNavigatingToSameCard,
     onBlur: handleTriggerBlur,
     onFocus: handleTriggerFocus,
     onKeyDown: handleTriggerKeyDown,

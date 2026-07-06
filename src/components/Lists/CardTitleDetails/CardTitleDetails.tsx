@@ -2,15 +2,13 @@ import { Suspense } from 'react';
 import { CardModalTrigger } from '~/components/Cards/Card.styled';
 import { CardCompletedIndicator } from '~/components/Cards/CardCompletedIndicator';
 import {
+  CardTitleDetailsContentSkeleton,
   CardTitleDetailsSpinner,
   CardTitleDetailsSpinnerContainer,
   ListCardTitleDetailsContainer,
 } from '~/components/Lists/CardTitleDetails/CardTitleDetails.styled';
 import { CardTitleDetailsContent } from '~/components/Lists/CardTitleDetails/CardTitleDetailsContent';
-import {
-  ListCardContainer,
-  ListCardSkeleton,
-} from '~/components/Lists/List.styled';
+import { ListCardContainer } from '~/components/Lists/List.styled';
 import { useCardModalTrigger } from '~/utils/useCardModalTrigger';
 
 type CardTitleDetailsProps = {
@@ -58,11 +56,7 @@ export function CardTitleDetails({ id, title }: CardTitleDetailsProps) {
           {title}
         </ListCardTitleDetailsContainer>
 
-        <Suspense
-          fallback={
-            <ListCardSkeleton style={{ width: '50px', marginTop: '4px' }} />
-          }
-        >
+        <Suspense fallback={<CardTitleDetailsContentSkeleton />}>
           <CardTitleDetailsContent cardId={id} onShowMore={onShowMore} />
         </Suspense>
 
