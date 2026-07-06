@@ -134,6 +134,31 @@ export const ListCardSkeleton = styled(ListCardContainer)({
   ...animationStyles.pulse,
 });
 
+export const ListHeaderSkeletonRow = styled.div`
+  display: flex;
+  justify-content: space-between;
+`;
+
+export const ListCardsSkeletonRow = styled.div`
+  display: flex;
+  flex-direction: column;
+`;
+
+export const ListNameSkeleton = styled(ListCardSkeleton)`
+  width: 125px;
+   margin: 8px 0px 12px 8px;
+`;
+
+export const ListCountSkeleton = styled(ListCardSkeleton)`
+  width: 20px;
+   margin: 8px 0px 12px 8px;
+`;
+
+export const AddListButtonSkeleton = styled(ListCardSkeleton)`
+  margin: 8px 0px 8px 8px;
+  width: 75px;
+`;
+
 export const DeleteListIcon = styled(TiDelete)` 
   position: relative;
   top: 1px;

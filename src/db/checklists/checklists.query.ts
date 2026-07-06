@@ -1,4 +1,9 @@
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import {
+  useMutation,
+  useQuery,
+  useQueryClient,
+  useSuspenseQuery,
+} from '@tanstack/react-query';
 import {
   createChecklist,
   deleteChecklist,
@@ -161,7 +166,7 @@ export function useUpdateChecklist() {
 }
 
 export function useGetCardTitleDetailsChecklists(data: GetChecklistsArgs) {
-  return useQuery({
+  return useSuspenseQuery({
     queryKey: queryKeys.cardChecklistView(data.cardId),
     queryFn() {
       return getCardTitleDetailsChecklists({

@@ -1,4 +1,9 @@
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import {
+  useMutation,
+  useQuery,
+  useQueryClient,
+  useSuspenseQuery,
+} from '@tanstack/react-query';
 import {
   createList,
   deleteList,
@@ -11,14 +16,27 @@ import type {
   DeleteListArgs,
   UpdateListArgs,
 } from '~/db/lists/lists.schemas';
-import type { List } from '~/generated/prisma/client';
+import type { Card, List } from '~/generated/prisma/client';
 import { getQueryClient } from '~/query';
 import { useCurrentBoardId } from '~/utils/useCurrentBoardId';
 
-export type ListItem = Pick<List, 'id' | 'listTitle' | 'createdAt'>;
+export type ListCardItem = Pick<Card, 'id' | 'cardTitle' | 'createdAt'>;
+export type ListItem = Pick<
+  List,
+  'id' | 'listTitle' | 'createdAt' | 'position' | 'boardId'
+> & {
+  cards: ListCardItem[];
+};
 
 function toListItem(item: List): ListItem {
-  return { id: item.id, listTitle: item.listTitle, createdAt: item.createdAt };
+  return {
+    id: item.id,
+    listTitle: item.listTitle,
+    createdAt: item.createdAt,
+    position: item.position,
+    boardId: item.boardId,
+    cards: [],
+  };
 }
 
 const queryKeys = {
@@ -44,7 +62,7 @@ export function useGetLists() {
 export function useGetListById({ id }: { id: string }) {
   const boardId = useCurrentBoardId();
 
-  return useQuery({
+  return useSuspenseQuery({
     ...listsQueryOptions(boardId),
     queryKey: queryKeys.detail(id),
     select(data) {
