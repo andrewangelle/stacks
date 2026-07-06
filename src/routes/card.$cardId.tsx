@@ -7,8 +7,8 @@ import {
   getNavBarServer,
 } from '~/components/server/Nav.functions';
 import { getBoardIdByCardId } from '~/db/cards/cards.functions';
-import { prefetchCardModalData } from '~/db/cards/cards.query';
-import { prefetchBoardPageData } from '~/db/lists/lists.query';
+// import { prefetchCardModalData } from '~/db/cards/cards.query';
+// import { prefetchBoardPageData } from '~/db/lists/lists.query';
 import { fetchUserId } from '~/middleware/auth';
 
 export const Route = createFileRoute('/card/$cardId')({
@@ -31,10 +31,10 @@ export const Route = createFileRoute('/card/$cardId')({
       throw redirect({ to: '/boards' });
     }
 
-    await Promise.all([
-      prefetchBoardPageData(context.queryClient, cardQuery.boardId),
-      prefetchCardModalData(context.queryClient, cardQuery.cardId),
-    ]);
+    // await Promise.all([
+    //   prefetchBoardPageData(context.queryClient, cardQuery.boardId),
+    //   prefetchCardModalData(context.queryClient, cardQuery.cardId),
+    // ]);
 
     const CardServer = await getCardServer({
       data: { cardId: cardQuery.cardId, boardId: cardQuery.boardId },
