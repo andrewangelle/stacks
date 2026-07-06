@@ -8,7 +8,6 @@ import {
 } from '~/components/Boards/Boards.styled';
 import { NavBarClient } from '~/components/Nav/NavBarClient';
 import { UserNavContent } from '~/components/Nav/UserNavContent';
-import { DehydrateQueryClient } from '~/query';
 
 const Route = getRouteApi('/boards');
 
@@ -21,15 +20,13 @@ export function BoardsPage() {
         renderUserContent={() => <UserNavContent />}
       />
       <CompositeComponent src={BoardsServer.src}>
-        <DehydrateQueryClient>
-          <Suspense
-            fallback={(['one', 'two', 'three'] as const).map((id) => (
-              <BoardCardSkeleton data-testid="BoardCardSkeleton" key={id} />
-            ))}
-          >
-            <Boards />
-          </Suspense>
-        </DehydrateQueryClient>
+        <Suspense
+          fallback={(['one', 'two', 'three'] as const).map((id) => (
+            <BoardCardSkeleton data-testid="BoardCardSkeleton" key={id} />
+          ))}
+        >
+          <Boards />
+        </Suspense>
       </CompositeComponent>
     </>
   );

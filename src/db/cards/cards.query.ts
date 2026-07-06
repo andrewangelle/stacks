@@ -5,6 +5,7 @@ import {
   useQueryClient,
   useSuspenseQuery,
 } from '@tanstack/react-query';
+import { activityListQueryOptions } from '~/db/activity/activity.query';
 import {
   createCard,
   deleteCard,
@@ -20,6 +21,7 @@ import type {
   GetCardsByListIdArgs,
   UpdateCardArgs,
 } from '~/db/cards/cards.schemas';
+import { checklistsQueryOptions } from '~/db/checklists/checklists.query';
 import type { Card } from '~/generated/prisma/client';
 import { getQueryClient } from '~/query';
 
@@ -103,6 +105,18 @@ export function cardByIdQueryOptions(cardId: string) {
   };
 }
 
+/** Loader prefetch: card modal queries (detail, checklists, activity). */
+export async function prefetchCardModalData(
+  queryClient: QueryClient,
+  cardId: string,
+) {
+  await Promise.all([
+    queryClient.prefetchQuery(cardByIdQueryOptions(cardId)),
+    queryClient.prefetchQuery(checklistsQueryOptions(cardId)),
+    queryClient.prefetchQuery(activityListQueryOptions({ cardId })),
+  ]);
+}
+
 export function useGetCard(args: { id: string; listId: string }) {
   return useSuspenseQuery({
     ...cardsByListIdQueryOptions(args.listId),
@@ -114,7 +128,7 @@ export function useGetCard(args: { id: string; listId: string }) {
 }
 
 export function useGetCardById(args: { id: string }) {
-  return useQuery(cardByIdQueryOptions(args.id));
+  return useSuspenseQuery(cardByIdQueryOptions(args.id));
 }
 
 export function useCreateCard() {

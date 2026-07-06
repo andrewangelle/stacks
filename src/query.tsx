@@ -1,12 +1,9 @@
 import {
   defaultShouldDehydrateQuery,
-  dehydrate,
   environmentManager,
-  HydrationBoundary,
   QueryClient,
-  QueryClientProvider,
 } from '@tanstack/react-query';
-import { cache, type ReactNode } from 'react';
+import { cache } from 'react';
 
 function createQueryClient() {
   return new QueryClient({
@@ -38,20 +35,3 @@ export function __getQueryClient() {
 }
 
 export const getQueryClient = cache(() => __getQueryClient());
-
-export function QueryProvider({ children }: { children: ReactNode }) {
-  return (
-    <QueryClientProvider client={getQueryClient()}>
-      {children}
-    </QueryClientProvider>
-  );
-}
-
-export function DehydrateQueryClient({ children }: { children: ReactNode }) {
-  const queryClient = getQueryClient();
-  return (
-    <HydrationBoundary state={dehydrate(queryClient)}>
-      {children}
-    </HydrationBoundary>
-  );
-}

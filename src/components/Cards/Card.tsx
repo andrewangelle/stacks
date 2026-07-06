@@ -10,7 +10,6 @@ import {
   CardModalCloseContainer,
   CardModalCloseSpinnerSlot,
   CardModalContent,
-  CardModalHiddenTitle,
   CardModalOverlay,
   CardModalPortal,
   CardModalRoot,
@@ -22,7 +21,6 @@ import { DeleteCardPopover } from '~/components/Cards/DeleteCardPopover';
 import { CardChecklists } from '~/components/Checklists/Checklists';
 import { CreateChecklist } from '~/components/Checklists/CreateChecklist';
 import { CardTitleDetailsSpinner } from '~/components/Lists/CardTitleDetails/CardTitleDetails.styled';
-import { useGetCardById } from '~/db/cards/cards.query';
 import { useCardColumnWidth } from '~/utils/useCardColumnWidth';
 import { useCurrentBoardId } from '~/utils/useCurrentBoardId';
 import { useCurrentCardId } from '~/utils/useCurrentCardId';
@@ -40,7 +38,6 @@ export function Card() {
   const boardId = useCurrentBoardId();
   const navigate = useNavigate();
   const { isLoading: isRouteLoading } = useRouterState();
-  const { isLoading: isCardLoading } = useGetCardById({ id: cardId });
   const [isClosingCard, setIsClosingCard] = useState(false);
   const { columnWidth, setColumnWidth, isWideLayout } = useCardColumnWidth();
   const mainColumnRef = useRef<HTMLDivElement>(null);
@@ -62,27 +59,6 @@ export function Card() {
     setIsClosingCard(true);
     navigate({ to: '/board/$id', params: { id: boardId }, hash: '' });
     focusCardTrigger(cardId);
-  }
-
-  if (isCardLoading) {
-    return (
-      <CardModalRoot
-        data-testid="CardModalRoot"
-        open
-        onOpenChange={handleOpenChange}
-      >
-        <CardModalPortal data-testid="CardModalPortal">
-          <CardModalOverlay data-testid="CardModalOverlay">
-            <CardModalContent
-              data-testid="CardModalContent"
-              aria-describedby={undefined}
-            >
-              <CardModalHiddenTitle>Loading card</CardModalHiddenTitle>
-            </CardModalContent>
-          </CardModalOverlay>
-        </CardModalPortal>
-      </CardModalRoot>
-    );
   }
 
   return (

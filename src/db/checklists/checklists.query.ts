@@ -165,14 +165,20 @@ export function useUpdateChecklist() {
   });
 }
 
-export function useGetCardTitleDetailsChecklists(data: GetChecklistsArgs) {
-  return useSuspenseQuery({
-    queryKey: queryKeys.cardChecklistView(data.cardId),
+export function cardTitleDetailsChecklistsQueryOptions(cardId: string) {
+  return {
+    queryKey: queryKeys.cardChecklistView(cardId),
     queryFn() {
       return getCardTitleDetailsChecklists({
-        data,
+        data: { cardId },
       });
     },
+  };
+}
+
+export function useGetCardTitleDetailsChecklists(data: GetChecklistsArgs) {
+  return useSuspenseQuery({
+    ...cardTitleDetailsChecklistsQueryOptions(data.cardId),
     select(data) {
       const checklistsWithIncompleteItems = data.checklists.filter(
         (checklist) => checklist.completedItems < checklist.totalItems,

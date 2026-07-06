@@ -12,7 +12,7 @@ import {
 } from '@tanstack/react-router';
 import type { ReactNode } from 'react';
 import { DevTools } from '~/components/DevTools';
-import { type getQueryClient, QueryProvider } from '~/query';
+import type { getQueryClient } from '~/query';
 import GlobalFonts from '~/styles/GlobalFonts';
 
 type RouterContext = {
@@ -22,9 +22,7 @@ type RouterContext = {
 function Providers({ children }: { children: ReactNode }) {
   return (
     <ClerkProvider>
-      <QueryProvider>
-        <DragDropProvider>{children}</DragDropProvider>
-      </QueryProvider>
+      <DragDropProvider>{children}</DragDropProvider>
     </ClerkProvider>
   );
 }

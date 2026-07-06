@@ -6,6 +6,7 @@ import {
   getNavBarServer,
 } from '~/components/server/Nav.functions';
 import { getBoardById } from '~/db/boards/boards.functions';
+import { prefetchBoardPageData } from '~/db/lists/lists.query';
 import { fetchUserId } from '~/middleware/auth';
 
 export const Route = createFileRoute('/board/$id')({
@@ -21,6 +22,8 @@ export const Route = createFileRoute('/board/$id')({
     }
 
     const board = await getBoardById({ data: { boardId: params.id } });
+
+    await prefetchBoardPageData(context.queryClient, params.id);
 
     const NavBarServer = await getNavBarServer({
       data: { boardId: params.id },

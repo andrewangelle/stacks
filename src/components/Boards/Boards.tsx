@@ -4,13 +4,12 @@ import { Board } from '~/components/Boards/Board';
 import { BoardCardSkeleton } from '~/components/Boards/Boards.styled';
 import { CreateBoard } from '~/components/Boards/CreateBoard';
 import { boardsQueryOptions } from '~/db/boards/boards.query';
-import { DehydrateQueryClient } from '~/query';
 
 export function Boards() {
   const { data: boards } = useSuspenseQuery(boardsQueryOptions);
 
   return (
-    <DehydrateQueryClient>
+    <>
       {boards.map((board) => (
         <Suspense
           key={board.id}
@@ -22,6 +21,6 @@ export function Boards() {
         </Suspense>
       ))}
       <CreateBoard />
-    </DehydrateQueryClient>
+    </>
   );
 }

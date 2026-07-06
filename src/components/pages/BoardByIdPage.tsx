@@ -5,14 +5,13 @@ import { BoardListsFallback } from '~/components/Boards/Board.styled';
 import { BoardLists } from '~/components/Boards/BoardLists';
 import { BoardHeader } from '~/components/Nav/BoardHeader';
 import { UserNavContent } from '~/components/Nav/UserNavContent';
-import { DehydrateQueryClient } from '~/query';
 
 const Route = getRouteApi('/board/$id');
 
 export function BoardByIdPage() {
   const { BoardPageServer, boardColor } = Route.useLoaderData();
   return (
-    <DehydrateQueryClient>
+    <>
       <Nav />
 
       <CompositeComponent src={BoardPageServer.src}>
@@ -24,14 +23,12 @@ export function BoardByIdPage() {
             />
           }
         >
-          <DehydrateQueryClient>
-            <BoardLists>
-              <Outlet />
-            </BoardLists>
-          </DehydrateQueryClient>
+          <BoardLists>
+            <Outlet />
+          </BoardLists>
         </Suspense>
       </CompositeComponent>
-    </DehydrateQueryClient>
+    </>
   );
 }
 
