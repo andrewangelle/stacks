@@ -17,19 +17,75 @@ export type ListRecord = {
 
 export const listModel = {
   async findMany(args: {
-    where: {
-      boardId: string;
-      board: { userId: string };
+    where:
+      | {
+          boardId: string;
+          board: { userId: string };
+        }
+      | {
+          id: string;
+        };
+    orderBy?:
+      | { createdAt: 'asc' }
+      | [{ position: 'asc' }, { createdAt: 'asc' }];
+    select?: {
+      id?: boolean;
+      listTitle?: boolean;
+      createdAt?: boolean;
+      position?: boolean;
+      boardId?: boolean;
+      cards?: {
+        select?: {
+          id?: boolean;
+          cardTitle?: boolean;
+          createdAt?: boolean;
+        };
+      };
     };
-    orderBy: { createdAt: 'asc' } | [{ position: 'asc' }, { createdAt: 'asc' }];
   }) {
-    return sortByPosition(
-      getStore().lists.filter(
-        (list) =>
-          list.boardId === args.where.boardId &&
-          getBoardUserId(list.boardId) === args.where.board.userId,
-      ),
-    );
+    const where = args.where;
+    const lists =
+      'boardId' in where
+        ? getStore().lists.filter(
+            (list) =>
+              list.boardId === where.boardId &&
+              getBoardUserId(list.boardId) === where.board.userId,
+          )
+        : getStore().lists.filter((list) => list.id === where.id);
+
+    const sortedLists =
+      args.orderBy && Array.isArray(args.orderBy)
+        ? sortByPosition(lists)
+        : lists;
+
+    if (!args.select) {
+      return sortedLists;
+    }
+
+    return sortedLists.map((list) => {
+      const cards = getStore()
+        .cards.filter((card) => card.listId === list.id)
+        .sort((a, b) => {
+          if (a.position !== b.position) {
+            return a.position - b.position;
+          }
+          return a.createdAt.getTime() - b.createdAt.getTime();
+        })
+        .map((card) => ({
+          id: card.id,
+          cardTitle: card.cardTitle,
+          createdAt: card.createdAt,
+        }));
+
+      return {
+        ...(args.select?.id ? { id: list.id } : {}),
+        ...(args.select?.listTitle ? { listTitle: list.listTitle } : {}),
+        ...(args.select?.createdAt ? { createdAt: list.createdAt } : {}),
+        ...(args.select?.position ? { position: list.position } : {}),
+        ...(args.select?.boardId ? { boardId: list.boardId } : {}),
+        ...(args.select?.cards ? { cards } : {}),
+      };
+    });
   },
 
   async findFirst(args: {

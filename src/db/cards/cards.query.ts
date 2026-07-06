@@ -1,4 +1,10 @@
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import {
+  type QueryClient,
+  useMutation,
+  useQuery,
+  useQueryClient,
+  useSuspenseQuery,
+} from '@tanstack/react-query';
 import {
   createCard,
   deleteCard,
@@ -18,9 +24,55 @@ import type { Card } from '~/generated/prisma/client';
 import { getQueryClient } from '~/query';
 
 export type CardListItem = Pick<Card, 'id' | 'cardTitle' | 'createdAt'>;
+type ListCacheItem = { id: string; cards: CardListItem[] };
 
 function toCardListItem(item: Card): CardListItem {
   return { id: item.id, cardTitle: item.cardTitle, createdAt: item.createdAt };
+}
+
+// List cards are rendered from the full-lists caches (`['lists', boardId]` and
+// each `['list', listId]` detail selector), so optimistic card moves must patch
+// every list-array cache, not just the per-list `['cards', listId]` cache that
+// only backs the header count.
+const listArrayCacheKeys = [['lists'], ['list']] as const;
+
+function updateListArrayCaches(
+  queryClient: QueryClient,
+  updater: (lists: ListCacheItem[]) => ListCacheItem[],
+) {
+  for (const queryKey of listArrayCacheKeys) {
+    queryClient.setQueriesData<ListCacheItem[]>({ queryKey }, (cache) =>
+      cache ? updater(cache) : cache,
+    );
+  }
+}
+
+function invalidateListArrayCaches(queryClient: QueryClient) {
+  for (const queryKey of listArrayCacheKeys) {
+    queryClient.invalidateQueries({ queryKey });
+  }
+}
+
+function findCardInListCaches(
+  queryClient: QueryClient,
+  listId: string,
+  cardId: string,
+) {
+  const listCaches = queryClient.getQueriesData<ListCacheItem[]>({
+    queryKey: ['list'],
+  });
+
+  for (const [, lists] of listCaches) {
+    const card = lists
+      ?.find((list) => list.id === listId)
+      ?.cards.find((item) => item.id === cardId);
+
+    if (card) {
+      return card;
+    }
+  }
+
+  return undefined;
 }
 
 export const queryKeys = {
@@ -51,6 +103,16 @@ export function cardByIdQueryOptions(cardId: string) {
   };
 }
 
+export function useGetCard(args: { id: string; listId: string }) {
+  return useSuspenseQuery({
+    ...cardsByListIdQueryOptions(args.listId),
+    queryKey: queryKeys.detail(args.id),
+    select(data) {
+      return data.find((card) => card.id === args.id);
+    },
+  });
+}
+
 export function useGetCardById(args: { id: string }) {
   return useQuery(cardByIdQueryOptions(args.id));
 }
@@ -63,11 +125,11 @@ export function useCreateCard() {
     },
 
     onSuccess(result, variables) {
+      const newItem = toCardListItem(result.data[0]);
+
       queryClient.setQueryData<CardListItem[]>(
         queryKeys.list(variables.listId),
         (cache = []) => {
-          const newItem = toCardListItem(result.data[0]);
-
           if (variables.position === undefined) {
             return [...cache, newItem];
           }
@@ -77,6 +139,26 @@ export function useCreateCard() {
           next.splice(index, 0, newItem);
           return next;
         },
+      );
+
+      updateListArrayCaches(queryClient, (lists) =>
+        lists.map((list) => {
+          if (list.id !== variables.listId) {
+            return list;
+          }
+
+          if (variables.position === undefined) {
+            return { ...list, cards: [...list.cards, newItem] };
+          }
+
+          const nextCards = [...list.cards];
+          const index = Math.min(
+            Math.max(variables.position, 0),
+            nextCards.length,
+          );
+          nextCards.splice(index, 0, newItem);
+          return { ...list, cards: nextCards };
+        }),
       );
     },
   });
@@ -114,6 +196,19 @@ export function useUpdateCard() {
             return item;
           }),
       );
+
+      if (variables.cardTitle !== undefined) {
+        updateListArrayCaches(queryClient, (lists) =>
+          lists.map((list) => ({
+            ...list,
+            cards: list.cards.map((card) =>
+              card.id === variables.cardId
+                ? { ...card, cardTitle: variables.cardTitle ?? card.cardTitle }
+                : card,
+            ),
+          })),
+        );
+      }
     },
   });
 
@@ -130,6 +225,19 @@ export function useDeleteCard() {
       queryClient.setQueryData<CardListItem[]>(
         queryKeys.list(variables.listId),
         (cache = []) => cache.filter((item) => item.id !== variables.cardId),
+      );
+
+      updateListArrayCaches(queryClient, (lists) =>
+        lists.map((list) =>
+          list.id === variables.listId
+            ? {
+                ...list,
+                cards: list.cards.filter(
+                  (card) => card.id !== variables.cardId,
+                ),
+              }
+            : list,
+        ),
       );
     },
   });
@@ -152,6 +260,18 @@ export function reorderCardsByIndex(
     },
   );
 
+  updateListArrayCaches(queryClient, (lists) =>
+    lists.map((list) => {
+      if (list.id !== listId) {
+        return list;
+      }
+
+      const nextCards = [...list.cards];
+      nextCards.splice(toIndex, 0, nextCards.splice(fromIndex, 1)[0]);
+      return { ...list, cards: nextCards };
+    }),
+  );
+
   const orderedIds =
     queryClient
       .getQueryData<CardListItem[]>(queryKeys.list(listId))
@@ -159,6 +279,7 @@ export function reorderCardsByIndex(
 
   reorderCardsServer({ data: { listId, orderedIds } }).catch(() => {
     queryClient.invalidateQueries({ queryKey: queryKeys.list(listId) });
+    invalidateListArrayCaches(queryClient);
   });
 }
 
@@ -183,11 +304,15 @@ export function moveCardToNewList({
     queryClient.getQueryData<CardListItem[]>(queryKeys.list(sourceListId)) ??
     [];
 
-  const card = sourceCache.find((item) => item.id === cardId);
+  const movedCard =
+    sourceCache.find((item) => item.id === cardId) ??
+    findCardInListCaches(queryClient, sourceListId, cardId);
 
-  if (!card) {
+  if (!movedCard) {
     return;
   }
+
+  const card = movedCard;
 
   queryClient.setQueryData<CardListItem[]>(
     queryKeys.list(sourceListId),
@@ -204,11 +329,35 @@ export function moveCardToNewList({
     },
   );
 
+  updateListArrayCaches(queryClient, (lists) =>
+    lists.map((list) => {
+      if (list.id === sourceListId) {
+        return {
+          ...list,
+          cards: list.cards.filter((sourceCard) => sourceCard.id !== cardId),
+        };
+      }
+
+      if (list.id === targetListId) {
+        const nextCards = [...list.cards];
+        const clampedIndex = Math.min(
+          Math.max(targetIndex, 0),
+          nextCards.length,
+        );
+        nextCards.splice(clampedIndex, 0, card);
+        return { ...list, cards: nextCards };
+      }
+
+      return list;
+    }),
+  );
+
   moveCardServer({
     data: { cardId, sourceListId, targetListId, targetIndex },
   }).catch(() => {
     queryClient.invalidateQueries({ queryKey: queryKeys.list(sourceListId) });
     queryClient.invalidateQueries({ queryKey: queryKeys.list(targetListId) });
     queryClient.invalidateQueries({ queryKey: queryKeys.detail(cardId) });
+    invalidateListArrayCaches(queryClient);
   });
 }

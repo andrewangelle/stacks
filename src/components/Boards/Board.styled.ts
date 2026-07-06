@@ -1,6 +1,13 @@
 import { styled } from '@pigment-css/react';
 import { fontFamily } from '~/components/Boards/Boards.styled';
+import { BoardPageBackground } from '~/components/Nav/Nav.styled';
 import { Button } from '~/styles/Page.styled';
+
+export const BoardListsFallback = styled(BoardPageBackground)`
+  top: -8px;
+  left: -30px;
+  padding: 0;
+`;
 
 export const AddListContainer = styled('div')({
   position: 'relative',

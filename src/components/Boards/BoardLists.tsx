@@ -1,9 +1,9 @@
 import { useSuspenseQuery } from '@tanstack/react-query';
-import type { ReactNode } from 'react';
-import { Fragment } from 'react';
+import { Fragment, type ReactNode, Suspense } from 'react';
 import { Draggable } from '~/components/dnd/Draggable';
 import { AddLists } from '~/components/Lists/AddList';
 import { List } from '~/components/Lists/List';
+import { ListSkeleton } from '~/components/Lists/ListSkeleton';
 import { listsQueryOptions, reorderListsByIndex } from '~/db/lists/lists.query';
 import { useCurrentBoardId } from '~/utils/useCurrentBoardId';
 
@@ -25,7 +25,9 @@ export function BoardLists({ children }: { children?: ReactNode }) {
             reorderListsByIndex(boardId, fromIndex, toIndex)
           }
         >
-          <List id={list.id} />
+          <Suspense fallback={<ListSkeleton key={list.id} />}>
+            <List id={list.id} />
+          </Suspense>
         </Draggable>
       ))}
       {boardId && <AddLists />}

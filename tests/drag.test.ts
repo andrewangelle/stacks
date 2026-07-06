@@ -5,6 +5,7 @@ import {
 } from '~test/helpers/expectListHeaderCardCount';
 import { resetDb } from '~test/helpers/resetDb';
 import { seedBoard, seedCard, seedListCard } from '~test/helpers/seed';
+import { waitForHydratedAction } from '~test/helpers/waitForHydratedAction';
 
 test.describe('Drag and drop', () => {
   test.describe.configure({ timeout: 60_000 });
@@ -42,7 +43,16 @@ test.describe('Drag and drop', () => {
         res.request().method() === 'POST' &&
         res.status() === 200,
     );
-    await dragToLocator(page, card, targetCard);
+
+    // The board's lists stream in via RSC + Suspense, so @dnd-kit sortables
+    // hydrate after the SSR markup paints. Retry the drag until it registers.
+    await waitForHydratedAction(
+      () => dragToLocator(page, card, targetCard),
+      async () =>
+        (await listByTitle(page, 'To Do')
+          .getByTestId('ListCardContainer')
+          .count()) === 0,
+    );
 
     await expect(async () => {
       await expectCardInList(page, 'To Do', []);
@@ -81,10 +91,19 @@ test.describe('Drag and drop', () => {
         res.status() === 200,
     );
 
-    await dragToLocator(
-      page,
-      listByTitle(page, 'To Do'),
-      listByTitle(page, 'Done'),
+    // The board's lists stream in via RSC + Suspense, so @dnd-kit sortables
+    // hydrate after the SSR markup paints. Retry the drag until it registers.
+    await waitForHydratedAction(
+      () =>
+        dragToLocator(
+          page,
+          listByTitle(page, 'To Do'),
+          listByTitle(page, 'Done'),
+        ),
+      async () => {
+        const names = await page.getByTestId('ListName').allTextContents();
+        return names[0]?.trim() === 'Done';
+      },
     );
 
     // Regression guard: reordering a list must not freeze the UI. If the drop

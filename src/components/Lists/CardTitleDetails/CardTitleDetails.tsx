@@ -2,6 +2,7 @@ import { useNavigate, useRouterState } from '@tanstack/react-router';
 import {
   type FocusEvent,
   type KeyboardEvent,
+  Suspense,
   useEffect,
   useRef,
   useState,
@@ -14,12 +15,20 @@ import {
   ListCardTitleDetailsContainer,
 } from '~/components/Lists/CardTitleDetails/CardTitleDetails.styled';
 import { CardTitleDetailsContent } from '~/components/Lists/CardTitleDetails/CardTitleDetailsContent';
-import { useCardTitleDetailsVisibility } from '~/components/Lists/CardTitleDetails/useCardTitleDetailsVisibility';
-import { ListCardContainer } from '~/components/Lists/List.styled';
-import { useGetCardById } from '~/db/cards/cards.query';
+import {
+  ListCardContainer,
+  ListCardSkeleton,
+} from '~/components/Lists/List.styled';
 import { useCurrentBoardId } from '~/utils/useCurrentBoardId';
 
-export function CardTitleDetails({ id }: { id: string }) {
+export function CardTitleDetails({
+  id,
+  title,
+}: {
+  id: string;
+  listId: string;
+  title: string;
+}) {
   const boardId = useCurrentBoardId();
   const navigate = useNavigate();
   const { isLoading } = useRouterState();
@@ -28,8 +37,6 @@ export function CardTitleDetails({ id }: { id: string }) {
   const [isOpeningCard, setIsOpeningCard] = useState(false);
   const triggerRef = useRef<HTMLDivElement>(null);
   const pointerFocusedRef = useRef(false);
-  const { data } = useGetCardById({ id });
-  const { hasDetailInfo } = useCardTitleDetailsVisibility(id);
 
   const isCircleVisible = isHovering || isFocused;
 
@@ -115,15 +122,19 @@ export function CardTitleDetails({ id }: { id: string }) {
       >
         <ListCardTitleDetailsContainer data-testid="ListCardTitleDetailsContainer">
           <CardCompletedIndicator cardId={id} visible={isCircleVisible} />
-          {data?.cardTitle}
+          {title}
         </ListCardTitleDetailsContainer>
 
-        {hasDetailInfo && (
+        <Suspense
+          fallback={
+            <ListCardSkeleton style={{ width: '50px', marginTop: '4px' }} />
+          }
+        >
           <CardTitleDetailsContent
             cardId={id}
             onShowMore={openCardModalToChecklist}
           />
-        )}
+        </Suspense>
 
         {isLoading && isOpeningCard && (
           <CardTitleDetailsSpinnerContainer data-testid="CardTitleDetailsSpinnerContainer">

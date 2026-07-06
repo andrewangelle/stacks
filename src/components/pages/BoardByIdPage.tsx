@@ -1,5 +1,7 @@
 import { getRouteApi, Outlet } from '@tanstack/react-router';
 import { CompositeComponent } from '@tanstack/react-start/rsc';
+import { Suspense } from 'react';
+import { BoardListsFallback } from '~/components/Boards/Board.styled';
 import { BoardLists } from '~/components/Boards/BoardLists';
 import { BoardHeader } from '~/components/Nav/BoardHeader';
 import { UserNavContent } from '~/components/Nav/UserNavContent';
@@ -8,15 +10,26 @@ import { DehydrateQueryClient } from '~/query';
 const Route = getRouteApi('/board/$id');
 
 export function BoardByIdPage() {
-  const { BoardPageServer } = Route.useLoaderData();
+  const { BoardPageServer, boardColor } = Route.useLoaderData();
   return (
     <DehydrateQueryClient>
       <Nav />
 
       <CompositeComponent src={BoardPageServer.src}>
-        <BoardLists>
-          <Outlet />
-        </BoardLists>
+        <Suspense
+          fallback={
+            <BoardListsFallback
+              data-testid="BoardListsFallback"
+              background={boardColor}
+            />
+          }
+        >
+          <DehydrateQueryClient>
+            <BoardLists>
+              <Outlet />
+            </BoardLists>
+          </DehydrateQueryClient>
+        </Suspense>
       </CompositeComponent>
     </DehydrateQueryClient>
   );

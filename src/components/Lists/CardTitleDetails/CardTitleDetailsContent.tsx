@@ -8,6 +8,7 @@ import { CardTitleDetailsChecklist } from '~/components/Lists/CardTitleDetails/C
 import { CardTitleDetailsChecklistAccordion } from '~/components/Lists/CardTitleDetails/CardTitleDetailsChecklistAccordion';
 import { CardTitleDetailsContentTriggers } from '~/components/Lists/CardTitleDetails/CardTitleDetailsContentTriggers';
 import { useGetCardTitleDetailsChecklists } from '~/db/checklists/checklists.query';
+import { useCardTitleDetailsVisibility } from './useCardTitleDetailsVisibility';
 
 const MAX_VISIBLE_CHECKLISTS = 3;
 
@@ -20,6 +21,8 @@ export function CardTitleDetailsContent({
   cardId,
   onShowMore,
 }: CardTitleDetailsContentProps) {
+  const { hasDetailInfo } = useCardTitleDetailsVisibility(cardId);
+
   const { data } = useGetCardTitleDetailsChecklists({
     cardId,
   });
@@ -49,6 +52,10 @@ export function CardTitleDetailsContent({
     if (firstHiddenChecklist) {
       onShowMore(firstHiddenChecklist.id);
     }
+  }
+
+  if (!hasDetailInfo) {
+    return null;
   }
 
   return (

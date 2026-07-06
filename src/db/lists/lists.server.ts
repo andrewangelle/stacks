@@ -15,6 +15,20 @@ export function getListsQuery(data: WithUserId<GetListsArgs>) {
       board: { userId: data.userId },
     },
     orderBy: [{ position: 'asc' }, { createdAt: 'asc' }],
+    select: {
+      id: true,
+      listTitle: true,
+      createdAt: true,
+      position: true,
+      boardId: true,
+      cards: {
+        select: {
+          id: true,
+          cardTitle: true,
+          createdAt: true,
+        },
+      },
+    },
   });
 }
 

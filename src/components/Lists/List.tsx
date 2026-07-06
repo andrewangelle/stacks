@@ -3,16 +3,9 @@ import { DropTargetFallback } from '~/components/dnd/DropTargetFallback';
 import { AddNewCard } from '~/components/Lists/AddNewCard';
 import { AddNewCardAtPosition } from '~/components/Lists/AddNewCardAtPosition';
 import { CardTitleDetails } from '~/components/Lists/CardTitleDetails/CardTitleDetails';
-import {
-  ListCardSkeleton,
-  ListContainer,
-} from '~/components/Lists/List.styled';
+import { ListContainer } from '~/components/Lists/List.styled';
 import { ListHeader } from '~/components/Lists/ListHeader';
-import {
-  moveCardToNewList,
-  reorderCardsByIndex,
-  useGetCardsByListId,
-} from '~/db/cards/cards.query';
+import { moveCardToNewList, reorderCardsByIndex } from '~/db/cards/cards.query';
 import { useGetListById } from '~/db/lists/lists.query';
 import { useCrossContainerMove } from '~/utils/useCrossContainerMove';
 
@@ -25,25 +18,14 @@ export function List({ id: listId }: { id: string }) {
       targetIndex: args.toIndex,
     });
   });
-  const { isLoading } = useGetListById({ id: listId });
-  const { data: cards } = useGetCardsByListId({
-    listId,
-  });
-
-  if (isLoading) {
-    return (
-      <ListContainer data-testid="ListContainer" key={listId}>
-        <ListCardSkeleton />
-      </ListContainer>
-    );
-  }
+  const { data: list } = useGetListById({ id: listId });
 
   return (
     <ListContainer data-testid="ListContainer" key={listId}>
       <ListHeader id={listId} />
 
       <div ref={ref} style={{ width: '100%', minWidth: 0 }}>
-        {cards?.map((card, index, cards) => {
+        {list?.cards?.map((card, index) => {
           return (
             <Draggable
               key={card.id}
@@ -58,9 +40,13 @@ export function List({ id: listId }: { id: string }) {
               }
               onMove={onMove}
             >
-              <CardTitleDetails id={card.id} />
+              <CardTitleDetails
+                id={card.id}
+                listId={listId}
+                title={card.cardTitle}
+              />
 
-              {index !== cards.length - 1 && (
+              {index !== list?.cards?.length - 1 && (
                 <AddNewCardAtPosition listId={listId} position={index} />
               )}
             </Draggable>

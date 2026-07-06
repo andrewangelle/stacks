@@ -17,7 +17,6 @@ export function getCardsByListIdQuery(data: WithUserId<GetCardsByListIdArgs>) {
       list: { board: { userId: data.userId } },
     },
     orderBy: [{ position: 'asc' }, { createdAt: 'asc' }],
-    select: { id: true, cardTitle: true, createdAt: true },
   });
 }
 
