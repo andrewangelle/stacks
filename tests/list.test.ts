@@ -221,15 +221,14 @@ test.describe('List', () => {
     await waitForInteractiveTrigger(
       page,
       '[data-testid="PopoverOptionsContent"]',
-      '[data-testid="ListContainer"] [data-testid="DeleteListIcon"]',
+      '[data-testid="ListContainer"] [data-testid="ListActionsPopoverButton"]',
     );
 
     await waitForHydratedAction(
-      () =>
-        page
-          .getByTestId('DeleteChecklistPopoverButton')
-          .filter({ hasText: 'Delete list' })
-          .click(),
+      async () => {
+        await page.getByTestId('DeleteListOption').click();
+        await page.getByTestId('DeleteChecklistPopoverButton').click();
+      },
       async () => (await page.getByTestId('ListContainer').count()) === 0,
     );
   });

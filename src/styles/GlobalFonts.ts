@@ -11,6 +11,13 @@ globalCss`
     font-display: swap;
   }
 
+  html {
+    scroll-snap-type: both mandatory;
+    margin: 0;
+    padding: 0;
+    overscroll-behavior: none;
+  }
+
   body {
     font-family: ${fontFamily};
     font-weight: 400;
