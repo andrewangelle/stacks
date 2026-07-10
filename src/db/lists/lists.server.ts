@@ -24,6 +24,7 @@ export function getListsQuery(data: WithUserId<GetListsArgs>) {
       cards: {
         select: {
           id: true,
+          isCompleted: true,
           cardTitle: true,
           createdAt: true,
         },

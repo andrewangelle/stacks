@@ -6,13 +6,18 @@ import { blue, darkGray, focusRingBlue, fontFamily } from '~/styles/tokens';
 
 const circleSizeDefault = '15px';
 
-export const ListCardTitleDetailsContainer = styled.div`
-  display: inline-flex;
-  align-items: center;
-  width: 100%;
-  min-width: 0;
-  word-break: break-word;
-`;
+type IsCompletedProps = {
+  isCompleted: boolean;
+};
+
+export const ListCardTitleDetailsContainer = styled.div<IsCompletedProps>({
+  display: 'inline-flex',
+  alignItems: 'center',
+  width: '100%',
+  minWidth: 0,
+  wordBreak: 'break-word',
+  color: ({ isCompleted }) => (isCompleted ? 'rgba(0, 0, 0, 0.5)' : 'inherit'),
+});
 
 type CardCompletedIndicatorCircleProps = {
   circleSize?: string;
@@ -98,10 +103,9 @@ export const CardTitleDetailsChecklistTotalsContainer =
         props: { isAllCompleted: true },
         style: {
           backgroundColor: '#5B7F24',
-          // backgroundColor: '#1f845a',
           color: '#fff',
           '&:hover': {
-            backgroundColor: '#1f845a',
+            backgroundColor: '#5B7F24',
             cursor: 'default',
           },
         },
@@ -169,11 +173,12 @@ export const CardTitleDetailsChecklistAccordionTrigger = styled(
 export const CardTitleDetailsChecklistAccordionTitle = styled.span`
   flex: 1;
   min-width: 0;
-  font-weight: 600;
+  font-weight: 500;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
   text-align: left;
+  font-size: 12px;
 `;
 
 export const CardTitleDetailsChecklistAccordionCount = styled.span`
@@ -222,7 +227,7 @@ export const CardTitleDetailsChecklistContainer = styled.div`
   display: flex;
   flex-direction: column;
   gap: 2px;
-  padding: 2px 0 4px 18px;
+  padding: 2px 0 4px 4px;
   width: stretch;
 `;
 
@@ -237,10 +242,10 @@ export const CardTitleDetailsChecklistItemRow = styled.div`
 `;
 
 export const CardTitleDetailsChecklistCheckbox = styled(Checkbox.Root)({
-  width: '16px',
-  height: '16px',
+  width: '14px',
+  height: '14px',
   flexShrink: 0,
-  marginTop: '2px',
+  marginTop: '3px',
   display: 'flex',
   alignItems: 'center',
   justifyContent: 'center',
@@ -274,6 +279,7 @@ export const CardTitleDetailsChecklistItemLabel = styled.span`
   min-width: 0;
   word-break: break-word;
   text-align: left;
+  font-size: 12px;
 `;
 
 export const CardTitleDetailsChecklistShowMore = styled.button`
