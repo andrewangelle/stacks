@@ -1,10 +1,20 @@
 import * as Popover from '@radix-ui/react-popover';
-import { PopoverClose } from '~/components/Boards/Boards.styled';
-import { DeleteCardPopoverTrigger } from '~/components/Cards/Card.styled';
-import { DeleteChecklistPopoverButton } from '~/components/ChecklistItem/ChecklistItem.styled';
-import { ChecklistPopoverHeader } from '~/components/Checklists/Checklists.styled';
-import { DeleteListIcon } from '~/components/Lists/List.styled';
-import { useDeleteList, useGetListById } from '~/db/lists/lists.query';
+import { useState } from 'react';
+import {
+  ChecklistItemOptionsListContainer,
+  ChecklistItemOptionsListItem,
+  DeleteChecklistPopoverButton,
+} from '~/components/ChecklistItem/ChecklistItem.styled';
+import {
+  ListActionsPopoverButton,
+  ListActionsPopoverButtonBack,
+  ListActionsPopoverButtonText,
+  ListActionsPopoverClose,
+  ListActionsPopoverHeader,
+  ListActionsPopoverTrigger,
+} from '~/components/Lists/List.styled';
+import { Tooltip } from '~/components/Tooltip/Tooltip';
+import { useDeleteList } from '~/db/lists/lists.query';
 import {
   PopoverOptionsContent,
   PopoverOptionsContentContainer,
@@ -16,35 +26,77 @@ type DeleteListProps = {
 };
 
 export function DeleteList({ id }: DeleteListProps) {
-  const { data: list } = useGetListById({ id });
   const boardId = useCurrentBoardId();
   const deleteList = useDeleteList();
+  const [open, setOpen] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
+
+  function closePopover(open: boolean) {
+    setOpen(open);
+    setIsDeleting(false);
+  }
+
   return (
-    <Popover.Root>
-      <DeleteCardPopoverTrigger data-testid="DeleteCardPopoverTrigger" asChild>
-        <DeleteListIcon data-testid="DeleteListIcon" />
-      </DeleteCardPopoverTrigger>
+    <Popover.Root open={open} onOpenChange={closePopover}>
+      <ListActionsPopoverTrigger data-testid="ListActionsPopoverTrigger">
+        <Tooltip portal={true} content="List actions">
+          <ListActionsPopoverButton
+            data-testid="ListActionsPopoverButton"
+            isOpen={open}
+          >
+            <ListActionsPopoverButtonText data-testid="ListActionsPopoverButtonText">
+              ...
+            </ListActionsPopoverButtonText>
+          </ListActionsPopoverButton>
+        </Tooltip>
+      </ListActionsPopoverTrigger>
 
       <PopoverOptionsContent data-testid="PopoverOptionsContent">
-        <ChecklistPopoverHeader data-testid="ChecklistPopoverHeader">
-          <div style={{ fontWeight: 600 }}>{`Delete ${list?.listTitle}?`}</div>
-          <PopoverClose data-testid="PopoverClose">X</PopoverClose>
-        </ChecklistPopoverHeader>
+        <ListActionsPopoverHeader data-testid="ChecklistPopoverHeader">
+          <div>
+            <ListActionsPopoverButtonBack
+              tabIndex={isDeleting ? 0 : -1}
+              isActive={isDeleting}
+              onClick={() => setIsDeleting(false)}
+            >
+              {isDeleting ? '<' : ''}
+            </ListActionsPopoverButtonBack>
+          </div>
 
-        <PopoverOptionsContentContainer>
-          Deleting a list is permanent and there is no way to get it back.
-          <DeleteChecklistPopoverButton
-            data-testid="DeleteChecklistPopoverButton"
-            onClick={() => {
-              deleteList({
-                listId: id,
-                boardId,
-              });
-            }}
-          >
-            Delete list
-          </DeleteChecklistPopoverButton>
-        </PopoverOptionsContentContainer>
+          <div>{isDeleting ? 'Are you sure?' : 'List actions'}</div>
+
+          <ListActionsPopoverClose data-testid="ListActionsPopoverClose">
+            X
+          </ListActionsPopoverClose>
+        </ListActionsPopoverHeader>
+
+        {!isDeleting && (
+          <ChecklistItemOptionsListContainer data-testid="ChecklistItemOptionsListContainer">
+            <ChecklistItemOptionsListItem
+              data-testid="DeleteListOption"
+              onClick={() => setIsDeleting(true)}
+            >
+              Archive this list
+            </ChecklistItemOptionsListItem>
+          </ChecklistItemOptionsListContainer>
+        )}
+
+        {isDeleting && (
+          <PopoverOptionsContentContainer>
+            This list will be deleted
+            <DeleteChecklistPopoverButton
+              data-testid="DeleteChecklistPopoverButton"
+              onClick={() => {
+                deleteList({
+                  listId: id,
+                  boardId,
+                });
+              }}
+            >
+              Delete list
+            </DeleteChecklistPopoverButton>
+          </PopoverOptionsContentContainer>
+        )}
       </PopoverOptionsContent>
     </Popover.Root>
   );

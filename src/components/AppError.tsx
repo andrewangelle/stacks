@@ -1,3 +1,4 @@
+import { ClerkProvider } from '@clerk/tanstack-react-start';
 import * as Sentry from '@sentry/tanstackstart-react';
 import type { ErrorComponentProps } from '@tanstack/react-router';
 import { useEffect } from 'react';
@@ -10,12 +11,12 @@ export function AppError(props: ErrorComponentProps) {
   }, [props]);
 
   return (
-    <>
+    <ClerkProvider>
       <NavBarClient />
       <FlexCenter data-testid="FlexCenter" style={{ flexDirection: 'column' }}>
         <h1>Yikes</h1>
         <p>Something went wrong</p>
       </FlexCenter>
-    </>
+    </ClerkProvider>
   );
 }

@@ -24,7 +24,7 @@ export function ListHeader({ id: listId }: { id: string }) {
         setEditedListTitle={setEditedListTitle}
       />
 
-      <Flex data-testid="Flex" style={{ gap: '8px' }}>
+      <Flex data-testid="Flex" style={{ gap: '8px', alignItems: 'center' }}>
         <ListHeaderCardCount listId={listId} />
         {!isEditingListName && <DeleteList id={listId} />}
       </Flex>
