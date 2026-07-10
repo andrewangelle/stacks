@@ -42,7 +42,7 @@ export function List({ id: listId }: { id: string }) {
             >
               <CardTitleDetails
                 id={card.id}
-                listId={listId}
+                isCompleted={card.isCompleted}
                 title={card.cardTitle}
               />
 

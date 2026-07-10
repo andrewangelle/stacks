@@ -13,11 +13,15 @@ import { useCardModalTrigger } from '~/utils/useCardModalTrigger';
 
 type CardTitleDetailsProps = {
   id: string;
-  listId: string;
+  isCompleted: boolean;
   title: string;
 };
 
-export function CardTitleDetails({ id, title }: CardTitleDetailsProps) {
+export function CardTitleDetails({
+  id,
+  title,
+  isCompleted,
+}: CardTitleDetailsProps) {
   const {
     ref,
     isHovering,
@@ -48,7 +52,10 @@ export function CardTitleDetails({ id, title }: CardTitleDetailsProps) {
         onMouseLeave={onMouseLeave}
         onPointerDown={onPointerDown}
       >
-        <ListCardTitleDetailsContainer data-testid="ListCardTitleDetailsContainer">
+        <ListCardTitleDetailsContainer
+          data-testid="ListCardTitleDetailsContainer"
+          isCompleted={isCompleted}
+        >
           <CardCompletedIndicator
             cardId={id}
             visible={isHovering || isFocused}

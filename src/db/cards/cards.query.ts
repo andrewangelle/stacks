@@ -28,11 +28,19 @@ import {
 import type { Card } from '~/generated/prisma/client';
 import { queryClient } from '~/query';
 
-export type CardListItem = Pick<Card, 'id' | 'cardTitle' | 'createdAt'>;
+export type CardListItem = Pick<
+  Card,
+  'id' | 'cardTitle' | 'createdAt' | 'isCompleted'
+>;
 type ListCacheItem = { id: string; cards: CardListItem[] };
 
 function toCardListItem(item: Card): CardListItem {
-  return { id: item.id, cardTitle: item.cardTitle, createdAt: item.createdAt };
+  return {
+    id: item.id,
+    cardTitle: item.cardTitle,
+    createdAt: item.createdAt,
+    isCompleted: item.isCompleted,
+  };
 }
 
 // List cards are rendered from the full-lists caches (`['lists', boardId]` and
@@ -218,6 +226,7 @@ export function useUpdateCard() {
             if (item.id === variables.cardId) {
               return {
                 ...item,
+                isCompleted: variables.isCompleted ?? item.isCompleted,
                 cardTitle: variables.cardTitle ?? item.cardTitle,
               };
             }
@@ -225,13 +234,20 @@ export function useUpdateCard() {
           }),
       );
 
-      if (variables.cardTitle !== undefined) {
+      if (
+        variables.cardTitle !== undefined ||
+        variables.isCompleted !== undefined
+      ) {
         updateListArrayCaches(queryClient, (lists) =>
           lists.map((list) => ({
             ...list,
             cards: list.cards.map((card) =>
               card.id === variables.cardId
-                ? { ...card, cardTitle: variables.cardTitle ?? card.cardTitle }
+                ? {
+                    ...card,
+                    cardTitle: variables.cardTitle ?? card.cardTitle,
+                    isCompleted: variables.isCompleted ?? card.isCompleted,
+                  }
                 : card,
             ),
           })),
