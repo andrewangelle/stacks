@@ -7,7 +7,7 @@
   "sideEffects": true,
   "scripts": {
     "build": "vite build",
-    "dev": "vite deve",
+    "dev": "vite dev",
     "dev:e2e": "vite dev --config vite.config.e2e.ts --force",
     "netlify:dev": "netlify dev",
     "start": "node .output/server/index.mjs",

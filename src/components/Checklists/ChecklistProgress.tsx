@@ -15,7 +15,7 @@ export function ChecklistProgress({ checklistId }: { checklistId: string }) {
   const completedItems = data?.filter((item) => item.isCompleted);
   const progressPercent = getPercent(data?.length, completedItems?.length);
   const progressFill =
-    completedItems?.length === data?.length ? 'rgb(81, 132, 90)' : 'black';
+    completedItems?.length === data?.length ? '#5B7F24' : 'black';
 
   return (
     <ChecklistProgressRow data-testid="ChecklistProgressRow">

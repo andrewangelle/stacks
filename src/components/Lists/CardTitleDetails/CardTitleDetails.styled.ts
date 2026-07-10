@@ -2,13 +2,7 @@ import { styled } from '@pigment-css/react';
 import * as Accordion from '@radix-ui/react-accordion';
 import * as Checkbox from '@radix-ui/react-checkbox';
 import { ListCardSkeleton } from '~/components/Lists/List.styled';
-import {
-  blue,
-  completedGreen,
-  darkGray,
-  focusRingBlue,
-  fontFamily,
-} from '~/styles/tokens';
+import { blue, darkGray, focusRingBlue, fontFamily } from '~/styles/tokens';
 
 const circleSizeDefault = '15px';
 
@@ -65,8 +59,8 @@ export const CardCompletedIndicatorCircle = styled(
     width: ({ circleSize = circleSizeDefault }) => circleSize,
     marginRight: '6px',
     opacity: 1,
-    backgroundColor: completedGreen,
-    borderColor: completedGreen,
+    backgroundColor: '#6A9A23',
+    borderColor: '#6A9A23',
   },
 });
 
@@ -103,7 +97,8 @@ export const CardTitleDetailsChecklistTotalsContainer =
       {
         props: { isAllCompleted: true },
         style: {
-          backgroundColor: '#1f845a',
+          backgroundColor: '#5B7F24',
+          // backgroundColor: '#1f845a',
           color: '#fff',
           '&:hover': {
             backgroundColor: '#1f845a',
