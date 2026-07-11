@@ -226,8 +226,11 @@ test.describe('List', () => {
 
     await waitForHydratedAction(
       async () => {
-        await page.getByTestId('DeleteListOption').click();
-        await page.getByTestId('DeleteChecklistPopoverButton').click();
+        await page
+          .getByTestId('ListActionsOption')
+          .filter({ hasText: 'Archive this list' })
+          .click();
+        await page.getByTestId('DeleteListButton').click();
       },
       async () => (await page.getByTestId('ListContainer').count()) === 0,
     );

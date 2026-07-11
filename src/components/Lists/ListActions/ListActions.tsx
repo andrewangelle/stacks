@@ -1,18 +1,16 @@
 import * as Popover from '@radix-ui/react-popover';
 import { useState } from 'react';
 import {
-  ChecklistItemOptionsListContainer,
-  ChecklistItemOptionsListItem,
-  DeleteChecklistPopoverButton,
-} from '~/components/ChecklistItem/ChecklistItem.styled';
-import {
+  DeleteListButton,
+  ListActionsOption,
+  ListActionsOptionsContainer,
   ListActionsPopoverButton,
   ListActionsPopoverButtonBack,
   ListActionsPopoverButtonText,
   ListActionsPopoverClose,
   ListActionsPopoverHeader,
   ListActionsPopoverTrigger,
-} from '~/components/Lists/List.styled';
+} from '~/components/Lists/ListActions/ListActions.styled';
 import { Tooltip } from '~/components/Tooltip/Tooltip';
 import { useDeleteList } from '~/db/lists/lists.query';
 import {
@@ -21,19 +19,21 @@ import {
 } from '~/styles/Page.styled';
 import { useCurrentBoardId } from '~/utils/useCurrentBoardId';
 
-type DeleteListProps = {
+type ListActionsProps = {
   id: string;
 };
 
-export function DeleteList({ id }: DeleteListProps) {
+type Views = 'actions' | 'delete';
+
+export function ListActions({ id }: ListActionsProps) {
   const boardId = useCurrentBoardId();
   const deleteList = useDeleteList();
   const [open, setOpen] = useState(false);
-  const [isDeleting, setIsDeleting] = useState(false);
+  const [view, setView] = useState<Views>('actions');
 
   function closePopover(open: boolean) {
     setOpen(open);
-    setIsDeleting(false);
+    setView('actions');
   }
 
   return (
@@ -52,49 +52,49 @@ export function DeleteList({ id }: DeleteListProps) {
       </ListActionsPopoverTrigger>
 
       <PopoverOptionsContent data-testid="PopoverOptionsContent">
-        <ListActionsPopoverHeader data-testid="ChecklistPopoverHeader">
+        <ListActionsPopoverHeader data-testid="ListActionsPopoverHeader">
           <div>
             <ListActionsPopoverButtonBack
-              tabIndex={isDeleting ? 0 : -1}
-              isActive={isDeleting}
-              onClick={() => setIsDeleting(false)}
+              tabIndex={view !== 'actions' ? 0 : -1}
+              isActive={view !== 'actions'}
+              onClick={() => setView('actions')}
             >
-              {isDeleting ? '<' : ''}
+              {view !== 'actions' ? '<' : ''}
             </ListActionsPopoverButtonBack>
           </div>
 
-          <div>{isDeleting ? 'Are you sure?' : 'List actions'}</div>
+          <div>{view === 'delete' ? 'Are you sure?' : 'List actions'}</div>
 
           <ListActionsPopoverClose data-testid="ListActionsPopoverClose">
             X
           </ListActionsPopoverClose>
         </ListActionsPopoverHeader>
 
-        {!isDeleting && (
-          <ChecklistItemOptionsListContainer data-testid="ChecklistItemOptionsListContainer">
-            <ChecklistItemOptionsListItem
-              data-testid="DeleteListOption"
-              onClick={() => setIsDeleting(true)}
+        {view === 'actions' && (
+          <ListActionsOptionsContainer data-testid="ListActionsOptionsContainer">
+            <ListActionsOption
+              data-testid="ListActionsOption"
+              onClick={() => setView('delete')}
             >
               Archive this list
-            </ChecklistItemOptionsListItem>
-          </ChecklistItemOptionsListContainer>
+            </ListActionsOption>
+          </ListActionsOptionsContainer>
         )}
 
-        {isDeleting && (
+        {view === 'delete' && (
           <PopoverOptionsContentContainer>
             This list will be deleted
-            <DeleteChecklistPopoverButton
-              data-testid="DeleteChecklistPopoverButton"
-              onClick={() => {
+            <DeleteListButton
+              data-testid="DeleteListButton"
+              onClick={() =>
                 deleteList({
                   listId: id,
                   boardId,
-                });
-              }}
+                })
+              }
             >
               Delete list
-            </DeleteChecklistPopoverButton>
+            </DeleteListButton>
           </PopoverOptionsContentContainer>
         )}
       </PopoverOptionsContent>

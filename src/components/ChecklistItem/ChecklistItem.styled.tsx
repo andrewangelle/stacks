@@ -78,6 +78,7 @@ export const AddChecklistButton = styled(Button)`
   padding: 8px 10px;
   margin: 0 10px 0 0px;
 `;
+
 export const DeleteChecklistPopoverButton = styled(Button)` 
   background: ${red};
   width: 100%;
