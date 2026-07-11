@@ -76,6 +76,7 @@ export const listModel = {
           isCompleted: card.isCompleted,
           cardTitle: card.cardTitle,
           createdAt: card.createdAt,
+          description: card.cardDescription,
         }));
 
       return {
