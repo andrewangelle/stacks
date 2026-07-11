@@ -1,6 +1,6 @@
 import { useState } from 'react';
-import { DeleteList } from '~/components/Lists/DeleteList';
 import { EditableListName } from '~/components/Lists/EditableListName';
+import { ListActions } from '~/components/Lists/ListActions/ListActions';
 import { ListHeaderCardCount } from '~/components/Lists/ListHeaderCardCount';
 import { Flex } from '~/styles/Page.styled';
 
@@ -26,7 +26,7 @@ export function ListHeader({ id: listId }: { id: string }) {
 
       <Flex data-testid="Flex" style={{ gap: '8px', alignItems: 'center' }}>
         <ListHeaderCardCount listId={listId} />
-        {!isEditingListName && <DeleteList id={listId} />}
+        {!isEditingListName && <ListActions id={listId} />}
       </Flex>
     </div>
   );
