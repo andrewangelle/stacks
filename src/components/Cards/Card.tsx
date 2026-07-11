@@ -57,9 +57,7 @@ export function Card() {
       to: '/board/$id',
       params: { id: boardId },
       hash: '',
-      search: {
-        from: `card-${cardId}`,
-      },
+      search: { from: `card-${cardId}` },
     });
   }
 

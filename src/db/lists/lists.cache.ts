@@ -1,7 +1,7 @@
 import { reorderLists as reorderListsServer } from '~/db/lists/lists.functions';
+import { listQueryKeys } from '~/db/lists/lists.query';
 import type { Card, List } from '~/generated/prisma/client';
 import { queryClient } from '~/query';
-import { listQueryKeys } from './lists.query';
 
 export type ListCardItem = Pick<Card, 'id' | 'cardTitle' | 'createdAt'>;
 
