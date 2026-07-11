@@ -1,5 +1,11 @@
-import { useNavigate, useRouterState } from '@tanstack/react-router';
-import { type FocusEvent, type KeyboardEvent, useRef, useState } from 'react';
+import { useNavigate, useRouterState, useSearch } from '@tanstack/react-router';
+import {
+  type FocusEvent,
+  type KeyboardEvent,
+  useEffect,
+  useRef,
+  useState,
+} from 'react';
 import { useCurrentBoardId } from '~/utils/useCurrentBoardId';
 
 export function useCardModalTrigger(id: string) {
@@ -10,7 +16,9 @@ export function useCardModalTrigger(id: string) {
   const [isFocused, setIsFocused] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
   const pointerFocusedRef = useRef(false);
+  const search = useSearch({ strict: false }) as { from?: string };
 
+  const cardIdNavigatedFrom = search?.from?.split('card-')?.[1];
   const cardIdNavigatingTo = routerState.location?.href.split('card/')?.[1];
   const isNavigatingToSameCard = cardIdNavigatingTo === id;
 
@@ -68,6 +76,12 @@ export function useCardModalTrigger(id: string) {
       openCardModal();
     }
   }
+
+  useEffect(() => {
+    if (cardIdNavigatedFrom && id === cardIdNavigatedFrom) {
+      ref.current?.focus();
+    }
+  }, [cardIdNavigatedFrom, id]);
 
   return {
     ref,
