@@ -71,7 +71,7 @@ export default defineConfig({
   webServer: {
     command: 'pnpm dev:e2e',
     url: 'http://localhost:3100/__test/health',
-    reuseExistingServer: !process.env.CI,
+    reuseExistingServer: false, 
     timeout: 120_000,
   },
 }); 

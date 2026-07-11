@@ -353,6 +353,19 @@ export const AllTasksCompletedContainer = styled.div`
   gap: 12px;
   padding: 12px;
   width: stretch;
+  animation: allTasksCompletedReveal 250ms ease-out;
+
+  @keyframes allTasksCompletedReveal {
+    from {
+      opacity: 0;
+      transform: translateY(-4px) scale(0.95);
+    }
+
+    to {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+    }
+  }
 `;
 
 export const AllTasksCompletedText = styled.div`
