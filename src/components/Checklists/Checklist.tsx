@@ -16,16 +16,14 @@ import { DropTargetFallback } from '~/components/dnd/DropTargetFallback';
 import {
   moveChecklistItemToNewChecklist,
   reorderChecklistItemsByVisibleIndex,
-  useGetChecklistItems,
-} from '~/db/checklistItems/checklistItems.query';
+} from '~/db/checklistItems/checklistItems.cache';
+import { useGetChecklistItems } from '~/db/checklistItems/checklistItems.query';
 import { useGetChecklist } from '~/db/checklists/checklists.query';
 import { useCrossContainerMove } from '~/utils/useCrossContainerMove';
 import { useScrollToHashId } from '~/utils/useScrollToHashId';
 
 export function Checklist({ id }: { id: string }) {
-  const { isSuccess, data: checklist } = useGetChecklist({
-    checklistId: id,
-  });
+  const { isSuccess, data: checklist } = useGetChecklist({ checklistId: id });
   const { isSuccess: isItemsSuccess, data: items } = useGetChecklistItems({
     checklistId: id,
   });

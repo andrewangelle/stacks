@@ -10,8 +10,8 @@ import {
   CardTitleDetailsChecklistAccordionTrigger,
 } from '~/components/Lists/CardTitleDetails/CardTitleDetails.styled';
 import { CardTitleDetailsChecklist } from '~/components/Lists/CardTitleDetails/CardTitleDetailsChecklist';
+import { CardTitleDetailsChecklistFallback } from '~/components/Lists/CardTitleDetails/CardTitleDetailsChecklistFallback';
 import { useGetCardTitleDetailsChecklists } from '~/db/checklists/checklists.query';
-import { CardTitleDetailsChecklistFallback } from './CardTitleDetailsChecklistFallback';
 
 type CardTitleDetailsChecklistAccordionProps = {
   cardId: string;

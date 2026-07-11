@@ -3,13 +3,13 @@ import {
   useQueryClient,
   useSuspenseQuery,
 } from '@tanstack/react-query';
+import { invalidateCardChecklistView } from '~/db/checklists/checklists.cache';
 import {
   createChecklist,
   deleteChecklist,
   getCardTitleDetailsChecklists,
   getChecklistById,
   getChecklists,
-  reorderChecklists as reorderChecklistsServer,
   updateChecklist,
 } from '~/db/checklists/checklists.functions';
 import type {
@@ -21,7 +21,6 @@ import type {
 } from '~/db/checklists/checklists.schemas';
 import type { Checklist } from '~/generated/prisma/client';
 import { queryClient } from '~/query';
-
 export type ChecklistItem = Pick<
   Checklist,
   'id' | 'checklistTitle' | 'createdAt'
@@ -43,12 +42,6 @@ const queryKeys = {
 
 export const checklistQueryKeys = queryKeys;
 
-function invalidateCardChecklistView(cardId: string) {
-  queryClient.invalidateQueries({
-    queryKey: queryKeys.cardChecklistView(cardId),
-  });
-}
-
 export function checklistByIdQueryOptions(data: GetChecklistByIdArgs) {
   return {
     queryKey: queryKeys.detail(data.checklistId),
@@ -58,10 +51,6 @@ export function checklistByIdQueryOptions(data: GetChecklistByIdArgs) {
       });
     },
   };
-}
-
-export function useGetChecklist(data: GetChecklistByIdArgs) {
-  return useSuspenseQuery(checklistByIdQueryOptions(data));
 }
 
 export function checklistsQueryOptions(cardId: string) {
@@ -74,12 +63,27 @@ export function checklistsQueryOptions(cardId: string) {
     },
   };
 }
+
+export function cardTitleDetailsChecklistsQueryOptions(cardId: string) {
+  return {
+    queryKey: queryKeys.cardChecklistView(cardId),
+    queryFn() {
+      return getCardTitleDetailsChecklists({
+        data: { cardId },
+      });
+    },
+  };
+}
+
+export function useGetChecklist(data: GetChecklistByIdArgs) {
+  return useSuspenseQuery(checklistByIdQueryOptions(data));
+}
+
 export function useGetChecklists(data: GetChecklistsArgs) {
   return useSuspenseQuery(checklistsQueryOptions(data.cardId));
 }
 
 export function useCreateChecklist() {
-  const queryClient = useQueryClient();
   const mutation = useMutation({
     mutationFn(data: CreateChecklistArgs) {
       return createChecklist({
@@ -163,17 +167,6 @@ export function useUpdateChecklist() {
   });
 }
 
-export function cardTitleDetailsChecklistsQueryOptions(cardId: string) {
-  return {
-    queryKey: queryKeys.cardChecklistView(cardId),
-    queryFn() {
-      return getCardTitleDetailsChecklists({
-        data: { cardId },
-      });
-    },
-  };
-}
-
 export function useGetCardTitleDetailsChecklists(data: GetChecklistsArgs) {
   return useSuspenseQuery({
     ...cardTitleDetailsChecklistsQueryOptions(data.cardId),
@@ -192,32 +185,3 @@ export function useGetCardTitleDetailsChecklists(data: GetChecklistsArgs) {
     },
   });
 }
-
-export const reorderChecklistsByIndex = (
-  cardId: string,
-  fromIndex: number,
-  toIndex: number,
-) => {
-  queryClient.setQueryData<ChecklistItem[]>(
-    queryKeys.list(cardId),
-    (cache = []) => {
-      const next = [...cache];
-      next.splice(toIndex, 0, next.splice(fromIndex, 1)[0]);
-      return next;
-    },
-  );
-
-  const orderedIds =
-    queryClient
-      .getQueryData<ChecklistItem[]>(queryKeys.list(cardId))
-      ?.map((checklist) => checklist.id) ?? [];
-
-  reorderChecklistsServer({ data: { cardId, orderedIds } })
-    .then(() => {
-      invalidateCardChecklistView(cardId);
-    })
-    .catch(() => {
-      queryClient.invalidateQueries({ queryKey: queryKeys.list(cardId) });
-      invalidateCardChecklistView(cardId);
-    });
-};

@@ -1,13 +1,11 @@
 import { Suspense } from 'react';
 import { Checklist } from '~/components/Checklists/Checklist';
+import { ChecklistSkeleton } from '~/components/Checklists/ChecklistSkeleton';
 import { ChecklistsContainer } from '~/components/Checklists/Checklists.styled';
 import { Draggable } from '~/components/dnd/Draggable';
-import {
-  reorderChecklistsByIndex,
-  useGetChecklists,
-} from '~/db/checklists/checklists.query';
+import { reorderChecklistsByIndex } from '~/db/checklists/checklists.cache';
+import { useGetChecklists } from '~/db/checklists/checklists.query';
 import { useCurrentCardId } from '~/utils/useCurrentCardId';
-import { ChecklistSkeleton } from './ChecklistSkeleton';
 
 export function CardChecklists() {
   const cardId = useCurrentCardId();
