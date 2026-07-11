@@ -345,3 +345,19 @@ export const CardTitleDetailsContentSkeleton = styled(ListCardSkeleton)`
   width: 50px;
   margin-top: 4px;
 `;
+
+export const AllTasksCompletedContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  padding: 12px;
+  width: stretch;
+`;
+
+export const AllTasksCompletedText = styled.div`
+  min-width: 0;
+  word-break: break-word;
+  text-align: left;
+  font-size: 12px;
+`;

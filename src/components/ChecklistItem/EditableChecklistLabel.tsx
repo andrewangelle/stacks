@@ -29,7 +29,7 @@ export function EditableChecklistLabel({
     itemId: id,
     checklistId,
   });
-  const updateItem = useUpdateChecklistItem();
+  const { mutate: updateItem } = useUpdateChecklistItem();
   const [editedLabel, setEditedLabel] = useState(checklistItem?.label);
 
   function openEditLabel() {

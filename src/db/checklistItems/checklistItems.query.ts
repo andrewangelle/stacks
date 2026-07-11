@@ -100,7 +100,7 @@ export function useCreateChecklistItem() {
 }
 
 export function useUpdateChecklistItem() {
-  const mutation = useMutation({
+  return useMutation({
     mutationFn(data: UpdateChecklistItemArgs) {
       return updateChecklistItem({
         data,
@@ -120,8 +120,6 @@ export function useUpdateChecklistItem() {
       invalidateCardChecklistView(updatedItem.cardId);
     },
   });
-
-  return mutation.mutate;
 }
 
 export function useDeleteChecklistItem() {
