@@ -18,23 +18,15 @@ import { CardColumnResize } from '~/components/Cards/CardColumnResize';
 import { CardDescription } from '~/components/Cards/CardDescription';
 import { CardEditableTitle } from '~/components/Cards/CardEditableTitle';
 import { DeleteCardPopover } from '~/components/Cards/DeleteCardPopover';
+import { ChecklistSkeleton } from '~/components/Checklists/ChecklistSkeleton';
 import { CardChecklists } from '~/components/Checklists/Checklists';
+import { ChecklistsContainer } from '~/components/Checklists/Checklists.styled';
 import { CreateChecklist } from '~/components/Checklists/CreateChecklist';
 import { usePreventDevToolsClose } from '~/components/DevTools';
 import { CardTitleDetailsSpinner } from '~/components/Lists/CardTitleDetails/CardTitleDetails.styled';
 import { useCardColumnWidth } from '~/utils/useCardColumnWidth';
 import { useCurrentBoardId } from '~/utils/useCurrentBoardId';
 import { useCurrentCardId } from '~/utils/useCurrentCardId';
-import { ChecklistSkeleton } from '../Checklists/ChecklistSkeleton';
-import { ChecklistsContainer } from '../Checklists/Checklists.styled';
-
-function focusCardTrigger(cardId: string) {
-  requestAnimationFrame(() => {
-    document
-      .querySelector<HTMLElement>(`[data-card-id="${cardId}"]`)
-      ?.focus({ preventScroll: true });
-  });
-}
 
 export function Card() {
   const cardId = useCurrentCardId();
@@ -61,8 +53,14 @@ export function Card() {
     }
 
     setIsClosingCard(true);
-    navigate({ to: '/board/$id', params: { id: boardId }, hash: '' });
-    focusCardTrigger(cardId);
+    navigate({
+      to: '/board/$id',
+      params: { id: boardId },
+      hash: '',
+      search: {
+        from: `card-${cardId}`,
+      },
+    });
   }
 
   return (

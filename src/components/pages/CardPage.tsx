@@ -2,11 +2,11 @@ import { getRouteApi } from '@tanstack/react-router';
 import { CompositeComponent } from '@tanstack/react-start/rsc';
 import { Suspense } from 'react';
 import { BoardLists } from '~/components/Boards/BoardLists';
+import type { BoardBackground } from '~/components/Boards/Boards.styled';
 import { Card } from '~/components/Cards/Card';
 import { CardFallback } from '~/components/Cards/CardFallback';
 import { BoardHeader } from '~/components/Nav/BoardHeader';
 import { UserNavContent } from '~/components/Nav/UserNavContent';
-import type { BoardBackground } from '../Boards/Boards.styled';
 
 const Route = getRouteApi('/card/$cardId');
 

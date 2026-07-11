@@ -1,5 +1,5 @@
+import { Tooltip } from '~/components/Tooltip/Tooltip';
 import { useGetCardsByListId } from '~/db/cards/cards.query';
-import { Tooltip } from '../Tooltip/Tooltip';
 
 export function ListHeaderCardCount({ listId }: { listId: string }) {
   const { isSuccess, data: cards } = useGetCardsByListId({ listId });
