@@ -6,7 +6,7 @@ import {
 export const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
-      staleTime: 60_000,
+      staleTime: 60_000 * 60, // 1 hour
     },
     dehydrate: {
       shouldDehydrateQuery: (query) =>
