@@ -1,5 +1,6 @@
 import type { MouseEvent } from 'react';
 import { BiCommentDetail } from 'react-icons/bi';
+import { IoMdList } from 'react-icons/io';
 import { RiCheckboxLine } from 'react-icons/ri';
 import {
   CardTitleDetailsChecklistTotalsContainer,
@@ -12,6 +13,7 @@ import { useCardTitleDetailsVisibility } from '~/utils/useCardTitleDetailsVisibi
 
 type CardTitleDetailsContentTriggersProps = {
   cardId: string;
+  description: string;
   isOpen: boolean;
   toggleOpen: (
     event: MouseEvent<HTMLDivElement, globalThis.MouseEvent>,
@@ -20,6 +22,7 @@ type CardTitleDetailsContentTriggersProps = {
 
 export function CardTitleDetailsContentTriggers({
   cardId,
+  description,
   isOpen,
   toggleOpen,
 }: CardTitleDetailsContentTriggersProps) {
@@ -47,6 +50,14 @@ export function CardTitleDetailsContentTriggers({
               style={{ position: 'relative', top: '1px' }}
             />
             {commentsCount}
+          </Flex>
+        </Tooltip>
+      )}
+
+      {description && (
+        <Tooltip content="Description">
+          <Flex style={{ fontSize: '12px', lineHeight: '16px', gap: '4px' }}>
+            <IoMdList size={15} />
           </Flex>
         </Tooltip>
       )}

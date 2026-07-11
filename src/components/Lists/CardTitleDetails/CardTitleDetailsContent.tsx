@@ -18,11 +18,13 @@ const MAX_VISIBLE_CHECKLISTS = 3;
 
 type CardTitleDetailsContentProps = {
   cardId: string;
+  description: string;
   onShowMore: (checklistId: string) => void;
 };
 
 export function CardTitleDetailsContent({
   cardId,
+  description,
   onShowMore,
 }: CardTitleDetailsContentProps) {
   const { hasDetailInfo } = useCardTitleDetailsVisibility(cardId);
@@ -69,7 +71,7 @@ export function CardTitleDetailsContent({
     return () => clearTimeout(timer);
   }, [showAllCompleteView]);
 
-  if (!hasDetailInfo) {
+  if (!hasDetailInfo && !description) {
     return null;
   }
 
@@ -77,6 +79,7 @@ export function CardTitleDetailsContent({
     <>
       <CardTitleDetailsContentTriggers
         cardId={cardId}
+        description={description}
         isOpen={isOpen}
         toggleOpen={toggleOpen}
       />

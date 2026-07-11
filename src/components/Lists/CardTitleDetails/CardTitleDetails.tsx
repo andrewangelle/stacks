@@ -13,6 +13,7 @@ import { useCardModalTrigger } from '~/utils/useCardModalTrigger';
 
 type CardTitleDetailsProps = {
   id: string;
+  description: string;
   isCompleted: boolean;
   title: string;
 };
@@ -20,6 +21,7 @@ type CardTitleDetailsProps = {
 export function CardTitleDetails({
   id,
   title,
+  description,
   isCompleted,
 }: CardTitleDetailsProps) {
   const {
@@ -64,7 +66,11 @@ export function CardTitleDetails({
         </ListCardTitleDetailsContainer>
 
         <Suspense fallback={<CardTitleDetailsContentSkeleton />}>
-          <CardTitleDetailsContent cardId={id} onShowMore={onShowMore} />
+          <CardTitleDetailsContent
+            cardId={id}
+            description={description}
+            onShowMore={onShowMore}
+          />
         </Suspense>
 
         {isLoading && (

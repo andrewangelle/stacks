@@ -30,7 +30,7 @@ import { queryClient } from '~/query';
 
 export type CardListItem = Pick<
   Card,
-  'id' | 'cardTitle' | 'createdAt' | 'isCompleted'
+  'id' | 'cardTitle' | 'cardDescription' | 'createdAt' | 'isCompleted'
 >;
 type ListCacheItem = { id: string; cards: CardListItem[] };
 
@@ -40,6 +40,7 @@ function toCardListItem(item: Card): CardListItem {
     cardTitle: item.cardTitle,
     createdAt: item.createdAt,
     isCompleted: item.isCompleted,
+    cardDescription: item.cardDescription,
   };
 }
 
@@ -227,6 +228,8 @@ export function useUpdateCard() {
               return {
                 ...item,
                 isCompleted: variables.isCompleted ?? item.isCompleted,
+                cardDescription:
+                  variables.cardDescription ?? item.cardDescription,
                 cardTitle: variables.cardTitle ?? item.cardTitle,
               };
             }
@@ -236,7 +239,8 @@ export function useUpdateCard() {
 
       if (
         variables.cardTitle !== undefined ||
-        variables.isCompleted !== undefined
+        variables.isCompleted !== undefined ||
+        variables.cardDescription !== undefined
       ) {
         updateListArrayCaches(queryClient, (lists) =>
           lists.map((list) => ({
@@ -246,6 +250,8 @@ export function useUpdateCard() {
                 ? {
                     ...card,
                     cardTitle: variables.cardTitle ?? card.cardTitle,
+                    cardDescription:
+                      variables.cardDescription ?? card.cardDescription,
                     isCompleted: variables.isCompleted ?? card.isCompleted,
                   }
                 : card,
