@@ -11,6 +11,7 @@ import {
   Scripts,
 } from '@tanstack/react-router';
 import type { ReactNode } from 'react';
+import { AppError } from '~/components/AppError';
 import { DevTools } from '~/components/DevTools';
 import type { queryClient } from '~/query';
 import GlobalFonts from '~/styles/GlobalFonts';
@@ -29,6 +30,7 @@ function Providers({ children }: { children: ReactNode }) {
 
 export const Route = createRootRouteWithContext<RouterContext>()({
   wrapInSuspense: true,
+  errorComponent: AppError,
   head() {
     return {
       meta: [
