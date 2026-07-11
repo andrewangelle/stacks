@@ -9,11 +9,12 @@ import { activityListQueryOptions } from '~/db/activity/activity.query';
 import { boardByIdQueryOptions } from '~/db/boards/boards.query';
 import { cardByIdQueryOptions } from '~/db/cards/cards.query';
 import { cardTitleDetailsChecklistsQueryOptions } from '~/db/checklists/checklists.query';
+import type { ListItem } from '~/db/lists/lists.cache';
+import { toListItem } from '~/db/lists/lists.cache';
 import {
   createList,
   deleteList,
   getLists,
-  reorderLists as reorderListsServer,
   updateList,
 } from '~/db/lists/lists.functions';
 import type {
@@ -21,32 +22,13 @@ import type {
   DeleteListArgs,
   UpdateListArgs,
 } from '~/db/lists/lists.schemas';
-import type { Card, List } from '~/generated/prisma/client';
-import { queryClient } from '~/query';
 import { useCurrentBoardId } from '~/utils/useCurrentBoardId';
-
-export type ListCardItem = Pick<Card, 'id' | 'cardTitle' | 'createdAt'>;
-export type ListItem = Pick<
-  List,
-  'id' | 'listTitle' | 'createdAt' | 'position' | 'boardId'
-> & {
-  cards: ListCardItem[];
-};
-
-function toListItem(item: List): ListItem {
-  return {
-    id: item.id,
-    listTitle: item.listTitle,
-    createdAt: item.createdAt,
-    position: item.position,
-    boardId: item.boardId,
-    cards: [],
-  };
-}
 
 const queryKeys = {
   list: (boardId: string) => ['lists', boardId] as const,
 };
+
+export const listQueryKeys = queryKeys;
 
 export function listsQueryOptions(boardId: string) {
   return {
@@ -156,27 +138,3 @@ export function useDeleteList() {
 
   return mutation.mutate;
 }
-
-export const reorderListsByIndex = (
-  boardId: string,
-  fromIndex: number,
-  toIndex: number,
-) => {
-  queryClient.setQueryData<ListItem[]>(
-    queryKeys.list(boardId),
-    (cache = []) => {
-      const next = [...cache];
-      next.splice(toIndex, 0, next.splice(fromIndex, 1)[0]);
-      return next;
-    },
-  );
-
-  const orderedIds =
-    queryClient
-      .getQueryData<ListItem[]>(queryKeys.list(boardId))
-      ?.map((list) => list.id) ?? [];
-
-  reorderListsServer({ data: { boardId, orderedIds } }).catch(() => {
-    queryClient.invalidateQueries({ queryKey: queryKeys.list(boardId) });
-  });
-};

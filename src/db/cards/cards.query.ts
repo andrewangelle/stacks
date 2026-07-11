@@ -6,13 +6,13 @@ import {
   useSuspenseQuery,
 } from '@tanstack/react-query';
 import { activityListQueryOptions } from '~/db/activity/activity.query';
+import type { CardListItem } from '~/db/cards/cards.cache';
+import { toCardListItem, updateListArrayCaches } from '~/db/cards/cards.cache';
 import {
   createCard,
   deleteCard,
   getCardById,
   getCardsByListId,
-  moveCard as moveCardServer,
-  reorderCards as reorderCardsServer,
   updateCard,
 } from '~/db/cards/cards.functions';
 import type {
@@ -26,73 +26,13 @@ import {
   checklistsQueryOptions,
 } from '~/db/checklists/checklists.query';
 import type { Card } from '~/generated/prisma/client';
-import { queryClient } from '~/query';
-
-export type CardListItem = Pick<
-  Card,
-  'id' | 'cardTitle' | 'cardDescription' | 'createdAt' | 'isCompleted'
->;
-type ListCacheItem = { id: string; cards: CardListItem[] };
-
-function toCardListItem(item: Card): CardListItem {
-  return {
-    id: item.id,
-    cardTitle: item.cardTitle,
-    createdAt: item.createdAt,
-    isCompleted: item.isCompleted,
-    cardDescription: item.cardDescription,
-  };
-}
-
-// List cards are rendered from the full-lists caches (`['lists', boardId]` and
-// each `['list', listId]` detail selector), so optimistic card moves must patch
-// every list-array cache, not just the per-list `['cards', listId]` cache that
-// only backs the header count.
-const listArrayCacheKeys = [['lists'], ['list']] as const;
-
-function updateListArrayCaches(
-  queryClient: QueryClient,
-  updater: (lists: ListCacheItem[]) => ListCacheItem[],
-) {
-  for (const queryKey of listArrayCacheKeys) {
-    queryClient.setQueriesData<ListCacheItem[]>({ queryKey }, (cache) =>
-      cache ? updater(cache) : cache,
-    );
-  }
-}
-
-function invalidateListArrayCaches(queryClient: QueryClient) {
-  for (const queryKey of listArrayCacheKeys) {
-    queryClient.invalidateQueries({ queryKey });
-  }
-}
-
-function findCardInListCaches(
-  queryClient: QueryClient,
-  listId: string,
-  cardId: string,
-) {
-  const listCaches = queryClient.getQueriesData<ListCacheItem[]>({
-    queryKey: ['list'],
-  });
-
-  for (const [, lists] of listCaches) {
-    const card = lists
-      ?.find((list) => list.id === listId)
-      ?.cards.find((item) => item.id === cardId);
-
-    if (card) {
-      return card;
-    }
-  }
-
-  return undefined;
-}
 
 export const queryKeys = {
   list: (listId: string) => ['cards', listId] as const,
   detail: (cardId: string) => ['card', cardId] as const,
 };
+
+export const cardsQueryKeys = queryKeys;
 
 export function cardsByListIdQueryOptions(listId: string) {
   return {
@@ -293,119 +233,4 @@ export function useDeleteCard() {
   });
 
   return mutation.mutate;
-}
-
-export function reorderCardsByIndex(
-  listId: string,
-  fromIndex: number,
-  toIndex: number,
-) {
-  queryClient.setQueryData<CardListItem[]>(
-    queryKeys.list(listId),
-    (cache = []) => {
-      const next = [...cache];
-      next.splice(toIndex, 0, next.splice(fromIndex, 1)[0]);
-      return next;
-    },
-  );
-
-  updateListArrayCaches(queryClient, (lists) =>
-    lists.map((list) => {
-      if (list.id !== listId) {
-        return list;
-      }
-
-      const nextCards = [...list.cards];
-      nextCards.splice(toIndex, 0, nextCards.splice(fromIndex, 1)[0]);
-      return { ...list, cards: nextCards };
-    }),
-  );
-
-  const orderedIds =
-    queryClient
-      .getQueryData<CardListItem[]>(queryKeys.list(listId))
-      ?.map((card) => card.id) ?? [];
-
-  reorderCardsServer({ data: { listId, orderedIds } }).catch(() => {
-    queryClient.invalidateQueries({ queryKey: queryKeys.list(listId) });
-    invalidateListArrayCaches(queryClient);
-  });
-}
-
-/**
- * Optimistic cache update + server persist for a card moving to another list on the
- * same board. Called only after afterCrossContainerDrop has reverted the DOM — do not
- * call directly from dragEnd without that sequence.
- */
-export function moveCardToNewList({
-  cardId,
-  sourceListId,
-  targetListId,
-  targetIndex,
-}: {
-  cardId: string;
-  sourceListId: string;
-  targetListId: string;
-  targetIndex: number;
-}) {
-  const sourceCache =
-    queryClient.getQueryData<CardListItem[]>(queryKeys.list(sourceListId)) ??
-    [];
-
-  const movedCard =
-    sourceCache.find((item) => item.id === cardId) ??
-    findCardInListCaches(queryClient, sourceListId, cardId);
-
-  if (!movedCard) {
-    return;
-  }
-
-  const card = movedCard;
-
-  queryClient.setQueryData<CardListItem[]>(
-    queryKeys.list(sourceListId),
-    sourceCache.filter((item) => item.id !== cardId),
-  );
-
-  queryClient.setQueryData<CardListItem[]>(
-    queryKeys.list(targetListId),
-    (cache = []) => {
-      const next = [...cache];
-      const clampedIndex = Math.min(Math.max(targetIndex, 0), next.length);
-      next.splice(clampedIndex, 0, card);
-      return next;
-    },
-  );
-
-  updateListArrayCaches(queryClient, (lists) =>
-    lists.map((list) => {
-      if (list.id === sourceListId) {
-        return {
-          ...list,
-          cards: list.cards.filter((sourceCard) => sourceCard.id !== cardId),
-        };
-      }
-
-      if (list.id === targetListId) {
-        const nextCards = [...list.cards];
-        const clampedIndex = Math.min(
-          Math.max(targetIndex, 0),
-          nextCards.length,
-        );
-        nextCards.splice(clampedIndex, 0, card);
-        return { ...list, cards: nextCards };
-      }
-
-      return list;
-    }),
-  );
-
-  moveCardServer({
-    data: { cardId, sourceListId, targetListId, targetIndex },
-  }).catch(() => {
-    queryClient.invalidateQueries({ queryKey: queryKeys.list(sourceListId) });
-    queryClient.invalidateQueries({ queryKey: queryKeys.list(targetListId) });
-    queryClient.invalidateQueries({ queryKey: queryKeys.detail(cardId) });
-    invalidateListArrayCaches(queryClient);
-  });
 }

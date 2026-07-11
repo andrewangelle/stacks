@@ -5,7 +5,7 @@ import { AddNewCardAtPosition } from '~/components/Lists/AddNewCardAtPosition';
 import { CardTitleDetails } from '~/components/Lists/CardTitleDetails/CardTitleDetails';
 import { ListContainer } from '~/components/Lists/List.styled';
 import { ListHeader } from '~/components/Lists/ListHeader';
-import { moveCardToNewList, reorderCardsByIndex } from '~/db/cards/cards.query';
+import { moveCardToNewList, reorderCardsByIndex } from '~/db/cards/cards.cache';
 import { useGetListById } from '~/db/lists/lists.query';
 import { useCrossContainerMove } from '~/utils/useCrossContainerMove';
 
