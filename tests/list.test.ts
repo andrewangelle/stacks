@@ -81,6 +81,40 @@ test.describe('List', () => {
     ).toBeVisible();
   });
 
+  test('shows the all tasks completed message when the last checklist item is checked', async ({
+    page,
+    request,
+  }) => {
+    await resetDb(request);
+
+    const board = await seedBoard(request, 'Sprint Board');
+
+    await seedListCard(request, {
+      boardId: board.id,
+      listTitle: 'In Progress',
+      cardTitle: 'Launch feature',
+      checklists: [{ title: 'Prep', items: ['Step 1'] }],
+    });
+
+    await page.goto(`/board/${board.id}`);
+    await waitForListCard(page, 'Launch feature');
+
+    await waitForInteractiveTrigger(
+      page,
+      '[data-testid="CardTitleDetailsChecklistItemRow"]',
+      '[data-testid="CardTitleDetailsChecklistTotalsContainer"]',
+    );
+
+    await expect(page.getByTestId('AllTasksCompletedContainer')).toHaveCount(0);
+
+    await page.getByTestId('CardTitleDetailsChecklistCheckbox').first().click();
+
+    await expect(page.getByTestId('AllTasksCompletedContainer')).toBeVisible();
+    await expect(page.getByTestId('AllTasksCompletedContainer')).toContainText(
+      'All tasks completed!',
+    );
+  });
+
   test('edits the list name', async ({ page, request }) => {
     await resetDb(request);
 
