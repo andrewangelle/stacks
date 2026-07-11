@@ -1,3 +1,4 @@
+import { Suspense } from 'react';
 import { Checklist } from '~/components/Checklists/Checklist';
 import { ChecklistsContainer } from '~/components/Checklists/Checklists.styled';
 import { Draggable } from '~/components/dnd/Draggable';
@@ -6,6 +7,7 @@ import {
   useGetChecklists,
 } from '~/db/checklists/checklists.query';
 import { useCurrentCardId } from '~/utils/useCurrentCardId';
+import { ChecklistSkeleton } from './ChecklistSkeleton';
 
 export function CardChecklists() {
   const cardId = useCurrentCardId();
@@ -25,7 +27,9 @@ export function CardChecklists() {
             reorderChecklistsByIndex(cardId, fromIndex, toIndex)
           }
         >
-          <Checklist id={checklist.id} />
+          <Suspense fallback={<ChecklistSkeleton />}>
+            <Checklist id={checklist.id} />
+          </Suspense>
         </Draggable>
       ))}
     </ChecklistsContainer>

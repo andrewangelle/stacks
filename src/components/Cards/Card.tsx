@@ -1,5 +1,5 @@
 import { useNavigate, useRouterState } from '@tanstack/react-router';
-import { useEffect, useRef, useState } from 'react';
+import { Suspense, useEffect, useRef, useState } from 'react';
 import { ActivityPanel } from '~/components/Activity/ActivityPanel';
 import {
   CardActionsContainer,
@@ -25,6 +25,8 @@ import { CardTitleDetailsSpinner } from '~/components/Lists/CardTitleDetails/Car
 import { useCardColumnWidth } from '~/utils/useCardColumnWidth';
 import { useCurrentBoardId } from '~/utils/useCurrentBoardId';
 import { useCurrentCardId } from '~/utils/useCurrentCardId';
+import { ChecklistSkeleton } from '../Checklists/ChecklistSkeleton';
+import { ChecklistsContainer } from '../Checklists/Checklists.styled';
 
 function focusCardTrigger(cardId: string) {
   requestAnimationFrame(() => {
@@ -105,7 +107,15 @@ export function Card() {
 
                 <CardDescription />
 
-                <CardChecklists />
+                <Suspense
+                  fallback={
+                    <ChecklistsContainer data-testid="ChecklistsContainer">
+                      <ChecklistSkeleton />
+                    </ChecklistsContainer>
+                  }
+                >
+                  <CardChecklists />
+                </Suspense>
               </CardMainColumn>
 
               {isWideLayout && (

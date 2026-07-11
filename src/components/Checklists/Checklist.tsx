@@ -3,7 +3,6 @@ import { AddChecklistItem } from '~/components/ChecklistItem/AddChecklistItem';
 import { ChecklistItem } from '~/components/ChecklistItem/ChecklistItem';
 import { ChecklistEditableTitle } from '~/components/Checklists/ChecklistEditableTitle';
 import { ChecklistProgress } from '~/components/Checklists/ChecklistProgress';
-import { ChecklistSkeleton } from '~/components/Checklists/ChecklistSkeleton';
 import {
   AllItemsCompleteMessage,
   ChecklistContainer,
@@ -24,11 +23,7 @@ import { useCrossContainerMove } from '~/utils/useCrossContainerMove';
 import { useScrollToHashId } from '~/utils/useScrollToHashId';
 
 export function Checklist({ id }: { id: string }) {
-  const {
-    isLoading,
-    isSuccess,
-    data: checklist,
-  } = useGetChecklist({
+  const { isSuccess, data: checklist } = useGetChecklist({
     checklistId: id,
   });
   const { isSuccess: isItemsSuccess, data: items } = useGetChecklistItems({
@@ -55,10 +50,6 @@ export function Checklist({ id }: { id: string }) {
     visibleItems?.length === 0;
 
   useScrollToHashId(id, headerRef, isSuccess && isItemsSuccess);
-
-  if (isLoading) {
-    return <ChecklistSkeleton />;
-  }
 
   return (
     <ChecklistContainer data-testid="ChecklistContainer">

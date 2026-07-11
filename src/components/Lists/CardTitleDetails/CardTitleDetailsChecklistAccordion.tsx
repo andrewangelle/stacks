@@ -1,3 +1,4 @@
+import { Suspense } from 'react';
 import { RiArrowRightSLine } from 'react-icons/ri';
 import {
   CardTitleDetailsChecklistAccordionChevron,
@@ -10,6 +11,7 @@ import {
 } from '~/components/Lists/CardTitleDetails/CardTitleDetails.styled';
 import { CardTitleDetailsChecklist } from '~/components/Lists/CardTitleDetails/CardTitleDetailsChecklist';
 import { useGetCardTitleDetailsChecklists } from '~/db/checklists/checklists.query';
+import { CardTitleDetailsChecklistFallback } from './CardTitleDetailsChecklistFallback';
 
 type CardTitleDetailsChecklistAccordionProps = {
   cardId: string;
@@ -57,7 +59,9 @@ export function CardTitleDetailsChecklistAccordion({
         data-testid="CardTitleDetailsChecklistAccordionContent"
         onPointerDown={(event) => event.stopPropagation()}
       >
-        <CardTitleDetailsChecklist checklistId={checklist.id} collapsible />
+        <Suspense fallback={<CardTitleDetailsChecklistFallback />}>
+          <CardTitleDetailsChecklist checklistId={checklist.id} collapsible />
+        </Suspense>
       </CardTitleDetailsChecklistAccordionContent>
     </CardTitleDetailsChecklistAccordionItem>
   );

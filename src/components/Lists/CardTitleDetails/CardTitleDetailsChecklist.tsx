@@ -1,10 +1,6 @@
 import { type MouseEvent, useState } from 'react';
 import { AiOutlineCheck } from 'react-icons/ai';
 import {
-  CheckboxSkeleton,
-  ChecklistLabelSkeleton,
-} from '~/components/ChecklistItem/ChecklistItem.styled';
-import {
   CardTitleDetailsChecklistCheckbox,
   CardTitleDetailsChecklistCheckboxIndicator,
   CardTitleDetailsChecklistContainer,
@@ -13,10 +9,7 @@ import {
   CardTitleDetailsChecklistShowMore,
 } from '~/components/Lists/CardTitleDetails/CardTitleDetails.styled';
 import { useCreateActivity } from '~/db/activity/activity.query';
-import {
-  useGetChecklistItems,
-  useUpdateChecklistItem,
-} from '~/db/checklistItems/checklistItems.query';
+import { useUpdateChecklistItem } from '~/db/checklistItems/checklistItems.query';
 import { useGetChecklist } from '~/db/checklists/checklists.query';
 import { useCurrentBoardId } from '~/utils/useCurrentBoardId';
 
@@ -32,16 +25,14 @@ export function CardTitleDetailsChecklist({
   checklistId,
   collapsible = false,
 }: CardTitleDetailsChecklistProps) {
-  const { isLoading, data: checklist } = useGetChecklist({ checklistId });
-  const { isLoading: isItemsLoading, data: items } = useGetChecklistItems({
-    checklistId,
-  });
+  const { data: checklist } = useGetChecklist({ checklistId });
   const updateItem = useUpdateChecklistItem();
   const createActivity = useCreateActivity();
   const boardId = useCurrentBoardId();
   const [visibleCount, setVisibleCount] = useState(INITIAL_VISIBLE);
 
-  const incompleteItems = items?.filter((item) => !item.isCompleted) ?? [];
+  const incompleteItems =
+    checklist?.items?.filter((item) => !item.isCompleted) ?? [];
   const visibleItems = incompleteItems.slice(0, visibleCount);
   const hasMore = collapsible && visibleCount < incompleteItems.length;
 
@@ -52,6 +43,7 @@ export function CardTitleDetailsChecklist({
   }
 
   function completeItem({ itemId, label }: { itemId: string; label: string }) {
+    console.log();
     return (event: MouseEvent<HTMLButtonElement>) => {
       event.preventDefault();
       event.stopPropagation();
@@ -70,49 +62,6 @@ export function CardTitleDetailsChecklist({
         content: `marked ${label} complete on this card`,
       });
     };
-  }
-
-  if (isLoading) {
-    return (
-      <CardTitleDetailsChecklistContainer data-testid="CardTitleDetailsChecklistContainer">
-        <div
-          style={{
-            display: 'flex',
-            alignItems: 'center',
-            gap: '8px',
-          }}
-        >
-          <CheckboxSkeleton data-testid="CheckboxSkeleton" />
-          <ChecklistLabelSkeleton
-            data-testid="ChecklistLabelSkeleton"
-            style={{ width: '83%' }}
-          />
-        </div>
-      </CardTitleDetailsChecklistContainer>
-    );
-  }
-
-  if (isItemsLoading) {
-    return (
-      <CardTitleDetailsChecklistContainer data-testid="CardTitleDetailsChecklistContainer">
-        {visibleItems.map((item) => (
-          <div
-            key={item.id}
-            style={{
-              display: 'flex',
-              alignItems: 'center',
-              gap: '8px',
-            }}
-          >
-            <CheckboxSkeleton data-testid="CheckboxSkeleton" />
-            <ChecklistLabelSkeleton
-              data-testid="ChecklistLabelSkeleton"
-              style={{ width: '83%' }}
-            />
-          </div>
-        ))}
-      </CardTitleDetailsChecklistContainer>
-    );
   }
 
   return (
