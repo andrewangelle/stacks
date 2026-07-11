@@ -1,4 +1,4 @@
-import { type MouseEvent, useState } from 'react';
+import { type MouseEvent, Suspense, useState } from 'react';
 import {
   CardTitleDetailsChecklistAccordionRoot,
   CardTitleDetailsChecklistDivider,
@@ -6,6 +6,7 @@ import {
 } from '~/components/Lists/CardTitleDetails/CardTitleDetails.styled';
 import { CardTitleDetailsChecklist } from '~/components/Lists/CardTitleDetails/CardTitleDetailsChecklist';
 import { CardTitleDetailsChecklistAccordion } from '~/components/Lists/CardTitleDetails/CardTitleDetailsChecklistAccordion';
+import { CardTitleDetailsChecklistFallback } from '~/components/Lists/CardTitleDetails/CardTitleDetailsChecklistFallback';
 import { CardTitleDetailsContentTriggers } from '~/components/Lists/CardTitleDetails/CardTitleDetailsContentTriggers';
 import { useGetCardTitleDetailsChecklists } from '~/db/checklists/checklists.query';
 import { useCardTitleDetailsVisibility } from '~/utils/useCardTitleDetailsVisibility';
@@ -22,7 +23,6 @@ export function CardTitleDetailsContent({
   onShowMore,
 }: CardTitleDetailsContentProps) {
   const { hasDetailInfo } = useCardTitleDetailsVisibility(cardId);
-
   const { data } = useGetCardTitleDetailsChecklists({
     cardId,
   });
@@ -99,10 +99,12 @@ export function CardTitleDetailsContent({
           )}
 
           {!data?.hasMultiple && data?.singleChecklistId && (
-            <CardTitleDetailsChecklist
-              checklistId={data?.singleChecklistId}
-              collapsible
-            />
+            <Suspense fallback={<CardTitleDetailsChecklistFallback />}>
+              <CardTitleDetailsChecklist
+                checklistId={data?.singleChecklistId}
+                collapsible
+              />
+            </Suspense>
           )}
         </>
       )}

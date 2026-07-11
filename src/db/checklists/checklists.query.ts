@@ -1,6 +1,5 @@
 import {
   useMutation,
-  useQuery,
   useQueryClient,
   useSuspenseQuery,
 } from '@tanstack/react-query';
@@ -62,7 +61,7 @@ export function checklistByIdQueryOptions(data: GetChecklistByIdArgs) {
 }
 
 export function useGetChecklist(data: GetChecklistByIdArgs) {
-  return useQuery(checklistByIdQueryOptions(data));
+  return useSuspenseQuery(checklistByIdQueryOptions(data));
 }
 
 export function checklistsQueryOptions(cardId: string) {
@@ -76,7 +75,7 @@ export function checklistsQueryOptions(cardId: string) {
   };
 }
 export function useGetChecklists(data: GetChecklistsArgs) {
-  return useQuery(checklistsQueryOptions(data.cardId));
+  return useSuspenseQuery(checklistsQueryOptions(data.cardId));
 }
 
 export function useCreateChecklist() {
