@@ -1,4 +1,4 @@
-import { type MouseEvent, useState } from 'react';
+import { type MouseEvent, useEffect, useState } from 'react';
 import { AiOutlineCheck } from 'react-icons/ai';
 import {
   CardTitleDetailsChecklistCheckbox,
@@ -18,18 +18,23 @@ const STEP = 2;
 
 type CardTitleDetailsChecklistProps = {
   checklistId: string;
+  isSingleView?: boolean;
   collapsible?: boolean;
+  onCompleteAllItems?: () => void;
 };
 
 export function CardTitleDetailsChecklist({
   checklistId,
   collapsible = false,
+  isSingleView = false,
+  onCompleteAllItems = () => null,
 }: CardTitleDetailsChecklistProps) {
   const { data: checklist } = useGetChecklist({ checklistId });
-  const updateItem = useUpdateChecklistItem();
+  const { mutate: updateItem, isSuccess } = useUpdateChecklistItem();
   const createActivity = useCreateActivity();
   const boardId = useCurrentBoardId();
   const [visibleCount, setVisibleCount] = useState(INITIAL_VISIBLE);
+  const [completedAllItems, setCompletedAllItems] = useState(false);
 
   const incompleteItems =
     checklist?.items?.filter((item) => !item.isCompleted) ?? [];
@@ -43,10 +48,13 @@ export function CardTitleDetailsChecklist({
   }
 
   function completeItem({ itemId, label }: { itemId: string; label: string }) {
-    console.log();
     return (event: MouseEvent<HTMLButtonElement>) => {
       event.preventDefault();
       event.stopPropagation();
+
+      if (isSingleView && visibleItems.length === 1) {
+        setCompletedAllItems(true);
+      }
 
       updateItem({
         itemId,
@@ -63,6 +71,12 @@ export function CardTitleDetailsChecklist({
       });
     };
   }
+
+  useEffect(() => {
+    if (completedAllItems && isSuccess) {
+      onCompleteAllItems();
+    }
+  }, [completedAllItems, isSuccess, onCompleteAllItems]);
 
   return (
     <CardTitleDetailsChecklistContainer data-testid="CardTitleDetailsChecklistContainer">

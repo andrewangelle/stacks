@@ -1,5 +1,8 @@
-import { type MouseEvent, Suspense, useState } from 'react';
+import { type MouseEvent, Suspense, useEffect, useState } from 'react';
+import { IoIosCheckmarkCircleOutline } from 'react-icons/io';
 import {
+  AllTasksCompletedContainer,
+  AllTasksCompletedText,
   CardTitleDetailsChecklistAccordionRoot,
   CardTitleDetailsChecklistDivider,
   CardTitleDetailsChecklistShowMore,
@@ -28,6 +31,7 @@ export function CardTitleDetailsContent({
   });
   const [isOpen, setIsOpen] = useState(false);
   const [openChecklistId, setOpenChecklistId] = useState('');
+  const [showAllCompleteView, setShowAllCompleteView] = useState(false);
 
   const checklists = data?.checklists ?? [];
   const visibleChecklists = checklists.slice(0, MAX_VISIBLE_CHECKLISTS);
@@ -54,6 +58,17 @@ export function CardTitleDetailsContent({
     }
   }
 
+  useEffect(() => {
+    let timer: NodeJS.Timeout;
+
+    if (showAllCompleteView) {
+      timer = setTimeout(() => {
+        setShowAllCompleteView(false);
+      }, 2000);
+    }
+    return () => clearTimeout(timer);
+  }, [showAllCompleteView]);
+
   if (!hasDetailInfo) {
     return null;
   }
@@ -65,6 +80,20 @@ export function CardTitleDetailsContent({
         isOpen={isOpen}
         toggleOpen={toggleOpen}
       />
+
+      {showAllCompleteView && (
+        <AllTasksCompletedContainer data-testid="AllTasksCompletedContainer">
+          <IoIosCheckmarkCircleOutline
+            size={24}
+            color="#6A9A23"
+            strokeWidth={12}
+          />
+
+          <AllTasksCompletedText data-testid="CardTitleDetailsChecklistItemLabel">
+            All tasks completed!
+          </AllTasksCompletedText>
+        </AllTasksCompletedContainer>
+      )}
 
       {isOpen && checklists.length > 0 && (
         <>
@@ -101,8 +130,10 @@ export function CardTitleDetailsContent({
           {!data?.hasMultiple && data?.singleChecklistId && (
             <Suspense fallback={<CardTitleDetailsChecklistFallback />}>
               <CardTitleDetailsChecklist
+                isSingleView
                 checklistId={data?.singleChecklistId}
                 collapsible
+                onCompleteAllItems={() => setShowAllCompleteView(true)}
               />
             </Suspense>
           )}
