@@ -285,6 +285,13 @@ export const checklistModel = {
       (item) => item.checklistId !== removed.id,
     );
 
+    // Mirror the `expandedChecklistId` FK's onDelete: SetNull.
+    for (const card of getStore().cards) {
+      if (card.expandedChecklistId === removed.id) {
+        card.expandedChecklistId = null;
+      }
+    }
+
     return removed;
   },
 };

@@ -15,6 +15,8 @@ export type CardRecord = {
   userId: string;
   position: number;
   isCompleted: boolean;
+  isChecklistsExpanded: boolean;
+  expandedChecklistId: string | null;
 } & Timestamps;
 
 // Mirrors the subset of Prisma's string filters the card queries rely on. The
@@ -60,6 +62,8 @@ export const cardModel = {
       | { id: CardIdFilter; list: { board: { userId: string } } };
     select?: {
       id?: boolean;
+      isChecklistsExpanded?: boolean;
+      expandedChecklistId?: boolean;
       list?: {
         select?: {
           boardId?: boolean;
@@ -125,6 +129,8 @@ export const cardModel = {
       userId: args.data.userId,
       position,
       isCompleted: false,
+      isChecklistsExpanded: false,
+      expandedChecklistId: null,
       createdAt: timestamp,
       updatedAt: timestamp,
     };
@@ -140,6 +146,8 @@ export const cardModel = {
       cardDescription?: string;
       cardTitle?: string;
       isCompleted?: boolean;
+      isChecklistsExpanded?: boolean;
+      expandedChecklistId?: string | null;
       listId?: string;
       position?: number;
     };
@@ -162,6 +170,14 @@ export const cardModel = {
 
     if (args.data.isCompleted !== undefined) {
       card.isCompleted = args.data.isCompleted;
+    }
+
+    if (args.data.isChecklistsExpanded !== undefined) {
+      card.isChecklistsExpanded = args.data.isChecklistsExpanded;
+    }
+
+    if (args.data.expandedChecklistId !== undefined) {
+      card.expandedChecklistId = args.data.expandedChecklistId;
     }
 
     if (args.data.listId !== undefined) {

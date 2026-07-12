@@ -269,6 +269,83 @@ test.describe('List', () => {
       async () => (await page.getByTestId('ListContainer').count()) === 0,
     );
   });
+
+  test('persists the expanded checklist view across reloads', async ({
+    page,
+    request,
+  }) => {
+    await resetDb(request);
+
+    const board = await seedBoard(request, 'Sprint Board');
+
+    await seedListCard(request, {
+      boardId: board.id,
+      listTitle: 'In Progress',
+      cardTitle: 'Launch feature',
+      checklists: [{ title: 'Prep', items: ['Step 1', 'Step 2'] }],
+    });
+
+    await page.goto(`/board/${board.id}`);
+    await waitForListCard(page, 'Launch feature');
+
+    // The checklist view starts collapsed.
+    await expect(
+      page.getByTestId('CardTitleDetailsChecklistItemRow'),
+    ).toHaveCount(0);
+
+    // Expand it via the totals trigger — the single checklist's items appear.
+    await waitForInteractiveTrigger(
+      page,
+      '[data-testid="CardTitleDetailsChecklistItemRow"]',
+      '[data-testid="CardTitleDetailsChecklistTotalsContainer"]',
+    );
+    await expect(
+      page.getByTestId('CardTitleDetailsChecklistItemRow').first(),
+    ).toBeVisible();
+
+    // It stays expanded after a reload without re-clicking — persisted state.
+    await waitForExpandedViewAfterReload(page);
+  });
+
+  test('persists which checklist is expanded across reloads', async ({
+    page,
+    request,
+  }) => {
+    await resetDb(request);
+
+    const board = await seedBoard(request, 'Sprint Board');
+
+    await seedListCard(request, {
+      boardId: board.id,
+      listTitle: 'In Progress',
+      cardTitle: 'Launch feature',
+      checklists: [
+        { title: 'Prep', items: ['Prep step'] },
+        { title: 'QA', items: ['Run tests'] },
+      ],
+    });
+
+    await page.goto(`/board/${board.id}`);
+    await waitForListCard(page, 'Launch feature');
+
+    // Expand the checklist view — the accordion of both checklists appears.
+    await waitForInteractiveTrigger(
+      page,
+      '[data-testid="CardTitleDetailsChecklistAccordionItem"]',
+      '[data-testid="CardTitleDetailsChecklistTotalsContainer"]',
+    );
+    await expect(
+      page.getByTestId('CardTitleDetailsChecklistAccordionItem'),
+    ).toHaveCount(2);
+
+    // Expand the QA checklist specifically.
+    await waitForAccordionItemExpanded(page, 'QA');
+    await expectAccordionState(page, 'QA', 'open');
+    await expectAccordionState(page, 'Prep', 'closed');
+
+    // After a reload, QA is still the expanded one — persisted selection.
+    await waitForExpandedAccordionAfterReload(page, 'QA', 'Prep');
+  });
 });
 
 /**
@@ -385,6 +462,66 @@ async function waitForListAfterReload(page: Page, listTitle: string) {
     await expect(page.getByTestId('ListName')).toHaveText(listTitle, {
       timeout: 5_000,
     });
+  }).toPass();
+}
+
+function accordionItem(page: Page, title: string) {
+  return page
+    .getByTestId('CardTitleDetailsChecklistAccordionItem')
+    .filter({ hasText: title });
+}
+
+function expectAccordionState(
+  page: Page,
+  title: string,
+  state: 'open' | 'closed',
+) {
+  return expect(accordionItem(page, title)).toHaveAttribute(
+    'data-state',
+    state,
+  );
+}
+
+async function waitForAccordionItemExpanded(page: Page, title: string) {
+  const item = accordionItem(page, title);
+  const trigger = () =>
+    item.getByTestId('CardTitleDetailsChecklistAccordionTrigger').click();
+  const isOpen = async () => (await item.getAttribute('data-state')) === 'open';
+
+  return waitForHydratedAction(trigger, isOpen);
+}
+
+// A reload can race the persistence of the expand mutation (the client shows
+// the expanded state optimistically before the write lands), so re-reload
+// until the persisted state serves through.
+async function waitForExpandedViewAfterReload(page: Page) {
+  await expect(async () => {
+    await page.reload();
+    await waitForListCard(page);
+    await expect(
+      page.getByTestId('CardTitleDetailsChecklistItemRow').first(),
+    ).toBeVisible({ timeout: 5_000 });
+  }).toPass();
+}
+
+async function waitForExpandedAccordionAfterReload(
+  page: Page,
+  openTitle: string,
+  closedTitle: string,
+) {
+  await expect(async () => {
+    await page.reload();
+    await waitForListCard(page);
+    await expect(accordionItem(page, openTitle)).toHaveAttribute(
+      'data-state',
+      'open',
+      { timeout: 5_000 },
+    );
+    await expect(accordionItem(page, closedTitle)).toHaveAttribute(
+      'data-state',
+      'closed',
+      { timeout: 5_000 },
+    );
   }).toPass();
 }
 
