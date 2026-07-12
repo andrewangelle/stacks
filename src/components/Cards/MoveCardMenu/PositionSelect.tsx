@@ -6,7 +6,7 @@ import {
   SelectItem,
   SelectTrigger,
   SelectViewport,
-} from '~/components/Cards/CardHeader/CardHeader.styled';
+} from '~/components/Cards/MoveCardMenu/MoveCardMenu.styled';
 
 type PositionSelectProps = {
   positions: number;

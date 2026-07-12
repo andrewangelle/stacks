@@ -2,15 +2,17 @@ import * as Select from '@radix-ui/react-select';
 import type { RefObject } from 'react';
 import { RxCaretDown } from 'react-icons/rx';
 import {
+  ListSelectSkeleton,
   SelectContent,
   SelectItem,
   SelectItemCurrent,
   SelectTrigger,
   SelectViewport,
-} from '~/components/Cards/CardHeader/CardHeader.styled';
+} from '~/components/Cards/MoveCardMenu/MoveCardMenu.styled';
 import type { ListItem } from '~/db/lists/lists.cache';
 
 type ListSelectProps = {
+  isListsLoading: boolean;
   lists?: ListItem[];
   currentListId?: string;
   selectedList?: string;
@@ -19,12 +21,23 @@ type ListSelectProps = {
 };
 
 export function ListSelect({
+  isListsLoading,
   lists,
   currentListId,
   selectedList,
   setSelectedList,
   ref,
 }: ListSelectProps) {
+  if (isListsLoading) {
+    return (
+      <Select.Root value={selectedList ?? ''} onValueChange={setSelectedList}>
+        <SelectTrigger aria-label="List" data-testid="ListSelectTrigger">
+          <ListSelectSkeleton />
+        </SelectTrigger>
+      </Select.Root>
+    );
+  }
+
   return (
     <Select.Root value={selectedList ?? ''} onValueChange={setSelectedList}>
       <SelectTrigger aria-label="List" data-testid="ListSelectTrigger">

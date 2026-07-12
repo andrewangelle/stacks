@@ -1,6 +1,6 @@
 import { CardHeaderContainer } from '~/components/Cards/CardHeader/CardHeader.styled';
 import { CloseCardButton } from '~/components/Cards/CardHeader/CloseCardButton';
-import { MoveCardMenu } from './MoveCardMenu';
+import { MoveCardMenu } from '~/components/Cards/MoveCardMenu/MoveCardMenu';
 
 export type CardHeaderProps = {
   cardId: string;

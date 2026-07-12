@@ -10,7 +10,9 @@ export function useMoveCardSelectOptions({ cardId }: { cardId: string }) {
   const [selectedBoardId, setSelectedBoardId] = useState(useCurrentBoardId());
   const [selectedList, setSelectedList] = useState(currentList?.id ?? '');
   const [selectedPosition, setSelectedPosition] = useState(1);
-  const { data: lists } = useGetListsByBoardId({ boardId: selectedBoardId });
+  const { data: lists, isLoading: isListsLoading } = useGetListsByBoardId({
+    boardId: selectedBoardId,
+  });
 
   const selectionIsValid = lists?.some((list) => list.id === selectedList);
   const defaultListId =
@@ -29,6 +31,7 @@ export function useMoveCardSelectOptions({ cardId }: { cardId: string }) {
     (lists?.find((list) => list.id === selectedList)?.cards?.length ?? 0) + 1;
 
   return {
+    isListsLoading,
     selectedBoardId,
     lists,
     currentListId: currentList?.id,
