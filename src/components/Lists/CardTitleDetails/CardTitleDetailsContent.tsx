@@ -11,7 +11,10 @@ import { CardTitleDetailsChecklist } from '~/components/Lists/CardTitleDetails/C
 import { CardTitleDetailsChecklistAccordion } from '~/components/Lists/CardTitleDetails/CardTitleDetailsChecklistAccordion';
 import { CardTitleDetailsChecklistFallback } from '~/components/Lists/CardTitleDetails/CardTitleDetailsChecklistFallback';
 import { CardTitleDetailsContentTriggers } from '~/components/Lists/CardTitleDetails/CardTitleDetailsContentTriggers';
-import { useGetCardTitleDetailsChecklists } from '~/db/checklists/checklists.query';
+import {
+  useGetCardTitleDetailsChecklists,
+  useSetCardChecklistExpanded,
+} from '~/db/checklists/checklists.query';
 import { useCardTitleDetailsVisibility } from '~/utils/useCardTitleDetailsVisibility';
 
 const MAX_VISIBLE_CHECKLISTS = 3;
@@ -31,23 +34,24 @@ export function CardTitleDetailsContent({
   const { data } = useGetCardTitleDetailsChecklists({
     cardId,
   });
-  const [isOpen, setIsOpen] = useState(false);
-  const [openChecklistId, setOpenChecklistId] = useState('');
+  const { mutate: setChecklistExpanded } = useSetCardChecklistExpanded();
   const [showAllCompleteView, setShowAllCompleteView] = useState(false);
 
+  const isOpen = data?.isChecklistsExpanded ?? false;
   const checklists = data?.checklists ?? [];
   const visibleChecklists = checklists.slice(0, MAX_VISIBLE_CHECKLISTS);
   const truncatedCount = checklists.length - MAX_VISIBLE_CHECKLISTS;
+  const expandedChecklistId = data?.expandedChecklistId ?? '';
   const accordionValue =
-    openChecklistId &&
-    checklists.some((checklist) => checklist.id === openChecklistId)
-      ? openChecklistId
+    expandedChecklistId &&
+    checklists.some((checklist) => checklist.id === expandedChecklistId)
+      ? expandedChecklistId
       : '';
 
   function toggleOpen(event: MouseEvent<HTMLDivElement>) {
     event.preventDefault();
     event.stopPropagation();
-    setIsOpen((prev) => !prev);
+    setChecklistExpanded({ cardId, isChecklistsExpanded: !isOpen });
   }
 
   function handleShowMore(event: MouseEvent<HTMLButtonElement>) {
@@ -106,7 +110,12 @@ export function CardTitleDetailsContent({
             <CardTitleDetailsChecklistAccordionRoot
               collapsible
               data-testid="CardTitleDetailsChecklistAccordion"
-              onValueChange={(value: string) => setOpenChecklistId(value)}
+              onValueChange={(value: string) =>
+                setChecklistExpanded({
+                  cardId,
+                  expandedChecklistId: value || null,
+                })
+              }
               type="single"
               value={accordionValue}
             >

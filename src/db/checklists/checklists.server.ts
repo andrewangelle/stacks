@@ -44,25 +44,37 @@ export function getChecklistByIdQuery(data: WithUserId<GetChecklistByIdArgs>) {
 export async function getCardTitleDetailsChecklistsQuery(
   data: WithUserId<GetChecklistsArgs>,
 ) {
-  const checklists = await prisma.checklist.findMany({
-    where: {
-      cardId: data.cardId,
-      card: { list: { board: { userId: data.userId } } },
-      items: { some: { cardId: data.cardId } },
-    },
-    select: {
-      id: true,
-      checklistTitle: true,
-      items: {
-        where: { cardId: data.cardId },
-        select: {
-          label: true,
-          isCompleted: true,
+  const [card, checklists] = await Promise.all([
+    prisma.card.findFirst({
+      where: {
+        id: data.cardId,
+        list: { board: { userId: data.userId } },
+      },
+      select: {
+        isChecklistsExpanded: true,
+        expandedChecklistId: true,
+      },
+    }),
+    prisma.checklist.findMany({
+      where: {
+        cardId: data.cardId,
+        card: { list: { board: { userId: data.userId } } },
+        items: { some: { cardId: data.cardId } },
+      },
+      select: {
+        id: true,
+        checklistTitle: true,
+        items: {
+          where: { cardId: data.cardId },
+          select: {
+            label: true,
+            isCompleted: true,
+          },
         },
       },
-    },
-    orderBy: [{ position: 'asc' }, { createdAt: 'asc' }],
-  });
+      orderBy: [{ position: 'asc' }, { createdAt: 'asc' }],
+    }),
+  ]);
 
   let completedItemsForCard = 0;
   let totalItemsForCard = 0;
@@ -84,6 +96,8 @@ export async function getCardTitleDetailsChecklistsQuery(
   });
 
   return {
+    isChecklistsExpanded: card?.isChecklistsExpanded ?? false,
+    expandedChecklistId: card?.expandedChecklistId ?? null,
     completedItemsForCard,
     totalItemsForCard,
     checklists: checklistsWithStats.filter(
