@@ -6,9 +6,10 @@ import {
   CreateBoardCloseBorder,
   PopoverClose,
 } from '~/components/Boards/Boards.styled';
-import { BoardSelect } from '~/components/Cards/CardHeader/BoardSelect';
+import { BoardSelect } from '~/components/Cards/MoveCardMenu/BoardSelect';
+import { ListSelect } from '~/components/Cards/MoveCardMenu/ListSelect';
 import {
-  BoardSelectTitle,
+  DropdownLabel,
   MoveCardButton,
   MoveCardListColumn,
   MoveCardMenuContent,
@@ -16,9 +17,8 @@ import {
   MoveCardMenuTrigger,
   MoveCardPositionColumn,
   MoveCardSelectRow,
-} from '~/components/Cards/CardHeader/CardHeader.styled';
-import { ListSelect } from '~/components/Cards/CardHeader/ListSelect';
-import { PositionSelect } from '~/components/Cards/CardHeader/PositionSelect';
+} from '~/components/Cards/MoveCardMenu/MoveCardMenu.styled';
+import { PositionSelect } from '~/components/Cards/MoveCardMenu/PositionSelect';
 import { useMoveCardMutation } from '~/db/cards/cards.query';
 import { useGetListByCardId } from '~/db/lists/lists.query';
 import { useCurrentBoardId } from '~/utils/useCurrentBoardId';
@@ -36,6 +36,7 @@ export function MoveCardMenu({ id }: { id: string }) {
     isPending: isMovingCard,
   } = useMoveCardMutation();
   const {
+    isListsLoading,
     selectedBoardId,
     lists,
     currentListId,
@@ -52,18 +53,17 @@ export function MoveCardMenu({ id }: { id: string }) {
   const canMove = Boolean(currentListId && selectedList);
 
   function handleMove() {
-    if (!canMove || !currentListId) {
-      return;
+    if (canMove) {
+      moveCard({
+        cardId: id,
+        // biome-ignore lint/style/noNonNullAssertion: <it's clearly defined by the canMove check>
+        sourceListId: currentListId!,
+        targetListId: selectedList,
+        targetIndex: selectedPosition - 1,
+        sourceBoardId,
+        targetBoardId: selectedBoardId,
+      });
     }
-
-    moveCard({
-      cardId: id,
-      sourceListId: currentListId,
-      targetListId: selectedList,
-      targetIndex: selectedPosition - 1,
-      sourceBoardId,
-      targetBoardId: selectedBoardId,
-    });
   }
 
   // Close the card modal once the move has persisted.
@@ -100,9 +100,7 @@ export function MoveCardMenu({ id }: { id: string }) {
         <CreateBoardCloseBorder data-testid="CreateBoardCloseBorder" />
 
         <div ref={ref}>
-          <BoardSelectTitle data-testid="BoardSelectTitle">
-            Board
-          </BoardSelectTitle>
+          <DropdownLabel data-testid="BoardSelectTitle">Board</DropdownLabel>
 
           <BoardSelect
             cardId={id}
@@ -113,12 +111,11 @@ export function MoveCardMenu({ id }: { id: string }) {
 
           <MoveCardSelectRow>
             <MoveCardListColumn>
-              <BoardSelectTitle data-testid="ListSelectTitle">
-                List
-              </BoardSelectTitle>
+              <DropdownLabel data-testid="ListSelectTitle">List</DropdownLabel>
 
               <ListSelect
                 ref={ref}
+                isListsLoading={isListsLoading}
                 lists={lists}
                 currentListId={currentListId}
                 selectedList={selectedList}
@@ -127,9 +124,9 @@ export function MoveCardMenu({ id }: { id: string }) {
             </MoveCardListColumn>
 
             <MoveCardPositionColumn>
-              <BoardSelectTitle data-testid="PositionSelectTitle">
+              <DropdownLabel data-testid="PositionSelectTitle">
                 Position
-              </BoardSelectTitle>
+              </DropdownLabel>
 
               <PositionSelect
                 ref={ref}

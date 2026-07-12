@@ -7,7 +7,7 @@ import {
   SelectItemCurrent,
   SelectTrigger,
   SelectViewport,
-} from '~/components/Cards/CardHeader/CardHeader.styled';
+} from '~/components/Cards/MoveCardMenu/MoveCardMenu.styled';
 import { useGetBoards } from '~/db/boards/boards.query';
 import { useCurrentBoardId } from '~/utils/useCurrentBoardId';
 
