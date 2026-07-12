@@ -6,6 +6,7 @@ import {
   GetCardsByListIdSchema,
   MoveCardSchema,
   ReorderCardsSchema,
+  SetCardChecklistExpandedSchema,
   UpdateCardSchema,
 } from '~/db/cards/cards.schemas';
 import {
@@ -16,6 +17,7 @@ import {
   getCardsByListIdQuery,
   moveCardQuery,
   reorderCardsQuery,
+  setCardChecklistExpandedQuery,
   updateCardQuery,
 } from '~/db/cards/cards.server';
 import { authMiddleware } from '~/middleware/auth';
@@ -53,6 +55,13 @@ export const updateCard = createServerFn({ method: 'POST' })
   .middleware([authMiddleware])
   .handler(async ({ data, context }) =>
     updateCardQuery({ ...data, userId: context.uid }),
+  );
+
+export const setCardChecklistExpanded = createServerFn({ method: 'POST' })
+  .validator(SetCardChecklistExpandedSchema)
+  .middleware([authMiddleware])
+  .handler(async ({ data, context }) =>
+    setCardChecklistExpandedQuery({ ...data, userId: context.uid }),
   );
 
 export const deleteCard = createServerFn({ method: 'POST' })

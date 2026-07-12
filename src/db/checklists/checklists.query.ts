@@ -3,6 +3,8 @@ import {
   useQueryClient,
   useSuspenseQuery,
 } from '@tanstack/react-query';
+import { setCardChecklistExpanded } from '~/db/cards/cards.functions';
+import type { SetCardChecklistExpandedArgs } from '~/db/cards/cards.schemas';
 import { invalidateCardChecklistView } from '~/db/checklists/checklists.cache';
 import {
   createChecklist,
@@ -175,6 +177,8 @@ export function useGetCardTitleDetailsChecklists(data: GetChecklistsArgs) {
         (checklist) => checklist.completedItems < checklist.totalItems,
       );
       return {
+        isChecklistsExpanded: data.isChecklistsExpanded,
+        expandedChecklistId: data.expandedChecklistId,
         completedItemsForCard: data.completedItemsForCard,
         totalItemsForCard: data.totalItemsForCard,
         checklists: checklistsWithIncompleteItems,
@@ -182,6 +186,47 @@ export function useGetCardTitleDetailsChecklists(data: GetChecklistsArgs) {
         hasMultiple: checklistsWithIncompleteItems.length > 1,
         singleChecklistId: checklistsWithIncompleteItems[0]?.id,
       };
+    },
+  });
+}
+
+type CardChecklistView = Awaited<
+  ReturnType<typeof getCardTitleDetailsChecklists>
+>;
+
+/**
+ * Persist the card-title-details checklist expansion to the server: whether the
+ * whole checklist view is expanded (`isChecklistsExpanded`) and which single
+ * checklist accordion is open (`expandedChecklistId`). Optimistically patches
+ * the card checklist view cache so the UI updates instantly.
+ */
+export function useSetCardChecklistExpanded() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn(data: SetCardChecklistExpandedArgs) {
+      return setCardChecklistExpanded({ data });
+    },
+    onMutate(variables) {
+      queryClient.setQueryData<CardChecklistView>(
+        queryKeys.cardChecklistView(variables.cardId),
+        (cache) => {
+          if (!cache) {
+            return cache;
+          }
+          return {
+            ...cache,
+            isChecklistsExpanded:
+              variables.isChecklistsExpanded ?? cache.isChecklistsExpanded,
+            expandedChecklistId:
+              variables.expandedChecklistId !== undefined
+                ? variables.expandedChecklistId
+                : cache.expandedChecklistId,
+          };
+        },
+      );
+    },
+    onError(_error, variables) {
+      invalidateCardChecklistView(variables.cardId);
     },
   });
 }

@@ -22,6 +22,12 @@ export const UpdateCardSchema = z.object({
   isCompleted: z.boolean().optional(),
 });
 
+export const SetCardChecklistExpandedSchema = z.object({
+  cardId: z.string(),
+  isChecklistsExpanded: z.boolean().optional(),
+  expandedChecklistId: z.string().nullable().optional(),
+});
+
 export const DeleteCardSchema = z.object({
   cardId: z.string(),
   listId: z.string(),
@@ -46,3 +52,6 @@ export type UpdateCardArgs = z.infer<typeof UpdateCardSchema>;
 export type DeleteCardArgs = z.infer<typeof DeleteCardSchema>;
 export type ReorderCardsArgs = z.infer<typeof ReorderCardsSchema>;
 export type MoveCardArgs = z.infer<typeof MoveCardSchema>;
+export type SetCardChecklistExpandedArgs = z.infer<
+  typeof SetCardChecklistExpandedSchema
+>;

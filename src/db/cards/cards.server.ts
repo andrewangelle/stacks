@@ -5,6 +5,7 @@ import type {
   GetCardsByListIdArgs,
   MoveCardArgs,
   ReorderCardsArgs,
+  SetCardChecklistExpandedArgs,
   UpdateCardArgs,
 } from '~/db/cards/cards.schemas';
 import { prisma } from '~/db/prisma';
@@ -193,6 +194,50 @@ export async function updateCardQuery(data: WithUserId<UpdateCardArgs>) {
 
   return prisma.card.findMany({
     where: { id: data.cardId },
+  });
+}
+
+export async function setCardChecklistExpandedQuery(
+  data: WithUserId<SetCardChecklistExpandedArgs>,
+) {
+  const patch: {
+    isChecklistsExpanded?: boolean;
+    expandedChecklistId?: string | null;
+  } = {};
+
+  if (typeof data.isChecklistsExpanded === 'boolean') {
+    patch.isChecklistsExpanded = data.isChecklistsExpanded;
+  }
+
+  if (data.expandedChecklistId !== undefined) {
+    if (data.expandedChecklistId) {
+      // Only point at a checklist that actually belongs to this card.
+      const checklist = await prisma.checklist.findFirst({
+        where: {
+          id: data.expandedChecklistId,
+          cardId: data.cardId,
+          userId: data.userId,
+        },
+        select: { id: true },
+      });
+      patch.expandedChecklistId = checklist ? checklist.id : null;
+    } else {
+      patch.expandedChecklistId = null;
+    }
+  }
+
+  await prisma.card.updateMany({
+    where: { id: data.cardId, userId: data.userId },
+    data: patch,
+  });
+
+  return prisma.card.findFirst({
+    where: { id: data.cardId, userId: data.userId },
+    select: {
+      id: true,
+      isChecklistsExpanded: true,
+      expandedChecklistId: true,
+    },
   });
 }
 
