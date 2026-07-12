@@ -10,7 +10,7 @@ import {
 import { CardTitleDetailsChecklist } from '~/components/Lists/CardTitleDetails/CardTitleDetailsChecklist';
 import { CardTitleDetailsChecklistAccordion } from '~/components/Lists/CardTitleDetails/CardTitleDetailsChecklistAccordion';
 import { CardTitleDetailsChecklistFallback } from '~/components/Lists/CardTitleDetails/CardTitleDetailsChecklistFallback';
-import { CardTitleDetailsContentTriggers } from '~/components/Lists/CardTitleDetails/CardTitleDetailsContentTriggers';
+import { CardTitleDetailsContentIcons } from '~/components/Lists/CardTitleDetails/CardTitleDetailsContentIcons';
 import {
   useGetCardTitleDetailsChecklists,
   useSetCardChecklistExpanded,
@@ -81,7 +81,7 @@ export function CardTitleDetailsContent({
 
   return (
     <>
-      <CardTitleDetailsContentTriggers
+      <CardTitleDetailsContentIcons
         cardId={cardId}
         description={description}
         isOpen={isOpen}

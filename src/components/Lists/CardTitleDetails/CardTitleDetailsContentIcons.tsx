@@ -4,14 +4,14 @@ import { IoMdList } from 'react-icons/io';
 import { RiCheckboxLine } from 'react-icons/ri';
 import {
   CardTitleDetailsChecklistTotalsContainer,
-  CardTitleDetailsContentTriggersContainer,
+  CardTitleDetailsContentIconsContainer,
 } from '~/components/Lists/CardTitleDetails/CardTitleDetails.styled';
 import { Tooltip } from '~/components/Tooltip/Tooltip';
 import { useGetCardTitleDetailsChecklists } from '~/db/checklists/checklists.query';
 import { Flex } from '~/styles/Page.styled';
 import { useCardTitleDetailsVisibility } from '~/utils/useCardTitleDetailsVisibility';
 
-type CardTitleDetailsContentTriggersProps = {
+type CardTitleDetailsContentIconsProps = {
   cardId: string;
   description: string;
   isOpen: boolean;
@@ -20,12 +20,12 @@ type CardTitleDetailsContentTriggersProps = {
   ) => void;
 };
 
-export function CardTitleDetailsContentTriggers({
+export function CardTitleDetailsContentIcons({
   cardId,
   description,
   isOpen,
   toggleOpen,
-}: CardTitleDetailsContentTriggersProps) {
+}: CardTitleDetailsContentIconsProps) {
   const { data } = useGetCardTitleDetailsChecklists({ cardId });
   const { commentsCount, hasChecklistDetails } =
     useCardTitleDetailsVisibility(cardId);
@@ -37,8 +37,8 @@ export function CardTitleDetailsContentTriggers({
       : 'Expand checklists';
 
   return (
-    <CardTitleDetailsContentTriggersContainer
-      data-testid="CardTitleDetailsContentTriggersContainer"
+    <CardTitleDetailsContentIconsContainer
+      data-testid="CardTitleDetailsContentIconsContainer"
       commentsCount={commentsCount}
     >
       {commentsCount > 0 && (
@@ -75,6 +75,6 @@ export function CardTitleDetailsContentTriggers({
           </CardTitleDetailsChecklistTotalsContainer>
         </Tooltip>
       )}
-    </CardTitleDetailsContentTriggersContainer>
+    </CardTitleDetailsContentIconsContainer>
   );
 }
