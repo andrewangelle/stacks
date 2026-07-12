@@ -68,6 +68,10 @@ export function useGetLists() {
   return useQuery(listsQueryOptions(boardId));
 }
 
+export function useGetListsByBoardId({ boardId }: { boardId: string }) {
+  return useQuery(listsQueryOptions(boardId));
+}
+
 export function useGetListById({ id }: { id: string }) {
   const boardId = useCurrentBoardId();
 
@@ -75,6 +79,17 @@ export function useGetListById({ id }: { id: string }) {
     ...listsQueryOptions(boardId),
     select(data) {
       return data.find((item) => item.id === id);
+    },
+  });
+}
+
+export function useGetListByCardId({ id }: { id: string }) {
+  const boardId = useCurrentBoardId();
+
+  return useSuspenseQuery({
+    ...listsQueryOptions(boardId),
+    select(data) {
+      return data.find((item) => item.cards.some((card) => card.id === id));
     },
   });
 }
