@@ -13,12 +13,14 @@ import {
   deleteCard,
   getCardById,
   getCardsByListId,
+  moveCard,
   updateCard,
 } from '~/db/cards/cards.functions';
 import type {
   CreateCardArgs,
   DeleteCardArgs,
   GetCardsByListIdArgs,
+  MoveCardArgs,
   UpdateCardArgs,
 } from '~/db/cards/cards.schemas';
 import {
@@ -223,6 +225,48 @@ export function useUpdateCard() {
   });
 
   return mutation.mutate;
+}
+
+/**
+ * Move a card to another list, possibly on another board. Board transfers are recorded in
+ * the card's activity feed server-side (see moveCardQuery). Board ids are only used here to
+ * invalidate the affected boards' list caches; the server move is keyed off the lists.
+ */
+export function useMoveCardMutation() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn({
+      sourceBoardId: _sourceBoardId,
+      targetBoardId: _targetBoardId,
+      ...data
+    }: MoveCardArgs & { sourceBoardId: string; targetBoardId: string }) {
+      return moveCard({ data });
+    },
+    onSuccess(_result, variables) {
+      queryClient.invalidateQueries({
+        queryKey: queryKeys.list(variables.sourceListId),
+      });
+      queryClient.invalidateQueries({
+        queryKey: queryKeys.list(variables.targetListId),
+      });
+      queryClient.invalidateQueries({
+        queryKey: queryKeys.detail(variables.cardId),
+      });
+      queryClient.invalidateQueries({
+        queryKey: ['lists', variables.sourceBoardId],
+      });
+      queryClient.invalidateQueries({
+        queryKey: ['lists', variables.targetBoardId],
+      });
+      // The move logs transfer entries server-side; drop the cached feed so it
+      // refetches when the card is reopened.
+      queryClient.invalidateQueries({
+        queryKey: activityListQueryOptions({ cardId: variables.cardId })
+          .queryKey,
+      });
+    },
+  });
 }
 
 export function useDeleteCard() {

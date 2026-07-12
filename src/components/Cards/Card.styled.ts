@@ -215,35 +215,6 @@ export const CardModalTrigger = styled('div')({
   },
 });
 
-export const CardModalCloseContainer = styled.div` 
-  display: flex;
-  flex-shrink: 0;
-  justify-content: flex-end;
-  align-items: center;
-  border-bottom: 1px solid rgba(0,0,0, 0.2);
-  `;
-
-export const CardModalClose = styled(Dialog.Close)` 
-  border: none;
-  right: 0;
-  padding: 8px;
-  cursor: pointer;
-  background: white;
-  margin: 4px 12px 4px 4px;
-
-  &:hover {
-    background: rgba(0,0,0, 0.1);
-  }
-`;
-
-export const CardModalCloseSpinnerSlot = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 8px;
-  margin: 4px 12px 4px 4px;
-`;
-
 export const CardModalTitleContainer = styled.div`
   display: flex;
   margin: 12px 12px 0px;

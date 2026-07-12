@@ -10,6 +10,7 @@ import type {
 } from '~/db/cards/cards.schemas';
 import { prisma } from '~/db/prisma';
 import type { WithUserId } from '~/db/withUserId';
+import type { Prisma } from '~/generated/prisma/client';
 
 export function getCardsByListIdQuery(data: WithUserId<GetCardsByListIdArgs>) {
   return prisma.card.findMany({
@@ -299,9 +300,10 @@ export async function reorderCardsQuery(data: WithUserId<ReorderCardsArgs>) {
 }
 
 /**
- * Move a card to another list on the same board. Updates listId and rewrites position
- * on both source and target lists so order stays contiguous. Validates board ownership
- * so cards cannot hop between boards.
+ * Move a card to a position within any list the user owns — same list, another list on the
+ * same board, or a list on a different board. Rewrites positions so order stays contiguous
+ * and records the transfer in the card's activity feed: board links when the board changes,
+ * list links when only the list changes, and nothing for a same-list reposition.
  */
 export async function moveCardQuery(data: WithUserId<MoveCardArgs>) {
   const card = await prisma.card.findFirst({
@@ -311,10 +313,7 @@ export async function moveCardQuery(data: WithUserId<MoveCardArgs>) {
       userId: data.userId,
       list: { board: { userId: data.userId } },
     },
-    select: {
-      id: true,
-      list: { select: { boardId: true } },
-    },
+    select: { id: true, list: { select: { boardId: true } } },
   });
 
   if (!card) {
@@ -322,67 +321,132 @@ export async function moveCardQuery(data: WithUserId<MoveCardArgs>) {
   }
 
   const targetList = await prisma.list.findFirst({
-    where: {
-      id: data.targetListId,
-      boardId: card.list.boardId,
-      board: { userId: data.userId },
-    },
+    where: { id: data.targetListId, board: { userId: data.userId } },
   });
 
-  if (!targetList || data.sourceListId === data.targetListId) {
+  if (!targetList) {
     throw new Error('Invalid move');
   }
 
+  const movedToNewList = data.sourceListId !== data.targetListId;
+
   await prisma.$transaction(async (tx) => {
-    const listOwnership = {
-      list: { board: { userId: data.userId } },
-    };
-
-    const sourceCards = await tx.card.findMany({
-      where: { listId: data.sourceListId, ...listOwnership },
-      orderBy: [{ position: 'asc' }, { createdAt: 'asc' }],
-      select: { id: true },
-    });
-
-    const targetCards = await tx.card.findMany({
-      where: { listId: data.targetListId, ...listOwnership },
-      orderBy: [{ position: 'asc' }, { createdAt: 'asc' }],
-      select: { id: true },
-    });
-
-    await tx.card.updateMany({
-      where: { id: data.cardId, userId: data.userId },
-      data: { listId: data.targetListId },
-    });
-
-    const remainingSource = sourceCards.filter(
-      (sourceCard) => sourceCard.id !== data.cardId,
-    );
-
-    for (let position = 0; position < remainingSource.length; position++) {
+    if (movedToNewList) {
       await tx.card.updateMany({
-        where: { id: remainingSource[position].id, userId: data.userId },
-        data: { position },
+        where: { id: data.cardId, userId: data.userId },
+        data: { listId: data.targetListId },
       });
+      const sourceIds = await orderedCardIds(
+        tx,
+        data.userId,
+        data.sourceListId,
+      );
+      await renumber(tx, data.userId, sourceIds);
     }
 
-    const targetIds = targetCards.map((targetCard) => targetCard.id);
-    const clampedIndex = Math.min(
-      Math.max(data.targetIndex, 0),
-      targetIds.length,
+    const targetIds = withCardAt(
+      await orderedCardIds(tx, data.userId, data.targetListId),
+      data.cardId,
+      data.targetIndex,
     );
-    targetIds.splice(clampedIndex, 0, data.cardId);
-
-    for (let position = 0; position < targetIds.length; position++) {
-      await tx.card.updateMany({
-        where: { id: targetIds[position], userId: data.userId },
-        data: { position },
-      });
-    }
+    await renumber(tx, data.userId, targetIds);
   });
 
-  return {
-    code: 'cards:move:success',
-    message: 'success',
+  await recordCardMoveActivity(data, {
+    sourceBoardId: card.list.boardId,
+    targetBoardId: targetList.boardId,
+  });
+
+  return { code: 'cards:move:success', message: 'success' };
+}
+
+/** A list's card ids in display order. */
+async function orderedCardIds(
+  tx: Prisma.TransactionClient,
+  userId: string,
+  listId: string,
+) {
+  const cards = await tx.card.findMany({
+    where: { listId, list: { board: { userId } } },
+    orderBy: [{ position: 'asc' }, { createdAt: 'asc' }],
+    select: { id: true },
+  });
+  return cards.map((card) => card.id);
+}
+
+/** `ids` with `cardId` placed at `index`, dropping any existing entry first. */
+function withCardAt(ids: string[], cardId: string, index: number) {
+  const rest = ids.filter((id) => id !== cardId);
+  const clampedIndex = Math.min(Math.max(index, 0), rest.length);
+  rest.splice(clampedIndex, 0, cardId);
+  return rest;
+}
+
+/** Persist `orderedIds` as contiguous 0-based positions. */
+async function renumber(
+  tx: Prisma.TransactionClient,
+  userId: string,
+  orderedIds: string[],
+) {
+  for (let position = 0; position < orderedIds.length; position++) {
+    await tx.card.updateMany({
+      where: { id: orderedIds[position], userId },
+      data: { position },
+    });
+  }
+}
+
+/** Log the move to the card's activity feed, unless it was a same-list reposition. */
+async function recordCardMoveActivity(
+  data: WithUserId<MoveCardArgs>,
+  boards: { sourceBoardId: string; targetBoardId: string },
+) {
+  const link = transferLink(data, boards);
+
+  if (!link) {
+    return;
+  }
+
+  const entry = {
+    cardId: data.cardId,
+    listId: data.targetListId,
+    boardId: boards.targetBoardId,
+    userId: data.userId,
+    type: 'feed',
   };
+
+  await prisma.activity.create({
+    data: {
+      ...entry,
+      content: `transferred this card from {{ ${link.from} }}`,
+    },
+  });
+  await prisma.activity.create({
+    data: { ...entry, content: `transferred this card to {{ ${link.to} }}` },
+  });
+}
+
+/**
+ * Link tokens describing the move: board links when the board changed, list links when only
+ * the list changed, or null for a same-list reposition (no activity).
+ */
+function transferLink(
+  data: WithUserId<MoveCardArgs>,
+  boards: { sourceBoardId: string; targetBoardId: string },
+) {
+  if (boards.sourceBoardId !== boards.targetBoardId) {
+    return {
+      from: `linkToBoard:${boards.sourceBoardId}`,
+      to: `linkToBoard:${boards.targetBoardId}`,
+    };
+  }
+
+  if (data.sourceListId !== data.targetListId) {
+    return {
+      from: `linkToList:${data.sourceListId}`,
+      to: `linkToList:${data.targetListId}`,
+    };
+  }
+
+  return null;
 }
