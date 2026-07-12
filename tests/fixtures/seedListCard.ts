@@ -50,6 +50,8 @@ export function seedListCard(data: {
     userId,
     position: 0,
     isCompleted: false,
+    isChecklistsExpanded: false,
+    expandedChecklistId: null,
     createdAt: timestamp,
     updatedAt: timestamp,
   };
