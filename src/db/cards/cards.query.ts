@@ -22,6 +22,7 @@ import type {
   UpdateCardArgs,
 } from '~/db/cards/cards.schemas';
 import {
+  cardTitleDetailsChecklistsQueryOptions,
   checklistByIdQueryOptions,
   checklistsQueryOptions,
 } from '~/db/checklists/checklists.query';
@@ -102,7 +103,25 @@ export function useCreateCard() {
     },
 
     onSuccess(result, variables) {
-      const newItem = toCardListItem(result.data[0]);
+      const newCard = result.data[0];
+      const newItem = toCardListItem(newCard);
+
+      // Seed the per-card suspense caches so the newly rendered card resolves
+      // from cache instead of suspending. `useGetCardById` (in
+      // CardCompletedIndicator) reads this outside the per-card Suspense
+      // boundary, so an uncached read would bubble up and flip the whole list
+      // to its skeleton.
+      queryClient.setQueryData<Card>(
+        cardByIdQueryOptions(newCard.id).queryKey,
+        newCard,
+      );
+
+      // A brand-new card has no checklists yet; seed an empty view so the
+      // CardTitleDetails content query resolves immediately too.
+      queryClient.setQueryData(
+        cardTitleDetailsChecklistsQueryOptions(newCard.id).queryKey,
+        { completedItemsForCard: 0, totalItemsForCard: 0, checklists: [] },
+      );
 
       queryClient.setQueryData<CardListItem[]>(
         queryKeys.list(variables.listId),
@@ -185,17 +204,18 @@ export function useUpdateCard() {
         updateListArrayCaches(queryClient, (lists) =>
           lists.map((list) => ({
             ...list,
-            cards: list.cards.map((card) =>
-              card.id === variables.cardId
-                ? {
-                    ...card,
-                    cardTitle: variables.cardTitle ?? card.cardTitle,
-                    cardDescription:
-                      variables.cardDescription ?? card.cardDescription,
-                    isCompleted: variables.isCompleted ?? card.isCompleted,
-                  }
-                : card,
-            ),
+            cards: list.cards.map((card) => {
+              if (card.id === variables.cardId) {
+                return {
+                  ...card,
+                  cardTitle: variables.cardTitle ?? card.cardTitle,
+                  cardDescription:
+                    variables.cardDescription ?? card.cardDescription,
+                  isCompleted: variables.isCompleted ?? card.isCompleted,
+                };
+              }
+              return card;
+            }),
           })),
         );
       }
@@ -218,16 +238,15 @@ export function useDeleteCard() {
       );
 
       updateListArrayCaches(queryClient, (lists) =>
-        lists.map((list) =>
-          list.id === variables.listId
-            ? {
-                ...list,
-                cards: list.cards.filter(
-                  (card) => card.id !== variables.cardId,
-                ),
-              }
-            : list,
-        ),
+        lists.map((list) => {
+          if (list.id === variables.listId) {
+            return {
+              ...list,
+              cards: list.cards.filter((card) => card.id !== variables.cardId),
+            };
+          }
+          return list;
+        }),
       );
     },
   });
