@@ -40,6 +40,10 @@ export function List({ id: listId }: { id: string }) {
               }
               onMove={onMove}
             >
+              {index === 0 && (
+                <AddNewCardAtPosition listId={listId} position={-1} />
+              )}
+
               <CardTitleDetails
                 id={card.id}
                 description={card.cardDescription}

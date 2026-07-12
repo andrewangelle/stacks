@@ -1,4 +1,4 @@
-import type { Dispatch, SetStateAction } from 'react';
+import { useState } from 'react';
 import { EditListNameInput, ListName } from '~/components/Lists/List.styled';
 import { useGetListById, useUpdateList } from '~/db/lists/lists.query';
 import { useCurrentBoardId } from '~/utils/useCurrentBoardId';
@@ -6,20 +6,12 @@ import { useOutsideClick } from '~/utils/useOutsideClick';
 
 type EditableListNameProps = {
   listId: string;
-  editedListTitle: string;
-  isEditingListName: boolean;
-  setIsEditingListName: (isEditingListName: boolean) => void;
-  setEditedListTitle: Dispatch<SetStateAction<string>>;
 };
 
-export function EditableListName({
-  isEditingListName,
-  setIsEditingListName,
-  editedListTitle,
-  setEditedListTitle,
-  listId,
-}: EditableListNameProps) {
+export function EditableListName({ listId }: EditableListNameProps) {
   const { data: list } = useGetListById({ id: listId });
+  const [isEditingListName, setIsEditingListName] = useState(false);
+  const [editedListTitle, setEditedListTitle] = useState('');
   const boardId = useCurrentBoardId();
   const updateList = useUpdateList();
   const outsideClickRef = useOutsideClick(
