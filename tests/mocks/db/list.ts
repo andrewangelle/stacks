@@ -74,6 +74,7 @@ export const listModel = {
         .map((card) => ({
           id: card.id,
           isCompleted: card.isCompleted,
+          position: card.position,
           cardTitle: card.cardTitle,
           createdAt: card.createdAt,
           description: card.cardDescription,

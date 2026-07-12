@@ -26,9 +26,11 @@ export function getListsQuery(data: WithUserId<GetListsArgs>) {
           id: true,
           cardDescription: true,
           isCompleted: true,
+          position: true,
           cardTitle: true,
           createdAt: true,
         },
+        orderBy: [{ position: 'asc' }, { createdAt: 'asc' }],
       },
     },
   });
