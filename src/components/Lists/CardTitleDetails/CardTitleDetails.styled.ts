@@ -306,7 +306,7 @@ export const CardTitleDetailsChecklistShowMore = styled.button`
   }
 `;
 
-export const CardTitleDetailsContentTriggersContainer = styled.div<{
+export const CardTitleDetailsContentIconsContainer = styled.div<{
   commentsCount: number;
 }>({
   display: 'flex',
