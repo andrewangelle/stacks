@@ -27,6 +27,6 @@ export const CardModalCloseSpinnerSlot = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 8px;
-  margin: 4px 12px 4px 4px;
+  padding: 2px 4px;
+  margin: 4px;
 `;

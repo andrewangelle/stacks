@@ -20,7 +20,7 @@ import { ChecklistSkeleton } from '~/components/Checklists/ChecklistSkeleton';
 import { CardChecklists } from '~/components/Checklists/Checklists';
 import { ChecklistsContainer } from '~/components/Checklists/Checklists.styled';
 import { CreateChecklist } from '~/components/Checklists/CreateChecklist';
-import { usePreventDevToolsClose } from '~/components/DevTools';
+import { usePreventModalCloseOnDevToolsEvent } from '~/components/DevTools';
 import { useCardColumnWidth } from '~/utils/useCardColumnWidth';
 import { useCurrentBoardId } from '~/utils/useCurrentBoardId';
 import { useCurrentCardId } from '~/utils/useCurrentCardId';
@@ -33,7 +33,7 @@ export function Card() {
   const [isClosingCard, setIsClosingCard] = useState(false);
   const { columnWidth, setColumnWidth, isWideLayout } = useCardColumnWidth();
   const mainColumnRef = useRef<HTMLDivElement>(null);
-  const preventDevToolsClose = usePreventDevToolsClose();
+  const preventCloseOnDevToolsEvent = usePreventModalCloseOnDevToolsEvent();
 
   const gridTemplateColumns = `minmax(0, 1fr) 8px ${columnWidth}px`;
   const cardModalBodyStyle = isWideLayout ? { gridTemplateColumns } : undefined;
@@ -72,7 +72,7 @@ export function Card() {
             onCloseAutoFocus={(event) => {
               event.preventDefault();
             }}
-            onPointerDownOutside={preventDevToolsClose}
+            onPointerDownOutside={preventCloseOnDevToolsEvent}
           >
             <CardHeader
               cardId={cardId}

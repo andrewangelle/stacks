@@ -6,13 +6,13 @@ import { animationStyles } from '~/styles/animations';
 import { Button } from '~/styles/Page.styled';
 import { blue, focusRingBlue } from '~/styles/tokens';
 
-export const ListSelectSkeleton = styled.div({
+export const SelectSkeleton = styled.div({
   background: 'rgba(9, 30, 66, 0.25)',
   cursor: 'default',
   pointerEvents: 'none',
-  minHeight: '24px',
-  width: '100%',
-  borderRadius: '4px',
+  minHeight: '40px',
+  borderRadius: '8px',
+  margin: '0px 8px 8px',
   ...animationStyles.pulse,
 });
 

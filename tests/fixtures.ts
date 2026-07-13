@@ -13,7 +13,8 @@ import { test as base, expect } from '@playwright/test';
  * real device. Applied only to the Mobile projects; desktop browsers are
  * untouched. Injected on every navigation so it survives page.goto.
  */
-export const test = base.extend<{ clampMobileViewport: unknown }>({
+// biome-ignore lint/suspicious/noConfusingVoidType: <nothing else works>
+export const test = base.extend<{ clampMobileViewport: void }>({
   clampMobileViewport: [
     async ({ page }, use, testInfo) => {
       if (testInfo.project.name.startsWith('Mobile')) {

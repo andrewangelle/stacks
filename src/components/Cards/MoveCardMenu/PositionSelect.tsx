@@ -4,11 +4,13 @@ import { RxCaretDown } from 'react-icons/rx';
 import {
   SelectContent,
   SelectItem,
+  SelectSkeleton,
   SelectTrigger,
   SelectViewport,
 } from '~/components/Cards/MoveCardMenu/MoveCardMenu.styled';
 
 type PositionSelectProps = {
+  isListsLoading: boolean;
   positions: number;
   selectedPosition?: number;
   setSelectedPosition: (position: number) => void;
@@ -16,11 +18,16 @@ type PositionSelectProps = {
 };
 
 export function PositionSelect({
+  isListsLoading,
   positions,
   selectedPosition,
   setSelectedPosition,
   ref,
 }: PositionSelectProps) {
+  if (isListsLoading) {
+    return <SelectSkeleton style={{ minHeight: '44px' }} />;
+  }
+
   return (
     <Select.Root
       value={selectedPosition ? String(selectedPosition) : ''}
