@@ -2,10 +2,10 @@ import * as Select from '@radix-ui/react-select';
 import type { RefObject } from 'react';
 import { RxCaretDown } from 'react-icons/rx';
 import {
-  ListSelectSkeleton,
   SelectContent,
   SelectItem,
   SelectItemCurrent,
+  SelectSkeleton,
   SelectTrigger,
   SelectViewport,
 } from '~/components/Cards/MoveCardMenu/MoveCardMenu.styled';
@@ -29,13 +29,7 @@ export function ListSelect({
   ref,
 }: ListSelectProps) {
   if (isListsLoading) {
-    return (
-      <Select.Root value={selectedList ?? ''} onValueChange={setSelectedList}>
-        <SelectTrigger aria-label="List" data-testid="ListSelectTrigger">
-          <ListSelectSkeleton />
-        </SelectTrigger>
-      </Select.Root>
-    );
+    return <SelectSkeleton style={{ minHeight: '44px' }} />;
   }
 
   return (

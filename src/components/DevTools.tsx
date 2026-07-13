@@ -5,7 +5,7 @@ import { useCallback } from 'react';
 type PointerDownOutsideEvent = CustomEvent<{
   originalEvent: PointerEvent;
 }>;
-export function usePreventDevToolsClose() {
+export function usePreventModalCloseOnDevToolsEvent() {
   return useCallback((event: PointerDownOutsideEvent) => {
     if (
       import.meta.env.DEV &&
