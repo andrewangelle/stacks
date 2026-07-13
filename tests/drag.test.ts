@@ -208,7 +208,16 @@ async function dragToLocator(page: Page, source: Locator, target: Locator) {
 
   await page.mouse.move(fromX, fromY);
   await page.mouse.down();
+  // WebKit coalesces fast synthetic pointer moves, so dnd-kit can miss the
+  // drag activation or settle on a stale drop target. Give the pointer sensor
+  // a beat to register the press, cross the activation threshold, then land a
+  // second move on the target so the current drop target is up to date before
+  // release.
+  await page.waitForTimeout(100);
   await page.mouse.move(fromX, fromY + 12, { steps: 5 });
+  await page.waitForTimeout(100);
   await page.mouse.move(toX, toY, { steps: 30 });
+  await page.mouse.move(toX, toY, { steps: 5 });
+  await page.waitForTimeout(100);
   await page.mouse.up();
 }

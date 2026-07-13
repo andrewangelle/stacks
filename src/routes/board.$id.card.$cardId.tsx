@@ -7,8 +7,6 @@ import { getCardServer } from '~/components/server/Card.functions';
 import { fetchUserId } from '~/middleware/auth';
 
 export const Route = createFileRoute('/board/$id/card/$cardId')({
-  wrapInSuspense: true,
-
   async beforeLoad() {
     const { userId } = await fetchUserId();
     return { userId };

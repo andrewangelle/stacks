@@ -177,11 +177,11 @@ test.describe('Move card', () => {
     await expect(page).not.toHaveURL(/\/card\//);
 
     // The card left the source board and landed on the target board.
-    await page.goto(`/board/${source.id}`);
+    await gotoSettled(page, `/board/${source.id}`);
     await expect(
       page.getByTestId('ListCardContainer').filter({ hasText: 'Write docs' }),
     ).toHaveCount(0);
-    await page.goto(`/board/${target.id}`);
+    await gotoSettled(page, `/board/${target.id}`);
     await expect(async () => {
       await expect(
         page.getByTestId('ListCardContainer').filter({ hasText: 'Write docs' }),
@@ -189,7 +189,7 @@ test.describe('Move card', () => {
     }).toPass();
 
     // The transfer is logged with links to the old and new boards.
-    await page.goto(`/board/${target.id}/card/${card.id}`);
+    await gotoSettled(page, `/board/${target.id}/card/${card.id}`);
     await expectTransferEntries(page, { from: 'Sprint Board', to: 'Backlog' });
     await expectLinkNavigatesToBoard(page, 'Sprint Board', source.id);
   });
@@ -229,11 +229,11 @@ test.describe('Move card', () => {
     await submitMove(page);
 
     // The card stays put in its list...
-    await page.goto(`/board/${board.id}`);
+    await gotoSettled(page, `/board/${board.id}`);
     await expectListOrder(page, 'To Do', ['Write docs']);
 
     // ...and a same-list reposition records nothing in the feed.
-    await page.goto(`/board/${board.id}/card/${card.id}`);
+    await gotoSettled(page, `/board/${board.id}/card/${card.id}`);
     const activity = page.getByTestId('CardActivityColumn');
     await expect(activity).toBeVisible();
     await expect(
@@ -255,7 +255,7 @@ test.describe('Move card', () => {
     await selectMovePosition(page, '2');
     await submitMove(page);
 
-    await page.goto(`/board/${target.id}`);
+    await gotoSettled(page, `/board/${target.id}`);
     await expectListOrder(page, 'Later', ['Existing card', 'Write docs']);
 
     // The reordering survives a full refresh (persisted server-side).
@@ -326,6 +326,15 @@ async function waitForCardModal(page: Page) {
   }).toPass();
 }
 
+// Firefox/WebKit abort a `page.goto` that starts while the previous page is
+// still client-hydrating (its dynamic module imports are in flight), surfacing
+// as `NS_BINDING_ABORTED`. Let each navigation settle before the next one, so
+// back-to-back navigations after a move don't race with hydration.
+async function gotoSettled(page: Page, url: string) {
+  await page.goto(url);
+  await page.waitForLoadState('networkidle');
+}
+
 // Two boards: the source holds the card, the target has a list to receive it.
 async function seedBoardsScenario(request: APIRequestContext) {
   await resetDb(request);
@@ -374,21 +383,33 @@ async function openMoveMenu(page: Page, boardId: string, cardId: string) {
   await expect(page.getByTestId('MoveCardMenuContent')).toBeVisible();
 }
 
+// The move menu's dropdowns are Radix Selects nested inside a Radix Popover.
+// On WebKit (and inconsistently on Firefox), Playwright's synthetic click on a
+// Select trigger is seen by the Popover's dismiss layer as an outside pointer
+// interaction, so the whole popover closes before the list ever opens. Opening
+// the Select with the keyboard avoids the pointer path and keeps the popover
+// open across all browsers; the item can then be clicked normally.
+async function openSelect(page: Page, triggerTestId: string) {
+  const trigger = page.getByTestId(triggerTestId);
+  await trigger.focus();
+  await trigger.press('Enter');
+}
+
 async function selectMoveBoard(page: Page, boardTitle: string) {
-  await page.getByTestId('BoardSelectTrigger').click();
+  await openSelect(page, 'BoardSelectTrigger');
   await page.getByTestId(`BoardSelectItem-${boardTitle}`).click();
   // The button enables once the selection resolves to a list on the new board.
   await expect(page.getByTestId('MoveCardButton')).toBeEnabled();
 }
 
 async function selectMoveList(page: Page, listTitle: string) {
-  await page.getByTestId('ListSelectTrigger').click();
+  await openSelect(page, 'ListSelectTrigger');
   await page.getByTestId(`ListSelectItem-${listTitle}`).click();
   await expect(page.getByTestId('MoveCardButton')).toBeEnabled();
 }
 
 async function selectMovePosition(page: Page, position: string) {
-  await page.getByTestId('PositionSelectTrigger').click();
+  await openSelect(page, 'PositionSelectTrigger');
   await page.getByTestId(`PositionSelectItem-${position}`).click();
 }
 
