@@ -1,5 +1,12 @@
-import { createFileRoute, redirect } from '@tanstack/react-router';
-import { BoardByIdPage } from '~/components/pages/BoardByIdPage';
+import { createFileRoute, Outlet, redirect } from '@tanstack/react-router';
+import { CompositeComponent } from '@tanstack/react-start/rsc';
+import { Suspense } from 'react';
+import { BoardListsFallback } from '~/components/Boards/Board.styled';
+import { BoardLists } from '~/components/Boards/BoardLists';
+import type { BoardBackground } from '~/components/Boards/Boards.styled';
+import { BoardHeader } from '~/components/Nav/BoardHeader';
+import { NavBarFallback } from '~/components/Nav/NavBarClient';
+import { UserNavContent } from '~/components/Nav/UserNavContent';
 import { getBoardPageServer } from '~/components/server/Board.functions';
 import {
   getBoardHeaderServer,
@@ -46,3 +53,44 @@ export const Route = createFileRoute('/board/$id')({
 
   component: BoardByIdPage,
 });
+
+function BoardByIdPage() {
+  const { BoardPageServer, boardColor } = Route.useLoaderData();
+  return (
+    <>
+      <Nav />
+
+      <CompositeComponent src={BoardPageServer.src}>
+        <Suspense
+          fallback={
+            <BoardListsFallback
+              data-testid="BoardListsFallback"
+              background={boardColor}
+            />
+          }
+        >
+          <BoardLists>
+            <Outlet />
+          </BoardLists>
+        </Suspense>
+      </CompositeComponent>
+    </>
+  );
+}
+
+function Nav() {
+  const { NavBarServer, BoardHeaderServer, boardColor } = Route.useLoaderData();
+  return (
+    <Suspense fallback={<NavBarFallback />}>
+      <CompositeComponent
+        boardColor={boardColor as BoardBackground}
+        src={NavBarServer.src}
+        renderUserContent={() => <UserNavContent />}
+      >
+        <CompositeComponent src={BoardHeaderServer.src}>
+          <BoardHeader />
+        </CompositeComponent>
+      </CompositeComponent>
+    </Suspense>
+  );
+}

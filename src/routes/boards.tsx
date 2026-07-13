@@ -1,5 +1,13 @@
 import { createFileRoute, redirect } from '@tanstack/react-router';
-import { BoardsPage, PendingBoardsPage } from '~/components/pages/BoardsPage';
+import { CompositeComponent } from '@tanstack/react-start/rsc';
+import { Suspense } from 'react';
+import { Boards } from '~/components/Boards/Boards';
+import {
+  BoardCardSkeleton,
+  BoardsContainer,
+} from '~/components/Boards/Boards.styled';
+import { NavBarFallback } from '~/components/Nav/NavBarClient';
+import { UserNavContent } from '~/components/Nav/UserNavContent';
 import { getBoardsServer } from '~/components/server/Boards.functions';
 import { getNavBarServer } from '~/components/server/Nav.functions';
 import { boardsQueryOptions } from '~/db/boards/boards.query';
@@ -28,3 +36,38 @@ export const Route = createFileRoute('/boards')({
   pendingComponent: PendingBoardsPage,
   component: BoardsPage,
 });
+
+function BoardsPage() {
+  const { BoardsServer, NavBarServer } = Route.useLoaderData();
+  return (
+    <>
+      <CompositeComponent
+        src={NavBarServer.src}
+        renderUserContent={() => <UserNavContent />}
+        boardColor="blue"
+      />
+      <CompositeComponent src={BoardsServer.src}>
+        <Suspense
+          fallback={(['one', 'two', 'three'] as const).map((id) => (
+            <BoardCardSkeleton data-testid="BoardCardSkeleton" key={id} />
+          ))}
+        >
+          <Boards />
+        </Suspense>
+      </CompositeComponent>
+    </>
+  );
+}
+
+function PendingBoardsPage() {
+  return (
+    <>
+      <NavBarFallback />
+      <BoardsContainer data-testid="BoardsContainer">
+        {(['one', 'two', 'three'] as const).map((id) => (
+          <BoardCardSkeleton data-testid="BoardCardSkeleton" key={id} />
+        ))}
+      </BoardsContainer>
+    </>
+  );
+}
