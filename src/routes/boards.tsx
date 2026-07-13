@@ -6,8 +6,6 @@ import { boardsQueryOptions } from '~/db/boards/boards.query';
 import { fetchUserId } from '~/middleware/auth';
 
 export const Route = createFileRoute('/boards')({
-  wrapInSuspense: true,
-
   async beforeLoad() {
     const { userId } = await fetchUserId();
     return { userId };
