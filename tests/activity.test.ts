@@ -1,10 +1,5 @@
-import {
-  type APIRequestContext,
-  expect,
-  type Locator,
-  type Page,
-  test,
-} from '@playwright/test';
+import type { APIRequestContext, Locator, Page } from '@playwright/test';
+import { expect, test } from '~test/fixtures';
 import { resetDb } from '~test/helpers/resetDb';
 import { seedBoard, seedCard } from '~test/helpers/seed';
 import { waitForInteractiveTrigger } from '~test/helpers/waitForInteractiveTrigger';

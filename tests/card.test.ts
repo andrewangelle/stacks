@@ -1,9 +1,5 @@
-import {
-  type APIRequestContext,
-  expect,
-  type Page,
-  test,
-} from '@playwright/test';
+import type { APIRequestContext, Page } from '@playwright/test';
+import { expect, test } from '~test/fixtures';
 import { expectCardCompletionActivity } from '~test/helpers/expectCardCompletionActivity';
 import { expectListCardCount } from '~test/helpers/expectListHeaderCardCount';
 import { resetDb } from '~test/helpers/resetDb';
