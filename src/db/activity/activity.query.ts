@@ -12,6 +12,7 @@ import type {
   GetActivityByIdArgs,
   UpdateActivityArgs,
 } from '~/db/activity/activity.schemas';
+import { adjustCardCommentCount } from '~/db/lists/lists.cache';
 import type { Activity } from '~/generated/prisma/client';
 
 export type ActivityListItem = Pick<Activity, 'id' | 'type' | 'createdAt'>;
@@ -87,6 +88,10 @@ export function useCreateActivity() {
         (cache = []) => [toActivityListItem(result), ...cache],
       );
       queryClient.setQueryData(queryKeys.detail(result.id), result);
+
+      if (variables.type === 'comment') {
+        adjustCardCommentCount(variables.cardId, 1);
+      }
     },
   });
 
@@ -135,7 +140,7 @@ export function useDeleteActivity() {
       return deleteActivity({ data });
     },
 
-    onSuccess(_result, variables) {
+    onSuccess(result, variables) {
       queryClient.setQueryData<ActivityListItem[]>(
         queryKeys.list(variables.cardId),
         (cache = []) =>
@@ -145,6 +150,10 @@ export function useDeleteActivity() {
       queryClient.removeQueries({
         queryKey: queryKeys.detail(variables.activityId),
       });
+
+      if (result?.type === 'comment') {
+        adjustCardCommentCount(variables.cardId, -1);
+      }
     },
   });
 

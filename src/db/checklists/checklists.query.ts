@@ -21,8 +21,10 @@ import type {
   GetChecklistsArgs,
   UpdateChecklistArgs,
 } from '~/db/checklists/checklists.schemas';
+import { findCardChecklistView } from '~/db/lists/lists.cache';
 import type { Checklist } from '~/generated/prisma/client';
 import { queryClient } from '~/query';
+import { useCurrentBoardId } from '~/utils/useCurrentBoardId';
 export type ChecklistItem = Pick<
   Checklist,
   'id' | 'checklistTitle' | 'createdAt'
@@ -170,8 +172,11 @@ export function useUpdateChecklist() {
 }
 
 export function useGetCardTitleDetailsChecklists(data: GetChecklistsArgs) {
+  const boardId = useCurrentBoardId();
+
   return useSuspenseQuery({
     ...cardTitleDetailsChecklistsQueryOptions(data.cardId),
+    initialData: () => findCardChecklistView(boardId, data.cardId),
     select(data) {
       const checklistsWithIncompleteItems = data.checklists.filter(
         (checklist) => checklist.completedItems < checklist.totalItems,

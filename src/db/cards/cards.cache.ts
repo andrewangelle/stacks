@@ -1,9 +1,14 @@
 import type { QueryClient } from '@tanstack/react-query';
+import { activityListQueryOptions } from '~/db/activity/activity.query';
 import {
   moveCard as moveCardServer,
   reorderCards as reorderCardsServer,
 } from '~/db/cards/cards.functions';
-import { cardsQueryKeys } from '~/db/cards/cards.query';
+import { cardByIdQueryOptions, cardsQueryKeys } from '~/db/cards/cards.query';
+import {
+  checklistByIdQueryOptions,
+  checklistsQueryOptions,
+} from '~/db/checklists/checklists.query';
 import type { Card } from '~/generated/prisma/client';
 import { queryClient } from '~/query';
 
@@ -67,6 +72,26 @@ export function findCardInListCaches(
 ) {
   return getCachedList(queryClient, listId)?.cards.find(
     (item) => item.id === cardId,
+  );
+}
+
+/** Warms the queries the card modal reads, so opening it resolves from cache. */
+export async function prefetchCardModalData(cardId: string) {
+  await Promise.all([
+    queryClient.prefetchQuery(cardByIdQueryOptions(cardId)),
+    queryClient.prefetchQuery(activityListQueryOptions({ cardId })),
+  ]);
+
+  const checklists = await queryClient.ensureQueryData(
+    checklistsQueryOptions(cardId),
+  );
+
+  await Promise.all(
+    checklists.map((checklist) =>
+      queryClient.prefetchQuery(
+        checklistByIdQueryOptions({ checklistId: checklist.id }),
+      ),
+    ),
   );
 }
 

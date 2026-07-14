@@ -39,6 +39,10 @@ export const listModel = {
           id?: boolean;
           cardTitle?: boolean;
           createdAt?: boolean;
+          isChecklistsExpanded?: boolean;
+          expandedChecklistId?: boolean;
+          checklists?: unknown;
+          activities?: unknown;
         };
       };
     };
@@ -77,7 +81,29 @@ export const listModel = {
           position: card.position,
           cardTitle: card.cardTitle,
           createdAt: card.createdAt,
-          description: card.cardDescription,
+          cardDescription: card.cardDescription,
+          isChecklistsExpanded: card.isChecklistsExpanded,
+          expandedChecklistId: card.expandedChecklistId,
+          activities: getStore().activities.filter(
+            (activity) =>
+              activity.cardId === card.id && activity.type === 'comment',
+          ),
+          checklists: sortByPosition(
+            getStore().checklists.filter(
+              (checklist) => checklist.cardId === card.id,
+            ),
+          ).map((checklist) => ({
+            id: checklist.id,
+            checklistTitle: checklist.checklistTitle,
+            items: sortByPosition(
+              getStore().checklistItems.filter(
+                (item) => item.checklistId === checklist.id,
+              ),
+            ).map((item) => ({
+              label: item.label,
+              isCompleted: item.isCompleted,
+            })),
+          })),
         }));
 
       return {
