@@ -1,7 +1,7 @@
 import { styled } from '@pigment-css/react';
 import * as Popover from '@radix-ui/react-popover';
+import { Link } from '@tanstack/react-router';
 import { TiDelete } from 'react-icons/ti';
-
 import { animationStyles } from '~/styles/animations';
 import {
   blue,
@@ -35,26 +35,27 @@ export const BoardsContainer = styled.div`
   padding: 50px 30px 30px;
 `;
 
-export const BoardCardContainer = styled('button')<BackgroundProps>({
-  border: 'none',
-  padding: 0,
-  position: 'relative',
+export const BoardCardLink = styled(Link)<BackgroundProps>({
   display: 'flex',
   flexDirection: 'column',
   justifyContent: 'flex-end',
-  fontFamily: fontFamily,
-  textAlign: 'left',
+  position: 'relative',
+  border: 'none',
+  margin: '10px',
+  padding: 0,
   width: '100%',
   maxWidth: '15%',
   minWidth: '200px',
   height: '110px',
   borderRadius: '8px',
-  overflow: 'hidden',
   boxShadow:
     '0 1px 0.5px rgba(9, 30, 66, 0.25), 0 0 0 1px rgba(9, 30, 66, 0.12)',
+  fontFamily: fontFamily,
+  textAlign: 'left',
+  textDecoration: 'none',
+  overflow: 'hidden',
   fontSize: '14px',
   cursor: 'pointer',
-  margin: '10px',
   variants: [
     {
       props: { background: 'green' },
@@ -97,6 +98,77 @@ export const BoardCardContainer = styled('button')<BackgroundProps>({
       },
     },
   ],
+  '&:active': {
+    color: `${blue}`,
+  },
+});
+
+export const CreateBoardContainer = styled('div')<BackgroundProps>({
+  display: 'flex',
+  flexDirection: 'column',
+  justifyContent: 'flex-end',
+  position: 'relative',
+  border: 'none',
+  margin: '10px',
+  padding: 0,
+  width: '100%',
+  maxWidth: '15%',
+  minWidth: '200px',
+  height: '110px',
+  borderRadius: '8px',
+  boxShadow:
+    '0 1px 0.5px rgba(9, 30, 66, 0.25), 0 0 0 1px rgba(9, 30, 66, 0.12)',
+  fontFamily: fontFamily,
+  textAlign: 'left',
+  textDecoration: 'none',
+  overflow: 'hidden',
+  fontSize: '14px',
+  cursor: 'pointer',
+  variants: [
+    {
+      props: { background: 'green' },
+      style: {
+        background: boardGradientVars.green,
+        '&:hover': { background: boardGradientHoverVars.green },
+        '&:focus': { background: boardGradientHoverVars.green },
+      },
+    },
+    {
+      props: { background: 'lightGreen' },
+      style: {
+        background: boardGradientVars.lightGreen,
+        '&:hover': { background: boardGradientHoverVars.lightGreen },
+        '&:focus': { background: boardGradientHoverVars.lightGreen },
+      },
+    },
+    {
+      props: { background: 'blue' },
+      style: {
+        background: boardGradientVars.blue,
+        '&:hover': { background: boardGradientHoverVars.blue },
+        '&:focus': { background: boardGradientHoverVars.blue },
+      },
+    },
+    {
+      props: { background: 'orange' },
+      style: {
+        background: boardGradientVars.orange,
+        '&:hover': { background: boardGradientHoverVars.orange },
+        '&:focus': { background: boardGradientHoverVars.orange },
+      },
+    },
+    {
+      props: { background: 'red' },
+      style: {
+        background: boardGradientVars.red,
+        '&:hover': { background: boardGradientHoverVars.red },
+        '&:focus': { background: boardGradientHoverVars.red },
+      },
+    },
+  ],
+  '&:active': {
+    color: `${blue}`,
+  },
 });
 
 export type BoardCardTitleProps = {
@@ -111,14 +183,14 @@ export const BoardCardTitle = styled('div')<BoardCardTitleProps>({
   borderBottomRightRadius: '8px',
 });
 
-export const BoardCardSkeleton = styled(BoardCardContainer)({
+export const BoardCardSkeleton = styled(CreateBoardContainer)({
   background: 'rgba(9, 30, 66, 0.25)',
   cursor: 'default',
   pointerEvents: 'none',
   ...animationStyles.pulse,
 });
 
-export const CreateBoardCard = styled(BoardCardContainer)` 
+export const CreateBoardCard = styled(CreateBoardContainer)` 
   background: rgba(9, 30, 66, 0.04);
   max-height: 100px;
   padding-bottom: 10px;
