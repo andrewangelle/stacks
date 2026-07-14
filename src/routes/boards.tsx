@@ -6,6 +6,7 @@ import {
   BoardCardSkeleton,
   BoardsContainer,
 } from '~/components/Boards/Boards.styled';
+import { NavBarContainer } from '~/components/Nav/Nav.styled';
 import { NavBarFallback } from '~/components/Nav/NavBarClient';
 import { UserNavContent } from '~/components/Nav/UserNavContent';
 import { getBoardsServer } from '~/components/server/Boards.functions';
@@ -33,41 +34,38 @@ export const Route = createFileRoute('/boards')({
     };
   },
 
-  pendingComponent: PendingBoardsPage,
-  component: BoardsPage,
-});
-
-function BoardsPage() {
-  const { BoardsServer, NavBarServer } = Route.useLoaderData();
-  return (
-    <>
-      <CompositeComponent
-        src={NavBarServer.src}
-        renderUserContent={() => <UserNavContent />}
-        boardColor="blue"
-      />
-      <CompositeComponent src={BoardsServer.src}>
-        <Suspense
-          fallback={(['one', 'two', 'three'] as const).map((id) => (
+  pendingComponent() {
+    return (
+      <>
+        <NavBarFallback />
+        <BoardsContainer data-testid="BoardsContainer">
+          {(['one', 'two', 'three'] as const).map((id) => (
             <BoardCardSkeleton data-testid="BoardCardSkeleton" key={id} />
           ))}
-        >
-          <Boards />
-        </Suspense>
-      </CompositeComponent>
-    </>
-  );
-}
+        </BoardsContainer>
+      </>
+    );
+  },
+  component() {
+    const { BoardsServer, NavBarServer } = Route.useLoaderData();
+    return (
+      <>
+        <NavBarContainer data-testid="NavBarContainer">
+          <CompositeComponent src={NavBarServer.src} boardColor="blue">
+            <UserNavContent />
+          </CompositeComponent>
+        </NavBarContainer>
 
-function PendingBoardsPage() {
-  return (
-    <>
-      <NavBarFallback />
-      <BoardsContainer data-testid="BoardsContainer">
-        {(['one', 'two', 'three'] as const).map((id) => (
-          <BoardCardSkeleton data-testid="BoardCardSkeleton" key={id} />
-        ))}
-      </BoardsContainer>
-    </>
-  );
-}
+        <CompositeComponent src={BoardsServer.src}>
+          <Suspense
+            fallback={(['one', 'two', 'three'] as const).map((id) => (
+              <BoardCardSkeleton data-testid="BoardCardSkeleton" key={id} />
+            ))}
+          >
+            <Boards />
+          </Suspense>
+        </CompositeComponent>
+      </>
+    );
+  },
+});

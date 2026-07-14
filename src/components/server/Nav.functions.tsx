@@ -5,7 +5,6 @@ import { z } from 'zod';
 import type { BoardBackground } from '~/components/Boards/Boards.styled';
 import {
   BoardHeaderContainer,
-  NavBarContainer,
   NavBarContent,
 } from '~/components/Nav/Nav.styled';
 import { boardByIdQueryOptions } from '~/db/boards/boards.query';
@@ -15,7 +14,6 @@ import { queryClient } from '~/query';
 
 export type NavServerProps = {
   boardColor: BoardBackground;
-  renderUserContent: () => ReactNode;
   children?: ReactNode;
 };
 
@@ -25,16 +23,13 @@ export const getNavBarServer = createServerFn()
   .handler(async ({ data }) => {
     const src = await createCompositeComponent((props: NavServerProps) => {
       return (
-        <NavBarContainer data-testid="NavBarContainer">
-          <NavBarContent
-            key={data?.boardColor ?? props.boardColor}
-            data-testid="NavBarContent"
-            background={data.boardColor as BoardBackground}
-          >
-            {props.renderUserContent()}
-          </NavBarContent>
+        <NavBarContent
+          key={data?.boardColor ?? props.boardColor}
+          data-testid="NavBarContent"
+          background={data.boardColor as BoardBackground}
+        >
           {props.children}
-        </NavBarContainer>
+        </NavBarContent>
       );
     });
 

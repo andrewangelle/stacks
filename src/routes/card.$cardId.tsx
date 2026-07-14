@@ -6,7 +6,7 @@ import type { BoardBackground } from '~/components/Boards/Boards.styled';
 import { Card } from '~/components/Cards/Card';
 import { CardFallback } from '~/components/Cards/CardFallback';
 import { BoardHeader } from '~/components/Nav/BoardHeader';
-import { NavBarFallback } from '~/components/Nav/NavBarClient';
+import { NavBarContainer } from '~/components/Nav/Nav.styled';
 import { UserNavContent } from '~/components/Nav/UserNavContent';
 import { getBoardPageServer } from '~/components/server/Board.functions';
 import { getCardServer } from '~/components/server/Card.functions';
@@ -64,41 +64,39 @@ export const Route = createFileRoute('/card/$cardId')({
     };
   },
 
-  component: CardPage,
-});
-
-function CardPage() {
-  const { CardServer, BoardServer } = Route.useLoaderData();
-  return (
-    <>
-      <Nav />
-
-      <CompositeComponent src={BoardServer.src}>
-        <BoardLists>
-          <CompositeComponent src={CardServer.src}>
-            <Suspense fallback={<CardFallback />}>
-              <Card />
-            </Suspense>
+  component() {
+    const {
+      CardServer,
+      BoardServer,
+      NavBarServer,
+      BoardHeaderServer,
+      boardColor,
+    } = Route.useLoaderData();
+    return (
+      <>
+        <NavBarContainer data-testid="NavBarContainer">
+          <CompositeComponent
+            src={NavBarServer.src}
+            boardColor={boardColor as BoardBackground}
+          >
+            <UserNavContent />x
           </CompositeComponent>
-        </BoardLists>
-      </CompositeComponent>
-    </>
-  );
-}
 
-function Nav() {
-  const { NavBarServer, BoardHeaderServer, boardColor } = Route.useLoaderData();
-  return (
-    <Suspense fallback={<NavBarFallback />}>
-      <CompositeComponent
-        src={NavBarServer.src}
-        boardColor={boardColor as BoardBackground}
-        renderUserContent={() => <UserNavContent />}
-      >
-        <CompositeComponent src={BoardHeaderServer.src}>
-          <BoardHeader />
+          <CompositeComponent src={BoardHeaderServer.src}>
+            <BoardHeader />
+          </CompositeComponent>
+        </NavBarContainer>
+
+        <CompositeComponent src={BoardServer.src}>
+          <BoardLists>
+            <CompositeComponent src={CardServer.src}>
+              <Suspense fallback={<CardFallback />}>
+                <Card />
+              </Suspense>
+            </CompositeComponent>
+          </BoardLists>
         </CompositeComponent>
-      </CompositeComponent>
-    </Suspense>
-  );
-}
+      </>
+    );
+  },
+});
