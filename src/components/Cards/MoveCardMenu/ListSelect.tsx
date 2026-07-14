@@ -10,6 +10,7 @@ import {
   SelectViewport,
 } from '~/components/Cards/MoveCardMenu/MoveCardMenu.styled';
 import type { ListItem } from '~/db/lists/lists.cache';
+import { useSelectTriggerRef } from '~/utils/useSelectTriggerRef';
 
 type ListSelectProps = {
   isListsLoading: boolean;
@@ -28,13 +29,19 @@ export function ListSelect({
   setSelectedList,
   ref,
 }: ListSelectProps) {
+  const { ref: triggerRef, onCloseAutoFocus } = useSelectTriggerRef();
+
   if (isListsLoading) {
     return <SelectSkeleton style={{ minHeight: '44px' }} />;
   }
 
   return (
     <Select.Root value={selectedList ?? ''} onValueChange={setSelectedList}>
-      <SelectTrigger aria-label="List" data-testid="ListSelectTrigger">
+      <SelectTrigger
+        ref={triggerRef}
+        aria-label="List"
+        data-testid="ListSelectTrigger"
+      >
         <Select.Value placeholder="Select a list" />
 
         <Select.Icon data-testid="SelectIcon">
@@ -47,6 +54,7 @@ export function ListSelect({
           position="popper"
           sideOffset={4}
           data-testid="ListSelectContent"
+          onCloseAutoFocus={onCloseAutoFocus}
         >
           <Select.ScrollUpButton data-testid="SelectScrollUpButton">
             <RxCaretDown size={20} data-testid="RxCaretDown" />
