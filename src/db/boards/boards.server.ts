@@ -6,6 +6,13 @@ import type {
 import { prisma } from '~/db/prisma';
 import type { WithUserId } from '~/db/withUserId';
 
+export function getBoardColorQuery(data: WithUserId<GetBoardByIdArgs>) {
+  return prisma.stack.findFirst({
+    where: { id: data.boardId, userId: data.userId },
+    select: { boardColor: true },
+  });
+}
+
 export function getBoardsQuery(data: { userId: string }) {
   return prisma.stack.findMany({
     where: { userId: data.userId },
