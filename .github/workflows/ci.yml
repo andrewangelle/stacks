@@ -5,6 +5,20 @@ on:
     branches:
       - main
   workflow_dispatch:
+    inputs:
+      browser:
+        description: 'Playwright target to run'
+        type: choice
+        required: false
+        default: chromium
+        options:
+          - chromium
+          - all
+          - firefox
+          - webkit
+          - mobile:chrome
+          - mobile:edge
+          - mobile:opera
 
 jobs:
   test:
@@ -52,10 +66,27 @@ jobs:
       - name: Type check
         run: pnpm test:types
 
+      # Defaults to chromium: `inputs` is empty on pull_request runs.
+      - name: Resolve test target
+        id: target
+        run: |
+          case "${{ inputs.browser || 'chromium' }}" in
+            chromium)     script="test";              browsers="chromium" ;;
+            all)          script="test:all";          browsers="" ;;
+            firefox)      script="test:firefox";      browsers="firefox" ;;
+            webkit)       script="test:webkit";       browsers="webkit" ;;
+            mobile:chrome) script="test:mobile:chrome"; browsers="chromium" ;;
+            mobile:edge)  script="test:mobile:edge";  browsers="msedge" ;;
+            mobile:opera) script="test:mobile:opera"; browsers="chromium" ;;
+          esac
+          echo "script=$script" >> "$GITHUB_OUTPUT"
+          echo "browsers=$browsers" >> "$GITHUB_OUTPUT"
+
+      # An empty browser list installs every browser, which is what `all` needs.
       - name: Install Playwright Browsers
-        run: pnpm exec playwright install --with-deps chromium
+        run: pnpm exec playwright install --with-deps ${{ steps.target.outputs.browsers }}
 
       # Smoke + boards only until board.test.ts is enabled (see tests/README.md).
-      - run: pnpm test
+      - run: pnpm ${{ steps.target.outputs.script }}
         env:
           CI: true
