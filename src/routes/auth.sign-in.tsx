@@ -25,6 +25,7 @@ export const Route = createFileRoute('/auth/sign-in')({
           <Show when="signed-in">
             <UserButton />
           </Show>
+
           <Show when="signed-out">
             <SignIn />
           </Show>

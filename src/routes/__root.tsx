@@ -11,9 +11,7 @@ import {
   Scripts,
 } from '@tanstack/react-router';
 import type { ReactNode } from 'react';
-import { Suspense } from 'react';
 import { DevTools } from '~/components/DevTools';
-import { NavBarFallback } from '~/components/Nav/NavBarClient';
 import type { queryClient } from '~/query';
 import GlobalFonts from '~/styles/GlobalFonts';
 
@@ -50,14 +48,12 @@ export const Route = createRootRouteWithContext<RouterContext>()({
           <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
         </head>
         <body>
-          <Suspense fallback={<NavBarFallback />}>
-            <Providers>
-              <Outlet />
-              <Scripts />
-              <GlobalFonts />
-              <DevTools />
-            </Providers>
-          </Suspense>
+          <Providers>
+            <Outlet />
+            <Scripts />
+            <GlobalFonts />
+            <DevTools />
+          </Providers>
         </body>
       </html>
     );
