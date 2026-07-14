@@ -100,10 +100,14 @@ test.describe('Checklist', () => {
       page.getByTestId('ListCardContainer').filter({ hasText: 'Ship feature' }),
     ).toBeVisible();
 
-    await page
-      .getByTestId('ListCardContainer')
-      .filter({ hasText: 'Deploy to staging' })
-      .click();
+    await waitForHydratedAction(
+      () =>
+        page
+          .getByTestId('ListCardContainer')
+          .filter({ hasText: 'Deploy to staging' })
+          .click(),
+      () => page.getByTestId('CardModalContent').isVisible(),
+    );
 
     await expect(page.getByTestId('CardModalContent')).toBeVisible();
     await expect(

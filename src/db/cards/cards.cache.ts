@@ -1,14 +1,9 @@
 import type { QueryClient } from '@tanstack/react-query';
-import { activityListQueryOptions } from '~/db/activity/activity.query';
 import {
   moveCard as moveCardServer,
   reorderCards as reorderCardsServer,
 } from '~/db/cards/cards.functions';
-import { cardByIdQueryOptions, cardsQueryKeys } from '~/db/cards/cards.query';
-import {
-  checklistByIdQueryOptions,
-  checklistsQueryOptions,
-} from '~/db/checklists/checklists.query';
+import { cardsQueryKeys } from '~/db/cards/cards.query';
 import type { Card } from '~/generated/prisma/client';
 import { queryClient } from '~/query';
 
@@ -29,27 +24,40 @@ export function toCardListItem(item: Card): CardListItem {
   };
 }
 
-// List cards are rendered from the full-lists caches (`['lists', boardId]` and
-// each `['list', listId]` detail selector), so optimistic card moves must patch
-// every list-array cache, not just the per-list `['cards', listId]` cache that
-// only backs the header count.
-const listArrayCacheKeys = [['lists'], ['list']] as const;
+// Every list-scoped card read (the list body, the header count) selects out of
+// the board's `['lists', boardId]` cache, so that is the single cache optimistic
+// card writes have to keep true. The filter must stay `['lists']`: `['list']`
+// prefix-matches nothing, since react-query compares key segments whole.
+const listsCacheKey = ['lists'] as const;
 
 export function updateListArrayCaches(
   queryClient: QueryClient,
   updater: (lists: ListCacheItem[]) => ListCacheItem[],
 ) {
-  for (const queryKey of listArrayCacheKeys) {
-    queryClient.setQueriesData<ListCacheItem[]>({ queryKey }, (cache) =>
-      cache ? updater(cache) : cache,
-    );
-  }
+  queryClient.setQueriesData<ListCacheItem[]>(
+    { queryKey: listsCacheKey },
+    (cache) => (cache ? updater(cache) : cache),
+  );
 }
 
 export function invalidateListArrayCaches(queryClient: QueryClient) {
-  for (const queryKey of listArrayCacheKeys) {
-    queryClient.invalidateQueries({ queryKey });
+  queryClient.invalidateQueries({ queryKey: listsCacheKey });
+}
+
+function getCachedList(queryClient: QueryClient, listId: string) {
+  const listCaches = queryClient.getQueriesData<ListCacheItem[]>({
+    queryKey: listsCacheKey,
+  });
+
+  for (const [, lists] of listCaches) {
+    const list = lists?.find((item) => item.id === listId);
+
+    if (list) {
+      return list;
+    }
   }
+
+  return undefined;
 }
 
 export function findCardInListCaches(
@@ -57,43 +65,8 @@ export function findCardInListCaches(
   listId: string,
   cardId: string,
 ) {
-  const listCaches = queryClient.getQueriesData<ListCacheItem[]>({
-    queryKey: ['list'],
-  });
-
-  for (const [, lists] of listCaches) {
-    const card = lists
-      ?.find((list) => list.id === listId)
-      ?.cards.find((item) => item.id === cardId);
-
-    if (card) {
-      return card;
-    }
-  }
-
-  return undefined;
-}
-
-/** Loader prefetch: card modal queries (detail, checklists, activity). */
-export async function prefetchCardModalData(
-  queryClient: QueryClient,
-  cardId: string,
-) {
-  await Promise.all([
-    queryClient.prefetchQuery(cardByIdQueryOptions(cardId)),
-    queryClient.prefetchQuery(activityListQueryOptions({ cardId })),
-  ]);
-
-  const checklists = await queryClient.ensureQueryData(
-    checklistsQueryOptions(cardId),
-  );
-
-  await Promise.all(
-    checklists.map((checklist) =>
-      queryClient.prefetchQuery(
-        checklistByIdQueryOptions({ checklistId: checklist.id }),
-      ),
-    ),
+  return getCachedList(queryClient, listId)?.cards.find(
+    (item) => item.id === cardId,
   );
 }
 
@@ -102,15 +75,6 @@ export function reorderCardsByIndex(
   fromIndex: number,
   toIndex: number,
 ) {
-  queryClient.setQueryData<CardListItem[]>(
-    cardsQueryKeys.list(listId),
-    (cache = []) => {
-      const next = [...cache];
-      next.splice(toIndex, 0, next.splice(fromIndex, 1)[0]);
-      return next;
-    },
-  );
-
   updateListArrayCaches(queryClient, (lists) =>
     lists.map((list) => {
       if (list.id !== listId) {
@@ -124,12 +88,13 @@ export function reorderCardsByIndex(
   );
 
   const orderedIds =
-    queryClient
-      .getQueryData<CardListItem[]>(cardsQueryKeys.list(listId))
-      ?.map((card) => card.id) ?? [];
+    getCachedList(queryClient, listId)?.cards.map((card) => card.id) ?? [];
+
+  if (orderedIds.length === 0) {
+    return;
+  }
 
   reorderCardsServer({ data: { listId, orderedIds } }).catch(() => {
-    queryClient.invalidateQueries({ queryKey: cardsQueryKeys.list(listId) });
     invalidateListArrayCaches(queryClient);
   });
 }
@@ -150,35 +115,11 @@ export function moveCardToNewList({
   targetListId: string;
   targetIndex: number;
 }) {
-  const sourceCache =
-    queryClient.getQueryData<CardListItem[]>(
-      cardsQueryKeys.list(sourceListId),
-    ) ?? [];
+  const card = findCardInListCaches(queryClient, sourceListId, cardId);
 
-  const movedCard =
-    sourceCache.find((item) => item.id === cardId) ??
-    findCardInListCaches(queryClient, sourceListId, cardId);
-
-  if (!movedCard) {
+  if (!card) {
     return;
   }
-
-  const card = movedCard;
-
-  queryClient.setQueryData<CardListItem[]>(
-    cardsQueryKeys.list(sourceListId),
-    sourceCache.filter((item) => item.id !== cardId),
-  );
-
-  queryClient.setQueryData<CardListItem[]>(
-    cardsQueryKeys.list(targetListId),
-    (cache = []) => {
-      const next = [...cache];
-      const clampedIndex = Math.min(Math.max(targetIndex, 0), next.length);
-      next.splice(clampedIndex, 0, card);
-      return next;
-    },
-  );
 
   updateListArrayCaches(queryClient, (lists) =>
     lists.map((list) => {
@@ -206,12 +147,6 @@ export function moveCardToNewList({
   moveCardServer({
     data: { cardId, sourceListId, targetListId, targetIndex },
   }).catch(() => {
-    queryClient.invalidateQueries({
-      queryKey: cardsQueryKeys.list(sourceListId),
-    });
-    queryClient.invalidateQueries({
-      queryKey: cardsQueryKeys.list(targetListId),
-    });
     queryClient.invalidateQueries({ queryKey: cardsQueryKeys.detail(cardId) });
     invalidateListArrayCaches(queryClient);
   });
