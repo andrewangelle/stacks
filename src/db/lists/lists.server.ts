@@ -1,3 +1,7 @@
+import {
+  cardChecklistViewSelect,
+  toCardChecklistView,
+} from '~/db/checklists/checklists.server';
 import type {
   CreateListArgs,
   DeleteListArgs,
@@ -8,8 +12,8 @@ import type {
 import { prisma } from '~/db/prisma';
 import type { WithUserId } from '~/db/withUserId';
 
-export function getListsQuery(data: WithUserId<GetListsArgs>) {
-  return prisma.list.findMany({
+export async function getListsQuery(data: WithUserId<GetListsArgs>) {
+  const lists = await prisma.list.findMany({
     where: {
       boardId: data.boardId,
       board: { userId: data.userId },
@@ -29,11 +33,34 @@ export function getListsQuery(data: WithUserId<GetListsArgs>) {
           position: true,
           cardTitle: true,
           createdAt: true,
+          ...cardChecklistViewSelect,
+          activities: { where: { type: 'comment' }, select: { id: true } },
         },
         orderBy: [{ position: 'asc' }, { createdAt: 'asc' }],
       },
     },
   });
+
+  return lists.map((list) => ({
+    ...list,
+    cards: list.cards.map(
+      ({
+        checklists,
+        isChecklistsExpanded,
+        expandedChecklistId,
+        activities,
+        ...card
+      }) => ({
+        ...card,
+        commentsCount: activities.length,
+        checklistView: toCardChecklistView({
+          isChecklistsExpanded,
+          expandedChecklistId,
+          checklists,
+        }),
+      }),
+    ),
+  }));
 }
 
 export async function createListQuery(data: WithUserId<CreateListArgs>) {
