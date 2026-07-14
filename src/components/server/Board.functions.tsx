@@ -8,7 +8,6 @@ import { GetBoardByIdSchema } from '~/db/boards/boards.schemas';
 import { authMiddleware } from '~/middleware/auth';
 
 export type BoardPageServerProps = {
-  boardId: string;
   children?: ReactNode;
 };
 

@@ -52,13 +52,8 @@ export const Route = createFileRoute('/board/$id')({
   },
 
   component() {
-    const {
-      BoardPageServer,
-      NavBarServer,
-      BoardHeaderServer,
-      boardColor,
-      boardId,
-    } = Route.useLoaderData();
+    const { BoardPageServer, NavBarServer, BoardHeaderServer, boardColor } =
+      Route.useLoaderData();
     return (
       <>
         <NavBarContainer data-testid="NavBarContainer">
@@ -71,7 +66,7 @@ export const Route = createFileRoute('/board/$id')({
           </CompositeComponent>
         </NavBarContainer>
 
-        <CompositeComponent src={BoardPageServer.src} boardId={boardId}>
+        <CompositeComponent src={BoardPageServer.src}>
           <Suspense
             fallback={
               <BoardListsFallback

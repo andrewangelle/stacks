@@ -35,12 +35,15 @@ export const BoardsContainer = styled.div`
   padding: 50px 30px 30px;
 `;
 
-export const BoardCardContainer = styled('div')<BackgroundProps>({
+export const BoardCardContainer = styled('button')<BackgroundProps>({
+  border: 'none',
+  padding: 0,
   position: 'relative',
   display: 'flex',
   flexDirection: 'column',
   justifyContent: 'flex-end',
   fontFamily: fontFamily,
+  textAlign: 'left',
   width: '100%',
   maxWidth: '15%',
   minWidth: '200px',
@@ -58,6 +61,7 @@ export const BoardCardContainer = styled('div')<BackgroundProps>({
       style: {
         background: boardGradientVars.green,
         '&:hover': { background: boardGradientHoverVars.green },
+        '&:focus': { background: boardGradientHoverVars.green },
       },
     },
     {
@@ -65,6 +69,7 @@ export const BoardCardContainer = styled('div')<BackgroundProps>({
       style: {
         background: boardGradientVars.lightGreen,
         '&:hover': { background: boardGradientHoverVars.lightGreen },
+        '&:focus': { background: boardGradientHoverVars.lightGreen },
       },
     },
     {
@@ -72,6 +77,7 @@ export const BoardCardContainer = styled('div')<BackgroundProps>({
       style: {
         background: boardGradientVars.blue,
         '&:hover': { background: boardGradientHoverVars.blue },
+        '&:focus': { background: boardGradientHoverVars.blue },
       },
     },
     {
@@ -79,6 +85,7 @@ export const BoardCardContainer = styled('div')<BackgroundProps>({
       style: {
         background: boardGradientVars.orange,
         '&:hover': { background: boardGradientHoverVars.orange },
+        '&:focus': { background: boardGradientHoverVars.orange },
       },
     },
     {
@@ -86,6 +93,7 @@ export const BoardCardContainer = styled('div')<BackgroundProps>({
       style: {
         background: boardGradientVars.red,
         '&:hover': { background: boardGradientHoverVars.red },
+        '&:focus': { background: boardGradientHoverVars.red },
       },
     },
   ],
@@ -115,6 +123,7 @@ export const CreateBoardCard = styled(BoardCardContainer)`
   max-height: 100px;
   padding-bottom: 10px;
   justify-content: center;
+  text-align: center;
   &:hover {
     background: rgba(9, 30, 66, 0.08); 
   }
