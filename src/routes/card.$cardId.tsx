@@ -1,15 +1,14 @@
 import { createFileRoute, redirect } from '@tanstack/react-router';
 import { CompositeComponent } from '@tanstack/react-start/rsc';
 import { Suspense } from 'react';
+import { BoardListsFallback } from '~/components/Boards/Board.styled';
 import { BoardLists } from '~/components/Boards/BoardLists';
-import type { BoardBackground } from '~/components/Boards/Boards.styled';
 import { Card } from '~/components/Cards/Card';
 import { CardFallback } from '~/components/Cards/CardFallback';
 import { BoardHeader } from '~/components/Nav/BoardHeader';
 import { NavBarContainer } from '~/components/Nav/Nav.styled';
 import { UserNavContent } from '~/components/Nav/UserNavContent';
 import { getBoardPageServer } from '~/components/server/Board.functions';
-import { getCardServer } from '~/components/server/Card.functions';
 import {
   getBoardHeaderServer,
   getNavBarServer,
@@ -37,11 +36,7 @@ export const Route = createFileRoute('/card/$cardId')({
       throw redirect({ to: '/boards' });
     }
 
-    const CardServer = await getCardServer({
-      data: { cardId: cardQuery.cardId, boardId: cardQuery.boardId },
-    });
-
-    const BoardServer = await getBoardPageServer({
+    const BoardPageServer = await getBoardPageServer({
       data: { boardId: cardQuery.boardId },
     });
 
@@ -57,8 +52,7 @@ export const Route = createFileRoute('/card/$cardId')({
       boardId: cardQuery.boardId,
       cardId: cardQuery.cardId,
       boardColor: cardQuery.boardColor,
-      CardServer,
-      BoardServer,
+      BoardPageServer,
       NavBarServer,
       BoardHeaderServer,
     };
@@ -66,20 +60,17 @@ export const Route = createFileRoute('/card/$cardId')({
 
   component() {
     const {
-      CardServer,
-      BoardServer,
+      BoardPageServer,
       NavBarServer,
       BoardHeaderServer,
       boardColor,
+      boardId,
     } = Route.useLoaderData();
     return (
       <>
         <NavBarContainer data-testid="NavBarContainer">
-          <CompositeComponent
-            src={NavBarServer.src}
-            boardColor={boardColor as BoardBackground}
-          >
-            <UserNavContent />x
+          <CompositeComponent src={NavBarServer.src}>
+            <UserNavContent />
           </CompositeComponent>
 
           <CompositeComponent src={BoardHeaderServer.src}>
@@ -87,14 +78,21 @@ export const Route = createFileRoute('/card/$cardId')({
           </CompositeComponent>
         </NavBarContainer>
 
-        <CompositeComponent src={BoardServer.src}>
-          <BoardLists>
-            <CompositeComponent src={CardServer.src}>
+        <CompositeComponent src={BoardPageServer.src} boardId={boardId}>
+          <Suspense
+            fallback={
+              <BoardListsFallback
+                data-testid="BoardListsFallback"
+                background={boardColor}
+              />
+            }
+          >
+            <BoardLists>
               <Suspense fallback={<CardFallback />}>
                 <Card />
               </Suspense>
-            </CompositeComponent>
-          </BoardLists>
+            </BoardLists>
+          </Suspense>
         </CompositeComponent>
       </>
     );

@@ -1,19 +1,19 @@
 import { createServerFn } from '@tanstack/react-start';
 import { createCompositeComponent } from '@tanstack/react-start/rsc';
 import type { ReactNode } from 'react';
-import { z } from 'zod';
 import type { BoardBackground } from '~/components/Boards/Boards.styled';
 import {
   BoardHeaderContainer,
   NavBarContent,
 } from '~/components/Nav/Nav.styled';
-import { boardByIdQueryOptions } from '~/db/boards/boards.query';
-import { MaybeBoardIdSchema } from '~/db/boards/boards.schemas';
+import { getBoardColor } from '~/db/boards/boards.functions';
+import {
+  GetBoardByIdSchema,
+  MaybeBoardIdSchema,
+} from '~/db/boards/boards.schemas';
 import { authMiddleware } from '~/middleware/auth';
-import { queryClient } from '~/query';
 
 export type NavServerProps = {
-  boardColor: BoardBackground;
   children?: ReactNode;
 };
 
@@ -21,17 +21,28 @@ export const getNavBarServer = createServerFn()
   .validator(MaybeBoardIdSchema)
   .middleware([authMiddleware])
   .handler(async ({ data }) => {
-    const src = await createCompositeComponent((props: NavServerProps) => {
-      return (
-        <NavBarContent
-          key={data?.boardColor ?? props.boardColor}
-          data-testid="NavBarContent"
-          background={data.boardColor as BoardBackground}
-        >
-          {props.children}
-        </NavBarContent>
-      );
-    });
+    const src = await createCompositeComponent(
+      async (props: NavServerProps) => {
+        let boardColor: BoardBackground = 'blue';
+
+        if (data.boardId) {
+          const response = await getBoardColor({
+            data: { boardId: data.boardId },
+          });
+          boardColor = response?.boardColor as BoardBackground;
+        }
+
+        return (
+          <NavBarContent
+            key={boardColor}
+            data-testid="NavBarContent"
+            background={boardColor}
+          >
+            {props.children}
+          </NavBarContent>
+        );
+      },
+    );
 
     return { src };
   });
@@ -41,28 +52,25 @@ export type BoardBarServerProps = {
 };
 
 export const getBoardHeaderServer = createServerFn()
-  .validator(
-    z.object({
-      boardId: z.string(),
-    }),
-  )
+  .validator(GetBoardByIdSchema)
   .middleware([authMiddleware])
   .handler(async ({ data }) => {
-    const board = await queryClient.ensureQueryData(
-      boardByIdQueryOptions(data.boardId),
+    const src = await createCompositeComponent(
+      async (props: BoardBarServerProps) => {
+        const response = await getBoardColor({
+          data: { boardId: data.boardId },
+        });
+        return (
+          <BoardHeaderContainer
+            key={response?.boardColor}
+            background={response?.boardColor as BoardBackground}
+            data-testid="BoardHeaderContainer"
+          >
+            {props.children}
+          </BoardHeaderContainer>
+        );
+      },
     );
-
-    const src = await createCompositeComponent((props: BoardBarServerProps) => {
-      return (
-        <BoardHeaderContainer
-          key={board?.boardColor}
-          background={board?.boardColor as BoardBackground}
-          data-testid="BoardHeaderContainer"
-        >
-          {props.children}
-        </BoardHeaderContainer>
-      );
-    });
 
     return { src };
   });

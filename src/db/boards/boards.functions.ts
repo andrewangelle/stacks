@@ -7,6 +7,7 @@ import {
 import {
   createBoardQuery,
   getBoardByIdQuery,
+  getBoardColorQuery,
   getBoardsQuery,
   updateBoardQuery,
 } from '~/db/boards/boards.server';
@@ -28,6 +29,12 @@ export const getBoardById = createServerFn({ method: 'GET' })
   .middleware([authMiddleware])
   .handler(async ({ data, context }) =>
     getBoardByIdQuery({ ...data, userId: context.uid }),
+  );
+export const getBoardColor = createServerFn({ method: 'GET' })
+  .validator(GetBoardByIdSchema)
+  .middleware([authMiddleware])
+  .handler(async ({ data, context }) =>
+    getBoardColorQuery({ ...data, userId: context.uid }),
   );
 
 export const updateBoard = createServerFn({ method: 'POST' })

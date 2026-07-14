@@ -1,11 +1,9 @@
 import { createFileRoute, redirect } from '@tanstack/react-router';
 import { CompositeComponent } from '@tanstack/react-start/rsc';
 import { Suspense } from 'react';
+import { BoardListFallback } from '~/components/Boards/BoardListFallback';
 import { Boards } from '~/components/Boards/Boards';
-import {
-  BoardCardSkeleton,
-  BoardsContainer,
-} from '~/components/Boards/Boards.styled';
+import { BoardsContainer } from '~/components/Boards/Boards.styled';
 import { NavBarContainer } from '~/components/Nav/Nav.styled';
 import { NavBarFallback } from '~/components/Nav/NavBarClient';
 import { UserNavContent } from '~/components/Nav/UserNavContent';
@@ -39,9 +37,7 @@ export const Route = createFileRoute('/boards')({
       <>
         <NavBarFallback />
         <BoardsContainer data-testid="BoardsContainer">
-          {(['one', 'two', 'three'] as const).map((id) => (
-            <BoardCardSkeleton data-testid="BoardCardSkeleton" key={id} />
-          ))}
+          <BoardListFallback />
         </BoardsContainer>
       </>
     );
@@ -51,17 +47,13 @@ export const Route = createFileRoute('/boards')({
     return (
       <>
         <NavBarContainer data-testid="NavBarContainer">
-          <CompositeComponent src={NavBarServer.src} boardColor="blue">
+          <CompositeComponent src={NavBarServer.src}>
             <UserNavContent />
           </CompositeComponent>
         </NavBarContainer>
 
         <CompositeComponent src={BoardsServer.src}>
-          <Suspense
-            fallback={(['one', 'two', 'three'] as const).map((id) => (
-              <BoardCardSkeleton data-testid="BoardCardSkeleton" key={id} />
-            ))}
-          >
+          <Suspense fallback={<BoardListFallback />}>
             <Boards />
           </Suspense>
         </CompositeComponent>
