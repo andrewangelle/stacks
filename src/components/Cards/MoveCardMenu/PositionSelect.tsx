@@ -8,6 +8,7 @@ import {
   SelectTrigger,
   SelectViewport,
 } from '~/components/Cards/MoveCardMenu/MoveCardMenu.styled';
+import { useSelectTriggerRef } from '~/utils/useSelectTriggerRef';
 
 type PositionSelectProps = {
   isListsLoading: boolean;
@@ -24,6 +25,8 @@ export function PositionSelect({
   setSelectedPosition,
   ref,
 }: PositionSelectProps) {
+  const { ref: triggerRef, onCloseAutoFocus } = useSelectTriggerRef();
+
   if (isListsLoading) {
     return <SelectSkeleton style={{ minHeight: '44px' }} />;
   }
@@ -33,7 +36,11 @@ export function PositionSelect({
       value={selectedPosition ? String(selectedPosition) : ''}
       onValueChange={(value) => setSelectedPosition(Number(value))}
     >
-      <SelectTrigger aria-label="Position" data-testid="PositionSelectTrigger">
+      <SelectTrigger
+        ref={triggerRef}
+        aria-label="Position"
+        data-testid="PositionSelectTrigger"
+      >
         <Select.Value placeholder="1" />
 
         <Select.Icon data-testid="SelectIcon">
@@ -46,6 +53,7 @@ export function PositionSelect({
           position="popper"
           sideOffset={4}
           data-testid="PositionSelectContent"
+          onCloseAutoFocus={onCloseAutoFocus}
         >
           <Select.ScrollUpButton data-testid="SelectScrollUpButton">
             <RxCaretDown size={20} data-testid="RxCaretDown" />

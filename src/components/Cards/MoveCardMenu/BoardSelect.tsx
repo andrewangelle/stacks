@@ -10,6 +10,7 @@ import {
 } from '~/components/Cards/MoveCardMenu/MoveCardMenu.styled';
 import { useGetBoards } from '~/db/boards/boards.query';
 import { useCurrentBoardId } from '~/utils/useCurrentBoardId';
+import { useSelectTriggerRef } from '~/utils/useSelectTriggerRef';
 
 type BoardSelectProps = {
   cardId: string;
@@ -25,9 +26,15 @@ export function BoardSelect({
 }: BoardSelectProps) {
   const boardId = useCurrentBoardId();
   const { data: boards } = useGetBoards();
+  const { ref: triggerRef, onCloseAutoFocus } = useSelectTriggerRef();
+
   return (
     <Select.Root value={selectedBoardId} onValueChange={setSelectedBoardId}>
-      <SelectTrigger aria-label="Board" data-testid="BoardSelectTrigger">
+      <SelectTrigger
+        ref={triggerRef}
+        aria-label="Board"
+        data-testid="BoardSelectTrigger"
+      >
         <Select.Value placeholder="Select a board" />
 
         <Select.Icon data-testid="SelectIcon">
@@ -40,6 +47,7 @@ export function BoardSelect({
           position="popper"
           sideOffset={4}
           data-testid="BoardSelectContent"
+          onCloseAutoFocus={onCloseAutoFocus}
         >
           <Select.ScrollUpButton data-testid="SelectScrollUpButton">
             <RxCaretDown size={20} data-testid="RxCaretDown" />
