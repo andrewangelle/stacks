@@ -10,6 +10,7 @@ import { routeTree } from './routeTree.gen';
 export function getRouter() {
   const router = createRouter({
     routeTree,
+    defaultPreload: 'viewport',
     defaultErrorComponent: AppError,
     defaultNotFoundComponent: NotFound,
     scrollRestoration: true,
