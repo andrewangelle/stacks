@@ -1,4 +1,9 @@
-import { useNavigate, useRouterState, useSearch } from '@tanstack/react-router';
+import {
+  useNavigate,
+  useRouter,
+  useRouterState,
+  useSearch,
+} from '@tanstack/react-router';
 import {
   type FocusEvent,
   type KeyboardEvent,
@@ -9,6 +14,7 @@ import {
 import { useCurrentBoardId } from '~/utils/useCurrentBoardId';
 
 export function useCardModalTrigger(id: string) {
+  const router = useRouter();
   const boardId = useCurrentBoardId();
   const navigate = useNavigate();
   const routerState = useRouterState();
@@ -40,6 +46,10 @@ export function useCardModalTrigger(id: string) {
   function handleTriggerFocus() {
     setIsFocused(true);
     pointerFocusedRef.current = true;
+    router.preloadRoute({
+      to: '/board/$id/card/$cardId',
+      params: { id: boardId, cardId: id },
+    });
   }
 
   function handleTriggerBlur(event: FocusEvent<HTMLDivElement>) {
@@ -54,6 +64,10 @@ export function useCardModalTrigger(id: string) {
     setHovering(true);
     pointerFocusedRef.current = true;
     ref.current?.focus({ preventScroll: true });
+    router.preloadRoute({
+      to: '/board/$id/card/$cardId',
+      params: { id: boardId, cardId: id },
+    });
   }
 
   function handleListCardMouseLeave() {

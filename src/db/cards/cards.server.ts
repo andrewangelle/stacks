@@ -2,7 +2,6 @@ import type {
   CreateCardArgs,
   DeleteCardArgs,
   GetCardByIdArgs,
-  GetCardsByListIdArgs,
   MoveCardArgs,
   ReorderCardsArgs,
   SetCardChecklistExpandedArgs,
@@ -11,16 +10,6 @@ import type {
 import { prisma } from '~/db/prisma';
 import type { WithUserId } from '~/db/withUserId';
 import type { Prisma } from '~/generated/prisma/client';
-
-export function getCardsByListIdQuery(data: WithUserId<GetCardsByListIdArgs>) {
-  return prisma.card.findMany({
-    where: {
-      listId: data.listId,
-      list: { board: { userId: data.userId } },
-    },
-    orderBy: [{ position: 'asc' }, { createdAt: 'asc' }],
-  });
-}
 
 export function getCardByIdQuery(data: WithUserId<GetCardByIdArgs>) {
   return prisma.card.findFirst({

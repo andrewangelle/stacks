@@ -1,54 +1,33 @@
 import {
-  type QueryClient,
   useMutation,
-  useQuery,
   useQueryClient,
   useSuspenseQuery,
 } from '@tanstack/react-query';
 import { activityListQueryOptions } from '~/db/activity/activity.query';
-import type { CardListItem } from '~/db/cards/cards.cache';
 import { toCardListItem, updateListArrayCaches } from '~/db/cards/cards.cache';
 import {
   createCard,
   deleteCard,
   getCardById,
-  getCardsByListId,
   moveCard,
   updateCard,
 } from '~/db/cards/cards.functions';
 import type {
   CreateCardArgs,
   DeleteCardArgs,
-  GetCardsByListIdArgs,
   MoveCardArgs,
   UpdateCardArgs,
 } from '~/db/cards/cards.schemas';
-import {
-  cardTitleDetailsChecklistsQueryOptions,
-  checklistByIdQueryOptions,
-  checklistsQueryOptions,
-} from '~/db/checklists/checklists.query';
+import { cardTitleDetailsChecklistsQueryOptions } from '~/db/checklists/checklists.query';
+import { listsQueryOptions } from '~/db/lists/lists.query';
 import type { Card } from '~/generated/prisma/client';
+import { useCurrentBoardId } from '~/utils/useCurrentBoardId';
 
 export const queryKeys = {
-  list: (listId: string) => ['cards', listId] as const,
   detail: (cardId: string) => ['card', cardId] as const,
 };
 
 export const cardsQueryKeys = queryKeys;
-
-export function cardsByListIdQueryOptions(listId: string) {
-  return {
-    queryKey: queryKeys.list(listId),
-    queryFn() {
-      return getCardsByListId({ data: { listId } });
-    },
-  };
-}
-
-export function useGetCardsByListId(data: GetCardsByListIdArgs) {
-  return useQuery(cardsByListIdQueryOptions(data.listId));
-}
 
 export function cardByIdQueryOptions(cardId: string) {
   return {
@@ -60,41 +39,34 @@ export function cardByIdQueryOptions(cardId: string) {
   };
 }
 
-/** Loader prefetch: card modal queries (detail, checklists, activity). */
-export async function prefetchCardModalData(
-  queryClient: QueryClient,
-  cardId: string,
-) {
-  await Promise.all([
-    queryClient.prefetchQuery(cardByIdQueryOptions(cardId)),
-    queryClient.prefetchQuery(activityListQueryOptions({ cardId })),
-  ]);
-
-  const checklists = await queryClient.ensureQueryData(
-    checklistsQueryOptions(cardId),
-  );
-
-  await Promise.all(
-    checklists.map((checklist) =>
-      queryClient.prefetchQuery(
-        checklistByIdQueryOptions({ checklistId: checklist.id }),
-      ),
-    ),
-  );
-}
-
-export function useGetCard(args: { id: string; listId: string }) {
-  return useSuspenseQuery({
-    ...cardsByListIdQueryOptions(args.listId),
-    queryKey: queryKeys.detail(args.id),
-    select(data) {
-      return data.find((card) => card.id === args.id);
-    },
-  });
-}
-
 export function useGetCardById(args: { id: string }) {
   return useSuspenseQuery(cardByIdQueryOptions(args.id));
+}
+
+/**
+ * Read a card out of the board's `['lists', boardId]` cache rather than fetching
+ * it. Every card on the board already arrives in that payload, so this saves a
+ * `getCardById` round trip per rendered card. Use `useGetCardById` instead when
+ * you need fields the list payload doesn't carry. `listId` comes from the owning
+ * list, since the cached card rows don't include it.
+ */
+export function useGetCard(args: { id: string }) {
+  const boardId = useCurrentBoardId();
+
+  return useSuspenseQuery({
+    ...listsQueryOptions(boardId),
+    select(lists) {
+      for (const list of lists) {
+        const card = list.cards.find((item) => item.id === args.id);
+
+        if (card) {
+          return { ...card, listId: list.id };
+        }
+      }
+
+      return undefined;
+    },
+  });
 }
 
 export function useCreateCard() {
@@ -108,11 +80,8 @@ export function useCreateCard() {
       const newCard = result.data[0];
       const newItem = toCardListItem(newCard);
 
-      // Seed the per-card suspense caches so the newly rendered card resolves
-      // from cache instead of suspending. `useGetCardById` (in
-      // CardCompletedIndicator) reads this outside the per-card Suspense
-      // boundary, so an uncached read would bubble up and flip the whole list
-      // to its skeleton.
+      // Seed the card detail cache so opening the new card's modal resolves
+      // from cache instead of suspending on a fetch.
       queryClient.setQueryData<Card>(
         cardByIdQueryOptions(newCard.id).queryKey,
         newCard,
@@ -123,20 +92,6 @@ export function useCreateCard() {
       queryClient.setQueryData(
         cardTitleDetailsChecklistsQueryOptions(newCard.id).queryKey,
         { completedItemsForCard: 0, totalItemsForCard: 0, checklists: [] },
-      );
-
-      queryClient.setQueryData<CardListItem[]>(
-        queryKeys.list(variables.listId),
-        (cache = []) => {
-          if (variables.position === undefined) {
-            return [...cache, newItem];
-          }
-
-          const next = [...cache];
-          const index = Math.min(Math.max(variables.position, 0), next.length);
-          next.splice(index, 0, newItem);
-          return next;
-        },
       );
 
       updateListArrayCaches(queryClient, (lists) =>
@@ -179,23 +134,6 @@ export function useUpdateCard() {
           cardTitle: variables.cardTitle ?? cache.cardTitle,
           isCompleted: variables.isCompleted ?? cache.isCompleted,
         }),
-      );
-
-      queryClient.setQueryData<CardListItem[]>(
-        queryKeys.list(variables.listId),
-        (cache = []) =>
-          cache.map((item) => {
-            if (item.id === variables.cardId) {
-              return {
-                ...item,
-                isCompleted: variables.isCompleted ?? item.isCompleted,
-                cardDescription:
-                  variables.cardDescription ?? item.cardDescription,
-                cardTitle: variables.cardTitle ?? item.cardTitle,
-              };
-            }
-            return item;
-          }),
       );
 
       if (
@@ -245,12 +183,6 @@ export function useMoveCardMutation() {
     },
     onSuccess(_result, variables) {
       queryClient.invalidateQueries({
-        queryKey: queryKeys.list(variables.sourceListId),
-      });
-      queryClient.invalidateQueries({
-        queryKey: queryKeys.list(variables.targetListId),
-      });
-      queryClient.invalidateQueries({
         queryKey: queryKeys.detail(variables.cardId),
       });
       queryClient.invalidateQueries({
@@ -276,11 +208,6 @@ export function useDeleteCard() {
       return deleteCard({ data });
     },
     onSuccess(_result, variables) {
-      queryClient.setQueryData<CardListItem[]>(
-        queryKeys.list(variables.listId),
-        (cache = []) => cache.filter((item) => item.id !== variables.cardId),
-      );
-
       updateListArrayCaches(queryClient, (lists) =>
         lists.map((list) => {
           if (list.id === variables.listId) {

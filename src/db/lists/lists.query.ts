@@ -1,14 +1,9 @@
 import {
-  type QueryClient,
   useMutation,
   useQuery,
   useQueryClient,
   useSuspenseQuery,
 } from '@tanstack/react-query';
-import { activityListQueryOptions } from '~/db/activity/activity.query';
-import { boardByIdQueryOptions } from '~/db/boards/boards.query';
-import { cardByIdQueryOptions } from '~/db/cards/cards.query';
-import { cardTitleDetailsChecklistsQueryOptions } from '~/db/checklists/checklists.query';
 import type { ListItem } from '~/db/lists/lists.cache';
 import { toListItem } from '~/db/lists/lists.cache';
 import {
@@ -40,29 +35,6 @@ export function listsQueryOptions(boardId: string) {
   };
 }
 
-/** Loader prefetch: board, lists, and per-card data shown on the board page. */
-export async function prefetchBoardPageData(
-  queryClient: QueryClient,
-  boardId: string,
-) {
-  await queryClient.ensureQueryData(boardByIdQueryOptions(boardId));
-  const lists = await queryClient.ensureQueryData(listsQueryOptions(boardId));
-
-  await Promise.all(
-    lists.flatMap((list) =>
-      list.cards.flatMap((card) => [
-        queryClient.prefetchQuery(cardByIdQueryOptions(card.id)),
-        queryClient.prefetchQuery(
-          cardTitleDetailsChecklistsQueryOptions(card.id),
-        ),
-        queryClient.prefetchQuery(
-          activityListQueryOptions({ cardId: card.id }),
-        ),
-      ]),
-    ),
-  );
-}
-
 export function useGetLists() {
   const boardId = useCurrentBoardId();
   return useQuery(listsQueryOptions(boardId));
@@ -79,6 +51,17 @@ export function useGetListById({ id }: { id: string }) {
     ...listsQueryOptions(boardId),
     select(data) {
       return data.find((item) => item.id === id);
+    },
+  });
+}
+
+export function useGetListCardCount({ listId }: { listId: string }) {
+  const boardId = useCurrentBoardId();
+
+  return useSuspenseQuery({
+    ...listsQueryOptions(boardId),
+    select(data) {
+      return data.find((item) => item.id === listId)?.cards.length ?? 0;
     },
   });
 }

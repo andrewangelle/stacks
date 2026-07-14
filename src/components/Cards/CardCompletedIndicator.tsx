@@ -3,7 +3,7 @@ import { AiOutlineCheck } from 'react-icons/ai';
 import { CardCompletedIndicatorCircle } from '~/components/Lists/CardTitleDetails/CardTitleDetails.styled';
 import { Tooltip } from '~/components/Tooltip/Tooltip';
 import { useCreateActivity } from '~/db/activity/activity.query';
-import { useGetCardById, useUpdateCard } from '~/db/cards/cards.query';
+import { useGetCard, useUpdateCard } from '~/db/cards/cards.query';
 import { useCurrentBoardId } from '~/utils/useCurrentBoardId';
 
 type CardCompletedIndicatorProps = {
@@ -17,7 +17,7 @@ export function CardCompletedIndicator({
   visible = true,
   circleSize,
 }: CardCompletedIndicatorProps) {
-  const { data } = useGetCardById({ id: cardId });
+  const { data } = useGetCard({ id: cardId });
   const isCompleted = data?.isCompleted ?? false;
   const updateCard = useUpdateCard();
   const createActivity = useCreateActivity();

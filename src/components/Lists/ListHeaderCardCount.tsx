@@ -1,22 +1,17 @@
 import { Tooltip } from '~/components/Tooltip/Tooltip';
-import { useGetCardsByListId } from '~/db/cards/cards.query';
+import { useGetListCardCount } from '~/db/lists/lists.query';
 
 export function ListHeaderCardCount({ listId }: { listId: string }) {
-  const { isSuccess, data: cards } = useGetCardsByListId({ listId });
-  const cardCount = cards?.length || 0;
+  const { data: cardCount } = useGetListCardCount({ listId });
 
-  if (isSuccess) {
-    return (
-      <div
-        data-testid="ListHeaderCardCount"
-        style={{ color: 'rgba(0,0,0, 0.7)', cursor: 'default' }}
-      >
-        <Tooltip content="Total cards">
-          <span>{cardCount}</span>
-        </Tooltip>
-      </div>
-    );
-  }
-
-  return null;
+  return (
+    <div
+      data-testid="ListHeaderCardCount"
+      style={{ color: 'rgba(0,0,0, 0.7)', cursor: 'default' }}
+    >
+      <Tooltip content="Total cards">
+        <span>{cardCount}</span>
+      </Tooltip>
+    </div>
+  );
 }
