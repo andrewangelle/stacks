@@ -43,6 +43,7 @@ export const BoardCardLink = styled(Link)<BackgroundProps>({
   border: 'none',
   margin: '10px',
   padding: 0,
+  overflow: 'hidden',
   width: '100%',
   maxWidth: '15%',
   minWidth: '200px',
@@ -53,9 +54,9 @@ export const BoardCardLink = styled(Link)<BackgroundProps>({
   fontFamily: fontFamily,
   textAlign: 'left',
   textDecoration: 'none',
-  overflow: 'hidden',
   fontSize: '14px',
   cursor: 'pointer',
+  color: 'black',
   variants: [
     {
       props: { background: 'green' },
