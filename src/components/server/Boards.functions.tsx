@@ -10,14 +10,12 @@ export type BoardsServerProps = {
 
 export const getBoardsServer = createServerFn()
   .middleware([authMiddleware])
-  .handler(async () => {
-    const src = await createCompositeComponent((props: BoardsServerProps) => {
+  .handler(async () => ({
+    src: await createCompositeComponent((props: BoardsServerProps) => {
       return (
         <BoardsContainer data-testid="BoardsContainer">
           {props.children}
         </BoardsContainer>
       );
-    });
-
-    return { src };
-  });
+    }),
+  }));

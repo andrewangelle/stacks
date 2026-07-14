@@ -20,32 +20,28 @@ export type NavServerProps = {
 export const getNavBarServer = createServerFn()
   .validator(MaybeBoardIdSchema)
   .middleware([authMiddleware])
-  .handler(async ({ data }) => {
-    const src = await createCompositeComponent(
-      async (props: NavServerProps) => {
-        let boardColor: BoardBackground = 'blue';
+  .handler(async ({ data }) => ({
+    src: await createCompositeComponent(async (props: NavServerProps) => {
+      let boardColor: BoardBackground = 'blue';
 
-        if (data.boardId) {
-          const response = await getBoardColor({
-            data: { boardId: data.boardId },
-          });
-          boardColor = response?.boardColor as BoardBackground;
-        }
+      if (data.boardId) {
+        const response = await getBoardColor({
+          data: { boardId: data.boardId },
+        });
+        boardColor = response?.boardColor as BoardBackground;
+      }
 
-        return (
-          <NavBarContent
-            key={boardColor}
-            data-testid="NavBarContent"
-            background={boardColor}
-          >
-            {props.children}
-          </NavBarContent>
-        );
-      },
-    );
-
-    return { src };
-  });
+      return (
+        <NavBarContent
+          key={boardColor}
+          data-testid="NavBarContent"
+          background={boardColor}
+        >
+          {props.children}
+        </NavBarContent>
+      );
+    }),
+  }));
 
 export type BoardBarServerProps = {
   children?: ReactNode;
@@ -54,23 +50,17 @@ export type BoardBarServerProps = {
 export const getBoardHeaderServer = createServerFn()
   .validator(GetBoardByIdSchema)
   .middleware([authMiddleware])
-  .handler(async ({ data }) => {
-    const src = await createCompositeComponent(
-      async (props: BoardBarServerProps) => {
-        const response = await getBoardColor({
-          data: { boardId: data.boardId },
-        });
-        return (
-          <BoardHeaderContainer
-            key={response?.boardColor}
-            background={response?.boardColor as BoardBackground}
-            data-testid="BoardHeaderContainer"
-          >
-            {props.children}
-          </BoardHeaderContainer>
-        );
-      },
-    );
-
-    return { src };
-  });
+  .handler(async ({ data }) => ({
+    src: await createCompositeComponent(async (props: BoardBarServerProps) => {
+      const response = await getBoardColor({ data });
+      return (
+        <BoardHeaderContainer
+          key={response?.boardColor}
+          background={response?.boardColor as BoardBackground}
+          data-testid="BoardHeaderContainer"
+        >
+          {props.children}
+        </BoardHeaderContainer>
+      );
+    }),
+  }));

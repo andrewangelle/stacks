@@ -14,24 +14,17 @@ export type BoardPageServerProps = {
 export const getBoardPageServer = createServerFn()
   .validator(GetBoardByIdSchema)
   .middleware([authMiddleware])
-  .handler(async ({ data }) => {
-    const src = await createCompositeComponent(
-      async (props: BoardPageServerProps) => {
-        const response = await getBoardColor({
-          data: { boardId: data.boardId },
-        });
-
-        return (
-          <BoardPageBackground
-            key={response?.boardColor}
-            data-testid="BoardPageBackground"
-            background={response?.boardColor as BoardBackground}
-          >
-            {props.children}
-          </BoardPageBackground>
-        );
-      },
-    );
-
-    return { src };
-  });
+  .handler(async ({ data }) => ({
+    src: await createCompositeComponent(async (props: BoardPageServerProps) => {
+      const response = await getBoardColor({ data });
+      return (
+        <BoardPageBackground
+          key={response?.boardColor}
+          data-testid="BoardPageBackground"
+          background={response?.boardColor as BoardBackground}
+        >
+          {props.children}
+        </BoardPageBackground>
+      );
+    }),
+  }));
