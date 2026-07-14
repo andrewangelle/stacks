@@ -42,6 +42,7 @@ export const Route = createFileRoute('/boards')({
       </>
     );
   },
+
   component() {
     const { BoardsServer, NavBarServer } = Route.useLoaderData();
     return (
