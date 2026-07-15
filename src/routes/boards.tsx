@@ -28,7 +28,7 @@ export const Route = createFileRoute('/boards')({
 
     return {
       BoardsServer: await getBoardsServer(),
-      NavBarServer: await getNavBarServer({ data: { boardColor: 'blue' } }),
+      NavBarServer: await getNavBarServer(),
     };
   },
 

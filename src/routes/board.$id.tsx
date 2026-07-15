@@ -1,8 +1,10 @@
 import { createFileRoute, Outlet, redirect } from '@tanstack/react-router';
 import { CompositeComponent } from '@tanstack/react-start/rsc';
 import { Suspense } from 'react';
-import { BoardListsFallback } from '~/components/Boards/Board.styled';
+import { BoardHeaderFallback } from '~/components/Boards/Board.styled';
 import { BoardLists } from '~/components/Boards/BoardLists';
+import type { BoardBackground } from '~/components/Boards/Boards.styled';
+import { ListSkeleton } from '~/components/Lists/ListSkeleton';
 import { BoardHeader } from '~/components/Nav/BoardHeader';
 import { NavBarContainer } from '~/components/Nav/Nav.styled';
 import { UserNavContent } from '~/components/Nav/UserNavContent';
@@ -31,7 +33,7 @@ export const Route = createFileRoute('/board/$id')({
     );
 
     const NavBarServer = await getNavBarServer({
-      data: { boardId: params.id, boardColor: board?.boardColor ?? 'blue' },
+      data: { boardId: params.id },
     });
 
     const BoardPageServer = await getBoardPageServer({
@@ -62,17 +64,23 @@ export const Route = createFileRoute('/board/$id')({
           </CompositeComponent>
 
           <CompositeComponent src={BoardHeaderServer.src}>
-            <BoardHeader />
+            <Suspense
+              fallback={
+                <BoardHeaderFallback
+                  data-testid="BoardHeaderFallback"
+                  background={boardColor as BoardBackground}
+                />
+              }
+            >
+              <BoardHeader />
+            </Suspense>
           </CompositeComponent>
         </NavBarContainer>
 
         <CompositeComponent src={BoardPageServer.src}>
           <Suspense
             fallback={
-              <BoardListsFallback
-                data-testid="BoardListsFallback"
-                background={boardColor}
-              />
+              <BoardPageListsSkeleton data-testid="BoardPageListsSkeleton" />
             }
           >
             <BoardLists>
@@ -84,3 +92,7 @@ export const Route = createFileRoute('/board/$id')({
     );
   },
 });
+
+function BoardPageListsSkeleton() {
+  return ['list1', 'list2', 'list3'].map((list) => <ListSkeleton key={list} />);
+}
