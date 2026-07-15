@@ -8,7 +8,7 @@ import type { WithUserId } from '~/db/withUserId';
 
 export function getBoardColorQuery(data: WithUserId<GetBoardByIdArgs>) {
   return prisma.stack.findFirst({
-    where: { id: data.boardId, userId: data.userId },
+    where: { id: { startsWith: data.boardId }, userId: data.userId },
     select: { boardColor: true },
   });
 }
@@ -32,7 +32,7 @@ export function createBoardQuery(data: WithUserId<CreateBoardArgs>) {
 
 export function getBoardByIdQuery(data: WithUserId<GetBoardByIdArgs>) {
   return prisma.stack.findFirst({
-    where: { id: data.boardId, userId: data.userId },
+    where: { id: { startsWith: data.boardId }, userId: data.userId },
   });
 }
 

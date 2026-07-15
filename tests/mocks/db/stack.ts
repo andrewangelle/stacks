@@ -23,11 +23,18 @@ export const stackModel = {
     );
   },
 
-  async findFirst(args: { where: { id: string; userId: string } }) {
+  async findFirst(args: {
+    where: { id: string | { startsWith: string }; userId: string };
+  }) {
+    const { id, userId } = args.where;
+
     return (
       getStore().stacks.find(
         (stack) =>
-          stack.id === args.where.id && stack.userId === args.where.userId,
+          stack.userId === userId &&
+          (typeof id === 'string'
+            ? stack.id === id
+            : stack.id.startsWith(id.startsWith)),
       ) ?? null
     );
   },

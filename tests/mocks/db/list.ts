@@ -19,7 +19,7 @@ export const listModel = {
   async findMany(args: {
     where:
       | {
-          boardId: string;
+          boardId: string | { startsWith: string };
           board: { userId: string };
         }
       | {
@@ -52,7 +52,9 @@ export const listModel = {
       'boardId' in where
         ? getStore().lists.filter(
             (list) =>
-              list.boardId === where.boardId &&
+              (typeof where.boardId === 'string'
+                ? list.boardId === where.boardId
+                : list.boardId.startsWith(where.boardId.startsWith)) &&
               getBoardUserId(list.boardId) === where.board.userId,
           )
         : getStore().lists.filter((list) => list.id === where.id);
