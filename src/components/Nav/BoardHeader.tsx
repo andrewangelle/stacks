@@ -22,7 +22,10 @@ export function BoardHeader() {
   function onOutsideNameEditClick() {
     setEditing(false);
 
-    if (editedBoardTitle !== board.data?.boardTitle) {
+    if (
+      editedBoardTitle !== board.data?.boardTitle &&
+      editedBoardTitle.trim() !== ''
+    ) {
       updateBoard({
         id: board.data?.id ?? '',
         boardTitle: editedBoardTitle ?? board.data?.boardTitle,
@@ -47,6 +50,7 @@ export function BoardHeader() {
             placeholder={board.data?.boardTitle}
             autoFocus
             onChange={(event) => setEditedBoardTitle(event.target.value)}
+            onBlur={onOutsideNameEditClick}
           />
         </EditBoardTitleForm>
       )}
