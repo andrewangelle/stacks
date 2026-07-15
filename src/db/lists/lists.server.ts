@@ -15,7 +15,7 @@ import type { WithUserId } from '~/db/withUserId';
 export async function getListsQuery(data: WithUserId<GetListsArgs>) {
   const lists = await prisma.list.findMany({
     where: {
-      boardId: data.boardId,
+      boardId: { startsWith: data.boardId },
       board: { userId: data.userId },
     },
     orderBy: [{ position: 'asc' }, { createdAt: 'asc' }],
