@@ -146,13 +146,18 @@ export const BoardPageBackground = styled('div')<BoardPageBackgroundProps>({
   ],
 });
 
-export const BoardTitle = styled.div`
+export const BoardTitle = styled.button`
+  color: inherit;
+  background: none;
+  border: none;
   padding: 10px;
   cursor: pointer;
   display: inline-block;
   width: max-content;
   border-radius: 8px;
+  font-size: 16px;
   font-weight: 500;
+  font-family: ${fontFamily};
 
   &:hover {
     background-color: rgba(255, 255, 255, 0.1);

@@ -74,7 +74,7 @@ export function useUpdateBoard() {
         data: { boardId: id, boardTitle },
       });
     },
-    onSuccess(_result, variables) {
+    onMutate(variables) {
       queryClient.setQueryData<Stack>(
         queryKeys.detail(variables.id),
         (cache = {} as Stack) => ({
@@ -82,6 +82,11 @@ export function useUpdateBoard() {
           boardTitle: variables.boardTitle,
         }),
       );
+    },
+    onError(_error, variables) {
+      queryClient.invalidateQueries({
+        queryKey: queryKeys.detail(variables.id),
+      });
     },
   });
 
