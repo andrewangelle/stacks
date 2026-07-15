@@ -36,7 +36,12 @@ export function BoardHeader() {
   return (
     <>
       {!isEditing && (
-        <BoardTitle data-testid="BoardTitle" onClick={toggleEditBoardTitleForm}>
+        <BoardTitle
+          data-testid="BoardTitle"
+          type="button"
+          onClick={toggleEditBoardTitleForm}
+          aria-label="Edit board title"
+        >
           {board.data?.boardTitle}
         </BoardTitle>
       )}
