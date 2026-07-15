@@ -1,6 +1,5 @@
 import {
   useMutation,
-  useQuery,
   useQueryClient,
   useSuspenseQuery,
 } from '@tanstack/react-query';
@@ -42,7 +41,7 @@ export function boardByIdQueryOptions(boardId: string) {
 
 export function useGetBoard() {
   const boardId = useCurrentBoardId();
-  return useQuery(boardByIdQueryOptions(boardId));
+  return useSuspenseQuery(boardByIdQueryOptions(boardId));
 }
 
 export function useCreateBoard() {

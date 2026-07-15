@@ -6,7 +6,7 @@ import { listQueryKeys } from '~/db/lists/lists.query';
 import type { Card, List } from '~/generated/prisma/client';
 import { queryClient } from '~/query';
 
-type BoardLists = Awaited<ReturnType<typeof getLists>>;
+type BoardPageLists = Awaited<ReturnType<typeof getLists>>;
 
 /**
  * Seeds a card's checklist rollup from the board payload so the card front resolves
@@ -18,7 +18,7 @@ type BoardLists = Awaited<ReturnType<typeof getLists>>;
  * because creating a feed entry from the board seeds it without ever fetching.
  */
 export function adjustCardCommentCount(cardId: string, delta: number) {
-  queryClient.setQueriesData<BoardLists>({ queryKey: ['lists'] }, (lists) =>
+  queryClient.setQueriesData<BoardPageLists>({ queryKey: ['lists'] }, (lists) =>
     lists?.map((list) => ({
       ...list,
       cards: list.cards.map((card) =>
@@ -34,7 +34,7 @@ export function adjustCardCommentCount(cardId: string, delta: number) {
 }
 
 export function findCardChecklistView(boardId: string, cardId: string) {
-  const lists = queryClient.getQueryData<BoardLists>(
+  const lists = queryClient.getQueryData<BoardPageLists>(
     listQueryKeys.list(boardId),
   );
 

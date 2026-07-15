@@ -41,7 +41,7 @@ export const Route = createFileRoute('/card/$cardId')({
     });
 
     const NavBarServer = await getNavBarServer({
-      data: { boardId: cardQuery.boardId, boardColor: cardQuery.boardColor },
+      data: { boardId: cardQuery.boardId },
     });
 
     const BoardHeaderServer = await getBoardHeaderServer({

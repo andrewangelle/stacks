@@ -25,6 +25,7 @@ import { findCardChecklistView } from '~/db/lists/lists.cache';
 import type { Checklist } from '~/generated/prisma/client';
 import { queryClient } from '~/query';
 import { useCurrentBoardId } from '~/utils/useCurrentBoardId';
+
 export type ChecklistItem = Pick<
   Checklist,
   'id' | 'checklistTitle' | 'createdAt'

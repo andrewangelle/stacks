@@ -149,6 +149,12 @@ test.describe('Card', () => {
       .getByTestId('DeleteChecklistPopoverButton')
       .click();
 
+    // Deleting navigates back to the board, but the card only leaves the list
+    // once the server confirms. Reloading before that lands cancels the
+    // in-flight delete, so wait for it in-app first, then reload to prove the
+    // delete persisted.
+    await expectListCardCount(page.getByTestId('ListContainer'), 0);
+
     await page.goto(`/board/${board.id}`);
     await expectListCardCount(page.getByTestId('ListContainer'), 0);
   });

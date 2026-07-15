@@ -24,7 +24,7 @@ export const getNavBarServer = createServerFn()
     src: await createCompositeComponent(async (props: NavServerProps) => {
       let boardColor: BoardBackground = 'blue';
 
-      if (data.boardId) {
+      if (data?.boardId) {
         const response = await getBoardColor({
           data: { boardId: data.boardId },
         });
