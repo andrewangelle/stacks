@@ -167,6 +167,12 @@ export const CardTitleDetailsChecklistAccordionTrigger = styled(
   &[data-state='open'] > span:first-of-type {
     transform: rotate(90deg);
   }
+
+  &:focus {
+    outline: 2px solid ${focusRingBlue};
+    outline-offset: 1px;
+    border-radius: 2px;
+  }
 `;
 
 export const CardTitleDetailsChecklistAccordionTitle = styled.span`
