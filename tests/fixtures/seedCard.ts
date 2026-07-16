@@ -6,10 +6,10 @@ import { getStore, id, now } from '~test/mocks/memoryPrisma';
 
 export function seedCard(data: {
   boardId: string;
+  listId?: string;
   listTitle?: string;
   cardTitle?: string;
 }) {
-  const { listTitle } = buildList(data.listTitle);
   const { cardTitle } = buildCard(data.cardTitle);
   const timestamp = now();
   const userId = getStore().users[0]?.id;
@@ -24,15 +24,33 @@ export function seedCard(data: {
     throw new Error('Board not found for seed-card');
   }
 
-  const list: ListRecord = {
-    id: id(),
-    listTitle,
-    boardId: data.boardId,
-    userId,
-    position: 0,
-    createdAt: timestamp,
-    updatedAt: timestamp,
-  };
+  // Append to an existing list when given a listId, so a list can hold several
+  // cards; otherwise create a fresh list for this card.
+  let list: ListRecord | undefined;
+
+  if (data.listId) {
+    list = getStore().lists.find((item) => item.id === data.listId);
+
+    if (!list) {
+      throw new Error('List not found for seed-card');
+    }
+  } else {
+    const { listTitle } = buildList(data.listTitle);
+    list = {
+      id: id(),
+      listTitle,
+      boardId: data.boardId,
+      userId,
+      position: 0,
+      createdAt: timestamp,
+      updatedAt: timestamp,
+    };
+    getStore().lists.push(list);
+  }
+
+  const position = getStore().cards.filter(
+    (existing) => existing.listId === list.id,
+  ).length;
 
   const card: CardRecord = {
     id: id(),
@@ -40,7 +58,7 @@ export function seedCard(data: {
     cardDescription: '',
     listId: list.id,
     userId,
-    position: 0,
+    position,
     isCompleted: false,
     isChecklistsExpanded: false,
     expandedChecklistId: null,
@@ -48,7 +66,6 @@ export function seedCard(data: {
     updatedAt: timestamp,
   };
 
-  getStore().lists.push(list);
   getStore().cards.push(card);
 
   return { list, card };
