@@ -1,5 +1,6 @@
 import {
   useMutation,
+  useQuery,
   useQueryClient,
   useSuspenseQuery,
 } from '@tanstack/react-query';
@@ -40,7 +41,7 @@ export function useGetLists() {
 }
 
 export function useGetListsByBoardId({ boardId }: { boardId: string }) {
-  return useSuspenseQuery(listsQueryOptions(boardId));
+  return useQuery(listsQueryOptions(boardId));
 }
 
 export function useGetListById({ id }: { id: string }) {

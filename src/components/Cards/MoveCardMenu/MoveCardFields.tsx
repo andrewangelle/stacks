@@ -1,5 +1,5 @@
 import { useNavigate } from '@tanstack/react-router';
-import { useEffect, useRef } from 'react';
+import { Suspense, useEffect, useRef } from 'react';
 import {
   CreateBoardCloseBorder,
   PopoverClose,
@@ -14,6 +14,7 @@ import {
   MoveCardMenuHeader,
   MoveCardPositionColumn,
   MoveCardSelectRow,
+  SelectSkeleton,
 } from '~/components/Cards/MoveCardMenu/MoveCardMenu.styled';
 import { PositionSelect } from '~/components/Cards/MoveCardMenu/PositionSelect';
 import { useMoveCardMutation } from '~/db/cards/cards.query';
@@ -90,12 +91,14 @@ export function MoveCardFields({ id }: { id: string }) {
       <div ref={ref}>
         <DropdownLabel data-testid="BoardSelectTitle">Board</DropdownLabel>
 
-        <BoardSelect
-          cardId={id}
-          ref={ref}
-          selectedBoardId={selectedBoardId}
-          setSelectedBoardId={setSelectedBoardId}
-        />
+        <Suspense fallback={<SelectSkeleton style={{ minHeight: '44px' }} />}>
+          <BoardSelect
+            cardId={id}
+            ref={ref}
+            selectedBoardId={selectedBoardId}
+            setSelectedBoardId={setSelectedBoardId}
+          />
+        </Suspense>
 
         <MoveCardSelectRow>
           <MoveCardListColumn>

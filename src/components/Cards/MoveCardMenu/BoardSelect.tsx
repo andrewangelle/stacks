@@ -28,8 +28,12 @@ export function BoardSelect({
   const { data: boards } = useGetBoards();
   const { ref: triggerRef, onCloseAutoFocus } = useSelectTriggerRef();
 
+  const selectedBoard = selectedBoardId
+    ? boards?.find((board) => board.id.startsWith(selectedBoardId))
+    : undefined;
+
   return (
-    <Select.Root value={selectedBoardId} onValueChange={setSelectedBoardId}>
+    <Select.Root value={selectedBoard?.id} onValueChange={setSelectedBoardId}>
       <SelectTrigger
         ref={triggerRef}
         aria-label="Board"
@@ -63,7 +67,7 @@ export function BoardSelect({
                 >
                   <Select.ItemText>{board.boardTitle}</Select.ItemText>
 
-                  {board.id === boardId && (
+                  {board.id.startsWith(boardId) && (
                     <SelectItemCurrent data-testid="BoardSelectCurrent">
                       (current)
                     </SelectItemCurrent>
