@@ -12,8 +12,10 @@ import {
 } from '@tanstack/react-router';
 import type { ReactNode } from 'react';
 import { DevTools } from '~/components/DevTools';
+import { fetchUserId } from '~/middleware/auth';
 import type { queryClient } from '~/query';
 import GlobalFonts from '~/styles/GlobalFonts';
+import { detectMobile } from '~/utils/detectMobile';
 
 type RouterContext = {
   queryClient: typeof queryClient;
@@ -28,6 +30,11 @@ function Providers({ children }: { children: ReactNode }) {
 }
 
 export const Route = createRootRouteWithContext<RouterContext>()({
+  async beforeLoad() {
+    const { isMobile } = await detectMobile();
+    const { userId } = await fetchUserId();
+    return { isMobile, userId };
+  },
   head() {
     return {
       meta: [
