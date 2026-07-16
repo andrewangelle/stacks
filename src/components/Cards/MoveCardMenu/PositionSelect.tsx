@@ -4,27 +4,36 @@ import { RxCaretDown } from 'react-icons/rx';
 import {
   SelectContent,
   SelectItem,
+  SelectItemCurrent,
   SelectSkeleton,
   SelectTrigger,
   SelectViewport,
 } from '~/components/Cards/MoveCardMenu/MoveCardMenu.styled';
+import { useGetCardById } from '~/db/cards/cards.query';
+import { useCurrentCardId } from '~/utils/useCurrentCardId';
 import { useSelectTriggerRef } from '~/utils/useSelectTriggerRef';
 
 type PositionSelectProps = {
   isListsLoading: boolean;
   positions: number;
+  selectedList: string;
   selectedPosition?: number;
   setSelectedPosition: (position: number) => void;
   ref: RefObject<HTMLDivElement | null>;
 };
 
 export function PositionSelect({
+  selectedList,
   isListsLoading,
   positions,
   selectedPosition,
   setSelectedPosition,
   ref,
 }: PositionSelectProps) {
+  const cardId = useCurrentCardId();
+  const { data: currentCard } = useGetCardById({ id: cardId });
+  const isSameList = currentCard?.listId === selectedList;
+
   const { ref: triggerRef, onCloseAutoFocus } = useSelectTriggerRef();
 
   if (isListsLoading) {
@@ -69,6 +78,11 @@ export function PositionSelect({
                     data-testid={`PositionSelectItem-${position}`}
                   >
                     <Select.ItemText>{position}</Select.ItemText>
+                    {isSameList && currentCard?.position === position - 1 && (
+                      <SelectItemCurrent data-testid="PositionSelectCurrent">
+                        (current)
+                      </SelectItemCurrent>
+                    )}
                   </SelectItem>
                 ),
               )}

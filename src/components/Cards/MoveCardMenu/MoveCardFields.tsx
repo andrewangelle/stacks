@@ -121,6 +121,7 @@ export function MoveCardFields({ id }: { id: string }) {
 
             <PositionSelect
               ref={ref}
+              selectedList={selectedList}
               isListsLoading={isListsLoading}
               positions={positions}
               selectedPosition={selectedPosition}
