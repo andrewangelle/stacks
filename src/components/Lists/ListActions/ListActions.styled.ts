@@ -122,10 +122,12 @@ export const ListActionsPopoverHeader = styled.div`
 `;
 
 export const ListActionsPopoverClose = styled(PopoverClose)`
-  font-weight: 600;
-  margin: 4px;
-  position: relative;
-  &:hover {
+  && {
+    font-weight: 600;
+    margin: 4px;
+    position: relative;
+  }
+  &&:hover {
     background: rgba(9, 30, 66, 0.2);
     border-radius: 4px;
   }
