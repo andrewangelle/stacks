@@ -44,6 +44,10 @@ export function useGetBoard() {
   return useSuspenseQuery(boardByIdQueryOptions(boardId));
 }
 
+export function useGetBoardById({ id }: { id: string }) {
+  return useSuspenseQuery(boardByIdQueryOptions(id));
+}
+
 export function useCreateBoard() {
   const queryClient = useQueryClient();
   const mutation = useMutation({

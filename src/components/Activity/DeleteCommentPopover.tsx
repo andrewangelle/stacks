@@ -1,4 +1,4 @@
-import * as Popover from '@radix-ui/react-popover';
+import { Popover } from 'radix-ui';
 import { DeleteCommentLink } from '~/components/Activity/Activity.styled';
 import { PopoverClose } from '~/components/Boards/Boards.styled';
 import { DeleteChecklistPopoverButton } from '~/components/ChecklistItem/ChecklistItem.styled';

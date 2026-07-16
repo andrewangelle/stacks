@@ -1,4 +1,4 @@
-import { Portal, Provider, Root, Trigger } from '@radix-ui/react-tooltip';
+import { Tooltip as TooltipPrimitive } from 'radix-ui';
 import type { ReactNode } from 'react';
 import { useState } from 'react';
 import { TooltipContent } from '~/components/Tooltip/Tooltip.styled';
@@ -19,18 +19,18 @@ export function Tooltip({
   const [isOpen, setIsOpen] = useState(false);
 
   return (
-    <Provider delayDuration={250}>
-      <Root
+    <TooltipPrimitive.Provider delayDuration={250}>
+      <TooltipPrimitive.Root
         open={isOpen}
         onOpenChange={(nextIsOpen) => !disabled && setIsOpen(nextIsOpen)}
       >
-        <Trigger asChild>{children}</Trigger>
+        <TooltipPrimitive.Trigger asChild>{children}</TooltipPrimitive.Trigger>
         {portal && (
-          <Portal>
+          <TooltipPrimitive.Portal>
             <TooltipContent side="bottom" sideOffset={8}>
               {content}
             </TooltipContent>
-          </Portal>
+          </TooltipPrimitive.Portal>
         )}
 
         {!portal && (
@@ -38,7 +38,7 @@ export function Tooltip({
             {content}
           </TooltipContent>
         )}
-      </Root>
-    </Provider>
+      </TooltipPrimitive.Root>
+    </TooltipPrimitive.Provider>
   );
 }

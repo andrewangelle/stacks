@@ -1,5 +1,5 @@
-import * as Popover from '@radix-ui/react-popover';
 import { useNavigate } from '@tanstack/react-router';
+import { Popover } from 'radix-ui';
 import { useState } from 'react';
 import { PopoverClose } from '~/components/Boards/Boards.styled';
 import {

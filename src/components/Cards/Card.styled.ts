@@ -1,6 +1,5 @@
 import { styled } from '@pigment-css/react';
-import * as Dialog from '@radix-ui/react-dialog';
-import * as Popover from '@radix-ui/react-popover';
+import { Dialog, Popover } from 'radix-ui';
 import { fontFamily } from '~/components/Boards/Boards.styled';
 import { Button, secondaryButtonStyles } from '~/styles/Page.styled';
 import { focusRingBlue } from '~/styles/tokens';

@@ -1,6 +1,6 @@
 import { styled } from '@pigment-css/react';
-import * as Popover from '@radix-ui/react-popover';
 import { Link } from '@tanstack/react-router';
+import { Popover } from 'radix-ui';
 import type { ReactNode } from 'react';
 import { blue, fontFamily } from '~/styles/tokens';
 
