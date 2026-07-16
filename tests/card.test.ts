@@ -224,15 +224,22 @@ test.describe('Move card', () => {
     request,
   }) => {
     const { board, card } = await seedListsScenario(request);
+    // A reposition only means something with a neighbor to move past, so give
+    // 'To Do' a second card below 'Write docs'.
+    await seedCard(request, {
+      boardId: board.id,
+      listId: card.listId,
+      cardTitle: 'Fix bugs',
+    });
 
     await openMoveMenu(page, board.id, card.id);
-    // Keep the same board and list; only change the position.
+    // Keep the same board and list; move 'Write docs' down to position 2.
     await selectMovePosition(page, '2');
     await submitMove(page);
 
-    // The card stays put in its list...
+    // The card is reordered within 'To Do' but never leaves it...
     await gotoSettled(page, `/board/${board.id}`);
-    await expectListOrder(page, 'To Do', ['Write docs']);
+    await expectListOrder(page, 'To Do', ['Fix bugs', 'Write docs']);
 
     // ...and a same-list reposition records nothing in the feed.
     await gotoSettled(page, `/board/${board.id}/card/${card.id}`);

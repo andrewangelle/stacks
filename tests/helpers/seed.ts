@@ -32,6 +32,7 @@ export async function seedCard(
   request: APIRequestContext,
   data: {
     boardId: string;
+    listId?: string;
     listTitle?: string;
     cardTitle?: string;
   },
