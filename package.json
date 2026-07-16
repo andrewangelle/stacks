@@ -57,7 +57,6 @@
     "pg": "^8.20.0",
     "radix-ui": "^1.6.2",
     "react": "^19.2.7",
-    "react-beautiful-dnd": "^13.1.0",
     "react-dom": "^19.2.7",
     "react-icons": "^4.3.1",
     "zod": "^3.25.76"
@@ -73,7 +72,6 @@
     "@types/node": "^25.6.2",
     "@types/node-uuid": "^0.0.29",
     "@types/react": "^19.1.9",
-    "@types/react-beautiful-dnd": "^13.1.2",
     "@types/react-dom": "^19.1.7",
     "@vitejs/plugin-react": "^6.0.3",
     "@vitejs/plugin-rsc": "^0.5.27",
@@ -98,8 +96,7 @@
   "packageManager": "pnpm@10.33.2+sha512.a90faf6feeab71ad6c6e57f94e0fe1a12f5dcc22cd754db40ae9593eb6a3e0b6b12e3540218bb37ae083404b1f2ce6db2a4121e979829b4aff94b99f49da1cf8",
   "pnpm": {
     "overrides": {
-      "react-is": "18.3.1",
-      "@radix-ui/react-dismissable-layer": "1.1.15"
+      "react-is": "18.3.1"
     },
     "onlyBuiltDependencies": [
       "@clerk/shared"
