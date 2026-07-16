@@ -27,8 +27,12 @@ export function useMoveCardSelectOptions({ cardId }: { cardId: string }) {
     }
   }, [defaultListId, selectionIsValid]);
 
+  const selectedListData = lists?.find((list) => list.id === selectedList);
+  const listPositions = selectedListData?.cards?.length ?? 0;
   const positions =
-    (lists?.find((list) => list.id === selectedList)?.cards?.length ?? 0) + 1;
+    selectedListData?.id === currentList?.id
+      ? listPositions
+      : listPositions + 1;
 
   return {
     isListsLoading,
