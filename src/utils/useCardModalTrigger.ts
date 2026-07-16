@@ -8,9 +8,11 @@ import {
 } from 'react';
 import { prefetchCardModalData } from '~/db/cards/cards.cache';
 import { useCurrentBoardId } from '~/utils/useCurrentBoardId';
+import { useIsMobile } from '~/utils/useIsMobile';
 
 export function useCardModalTrigger(id: string) {
   const boardId = useCurrentBoardId();
+  const isMobile = useIsMobile();
   const navigate = useNavigate();
   const routerState = useRouterState();
   const [isHovering, setHovering] = useState(false);
@@ -24,6 +26,14 @@ export function useCardModalTrigger(id: string) {
   const isNavigatingToSameCard = cardIdNavigatingTo === id;
 
   function openCardModal() {
+    if (isMobile) {
+      navigate({
+        to: '/card/$cardId',
+        params: { cardId: id.slice(0, 8) },
+      });
+      return;
+    }
+
     navigate({
       to: '/board/$id/card/$cardId',
       params: { id: boardId, cardId: id },

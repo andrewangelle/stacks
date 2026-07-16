@@ -10,6 +10,8 @@ import {
   CardModalOverlay,
   CardModalPortal,
   CardModalRoot,
+  CardPageActivityColumn,
+  CardPageContent,
 } from '~/components/Cards/Card.styled';
 import { CardColumnResize } from '~/components/Cards/CardColumnResize';
 import { CardDescription } from '~/components/Cards/CardDescription';
@@ -25,7 +27,11 @@ import { useCardColumnWidth } from '~/utils/useCardColumnWidth';
 import { useCurrentBoardId } from '~/utils/useCurrentBoardId';
 import { useCurrentCardId } from '~/utils/useCurrentCardId';
 
-export function Card() {
+type CardProps = {
+  variant?: 'modal' | 'page';
+};
+
+export function Card({ variant = 'modal' }: CardProps) {
   const cardId = useCurrentCardId();
   const boardId = useCurrentBoardId();
   const navigate = useNavigate();
@@ -58,6 +64,77 @@ export function Card() {
     });
   }
 
+  const isPage = variant === 'page';
+  const ActivityColumn = isPage ? CardPageActivityColumn : CardActivityColumn;
+
+  const cardBody = (
+    <>
+      <CardHeader
+        cardId={cardId}
+        isNavigating={isRouteLoading && isClosingCard}
+        asPage={isPage}
+      />
+
+      <CardModalBody data-testid="CardModalBody" style={cardModalBodyStyle}>
+        <CardMainColumn data-testid="CardMainColumn" ref={mainColumnRef}>
+          <CardEditableTitle />
+
+          <CardActionsContainer data-testid="CardActionsContainer">
+            <CreateChecklist />
+            <DeleteCardPopover />
+          </CardActionsContainer>
+
+          <CardDescription />
+
+          <Suspense
+            fallback={
+              <ChecklistsContainer data-testid="ChecklistsContainer">
+                <ChecklistSkeleton />
+              </ChecklistsContainer>
+            }
+          >
+            <CardChecklists />
+          </Suspense>
+        </CardMainColumn>
+
+        {isWideLayout && (
+          <CardColumnResize
+            columnWidth={columnWidth}
+            setColumnWidth={setColumnWidth}
+          />
+        )}
+
+        <ActivityColumn data-testid="CardActivityColumn">
+          <ActivityPanel />
+        </ActivityColumn>
+      </CardModalBody>
+    </>
+  );
+
+  if (isPage) {
+    return (
+      <CardModalRoot
+        data-testid="CardModalRoot"
+        open
+        modal={false}
+        onOpenChange={handleOpenChange}
+      >
+        <CardPageContent
+          data-testid="CardPageContent"
+          aria-describedby={undefined}
+          onCloseAutoFocus={(event) => {
+            event.preventDefault();
+          }}
+          onInteractOutside={(event) => {
+            event.preventDefault();
+          }}
+        >
+          {cardBody}
+        </CardPageContent>
+      </CardModalRoot>
+    );
+  }
+
   return (
     <CardModalRoot
       data-testid="CardModalRoot"
@@ -74,47 +151,7 @@ export function Card() {
             }}
             onPointerDownOutside={preventCloseOnDevToolsEvent}
           >
-            <CardHeader
-              cardId={cardId}
-              isNavigating={isRouteLoading && isClosingCard}
-            />
-
-            <CardModalBody
-              data-testid="CardModalBody"
-              style={cardModalBodyStyle}
-            >
-              <CardMainColumn data-testid="CardMainColumn" ref={mainColumnRef}>
-                <CardEditableTitle />
-
-                <CardActionsContainer data-testid="CardActionsContainer">
-                  <CreateChecklist />
-                  <DeleteCardPopover />
-                </CardActionsContainer>
-
-                <CardDescription />
-
-                <Suspense
-                  fallback={
-                    <ChecklistsContainer data-testid="ChecklistsContainer">
-                      <ChecklistSkeleton />
-                    </ChecklistsContainer>
-                  }
-                >
-                  <CardChecklists />
-                </Suspense>
-              </CardMainColumn>
-
-              {isWideLayout && (
-                <CardColumnResize
-                  columnWidth={columnWidth}
-                  setColumnWidth={setColumnWidth}
-                />
-              )}
-
-              <CardActivityColumn data-testid="CardActivityColumn">
-                <ActivityPanel />
-              </CardActivityColumn>
-            </CardModalBody>
+            {cardBody}
           </CardModalContent>
         </CardModalOverlay>
       </CardModalPortal>

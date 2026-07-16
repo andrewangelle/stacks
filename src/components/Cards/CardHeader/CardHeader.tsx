@@ -5,13 +5,14 @@ import { MoveCardMenu } from '~/components/Cards/MoveCardMenu/MoveCardMenu';
 export type CardHeaderProps = {
   cardId: string;
   isNavigating: boolean;
+  asPage?: boolean;
 };
 
-export function CardHeader({ cardId, isNavigating }: CardHeaderProps) {
+export function CardHeader({ cardId, isNavigating, asPage }: CardHeaderProps) {
   return (
     <CardHeaderContainer data-testid="CardHeaderContainer">
       <MoveCardMenu id={cardId} />
-      <CloseCardButton isNavigating={isNavigating} />
+      <CloseCardButton isNavigating={isNavigating} asPage={asPage} />
     </CardHeaderContainer>
   );
 }

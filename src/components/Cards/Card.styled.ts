@@ -177,6 +177,14 @@ export const CardActivityColumn = styled.div`
   }
 `;
 
+export const CardPageActivityColumn = styled(CardActivityColumn)`
+  background: transparent;
+
+  ${cardModalBreakpoint} {
+    background: transparent;
+  }
+`;
+
 export const CardModalContent = styled(Dialog.Content)`
   position: relative;
   font-family: ${fontFamily};
@@ -196,6 +204,17 @@ export const CardModalContent = styled(Dialog.Content)`
     height: auto;
     max-height: 99vh;
   }
+`;
+
+export const CardPageContent = styled(Dialog.Content)`
+  position: relative;
+  font-family: ${fontFamily};
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  min-height: 100vh;
+  padding-top: 116px;
+  background: rgb(248, 248, 248);
 `;
 
 export const CardModalTrigger = styled('div')({
