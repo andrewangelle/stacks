@@ -14,14 +14,8 @@ import {
   getNavBarServer,
 } from '~/components/server/Nav.functions';
 import { getBoardIdByCardId } from '~/db/cards/cards.functions';
-import { fetchUserId } from '~/middleware/auth';
 
 export const Route = createFileRoute('/card/$cardId')({
-  async beforeLoad() {
-    const { userId } = await fetchUserId();
-    return { userId };
-  },
-
   async loader({ context, params }) {
     if (!context.userId) {
       context.queryClient.clear();

@@ -10,14 +10,8 @@ import { UserNavContent } from '~/components/Nav/UserNavContent';
 import { getBoardsServer } from '~/components/server/Boards.functions';
 import { getNavBarServer } from '~/components/server/Nav.functions';
 import { boardsQueryOptions } from '~/db/boards/boards.query';
-import { fetchUserId } from '~/middleware/auth';
 
 export const Route = createFileRoute('/boards')({
-  async beforeLoad() {
-    const { userId } = await fetchUserId();
-    return { userId };
-  },
-
   async loader({ context }) {
     if (!context.userId) {
       context.queryClient.clear();

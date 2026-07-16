@@ -1,15 +1,9 @@
 import { Show, SignIn, UserButton } from '@clerk/tanstack-react-start';
 import { createFileRoute, redirect } from '@tanstack/react-router';
 import { NavBarClient } from '~/components/Nav/NavBarClient';
-import { fetchUserId } from '~/middleware/auth';
 import { FlexCenter } from '~/styles/Page.styled';
 
 export const Route = createFileRoute('/auth/sign-in')({
-  async beforeLoad() {
-    const { userId } = await fetchUserId();
-    return { userId };
-  },
-
   loader({ context }) {
     if (context.userId) {
       throw redirect({ to: '/boards' });
