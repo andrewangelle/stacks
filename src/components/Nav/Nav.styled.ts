@@ -64,6 +64,12 @@ export const NavBarContent = styled.div<BackgroundProps>({
   ],
 });
 
+export const NavColumn = styled('div')({
+  flex: '1 1 0',
+  display: 'flex',
+  justifyContent: 'flex-end',
+});
+
 export const BoardHeaderContainer = styled(NavBarContainer)<BackgroundProps>({
   padding: '10px',
   zIndex: 1,
