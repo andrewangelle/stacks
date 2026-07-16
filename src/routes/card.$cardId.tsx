@@ -30,10 +30,6 @@ export const Route = createFileRoute('/card/$cardId')({
       throw redirect({ to: '/boards' });
     }
 
-    const BoardPageServer = await getBoardPageServer({
-      data: { boardId: cardQuery.boardId },
-    });
-
     const NavBarServer = await getNavBarServer({
       data: { boardId: cardQuery.boardId },
     });
@@ -42,10 +38,15 @@ export const Route = createFileRoute('/card/$cardId')({
       data: { boardId: cardQuery.boardId },
     });
 
+    const BoardPageServer = context.isMobile
+      ? null
+      : await getBoardPageServer({ data: { boardId: cardQuery.boardId } });
+
     return {
       boardId: cardQuery.boardId,
       cardId: cardQuery.cardId,
       boardColor: cardQuery.boardColor,
+      isMobile: context.isMobile,
       BoardPageServer,
       NavBarServer,
       BoardHeaderServer,
@@ -53,8 +54,14 @@ export const Route = createFileRoute('/card/$cardId')({
   },
 
   component() {
-    const { BoardPageServer, NavBarServer, BoardHeaderServer, boardColor } =
-      Route.useLoaderData();
+    const {
+      BoardPageServer,
+      NavBarServer,
+      BoardHeaderServer,
+      boardColor,
+      isMobile,
+    } = Route.useLoaderData();
+
     return (
       <>
         <NavBarContainer data-testid="NavBarContainer">
@@ -67,22 +74,30 @@ export const Route = createFileRoute('/card/$cardId')({
           </CompositeComponent>
         </NavBarContainer>
 
-        <CompositeComponent src={BoardPageServer.src}>
-          <Suspense
-            fallback={
-              <BoardListsFallback
-                data-testid="BoardListsFallback"
-                background={boardColor}
-              />
-            }
-          >
-            <BoardLists>
-              <Suspense fallback={<CardFallback />}>
-                <Card />
-              </Suspense>
-            </BoardLists>
+        {isMobile ? (
+          <Suspense fallback={<CardFallback />}>
+            <Card variant="page" />
           </Suspense>
-        </CompositeComponent>
+        ) : (
+          BoardPageServer && (
+            <CompositeComponent src={BoardPageServer.src}>
+              <Suspense
+                fallback={
+                  <BoardListsFallback
+                    data-testid="BoardListsFallback"
+                    background={boardColor}
+                  />
+                }
+              >
+                <BoardLists>
+                  <Suspense fallback={<CardFallback />}>
+                    <Card />
+                  </Suspense>
+                </BoardLists>
+              </Suspense>
+            </CompositeComponent>
+          )
+        )}
       </>
     );
   },

@@ -23,6 +23,10 @@ export const CardModalClose = styled(Dialog.Close)`
   }
 `;
 
+export const CardPageClose = styled(CardModalClose)`
+  background: transparent;
+`;
+
 export const CardModalCloseSpinnerSlot = styled.div`
   display: flex;
   align-items: center;
