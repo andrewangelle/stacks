@@ -22,7 +22,11 @@ export default defineConfig({
     // dep scanner from discovering them mid-session and triggering a re-optimize +
     // full reload, which tears down the shared optimized React/pigment chunks and
     // causes transient "Invalid hook call" and stale-chunk ENOENT errors.
-    exclude: ['pg', '@prisma/client'],
+    // Radix keeps its dismissable-layer stack in a module-level context, so the
+    // optimizer inlining a second copy into another prebundled chunk gives the
+    // Dialog and the Popover separate layer sets — each then reads as the top
+    // layer and Escape closes both. Leaving it unbundled keeps one instance.
+    exclude: ['pg', '@prisma/client', '@radix-ui/react-dismissable-layer'],
   },
 
   ssr: {

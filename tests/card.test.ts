@@ -264,6 +264,26 @@ test.describe('Move card', () => {
     await page.reload();
     await expectListOrder(page, 'Later', ['Existing card', 'Write docs']);
   });
+
+  // The menu is a Popover nested inside the card modal's Dialog. Both dismiss on
+  // Escape via Radix's shared layer stack, so a duplicate copy of that module
+  // splits the stack and lets the keypress tear down the modal too.
+  test('esc closes the move menu without closing the card modal', async ({
+    page,
+    request,
+  }) => {
+    const { board, card } = await seedListsScenario(request);
+
+    await openMoveMenu(page, board.id, card.id);
+    await page.keyboard.press('Escape');
+
+    await expect(page.getByTestId('MoveCardMenuContent')).toBeHidden();
+    await expect(page.getByTestId('CardModalContent')).toBeVisible();
+
+    // A second Escape, with only the modal left, still closes it.
+    await page.keyboard.press('Escape');
+    await expect(page.getByTestId('CardModalContent')).toBeHidden();
+  });
 });
 
 async function waitForCardCompleted(page: Page) {
