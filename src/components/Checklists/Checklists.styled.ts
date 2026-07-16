@@ -1,6 +1,5 @@
 import { styled } from '@pigment-css/react';
-import * as Popover from '@radix-ui/react-popover';
-import * as Progress from '@radix-ui/react-progress';
+import { Popover, Progress } from 'radix-ui';
 import { fontFamily, red } from '~/components/Boards/Boards.styled';
 import {
   CardModalActionButton,

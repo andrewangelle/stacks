@@ -1,5 +1,5 @@
 import { styled } from '@pigment-css/react';
-import * as Tooltip from '@radix-ui/react-tooltip';
+import { Tooltip } from 'radix-ui';
 
 export const TooltipContent = styled(Tooltip.Content)({
   color: 'white',

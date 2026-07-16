@@ -1,6 +1,6 @@
 import { styled } from '@pigment-css/react';
-import * as Popover from '@radix-ui/react-popover';
 import { Link } from '@tanstack/react-router';
+import { Popover } from 'radix-ui';
 import { TiDelete } from 'react-icons/ti';
 import { animationStyles } from '~/styles/animations';
 import {

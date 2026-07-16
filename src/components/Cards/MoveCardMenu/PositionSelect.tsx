@@ -1,4 +1,4 @@
-import * as Select from '@radix-ui/react-select';
+import { Select } from 'radix-ui';
 import type { RefObject } from 'react';
 import { RxCaretDown } from 'react-icons/rx';
 import {

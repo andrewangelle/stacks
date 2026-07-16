@@ -1,6 +1,5 @@
 import { styled } from '@pigment-css/react';
-import * as Accordion from '@radix-ui/react-accordion';
-import * as Checkbox from '@radix-ui/react-checkbox';
+import { Accordion, Checkbox } from 'radix-ui';
 import { ListCardSkeleton } from '~/components/Lists/List.styled';
 import { blue, darkGray, focusRingBlue, fontFamily } from '~/styles/tokens';
 

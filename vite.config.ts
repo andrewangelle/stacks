@@ -26,7 +26,7 @@ export default defineConfig({
     // optimizer inlining a second copy into another prebundled chunk gives the
     // Dialog and the Popover separate layer sets — each then reads as the top
     // layer and Escape closes both. Leaving it unbundled keeps one instance.
-    exclude: ['pg', '@prisma/client', '@radix-ui/react-dismissable-layer'],
+    exclude: ['pg', '@prisma/client', 'radix-ui'],
   },
 
   ssr: {

@@ -1,4 +1,4 @@
-import * as Popover from '@radix-ui/react-popover';
+import { Popover } from 'radix-ui';
 import { useState } from 'react';
 import { FaCheck } from 'react-icons/fa';
 import {

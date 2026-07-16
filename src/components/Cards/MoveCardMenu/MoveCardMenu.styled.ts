@@ -1,6 +1,5 @@
 import { styled } from '@pigment-css/react';
-import * as Popover from '@radix-ui/react-popover';
-import * as Select from '@radix-ui/react-select';
+import { Popover, Select } from 'radix-ui';
 import { fontFamily } from '~/components/Boards/Boards.styled';
 import { animationStyles } from '~/styles/animations';
 import { Button } from '~/styles/Page.styled';

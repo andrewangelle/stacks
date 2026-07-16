@@ -1,5 +1,5 @@
 import { styled } from '@pigment-css/react';
-import * as Popover from '@radix-ui/react-popover';
+import { Popover } from 'radix-ui';
 import { fontFamily, PopoverClose } from '~/components/Boards/Boards.styled';
 import { Button } from '~/styles/Page.styled';
 import { red } from '~/styles/tokens';
