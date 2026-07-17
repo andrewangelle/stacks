@@ -125,8 +125,8 @@ export function Combobox({
   return (
     <ComboboxWrapper data-testid="ComboboxWrapper">
       <ComboboxLabel
-        data-testid="ComboboxLabel"
         {...getLabelProps({
+          'data-testid': 'ComboboxLabel',
           onClick(event: MouseEvent<HTMLLabelElement>) {
             // Prevent the trigger events from being invoked by label interaction
             event.preventDefault();
@@ -139,14 +139,18 @@ export function Combobox({
 
       <ComboboxTrigger data-testid="ComboboxTrigger">
         <ComboboxInput
-          placeholder={selectedItem?.label}
-          data-testid="ComboboxInput"
-          {...getInputProps()}
+          {...getInputProps({
+            autoFocus: false,
+            placeholder: selectedItem?.label,
+            'data-testid': 'ComboboxInput',
+          })}
         />
+
         <ComboboxIconButton
-          aria-label="toggle menu"
-          data-testid={`${testId}-ComboboxToggleButton`}
-          {...getToggleButtonProps()}
+          {...getToggleButtonProps({
+            'aria-label': 'toggle menu',
+            'data-testid': `${testId}-ComboboxToggleButton`,
+          })}
         >
           <RxCaretDown
             data-testid="ComboboxCaretDown"
@@ -160,8 +164,8 @@ export function Combobox({
       </ComboboxTrigger>
 
       <ComboboxMenu
-        data-testid="ComboboxMenu"
         {...getMenuProps({
+          'data-testid': `${testId}-ComboboxMenu`,
           style: {
             display: isOpen ? 'block' : 'none',
           },
@@ -171,10 +175,13 @@ export function Combobox({
           filteredItems.map((item, index) => (
             <ComboboxItem
               key={item.id}
-              data-highlighted={highlightedIndex === index}
-              data-selected={selectedItem?.id === item.id}
-              data-testid={`ComboboxItem-${item.label}`}
-              {...getItemProps({ item, index })}
+              {...getItemProps({
+                'data-testid': `ComboboxItem-${item.label}`,
+                'data-highlighted': highlightedIndex === index,
+                'data-selected': selectedItem?.id === item.id,
+                item,
+                index,
+              })}
             >
               {item.label}
 
