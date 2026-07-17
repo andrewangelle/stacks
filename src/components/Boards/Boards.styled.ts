@@ -102,6 +102,12 @@ export const BoardCardLink = styled(Link)<BackgroundProps>({
   '&:active': {
     color: `${blue}`,
   },
+  '@media (max-width: 660px)': {
+    width: '100%',
+    maxWidth: '100%',
+    height: '76px',
+    borderRadius: '4px',
+  },
 });
 
 export const CreateBoardContainer = styled('div')<BackgroundProps>({
@@ -182,6 +188,13 @@ export const BoardCardTitle = styled('div')<BoardCardTitleProps>({
   padding: '10px',
   borderBottomLeftRadius: '8px',
   borderBottomRightRadius: '8px',
+
+  '@media (max-width: 660px)': {
+    padding: '6px',
+    textAlign: 'center',
+    borderBottomLeftRadius: '4px',
+    borderBottomRightRadius: '4px',
+  },
 });
 
 export const BoardCardSkeleton = styled(CreateBoardContainer)({
