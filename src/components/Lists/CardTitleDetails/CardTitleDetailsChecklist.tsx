@@ -30,7 +30,9 @@ export function CardTitleDetailsChecklist({
   onCompleteAllItems = () => null,
 }: CardTitleDetailsChecklistProps) {
   const { data: checklist } = useGetChecklist({ checklistId });
-  const { mutate: updateItem, isSuccess } = useUpdateChecklistItem();
+  const { mutate: updateItem, isSuccess } = useUpdateChecklistItem({
+    checklistId,
+  });
   const createActivity = useCreateActivity();
   const boardId = useCurrentBoardId();
   const [visibleCount, setVisibleCount] = useState(INITIAL_VISIBLE);
