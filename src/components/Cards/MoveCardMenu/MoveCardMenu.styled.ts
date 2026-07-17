@@ -160,10 +160,17 @@ export const MoveCardSelectRow = styled.div`
 `;
 
 export const MoveCardListColumn = styled.div`
-  flex: 1 1 auto;
-  min-width: 0;
+  width: 70%;
 `;
 
 export const MoveCardPositionColumn = styled.div`
-  flex: 0 0 132px;
+  width: 30%;
+
+`;
+
+export const MoveCardFieldsContainer = styled.div`
+  padding-top: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
 `;

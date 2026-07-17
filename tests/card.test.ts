@@ -420,26 +420,36 @@ async function openMoveMenu(page: Page, boardId: string, cardId: string) {
 // open across all browsers; the item can then be clicked normally.
 async function openSelect(page: Page, triggerTestId: string) {
   const trigger = page.getByTestId(triggerTestId);
-  await trigger.focus();
-  await trigger.press('Enter');
+  // Right after a board switch the list/position fields briefly re-render
+  // through their loading skeleton, which unmounts the toggle and swallows a
+  // single keypress. Retry opening until the combobox actually reports open.
+  await expect(async () => {
+    if ((await trigger.getAttribute('aria-expanded')) !== 'true') {
+      await trigger.focus();
+      await trigger.press('Space');
+    }
+    await expect(trigger).toHaveAttribute('aria-expanded', 'true', {
+      timeout: 1000,
+    });
+  }).toPass();
 }
 
 async function selectMoveBoard(page: Page, boardTitle: string) {
-  await openSelect(page, 'BoardSelectTrigger');
-  await page.getByTestId(`BoardSelectItem-${boardTitle}`).click();
+  await openSelect(page, 'Board-ComboboxToggleButton');
+  await page.getByTestId(`ComboboxItem-${boardTitle}`).click();
   // The button enables once the selection resolves to a list on the new board.
   await expect(page.getByTestId('MoveCardButton')).toBeEnabled();
 }
 
 async function selectMoveList(page: Page, listTitle: string) {
-  await openSelect(page, 'ListSelectTrigger');
-  await page.getByTestId(`ListSelectItem-${listTitle}`).click();
+  await openSelect(page, 'List-ComboboxToggleButton');
+  await page.getByTestId(`ComboboxItem-${listTitle}`).click();
   await expect(page.getByTestId('MoveCardButton')).toBeEnabled();
 }
 
 async function selectMovePosition(page: Page, position: string) {
-  await openSelect(page, 'PositionSelectTrigger');
-  await page.getByTestId(`PositionSelectItem-${position}`).click();
+  await openSelect(page, 'Position-ComboboxToggleButton');
+  await page.getByTestId(`ComboboxItem-${position}`).click();
 }
 
 async function submitMove(page: Page) {
