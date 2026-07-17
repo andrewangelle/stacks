@@ -25,7 +25,7 @@ export function ChecklistItemOptions({
   isHovering,
 }: ChecklistItemOptionsProps) {
   const [isOpen, setOpen] = useState(false);
-  const deleteChecklistItem = useDeleteChecklistItem();
+  const deleteChecklistItem = useDeleteChecklistItem({ checklistId });
   const clickOutsidePopoverRef = useOutsideClick(() => setOpen(false), isOpen);
 
   return (

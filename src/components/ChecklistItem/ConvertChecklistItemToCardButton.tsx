@@ -8,20 +8,22 @@ import {
 } from '~/db/checklistItems/checklistItems.query';
 import { useCurrentBoardId } from '~/utils/useCurrentBoardId';
 
+type ConvertChecklistItemToCardButtonProps = {
+  id: string;
+  checklistId: string;
+};
+
 export function ConvertChecklistItemToCardButton({
   id,
   checklistId,
-}: {
-  id: string;
-  checklistId: string;
-}) {
+}: ConvertChecklistItemToCardButtonProps) {
   const { data: checklistItem } = useGetChecklistItem({
     itemId: id,
     checklistId,
   });
   const boardId = useCurrentBoardId();
   const createActivity = useCreateActivity();
-  const deleteChecklistItem = useDeleteChecklistItem();
+  const deleteChecklistItem = useDeleteChecklistItem({ checklistId });
   const {
     mutate: createCard,
     isSuccess: isCardCreated,

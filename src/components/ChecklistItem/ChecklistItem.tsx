@@ -34,7 +34,7 @@ export function ChecklistItem({
     itemId: id,
     checklistId,
   });
-  const { mutate: updateItem } = useUpdateChecklistItem();
+  const { mutate: updateItem } = useUpdateChecklistItem({ checklistId });
   const [isEditingLabel, setIsEditingLabel] = useState(false);
   const [isHovering, setHovering] = useState(false);
   const createActivity = useCreateActivity();
