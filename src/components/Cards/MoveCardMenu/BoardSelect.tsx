@@ -1,16 +1,10 @@
-import { Select } from 'radix-ui';
-import type { RefObject } from 'react';
-import { RxCaretDown } from 'react-icons/rx';
+import { type RefObject, useCallback, useMemo } from 'react';
 import {
-  SelectContent,
-  SelectItem,
-  SelectItemCurrent,
-  SelectTrigger,
-  SelectViewport,
-} from '~/components/Cards/MoveCardMenu/MoveCardMenu.styled';
+  Combobox,
+  type ComboboxItemType,
+} from '~/components/Combobox/Combobox';
 import { useGetBoards } from '~/db/boards/boards.query';
 import { useCurrentBoardId } from '~/utils/useCurrentBoardId';
-import { useSelectTriggerRef } from '~/utils/useSelectTriggerRef';
 
 type BoardSelectProps = {
   cardId: string;
@@ -20,68 +14,47 @@ type BoardSelectProps = {
 };
 
 export function BoardSelect({
-  ref,
   selectedBoardId,
   setSelectedBoardId,
 }: BoardSelectProps) {
   const boardId = useCurrentBoardId();
   const { data: boards } = useGetBoards();
-  const { ref: triggerRef, onCloseAutoFocus } = useSelectTriggerRef();
 
   const selectedBoard = selectedBoardId
     ? boards?.find((board) => board.id.startsWith(selectedBoardId))
     : undefined;
 
+  const items = useMemo(
+    () =>
+      boards?.map((board) => ({
+        id: board.id,
+        label: board.boardTitle,
+        current: board.id.startsWith(boardId),
+      })) ?? [],
+    [boards, boardId],
+  );
+
+  const selectedItem = useMemo(
+    () => items.find((item) => item.id === selectedBoard?.id) ?? null,
+    [items, selectedBoard],
+  );
+
+  const onSelectedItemChange = useCallback(
+    (item: ComboboxItemType | null) => {
+      if (item) {
+        setSelectedBoardId(item.id);
+      }
+    },
+    [setSelectedBoardId],
+  );
+
   return (
-    <Select.Root value={selectedBoard?.id} onValueChange={setSelectedBoardId}>
-      <SelectTrigger
-        ref={triggerRef}
-        aria-label="Board"
-        data-testid="BoardSelectTrigger"
-      >
-        <Select.Value placeholder="Select a board" />
-
-        <Select.Icon data-testid="SelectIcon">
-          <RxCaretDown size={20} data-testid="RxCaretDown" />
-        </Select.Icon>
-      </SelectTrigger>
-
-      <Select.Portal container={ref.current}>
-        <SelectContent
-          position="popper"
-          sideOffset={4}
-          data-testid="BoardSelectContent"
-          onCloseAutoFocus={onCloseAutoFocus}
-        >
-          <Select.ScrollUpButton data-testid="SelectScrollUpButton">
-            <RxCaretDown size={20} data-testid="RxCaretDown" />
-          </Select.ScrollUpButton>
-
-          <SelectViewport>
-            <Select.Group>
-              {boards?.map((board) => (
-                <SelectItem
-                  key={board.id}
-                  value={board.id}
-                  data-testid={`BoardSelectItem-${board.boardTitle}`}
-                >
-                  <Select.ItemText>{board.boardTitle}</Select.ItemText>
-
-                  {board.id.startsWith(boardId) && (
-                    <SelectItemCurrent data-testid="BoardSelectCurrent">
-                      (current)
-                    </SelectItemCurrent>
-                  )}
-                </SelectItem>
-              ))}
-            </Select.Group>
-          </SelectViewport>
-
-          <Select.ScrollDownButton data-testid="SelectScrollDownButton">
-            <RxCaretDown size={20} data-testid="RxCaretDown" />
-          </Select.ScrollDownButton>
-        </SelectContent>
-      </Select.Portal>
-    </Select.Root>
+    <Combobox
+      testId="Board"
+      label="Board"
+      items={items}
+      selectedItem={selectedItem}
+      onSelectedItemChange={onSelectedItemChange}
+    />
   );
 }

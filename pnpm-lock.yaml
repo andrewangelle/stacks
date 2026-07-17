@@ -65,6 +65,9 @@ importers:
       dotenv:
         specifier: ^16.0.0
         version: 16.6.1
+      downshift:
+        specifier: ^9.4.0
+        version: 9.4.0(react@19.2.7)
       pg:
         specifier: ^8.20.0
         version: 8.20.0
@@ -5850,6 +5853,9 @@ packages:
     resolution: {integrity: sha512-6FqVXeETqWPoGcfzrXb37E50NP0LXT8kAMu5ooZayhWWdgEY4lBEEcbQNXtkuKQsGduxiIcI4gOTsxTmuq/bSg==}
     engines: {node: '>= 14'}
 
+  compute-scroll-into-view@3.1.1:
+    resolution: {integrity: sha512-VRhuHOLoKYOy4UbilLbUzbYg93XLjv2PncJC50EuTWPA3gaja1UjBsUP/D/9/juV3vQFr6XBEzn9KCAHdUvOHw==}
+
   concat-map@0.0.1:
     resolution: {integrity: sha512-/Srv4dswyQNBfohGpz9o6Yb3Gz3SrUDqBH5rTuhGR7ahtlbYKnVxw2bCFMRljaA7EXHaXZ8wsHdodFvbkhKmqg==}
 
@@ -6310,6 +6316,11 @@ packages:
   dotenv@17.4.2:
     resolution: {integrity: sha512-nI4U3TottKAcAD9LLud4Cb7b2QztQMUEfHbvhTH09bqXTxnSie8WnjPALV/WMCrJZ6UV/qHJ6L03OqO3LcdYZw==}
     engines: {node: '>=12'}
+
+  downshift@9.4.0:
+    resolution: {integrity: sha512-yIwyzRYzycKwMZhvOahsn4BmRr4Ffi0JymdWOtTDhR+LGDEXCZHTcwgUbNBC/oZLT6YrR46iwJe/BrQUS5ClQQ==}
+    peerDependencies:
+      react: '>=16.12.0'
 
   dunder-proto@1.0.1:
     resolution: {integrity: sha512-KIN/nDJBQRcXw0MLVhZE9iQHmG68qAVIBg9CqmUYjmQIhgij9U5MFvrqkUL5FbtyyzZuOeOt0zdeRe4UY7ct+A==}
@@ -16449,6 +16460,8 @@ snapshots:
       normalize-path: 3.0.0
       readable-stream: 4.7.0
 
+  compute-scroll-into-view@3.1.1: {}
+
   concat-map@0.0.1: {}
 
   concordance@5.0.4:
@@ -16893,6 +16906,15 @@ snapshots:
   dotenv@17.2.2: {}
 
   dotenv@17.4.2: {}
+
+  downshift@9.4.0(react@19.2.7):
+    dependencies:
+      '@babel/runtime': 7.29.2
+      compute-scroll-into-view: 3.1.1
+      prop-types: 15.8.1
+      react: 19.2.7
+      react-is: 18.3.1
+      tslib: 2.8.1
 
   dunder-proto@1.0.1:
     dependencies:

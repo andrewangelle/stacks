@@ -7,8 +7,8 @@ import {
 import { BoardSelect } from '~/components/Cards/MoveCardMenu/BoardSelect';
 import { ListSelect } from '~/components/Cards/MoveCardMenu/ListSelect';
 import {
-  DropdownLabel,
   MoveCardButton,
+  MoveCardFieldsContainer,
   MoveCardListColumn,
   MoveCardMenuContent,
   MoveCardMenuHeader,
@@ -88,9 +88,7 @@ export function MoveCardFields({ id }: { id: string }) {
 
       <CreateBoardCloseBorder data-testid="CreateBoardCloseBorder" />
 
-      <div ref={ref}>
-        <DropdownLabel data-testid="BoardSelectTitle">Board</DropdownLabel>
-
+      <MoveCardFieldsContainer ref={ref} data-testid="MoveCardFieldsContainer">
         <Suspense fallback={<SelectSkeleton style={{ minHeight: '44px' }} />}>
           <BoardSelect
             cardId={id}
@@ -100,10 +98,8 @@ export function MoveCardFields({ id }: { id: string }) {
           />
         </Suspense>
 
-        <MoveCardSelectRow>
-          <MoveCardListColumn>
-            <DropdownLabel data-testid="ListSelectTitle">List</DropdownLabel>
-
+        <MoveCardSelectRow data-testid="MoveCardSelectRow">
+          <MoveCardListColumn data-testid="MoveCardListColumn">
             <ListSelect
               ref={ref}
               isListsLoading={isListsLoading}
@@ -114,11 +110,7 @@ export function MoveCardFields({ id }: { id: string }) {
             />
           </MoveCardListColumn>
 
-          <MoveCardPositionColumn>
-            <DropdownLabel data-testid="PositionSelectTitle">
-              Position
-            </DropdownLabel>
-
+          <MoveCardPositionColumn data-testid="MoveCardPositionColumn">
             <PositionSelect
               ref={ref}
               selectedList={selectedList}
@@ -129,7 +121,7 @@ export function MoveCardFields({ id }: { id: string }) {
             />
           </MoveCardPositionColumn>
         </MoveCardSelectRow>
-      </div>
+      </MoveCardFieldsContainer>
 
       <MoveCardButton
         data-testid="MoveCardButton"

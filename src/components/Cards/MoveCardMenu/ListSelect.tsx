@@ -1,16 +1,14 @@
-import { Select } from 'radix-ui';
-import type { RefObject } from 'react';
-import { RxCaretDown } from 'react-icons/rx';
+import { type RefObject, useCallback, useMemo } from 'react';
+import { SelectSkeleton } from '~/components/Cards/MoveCardMenu/MoveCardMenu.styled';
 import {
-  SelectContent,
-  SelectItem,
-  SelectItemCurrent,
-  SelectSkeleton,
-  SelectTrigger,
-  SelectViewport,
-} from '~/components/Cards/MoveCardMenu/MoveCardMenu.styled';
+  Combobox,
+  type ComboboxItemType,
+} from '~/components/Combobox/Combobox';
+import {
+  ComboboxLabel,
+  ComboboxWrapper,
+} from '~/components/Combobox/Combobox.styled';
 import type { ListItem } from '~/db/lists/lists.cache';
-import { useSelectTriggerRef } from '~/utils/useSelectTriggerRef';
 
 type ListSelectProps = {
   isListsLoading: boolean;
@@ -27,64 +25,47 @@ export function ListSelect({
   currentListId,
   selectedList,
   setSelectedList,
-  ref,
 }: ListSelectProps) {
-  const { ref: triggerRef, onCloseAutoFocus } = useSelectTriggerRef();
+  const items = useMemo(
+    () =>
+      lists?.map((list) => ({
+        id: list.id,
+        label: list.listTitle,
+        current: list.id === currentListId,
+      })) ?? [],
+    [lists, currentListId],
+  );
+
+  const selectedItem = useMemo(
+    () => items.find((item) => item.id === selectedList) ?? null,
+    [items, selectedList],
+  );
+
+  const onSelectedItemChange = useCallback(
+    (item: ComboboxItemType | null) => {
+      if (item) {
+        setSelectedList(item.id);
+      }
+    },
+    [setSelectedList],
+  );
 
   if (isListsLoading) {
-    return <SelectSkeleton style={{ minHeight: '44px' }} />;
+    return (
+      <ComboboxWrapper data-testid="ComboboxWrapper">
+        <ComboboxLabel data-testid="ComboboxLabel">List</ComboboxLabel>
+        <SelectSkeleton style={{ minHeight: '44px' }} />
+      </ComboboxWrapper>
+    );
   }
 
   return (
-    <Select.Root value={selectedList ?? ''} onValueChange={setSelectedList}>
-      <SelectTrigger
-        ref={triggerRef}
-        aria-label="List"
-        data-testid="ListSelectTrigger"
-      >
-        <Select.Value placeholder="Select a list" />
-
-        <Select.Icon data-testid="SelectIcon">
-          <RxCaretDown size={20} data-testid="RxCaretDown" />
-        </Select.Icon>
-      </SelectTrigger>
-
-      <Select.Portal container={ref.current}>
-        <SelectContent
-          position="popper"
-          sideOffset={4}
-          data-testid="ListSelectContent"
-          onCloseAutoFocus={onCloseAutoFocus}
-        >
-          <Select.ScrollUpButton data-testid="SelectScrollUpButton">
-            <RxCaretDown size={20} data-testid="RxCaretDown" />
-          </Select.ScrollUpButton>
-
-          <SelectViewport>
-            <Select.Group>
-              {lists?.map((list) => (
-                <SelectItem
-                  key={list.id}
-                  value={list.id}
-                  data-testid={`ListSelectItem-${list.listTitle}`}
-                >
-                  <Select.ItemText>{list.listTitle}</Select.ItemText>
-
-                  {list.id === currentListId && (
-                    <SelectItemCurrent data-testid="ListSelectCurrent">
-                      (current)
-                    </SelectItemCurrent>
-                  )}
-                </SelectItem>
-              ))}
-            </Select.Group>
-          </SelectViewport>
-
-          <Select.ScrollDownButton data-testid="SelectScrollDownButton">
-            <RxCaretDown size={20} data-testid="RxCaretDown" />
-          </Select.ScrollDownButton>
-        </SelectContent>
-      </Select.Portal>
-    </Select.Root>
+    <Combobox
+      testId="List"
+      label="List"
+      items={items}
+      selectedItem={selectedItem}
+      onSelectedItemChange={onSelectedItemChange}
+    />
   );
 }
