@@ -6,9 +6,9 @@ import {
 } from '@tanstack/react-query';
 import type { ListItem } from '~/db/lists/lists.cache';
 import {
-  applyOptimisticListMove,
   rollbackListCaches,
   toListItem,
+  updateMovedListCache,
 } from '~/db/lists/lists.cache';
 import {
   createList,
@@ -136,7 +136,7 @@ export function useMoveListMutation() {
       return moveList({ data });
     },
     onMutate(variables) {
-      return { snapshot: applyOptimisticListMove(variables) };
+      return { snapshot: updateMovedListCache(variables) };
     },
     onError(_error, _variables, context) {
       if (context?.snapshot) {

@@ -10,6 +10,28 @@ import { queryClient } from '~/query';
 
 type BoardPageLists = Awaited<ReturnType<typeof getLists>>;
 
+export type ListCardItem = Pick<Card, 'id' | 'cardTitle' | 'createdAt'>;
+
+export type ListItem = Pick<
+  List,
+  'id' | 'listTitle' | 'createdAt' | 'position' | 'boardId'
+> & {
+  cards: ListCardItem[];
+};
+
+export type ListCacheSnapshot = [QueryKey, ListItem[] | undefined][];
+
+export function toListItem(item: List): ListItem {
+  return {
+    id: item.id,
+    listTitle: item.listTitle,
+    createdAt: item.createdAt,
+    position: item.position,
+    boardId: item.boardId,
+    cards: [],
+  };
+}
+
 /**
  * Seeds a card's checklist rollup from the board payload so the card front resolves
  * without its own request. Only read when that per-card query has no data yet; once
@@ -51,27 +73,7 @@ export function findCardChecklistView(boardId: string, cardId: string) {
   return undefined;
 }
 
-export type ListCardItem = Pick<Card, 'id' | 'cardTitle' | 'createdAt'>;
-
-export type ListItem = Pick<
-  List,
-  'id' | 'listTitle' | 'createdAt' | 'position' | 'boardId'
-> & {
-  cards: ListCardItem[];
-};
-
-export function toListItem(item: List): ListItem {
-  return {
-    id: item.id,
-    listTitle: item.listTitle,
-    createdAt: item.createdAt,
-    position: item.position,
-    boardId: item.boardId,
-    cards: [],
-  };
-}
-
-export function reorderListsByIndex(
+export function reorderDraggedList(
   boardId: string,
   fromIndex: number,
   toIndex: number,
@@ -95,13 +97,9 @@ export function reorderListsByIndex(
   });
 }
 
-// Board urls are masked to the first 8 chars, so a `['lists', boardId]` cache can
-// be keyed by either the masked prefix or the full id. Match either direction.
 function boardIdsMatch(a: string, b: string) {
   return a.startsWith(b) || b.startsWith(a);
 }
-
-export type ListCacheSnapshot = [QueryKey, ListItem[] | undefined][];
 
 function findListInCaches(listId: string) {
   const caches = queryClient.getQueriesData<ListItem[]>({
@@ -119,13 +117,7 @@ function findListInCaches(listId: string) {
   return undefined;
 }
 
-/**
- * Surgically move a list between the source and target boards' `['lists']` caches instead of
- * invalidating them — a refetch of the board query would drop the board back into its loading
- * skeleton. Mirrors the server's contiguous renumbering so the optimistic order matches what the
- * move persists. Returns the affected cache entries so the caller can roll back on error.
- */
-export function applyOptimisticListMove({
+export function updateMovedListCache({
   listId,
   targetBoardId,
   targetIndex,
@@ -171,7 +163,6 @@ export function applyOptimisticListMove({
   return snapshot;
 }
 
-/** Restore the `['lists']` caches captured by applyOptimisticListMove after a failed move. */
 export function rollbackListCaches(snapshot: ListCacheSnapshot) {
   for (const [key, data] of snapshot) {
     queryClient.setQueryData(key, data);
