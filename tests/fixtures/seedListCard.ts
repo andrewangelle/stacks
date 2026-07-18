@@ -1,17 +1,14 @@
+import { prisma } from '~/db/prisma';
 import { buildCard } from '~test/factories/card';
 import { buildList } from '~test/factories/list';
-import type { CardRecord } from '~test/mocks/db/card';
-import type { ChecklistRecord } from '~test/mocks/db/checklist';
-import type { ChecklistItemRecord } from '~test/mocks/db/checklistItem';
-import type { ListRecord } from '~test/mocks/db/list';
-import { getStore, id, now } from '~test/mocks/memoryPrisma';
+import { TEST_USER_ID } from '~test/mocks/constants';
 
 type ChecklistSeed = {
   title: string;
   items: string[];
 };
 
-export function seedListCard(data: {
+export async function seedListCard(data: {
   boardId: string;
   listTitle?: string;
   cardTitle?: string;
@@ -19,81 +16,56 @@ export function seedListCard(data: {
 }) {
   const { listTitle } = buildList(data.listTitle);
   const { cardTitle } = buildCard(data.cardTitle);
-  const timestamp = now();
-  const userId = getStore().users[0]?.id;
 
-  if (!userId) {
-    throw new Error('E2E user not seeded — call resetMemoryDb() first');
-  }
+  const list = await prisma.list.create({
+    data: {
+      listTitle,
+      boardId: data.boardId,
+      userId: TEST_USER_ID,
+    },
+  });
 
-  const board = getStore().stacks.find((stack) => stack.id === data.boardId);
-
-  if (!board || board.userId !== userId) {
-    throw new Error('Board not found for seed-list-card');
-  }
-
-  const list: ListRecord = {
-    id: id(),
-    listTitle,
-    boardId: data.boardId,
-    userId,
-    position: 0,
-    createdAt: timestamp,
-    updatedAt: timestamp,
-  };
-
-  const card: CardRecord = {
-    id: id(),
-    cardTitle,
-    cardDescription: '',
-    listId: list.id,
-    userId,
-    position: 0,
-    isCompleted: false,
-    isChecklistsExpanded: false,
-    expandedChecklistId: null,
-    createdAt: timestamp,
-    updatedAt: timestamp,
-  };
-
-  const checklists: ChecklistRecord[] = [];
-  const checklistItems: ChecklistItemRecord[] = [];
-
-  for (const checklistSeed of data.checklists) {
-    const checklist: ChecklistRecord = {
-      id: id(),
-      checklistTitle: checklistSeed.title,
-      hideCheckedItems: false,
-      cardId: card.id,
+  const card = await prisma.card.create({
+    data: {
+      cardTitle,
       listId: list.id,
-      userId,
-      position: checklists.length,
-      createdAt: timestamp,
-      updatedAt: timestamp,
-    };
+      userId: TEST_USER_ID,
+    },
+  });
+
+  const checklists: Awaited<ReturnType<typeof prisma.checklist.create>>[] = [];
+  const checklistItems: Awaited<
+    ReturnType<typeof prisma.checklistItem.create>
+  >[] = [];
+
+  for (const [checklistIndex, checklistSeed] of data.checklists.entries()) {
+    const checklist = await prisma.checklist.create({
+      data: {
+        checklistTitle: checklistSeed.title,
+        cardId: card.id,
+        listId: list.id,
+        userId: TEST_USER_ID,
+        position: checklistIndex,
+      },
+    });
 
     checklists.push(checklist);
 
     for (const [itemIndex, label] of checklistSeed.items.entries()) {
-      checklistItems.push({
-        id: id(),
-        label,
-        isCompleted: false,
-        cardId: card.id,
-        checklistId: checklist.id,
-        listId: list.id,
-        userId,
-        position: itemIndex,
-        createdAt: timestamp,
-        updatedAt: timestamp,
+      const item = await prisma.checklistItem.create({
+        data: {
+          label,
+          cardId: card.id,
+          checklistId: checklist.id,
+          listId: list.id,
+          userId: TEST_USER_ID,
+          position: itemIndex,
+        },
       });
+
+      checklistItems.push(item);
     }
   }
-
-  getStore().lists.push(list);
-  getStore().cards.push(card);
-  getStore().checklists.push(...checklists);
-  getStore().checklistItems.push(...checklistItems);
 
   return { list, card, checklists, checklistItems };
 }

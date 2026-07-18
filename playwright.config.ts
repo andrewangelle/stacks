@@ -7,7 +7,7 @@ export default defineConfig({
   testDir: './tests',
   tsconfig: './tests/tsconfig.json',
   globalSetup: './tests/global-setup.ts',
-  // Shared in-memory DB via dev:e2e — one worker avoids cross-test races.
+  // Shared local Postgres via dev:e2e — one worker avoids cross-test races.
   fullyParallel: false,
   workers: 1,
   /* Fail the build on CI if you accidentally left test.only in the source code. */
@@ -69,9 +69,11 @@ export default defineConfig({
 
   /* Run your local dev server before starting the tests */
   webServer: {
-    command: 'pnpm dev:e2e',
+    // Bring up the local Postgres container (left running between runs) and
+    // apply migrations before starting the e2e dev server.
+    command: 'pnpm test:db:setup && pnpm dev:e2e',
     url: 'http://localhost:3100/__test/health',
-    reuseExistingServer: false, 
+    reuseExistingServer: false,
     timeout: 120_000,
   },
 }); 

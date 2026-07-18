@@ -120,7 +120,7 @@ export function Card({ variant = 'modal' }: CardProps) {
         onOpenChange={handleOpenChange}
       >
         <CardPageContent
-          data-testid="CardPageContent"
+          data-testid="CardModalContent"
           aria-describedby={undefined}
           onCloseAutoFocus={(event) => {
             event.preventDefault();

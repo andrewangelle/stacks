@@ -28,7 +28,6 @@ export default mergeConfig(baseConfig, {
   resolve: {
     dedupe: ['react', 'react-dom'],
     alias: {
-      '~/db/prisma': path.resolve(rootDir, 'tests/mocks/memoryPrisma.ts'),
       '@clerk/tanstack-react-start/server': path.resolve(
         rootDir,
         'tests/mocks/clerkServer.ts',
