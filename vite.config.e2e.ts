@@ -3,7 +3,7 @@ import { fileURLToPath } from 'node:url';
 import { mergeConfig } from 'vite';
 import baseConfig from './vite.config';
 import { suppressLogging, createE2ELogger, suppressKnownConsoleNoise } from './tests/plugins/suppressLogging';
-import { resetInMemoryDB } from './tests/plugins/resetInMemoryDB';
+import { resetDB } from './tests/plugins/resetDB';
 import { stubDndKitSourcemaps } from './tests/plugins/stubDndKitSourcemaps';
 
 suppressKnownConsoleNoise();
@@ -23,7 +23,7 @@ export default mergeConfig(baseConfig, {
   plugins: [
     stubDndKitSourcemaps(),
     suppressLogging(),
-    resetInMemoryDB(),
+    resetDB(),
   ],
   resolve: {
     dedupe: ['react', 'react-dom'],
