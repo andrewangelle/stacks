@@ -11,6 +11,7 @@ import {
   ListActionsPopoverHeader,
   ListActionsPopoverTrigger,
 } from '~/components/Lists/ListActions/ListActions.styled';
+import { MoveListMenu } from '~/components/Lists/ListActions/MoveListMenu';
 import { Tooltip } from '~/components/Tooltip/Tooltip';
 import { useDeleteList } from '~/db/lists/lists.query';
 import {
@@ -23,7 +24,13 @@ type ListActionsProps = {
   id: string;
 };
 
-type Views = 'actions' | 'delete';
+type Views = 'actions' | 'move' | 'delete';
+
+const viewTitles: Record<Views, string> = {
+  actions: 'List actions',
+  move: 'Move list',
+  delete: 'Are you sure?',
+};
 
 export function ListActions({ id }: ListActionsProps) {
   const boardId = useCurrentBoardId();
@@ -63,7 +70,7 @@ export function ListActions({ id }: ListActionsProps) {
             </ListActionsPopoverButtonBack>
           </div>
 
-          <div>{view === 'delete' ? 'Are you sure?' : 'List actions'}</div>
+          <div>{viewTitles[view]}</div>
 
           <ListActionsPopoverClose data-testid="ListActionsPopoverClose">
             X
@@ -74,11 +81,22 @@ export function ListActions({ id }: ListActionsProps) {
           <ListActionsOptionsContainer data-testid="ListActionsOptionsContainer">
             <ListActionsOption
               data-testid="ListActionsOption"
+              onClick={() => setView('move')}
+            >
+              Move list
+            </ListActionsOption>
+
+            <ListActionsOption
+              data-testid="ListActionsOption"
               onClick={() => setView('delete')}
             >
               Archive this list
             </ListActionsOption>
           </ListActionsOptionsContainer>
+        )}
+
+        {view === 'move' && (
+          <MoveListMenu id={id} onMoved={() => closePopover(false)} />
         )}
 
         {view === 'delete' && (

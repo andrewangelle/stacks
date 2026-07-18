@@ -29,9 +29,16 @@ export const ReorderListsSchema = z.object({
   orderedIds: z.array(z.string()),
 });
 
+export const MoveListSchema = z.object({
+  listId: z.string(),
+  targetBoardId: z.string(),
+  targetIndex: z.number().int().min(0),
+});
+
 export type GetListsArgs = z.infer<typeof GetListsSchema>;
 export type GetListByIdArgs = z.infer<typeof GetListByIdSchema>;
 export type CreateListArgs = z.infer<typeof CreateListSchema>;
 export type UpdateListArgs = z.infer<typeof UpdateListSchema>;
 export type DeleteListArgs = z.infer<typeof DeleteListSchema>;
 export type ReorderListsArgs = z.infer<typeof ReorderListsSchema>;
+export type MoveListArgs = z.infer<typeof MoveListSchema>;
