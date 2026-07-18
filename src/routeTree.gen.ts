@@ -9,26 +9,26 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as BoardsRouteImport } from './routes/boards'
 import { Route as IndexRouteImport } from './routes/index'
-import { Route as CardCardIdRouteImport } from './routes/card.$cardId'
-import { Route as BoardIdRouteImport } from './routes/board.$id'
+import { Route as BoardsRouteImport } from './routes/boards'
 import { Route as AuthSignInRouteImport } from './routes/auth.sign-in'
+import { Route as BoardIdRouteImport } from './routes/board.$id'
+import { Route as CardCardIdRouteImport } from './routes/card.$cardId'
 import { Route as BoardIdCardCardIdRouteImport } from './routes/board.$id.card.$cardId'
 
-const BoardsRoute = BoardsRouteImport.update({
-  id: '/boards',
-  path: '/boards',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
-const CardCardIdRoute = CardCardIdRouteImport.update({
-  id: '/card/$cardId',
-  path: '/card/$cardId',
+const BoardsRoute = BoardsRouteImport.update({
+  id: '/boards',
+  path: '/boards',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthSignInRoute = AuthSignInRouteImport.update({
+  id: '/auth/sign-in',
+  path: '/auth/sign-in',
   getParentRoute: () => rootRouteImport,
 } as any)
 const BoardIdRoute = BoardIdRouteImport.update({
@@ -36,9 +36,9 @@ const BoardIdRoute = BoardIdRouteImport.update({
   path: '/board/$id',
   getParentRoute: () => rootRouteImport,
 } as any)
-const AuthSignInRoute = AuthSignInRouteImport.update({
-  id: '/auth/sign-in',
-  path: '/auth/sign-in',
+const CardCardIdRoute = CardCardIdRouteImport.update({
+  id: '/card/$cardId',
+  path: '/card/$cardId',
   getParentRoute: () => rootRouteImport,
 } as any)
 const BoardIdCardCardIdRoute = BoardIdCardCardIdRouteImport.update({
@@ -109,13 +109,6 @@ export interface RootRouteChildren {
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/boards': {
-      id: '/boards'
-      path: '/boards'
-      fullPath: '/boards'
-      preLoaderRoute: typeof BoardsRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/': {
       id: '/'
       path: '/'
@@ -123,11 +116,18 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/card/$cardId': {
-      id: '/card/$cardId'
-      path: '/card/$cardId'
-      fullPath: '/card/$cardId'
-      preLoaderRoute: typeof CardCardIdRouteImport
+    '/boards': {
+      id: '/boards'
+      path: '/boards'
+      fullPath: '/boards'
+      preLoaderRoute: typeof BoardsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/auth/sign-in': {
+      id: '/auth/sign-in'
+      path: '/auth/sign-in'
+      fullPath: '/auth/sign-in'
+      preLoaderRoute: typeof AuthSignInRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/board/$id': {
@@ -137,11 +137,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof BoardIdRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/auth/sign-in': {
-      id: '/auth/sign-in'
-      path: '/auth/sign-in'
-      fullPath: '/auth/sign-in'
-      preLoaderRoute: typeof AuthSignInRouteImport
+    '/card/$cardId': {
+      id: '/card/$cardId'
+      path: '/card/$cardId'
+      fullPath: '/card/$cardId'
+      preLoaderRoute: typeof CardCardIdRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/board/$id/card/$cardId': {

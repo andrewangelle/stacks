@@ -92,7 +92,7 @@ export function useUpdateList() {
       });
     },
 
-    onSuccess(_result, variables) {
+    onMutate(variables) {
       queryClient.setQueryData<ListItem[]>(
         queryKeys.list(variables.boardId),
         (cache = []) =>
@@ -102,6 +102,12 @@ export function useUpdateList() {
               : item,
           ),
       );
+    },
+
+    onError(_error, variables) {
+      queryClient.invalidateQueries({
+        queryKey: queryKeys.list(variables.boardId),
+      });
     },
   });
 
@@ -153,11 +159,17 @@ export function useDeleteList() {
       return deleteList({ data });
     },
 
-    onSuccess(_result, variables) {
+    onMutate(variables) {
       queryClient.setQueryData<ListItem[]>(
         queryKeys.list(variables.boardId),
         (cache = []) => cache.filter((item) => item.id !== variables.listId),
       );
+    },
+
+    onError(_error, variables) {
+      queryClient.invalidateQueries({
+        queryKey: queryKeys.list(variables.boardId),
+      });
     },
   });
 
