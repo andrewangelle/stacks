@@ -48,6 +48,7 @@ export function useMoveCardSelectOptions({ cardId }: { cardId: string }) {
     lists,
     currentListId: currentList?.id,
     selectedList,
+    selectionIsValid,
     positions,
     selectedPosition,
     setSelectedList,

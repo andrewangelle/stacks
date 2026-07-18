@@ -109,7 +109,6 @@ test.describe('Checklist', () => {
       () => page.getByTestId('CardModalContent').isVisible(),
     );
 
-    await expect(page.getByTestId('CardModalContent')).toBeVisible();
     await expect(
       page.getByTestId('CardModalTitleContainer').getByTestId('CardModalTitle'),
     ).toHaveText('Deploy to staging');

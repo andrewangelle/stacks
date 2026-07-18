@@ -36,6 +36,7 @@ export function MoveCardFields({ id }: { id: string }) {
     lists,
     currentListId,
     selectedList,
+    selectionIsValid,
     positions,
     selectedPosition,
     setSelectedBoardId,
@@ -43,9 +44,13 @@ export function MoveCardFields({ id }: { id: string }) {
     setSelectedPosition,
   } = useMoveCardSelectOptions({ cardId: id });
 
-  // Any board/list/position selection is a valid move; only wait for the list
-  // selection to resolve.
-  const canMove = Boolean(currentListId && selectedList);
+  // Any board/list/position selection is a valid move, but after a board switch
+  // the lists still reload and selectedList briefly points at the old board's
+  // list. Wait for the selection to re-anchor onto the loaded lists so the
+  // button doesn't submit a stale selection mid-load.
+  const canMove = Boolean(
+    currentListId && selectedList && !isListsLoading && selectionIsValid,
+  );
 
   function handleMove() {
     if (canMove) {
