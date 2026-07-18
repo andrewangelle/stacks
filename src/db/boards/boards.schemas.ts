@@ -12,6 +12,7 @@ export const GetBoardByIdSchema = z.object({
 export const UpdateBoardSchema = z.object({
   boardId: z.string(),
   boardTitle: z.string(),
+  boardColor: z.string(),
 });
 
 export const MaybeBoardIdSchema = z

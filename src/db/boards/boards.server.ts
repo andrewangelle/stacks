@@ -39,6 +39,6 @@ export function getBoardByIdQuery(data: WithUserId<GetBoardByIdArgs>) {
 export function updateBoardQuery(data: WithUserId<UpdateBoardArgs>) {
   return prisma.stack.update({
     where: { id: data.boardId, userId: data.userId },
-    data: { boardTitle: data.boardTitle },
+    data: { boardTitle: data.boardTitle, boardColor: data.boardColor },
   });
 }
