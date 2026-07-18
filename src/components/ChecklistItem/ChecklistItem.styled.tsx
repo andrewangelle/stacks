@@ -21,6 +21,7 @@ export const AddChecklistItemButton = styled(Button)({
     color: secondaryButtonStyles.color,
   },
 });
+
 export const AddChecklistItemInput = styled.textarea` 
   height: 30px;
   width: 100%;

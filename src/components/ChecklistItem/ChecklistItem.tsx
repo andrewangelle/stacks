@@ -16,6 +16,7 @@ import {
   useUpdateChecklistItem,
 } from '~/db/checklistItems/checklistItems.query';
 import { useCurrentBoardId } from '~/utils/useCurrentBoardId';
+import { useIsMobile } from '~/utils/useIsMobile';
 
 export function ChecklistItem({
   id,
@@ -38,10 +39,11 @@ export function ChecklistItem({
   const [isEditingLabel, setIsEditingLabel] = useState(false);
   const [isHovering, setHovering] = useState(false);
   const createActivity = useCreateActivity();
+  const isMobile = useIsMobile();
 
   const checkIconStyles: CSSProperties = {
     position: 'absolute',
-    top: '-1px',
+    top: isMobile ? '0px' : '-1px',
     left: '0px',
   };
 
