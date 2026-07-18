@@ -28,7 +28,7 @@ function readJsonBody<DataType>(
   });
 }
 
-export function resetInMemoryDB(): Plugin {
+export function resetDB(): Plugin {
   return {
     name: 'e2e-reset',
     configureServer(server) {
