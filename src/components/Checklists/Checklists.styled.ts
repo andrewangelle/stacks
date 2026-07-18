@@ -1,6 +1,6 @@
 import { styled } from '@pigment-css/react';
 import { Popover, Progress } from 'radix-ui';
-import { fontFamily, red } from '~/components/Boards/Boards.styled';
+import { fontFamily } from '~/components/Boards/Boards.styled';
 import {
   CardModalActionButton,
   CardModalTitle,
@@ -68,23 +68,11 @@ export const CreateChecklistAddButton = styled(Button)`
   margin: 8px;
 `;
 
-export const DeleteChecklistButton2 = styled(Button)` 
-  border: 1px solid black;
-  padding: 8px 10px;
-  color: black;
-  margin: 0;
-  font-weight: 600;
-  color: rgba(9, 30, 66, 0.725);
-  border: 1px solid rgba(9, 30, 66, 0.2);
-
-  &:hover:not(:disabled) {
-    color: ${red};
+export const DeleteChecklistButton = styled(CardModalActionButton)`
+  && {
+    font-size: 14px;
   }
-
-
 `;
-
-export const DeleteChecklistButton = styled(CardModalActionButton)``;
 
 export const ChecklistHeaderActions = styled.div`
   display: flex;
