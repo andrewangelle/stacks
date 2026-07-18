@@ -9,7 +9,10 @@ import {
   getBoards,
   updateBoard,
 } from '~/db/boards/boards.functions';
-import type { CreateBoardArgs } from '~/db/boards/boards.schemas';
+import type {
+  CreateBoardArgs,
+  UpdateBoardArgs,
+} from '~/db/boards/boards.schemas';
 import type { Stack } from '~/generated/prisma/client';
 import { useCurrentBoardId } from '~/utils/useCurrentBoardId';
 
@@ -73,23 +76,24 @@ export function useCreateBoard() {
 export function useUpdateBoard() {
   const queryClient = useQueryClient();
   const mutation = useMutation({
-    mutationFn({ id, boardTitle }: Pick<Stack, 'id' | 'boardTitle'>) {
+    mutationFn({ boardId, boardTitle, boardColor }: UpdateBoardArgs) {
       return updateBoard({
-        data: { boardId: id, boardTitle },
+        data: { boardId, boardTitle, boardColor },
       });
     },
     onMutate(variables) {
       queryClient.setQueryData<Stack>(
-        queryKeys.detail(variables.id),
+        queryKeys.detail(variables.boardId),
         (cache = {} as Stack) => ({
           ...cache,
           boardTitle: variables.boardTitle,
+          boardColor: variables.boardColor ?? cache.boardColor,
         }),
       );
     },
     onError(_error, variables) {
       queryClient.invalidateQueries({
-        queryKey: queryKeys.detail(variables.id),
+        queryKey: queryKeys.detail(variables.boardId),
       });
     },
   });

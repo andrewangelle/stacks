@@ -64,7 +64,7 @@ export const stackModel = {
 
   async update(args: {
     where: { id: string; userId: string };
-    data: { boardTitle: string };
+    data: { boardTitle: string; boardColor: string };
   }) {
     const stack = getStore().stacks.find(
       (item) => item.id === args.where.id && item.userId === args.where.userId,
@@ -75,6 +75,7 @@ export const stackModel = {
     }
 
     stack.boardTitle = args.data.boardTitle;
+    stack.boardColor = args.data.boardColor;
     stack.updatedAt = now();
 
     return stack;
