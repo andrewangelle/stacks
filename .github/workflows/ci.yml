@@ -57,6 +57,8 @@ jobs:
 
       - name: Generate Prisma schema
         run: pnpm db:generate
+        env:
+          DATABASE_URL: postgresql://ci:ci@localhost:5432/ci
 
       - name: Lint check
         run: pnpm lint:check
