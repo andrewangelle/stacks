@@ -4,7 +4,7 @@ import { AddLists } from '~/components/Lists/AddList';
 import { List } from '~/components/Lists/List';
 import { ListSkeleton } from '~/components/Lists/ListSkeleton';
 import { Draggable } from '~/components/shared/dnd/Draggable';
-import { reorderListsByIndex } from '~/db/lists/lists.cache';
+import { reorderDraggedList } from '~/db/lists/lists.cache';
 import { listsQueryOptions } from '~/db/lists/lists.query';
 import { useCurrentBoardId } from '~/utils/useCurrentBoardId';
 
@@ -23,7 +23,7 @@ export function BoardLists({ children }: { children?: ReactNode }) {
           index={index}
           group={boardId}
           onReorder={(fromIndex, toIndex) =>
-            reorderListsByIndex(boardId, fromIndex, toIndex)
+            reorderDraggedList(boardId, fromIndex, toIndex)
           }
         >
           <Suspense fallback={<ListSkeleton key={list.id} />}>
