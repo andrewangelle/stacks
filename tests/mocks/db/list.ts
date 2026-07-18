@@ -191,7 +191,7 @@ export const listModel = {
 
   async updateMany(args: {
     where: { id: string; userId: string };
-    data: { listTitle?: string; position?: number };
+    data: { listTitle?: string; position?: number; boardId?: string };
   }) {
     const list = getStore().lists.find(
       (item) => item.id === args.where.id && item.userId === args.where.userId,
@@ -207,6 +207,10 @@ export const listModel = {
 
     if (args.data.position !== undefined) {
       list.position = args.data.position;
+    }
+
+    if (args.data.boardId !== undefined) {
+      list.boardId = args.data.boardId;
     }
 
     list.updatedAt = now();

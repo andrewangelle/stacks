@@ -348,6 +348,93 @@ test.describe('List', () => {
   });
 });
 
+test.describe('Move list', () => {
+  // Cold Vite compile on the first navigation of a run can exceed 30s.
+  test.describe.configure({ timeout: 60_000 });
+
+  test('moves a list to another board at the selected position', async ({
+    page,
+    request,
+  }) => {
+    await resetDb(request);
+
+    const source = await seedBoard(request, 'Sprint Board');
+    await seedCard(request, {
+      boardId: source.id,
+      listTitle: 'To Do',
+      cardTitle: 'Write docs',
+    });
+
+    const target = await seedBoard(request, 'Backlog');
+    await seedCard(request, {
+      boardId: target.id,
+      listTitle: 'Later',
+      cardTitle: 'Existing card',
+    });
+
+    await gotoSettled(page, `/board/${source.id}`);
+    await waitForList(page, 'To Do');
+
+    await openMoveListMenu(page, 'To Do');
+    await selectMoveListBoard(page, 'Backlog');
+    await selectMoveListPosition(page, '1');
+    await submitListMove(page);
+
+    // The list leaves the source board (no refetch — the optimistic update drops it).
+    await expect(
+      page.getByTestId('ListContainer').filter({ hasText: 'To Do' }),
+    ).toHaveCount(0);
+
+    // It lands on the target board, ahead of the existing list, carrying its card.
+    await gotoSettled(page, `/board/${target.id}`);
+    await expectBoardListOrder(page, ['To Do', 'Later']);
+    await expect(
+      page
+        .getByTestId('ListContainer')
+        .filter({ hasText: 'To Do' })
+        .getByTestId('ListCardContainer'),
+    ).toContainText('Write docs');
+  });
+
+  test('repositions a list within the same board', async ({
+    page,
+    request,
+  }) => {
+    await resetDb(request);
+
+    const board = await seedBoard(request, 'Sprint Board');
+    await seedCard(request, {
+      boardId: board.id,
+      listTitle: 'To Do',
+      cardTitle: 'Alpha',
+    });
+    await seedCard(request, {
+      boardId: board.id,
+      listTitle: 'Doing',
+      cardTitle: 'Bravo',
+    });
+    await seedCard(request, {
+      boardId: board.id,
+      listTitle: 'Done',
+      cardTitle: 'Charlie',
+    });
+
+    await gotoSettled(page, `/board/${board.id}`);
+    await expectBoardListOrder(page, ['To Do', 'Doing', 'Done']);
+
+    // Move 'To Do' from the first slot to the last.
+    await openMoveListMenu(page, 'To Do');
+    await selectMoveListPosition(page, '3');
+    await submitListMove(page);
+
+    await expectBoardListOrder(page, ['Doing', 'Done', 'To Do']);
+
+    // The new order survives a full refresh (persisted server-side).
+    await page.reload();
+    await expectBoardListOrder(page, ['Doing', 'Done', 'To Do']);
+  });
+});
+
 /**
  * Local utils
  */
@@ -539,5 +626,77 @@ async function waitForListCard(page: Page, cardTitle?: string) {
 async function waitForCardModal(page: Page) {
   await expect(async () => {
     await expect(page.getByTestId('CardModalContent')).toBeVisible();
+  }).toPass();
+}
+
+// Firefox/WebKit abort a `page.goto` that starts while the previous page is still
+// client-hydrating, surfacing as `NS_BINDING_ABORTED`. Let each navigation settle
+// before the next so back-to-back navigations don't race with hydration.
+async function gotoSettled(page: Page, url: string) {
+  await page.goto(url);
+  await page.waitForLoadState('networkidle');
+}
+
+async function openMoveListMenu(page: Page, listTitle: string) {
+  const list = page.getByTestId('ListContainer').filter({ hasText: listTitle });
+  const trigger = list.getByTestId('ListActionsPopoverButton');
+
+  await waitForHydratedAction(
+    () => trigger.click(),
+    async () =>
+      (await page.getByTestId('ListActionsOptionsContainer').count()) > 0,
+  );
+
+  await page
+    .getByTestId('ListActionsOption')
+    .filter({ hasText: 'Move list' })
+    .click();
+  await expect(page.getByTestId('MoveListFieldsContainer')).toBeVisible();
+}
+
+// The move menu's dropdowns are Radix-triggered comboboxes nested inside a Radix
+// Popover. On WebKit (and inconsistently on Firefox), a synthetic click on the
+// toggle reads as an outside pointer interaction that dismisses the popover, so
+// open the combobox with the keyboard instead; the item can then be clicked.
+async function openSelect(page: Page, triggerTestId: string) {
+  const trigger = page.getByTestId(triggerTestId);
+  await expect(async () => {
+    if ((await trigger.getAttribute('aria-expanded')) !== 'true') {
+      await trigger.focus();
+      await trigger.press('Space');
+    }
+    await expect(trigger).toHaveAttribute('aria-expanded', 'true', {
+      timeout: 1000,
+    });
+  }).toPass();
+}
+
+async function selectMoveListBoard(page: Page, boardTitle: string) {
+  await openSelect(page, 'Board-ComboboxToggleButton');
+  await page.getByTestId(`ComboboxItem-${boardTitle}`).click();
+  await expect(page.getByTestId('MoveListButton')).toBeEnabled();
+}
+
+async function selectMoveListPosition(page: Page, position: string) {
+  await openSelect(page, 'Position-ComboboxToggleButton');
+  await page.getByTestId(`ComboboxItem-${position}`).click();
+}
+
+async function submitListMove(page: Page) {
+  const moveButton = page.getByTestId('MoveListButton');
+  await expect(moveButton).toBeEnabled();
+  await moveButton.click();
+  // The popover closes only once the move has persisted server-side, so waiting
+  // for it to disappear keeps a follow-up navigation from racing the write.
+  await expect(page.getByTestId('MoveListFieldsContainer')).toBeHidden();
+}
+
+async function expectBoardListOrder(page: Page, titles: string[]) {
+  await expect(async () => {
+    const names = page.getByTestId('ListName');
+    await expect(names).toHaveCount(titles.length);
+    for (let index = 0; index < titles.length; index++) {
+      await expect(names.nth(index)).toHaveText(titles[index]);
+    }
   }).toPass();
 }

@@ -3,6 +3,7 @@ import {
   CreateListSchema,
   DeleteListSchema,
   GetListsSchema,
+  MoveListSchema,
   ReorderListsSchema,
   UpdateListSchema,
 } from '~/db/lists/lists.schemas';
@@ -10,6 +11,7 @@ import {
   createListQuery,
   deleteListQuery,
   getListsQuery,
+  moveListQuery,
   reorderListsQuery,
   updateListQuery,
 } from '~/db/lists/lists.server';
@@ -48,4 +50,11 @@ export const reorderLists = createServerFn({ method: 'POST' })
   .middleware([authMiddleware])
   .handler(async ({ data, context }) =>
     reorderListsQuery({ ...data, userId: context.uid }),
+  );
+
+export const moveList = createServerFn({ method: 'POST' })
+  .validator(MoveListSchema)
+  .middleware([authMiddleware])
+  .handler(async ({ data, context }) =>
+    moveListQuery({ ...data, userId: context.uid }),
   );

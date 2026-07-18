@@ -1,8 +1,10 @@
+import type { QueryKey } from '@tanstack/react-query';
 import {
   type getLists,
   reorderLists as reorderListsServer,
 } from '~/db/lists/lists.functions';
 import { listQueryKeys } from '~/db/lists/lists.query';
+import type { MoveListArgs } from '~/db/lists/lists.schemas';
 import type { Card, List } from '~/generated/prisma/client';
 import { queryClient } from '~/query';
 
@@ -91,4 +93,87 @@ export function reorderListsByIndex(
   reorderListsServer({ data: { boardId, orderedIds } }).catch(() => {
     queryClient.invalidateQueries({ queryKey: listQueryKeys.list(boardId) });
   });
+}
+
+// Board urls are masked to the first 8 chars, so a `['lists', boardId]` cache can
+// be keyed by either the masked prefix or the full id. Match either direction.
+function boardIdsMatch(a: string, b: string) {
+  return a.startsWith(b) || b.startsWith(a);
+}
+
+export type ListCacheSnapshot = [QueryKey, ListItem[] | undefined][];
+
+function findListInCaches(listId: string) {
+  const caches = queryClient.getQueriesData<ListItem[]>({
+    queryKey: ['lists'],
+  });
+
+  for (const [, lists] of caches) {
+    const list = lists?.find((item) => item.id === listId);
+
+    if (list) {
+      return list;
+    }
+  }
+
+  return undefined;
+}
+
+/**
+ * Surgically move a list between the source and target boards' `['lists']` caches instead of
+ * invalidating them — a refetch of the board query would drop the board back into its loading
+ * skeleton. Mirrors the server's contiguous renumbering so the optimistic order matches what the
+ * move persists. Returns the affected cache entries so the caller can roll back on error.
+ */
+export function applyOptimisticListMove({
+  listId,
+  targetBoardId,
+  targetIndex,
+}: MoveListArgs): ListCacheSnapshot {
+  const snapshot = queryClient.getQueriesData<ListItem[]>({
+    queryKey: ['lists'],
+  });
+
+  const movedList = findListInCaches(listId);
+
+  if (!movedList) {
+    return snapshot;
+  }
+
+  const sourceBoardId = movedList.boardId;
+
+  for (const [key, cache] of snapshot) {
+    if (!cache) {
+      continue;
+    }
+
+    const cacheBoardId = String(key[1] ?? '');
+    const isSource = boardIdsMatch(cacheBoardId, sourceBoardId);
+    const isTarget = boardIdsMatch(cacheBoardId, targetBoardId);
+
+    if (!isSource && !isTarget) {
+      continue;
+    }
+
+    const withoutMoved = cache.filter((list) => list.id !== listId);
+
+    if (isTarget) {
+      const index = Math.min(Math.max(targetIndex, 0), withoutMoved.length);
+      withoutMoved.splice(index, 0, { ...movedList, boardId: targetBoardId });
+    }
+
+    queryClient.setQueryData<ListItem[]>(
+      key,
+      withoutMoved.map((list, position) => ({ ...list, position })),
+    );
+  }
+
+  return snapshot;
+}
+
+/** Restore the `['lists']` caches captured by applyOptimisticListMove after a failed move. */
+export function rollbackListCaches(snapshot: ListCacheSnapshot) {
+  for (const [key, data] of snapshot) {
+    queryClient.setQueryData(key, data);
+  }
 }

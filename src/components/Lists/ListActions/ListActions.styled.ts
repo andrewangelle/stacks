@@ -156,9 +156,22 @@ export const ListActionsOption = styled.button`
   }
 `;
 
-export const DeleteListButton = styled(Button)` 
+export const DeleteListButton = styled(Button)`
   background: ${red};
   width: 100%;
   margin: 15px 0px 0px;
   padding: 8px 10px;
+`;
+
+export const MoveListFieldsContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  padding-top: 8px;
+`;
+
+export const MoveListButton = styled(Button)`
+  width: calc(100% - 20px);
+  margin: 8px 10px 0px;
+  padding: 10px 20px;
+  font-weight: 500;
 `;

@@ -6,11 +6,13 @@ import type {
   CreateListArgs,
   DeleteListArgs,
   GetListsArgs,
+  MoveListArgs,
   ReorderListsArgs,
   UpdateListArgs,
 } from '~/db/lists/lists.schemas';
 import { prisma } from '~/db/prisma';
 import type { WithUserId } from '~/db/withUserId';
+import type { Prisma } from '~/generated/prisma/client';
 
 export async function getListsQuery(data: WithUserId<GetListsArgs>) {
   const lists = await prisma.list.findMany({
@@ -164,4 +166,86 @@ export async function reorderListsQuery(data: WithUserId<ReorderListsArgs>) {
     code: 'lists:reorder:success',
     message: 'success',
   };
+}
+
+/**
+ * Move a list to a position on any board the user owns — its own board (a reposition) or a
+ * different board. Rewrites positions so order stays contiguous; the list's cards travel with
+ * it because they stay linked to the list, not the board.
+ */
+export async function moveListQuery(data: WithUserId<MoveListArgs>) {
+  const list = await prisma.list.findFirst({
+    where: { id: data.listId, board: { userId: data.userId } },
+    select: { id: true, boardId: true },
+  });
+
+  if (!list) {
+    throw new Error('Forbidden');
+  }
+
+  const targetBoard = await prisma.stack.findFirst({
+    where: { id: data.targetBoardId, userId: data.userId },
+  });
+
+  if (!targetBoard) {
+    throw new Error('Invalid move');
+  }
+
+  const movedToNewBoard = list.boardId !== targetBoard.id;
+
+  await prisma.$transaction(async (tx) => {
+    if (movedToNewBoard) {
+      await tx.list.updateMany({
+        where: { id: data.listId, userId: data.userId },
+        data: { boardId: targetBoard.id },
+      });
+      const sourceIds = await orderedListIds(tx, data.userId, list.boardId);
+      await renumberLists(tx, data.userId, sourceIds);
+    }
+
+    const targetIds = withListAt(
+      await orderedListIds(tx, data.userId, targetBoard.id),
+      data.listId,
+      data.targetIndex,
+    );
+    await renumberLists(tx, data.userId, targetIds);
+  });
+
+  return { code: 'lists:move:success', message: 'success' };
+}
+
+/** A board's list ids in display order. */
+async function orderedListIds(
+  tx: Prisma.TransactionClient,
+  userId: string,
+  boardId: string,
+) {
+  const lists = await tx.list.findMany({
+    where: { boardId, board: { userId } },
+    orderBy: [{ position: 'asc' }, { createdAt: 'asc' }],
+    select: { id: true },
+  });
+  return lists.map((list) => list.id);
+}
+
+/** `ids` with `listId` placed at `index`, dropping any existing entry first. */
+function withListAt(ids: string[], listId: string, index: number) {
+  const rest = ids.filter((id) => id !== listId);
+  const clampedIndex = Math.min(Math.max(index, 0), rest.length);
+  rest.splice(clampedIndex, 0, listId);
+  return rest;
+}
+
+/** Persist `orderedIds` as contiguous 0-based positions. */
+async function renumberLists(
+  tx: Prisma.TransactionClient,
+  userId: string,
+  orderedIds: string[],
+) {
+  for (let position = 0; position < orderedIds.length; position++) {
+    await tx.list.updateMany({
+      where: { id: orderedIds[position], userId },
+      data: { position },
+    });
+  }
 }

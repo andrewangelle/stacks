@@ -5,16 +5,22 @@ import {
   useSuspenseQuery,
 } from '@tanstack/react-query';
 import type { ListItem } from '~/db/lists/lists.cache';
-import { toListItem } from '~/db/lists/lists.cache';
+import {
+  applyOptimisticListMove,
+  rollbackListCaches,
+  toListItem,
+} from '~/db/lists/lists.cache';
 import {
   createList,
   deleteList,
   getLists,
+  moveList,
   updateList,
 } from '~/db/lists/lists.functions';
 import type {
   CreateListArgs,
   DeleteListArgs,
+  MoveListArgs,
   UpdateListArgs,
 } from '~/db/lists/lists.schemas';
 import { useCurrentBoardId } from '~/utils/useCurrentBoardId';
@@ -117,6 +123,32 @@ export function useCreateList() {
   });
 
   return mutation.mutate;
+}
+
+/**
+ * Move a list to a position on another board or reposition it within its own board. Applies a
+ * surgical optimistic update across the affected boards' `['lists']` caches so neither board
+ * refetches (and re-suspends into its loading skeleton); rolls the caches back if the move fails.
+ */
+export function useMoveListMutation({
+  onSuccess,
+}: {
+  onSuccess?: () => void;
+} = {}) {
+  return useMutation({
+    mutationFn(data: MoveListArgs) {
+      return moveList({ data });
+    },
+    onMutate(variables) {
+      return { snapshot: applyOptimisticListMove(variables) };
+    },
+    onError(_error, _variables, context) {
+      if (context?.snapshot) {
+        rollbackListCaches(context.snapshot);
+      }
+    },
+    onSuccess,
+  });
 }
 
 export function useDeleteList() {
