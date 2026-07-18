@@ -130,11 +130,7 @@ export function useCreateList() {
  * surgical optimistic update across the affected boards' `['lists']` caches so neither board
  * refetches (and re-suspends into its loading skeleton); rolls the caches back if the move fails.
  */
-export function useMoveListMutation({
-  onSuccess,
-}: {
-  onSuccess?: () => void;
-} = {}) {
+export function useMoveListMutation() {
   return useMutation({
     mutationFn(data: MoveListArgs) {
       return moveList({ data });
@@ -147,7 +143,6 @@ export function useMoveListMutation({
         rollbackListCaches(context.snapshot);
       }
     },
-    onSuccess,
   });
 }
 
