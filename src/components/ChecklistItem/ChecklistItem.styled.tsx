@@ -133,6 +133,13 @@ export const CheckboxRoot = styled(Checkbox.Root)({
   top: '12px',
   position: 'relative',
   cursor: 'pointer',
+  appearance: 'none',
+  WebkitAppearance: 'none',
+  padding: 0,
+  margin: 0,
+  backgroundColor: 'transparent',
+  border: '2px solid rgba(9, 30, 66, 0.35)',
+  borderRadius: '3px',
   variants: [
     {
       props: { checked: true },
