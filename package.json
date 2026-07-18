@@ -8,7 +8,7 @@
   "scripts": {
     "build": "vite build",
     "dev": "vite dev --force",
-    "dev:e2e": "vite dev --config vite.config.e2e.ts --force",
+    "dev:e2e": "cross-env DATABASE_URL=postgresql://test:test@localhost:5432/test vite dev --config vite.config.e2e.ts --force",
     "netlify:dev": "netlify dev",
     "start": "node .output/server/index.mjs",
     "lint:fix": "pnpm exec biome check . --write --unsafe",
@@ -21,6 +21,7 @@
     "db:migrate": "prisma migrate dev",
     "db:deploy": "prisma migrate deploy",
     "db:studio": "prisma studio",
+    "test:db:setup": "docker compose up -d --wait && cross-env DATABASE_URL=postgresql://test:test@localhost:5432/test prisma migrate deploy",
     "update:tsr": "pnpm add @tanstack/react-start@latest @tanstack/react-router@latest @tanstack/react-router-devtools@latest @tanstack/react-router-ssr-query@latest @tanstack/react-query@latest @tanstack/react-query-devtools@latest",
     "test": "cross-env playwright test --project=chromium --reporter=list",
     "test:all": "cross-env playwright test --reporter=list",
@@ -30,7 +31,7 @@
     "test:mobile:chrome": "cross-env playwright test --project=\"Mobile Chrome\" --reporter=list",
     "test:mobile:edge": "cross-env playwright test --project=\"Mobile Edge\" --reporter=list",
     "test:mobile:opera": "cross-env playwright test --project=\"Mobile Opera\" --reporter=list",
-    "test:ui": "cross-env playwright test --ui --project=chromium",
+    "test:ui": "cross-env playwright test --ui",
     "test:headed": "cross-env playwright test --headed --ui --project=chromium",
     "test:debug": "cross-env playwright test --debug --project=chromium",
     "test:report": "playwright show-report"

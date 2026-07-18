@@ -1,13 +1,11 @@
 import type { ReactNode } from 'react';
-import { getStore } from '~test/mocks/memoryPrisma';
+import { TEST_CLERK_USER } from '~test/mocks/constants';
 
 export function useUser() {
-  const clerkUser = getStore().clerkUser;
-
   return {
     isLoaded: true,
-    isSignedIn: clerkUser !== null,
-    user: clerkUser,
+    isSignedIn: true,
+    user: TEST_CLERK_USER,
   };
 }
 

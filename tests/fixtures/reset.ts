@@ -1,30 +1,23 @@
 import { faker } from '@faker-js/faker';
-import { buildE2EUser } from '~test/factories/user';
-import { getStore, now } from '~test/mocks/memoryPrisma';
+import { prisma } from '~/db/prisma';
+import { TEST_USER_EMAIL, TEST_USER_ID } from '~test/mocks/constants';
 
-export function resetDB(seed = 42) {
+export async function resetDB(seed = 42) {
   faker.seed(seed);
-  getStore();
-  getStore().clerkUser = null;
-  getStore().users = [];
-  getStore().stacks = [];
-  getStore().lists = [];
-  getStore().cards = [];
-  getStore().checklists = [];
-  getStore().checklistItems = [];
-  getStore().activities = [];
-  seedUser();
-}
 
-function seedUser() {
-  const { clerkUser, user } = buildE2EUser();
-  const timestamp = now();
+  // Delete children before parents so the FK constraints are satisfied without
+  // relying on cascade ordering.
+  await prisma.$transaction([
+    prisma.activity.deleteMany(),
+    prisma.checklistItem.deleteMany(),
+    prisma.checklist.deleteMany(),
+    prisma.card.deleteMany(),
+    prisma.list.deleteMany(),
+    prisma.stack.deleteMany(),
+    prisma.user.deleteMany(),
+  ]);
 
-  getStore().clerkUser = clerkUser;
-
-  getStore().users.push({
-    ...user,
-    createdAt: timestamp,
-    updatedAt: timestamp,
+  await prisma.user.create({
+    data: { id: TEST_USER_ID, email: TEST_USER_EMAIL },
   });
 }

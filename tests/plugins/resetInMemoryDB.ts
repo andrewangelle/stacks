@@ -43,7 +43,7 @@ export function resetInMemoryDB(): Plugin {
           const { resetDB } = await server.ssrLoadModule(
             path.join(fixturesDir, 'reset.ts'),
           );
-          resetDB();
+          await resetDB();
           res.statusCode = 204;
           res.end();
           return;
@@ -60,7 +60,7 @@ export function resetInMemoryDB(): Plugin {
               boardColor?: string;
             }>(req);
 
-            const board = seedBoard({
+            const board = await seedBoard({
               boardTitle: body.boardTitle ?? 'Untitled board',
               boardColor: body.boardColor,
             });
@@ -88,7 +88,7 @@ export function resetInMemoryDB(): Plugin {
               checklists: { title: string; items: string[] }[];
             }>(req);
 
-            const seeded = seedListCard(body);
+            const seeded = await seedListCard(body);
 
             res.setHeader('Content-Type', 'application/json');
             res.statusCode = 200;
@@ -112,7 +112,7 @@ export function resetInMemoryDB(): Plugin {
               cardTitle?: string;
             }>(req);
 
-            const seeded = seedCard(body);
+            const seeded = await seedCard(body);
 
             res.setHeader('Content-Type', 'application/json');
             res.statusCode = 200;
