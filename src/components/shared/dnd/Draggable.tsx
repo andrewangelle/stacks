@@ -9,7 +9,7 @@ import {
   getSensors,
   getTargetDropZoneGroup,
   getTargetSortableGroup,
-} from '~/components/dnd/utils';
+} from '~/components/shared/dnd/utils';
 import { assignRef } from '~/utils/ref';
 import type { CrossGroupMoveArgs } from '~/utils/useCrossContainerMove';
 

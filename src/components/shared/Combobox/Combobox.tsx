@@ -11,7 +11,7 @@ import {
   ComboboxMenu,
   ComboboxTrigger,
   ComboboxWrapper,
-} from '~/components/Combobox/Combobox.styled';
+} from '~/components/shared/Combobox/Combobox.styled';
 
 export type ComboboxItemType = {
   id: string;

@@ -2,7 +2,7 @@ import { useCallback, useMemo } from 'react';
 import {
   Combobox,
   type ComboboxItemType,
-} from '~/components/Combobox/Combobox';
+} from '~/components/shared/Combobox/Combobox';
 import { useGetBoards } from '~/db/boards/boards.query';
 
 type MoveListBoardSelectProps = {

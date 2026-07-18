@@ -9,7 +9,7 @@ import {
 } from '~/components/Cards/Card.styled';
 import { DeleteChecklistPopoverButton } from '~/components/ChecklistItem/ChecklistItem.styled';
 import { ChecklistPopoverHeader } from '~/components/Checklists/Checklists.styled';
-import { Tooltip } from '~/components/Tooltip/Tooltip';
+import { Tooltip } from '~/components/shared/Tooltip/Tooltip';
 import { useDeleteCard, useGetCardById } from '~/db/cards/cards.query';
 import {
   PopoverOptionsContent,
