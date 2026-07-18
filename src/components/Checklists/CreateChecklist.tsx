@@ -17,7 +17,7 @@ import {
   CreateChecklistInput,
   CreateChecklistTitle,
 } from '~/components/Checklists/Checklists.styled';
-import { Tooltip } from '~/components/Tooltip/Tooltip';
+import { Tooltip } from '~/components/shared/Tooltip/Tooltip';
 import { useCreateActivity } from '~/db/activity/activity.query';
 import { useGetCardById } from '~/db/cards/cards.query';
 import { useCreateChecklist } from '~/db/checklists/checklists.query';

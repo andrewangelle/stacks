@@ -12,7 +12,7 @@ import {
   ListActionsPopoverTrigger,
 } from '~/components/Lists/ListActions/ListActions.styled';
 import { MoveListMenu } from '~/components/Lists/ListActions/MoveListMenu';
-import { Tooltip } from '~/components/Tooltip/Tooltip';
+import { Tooltip } from '~/components/shared/Tooltip/Tooltip';
 import { useDeleteList } from '~/db/lists/lists.query';
 import {
   PopoverOptionsContent,

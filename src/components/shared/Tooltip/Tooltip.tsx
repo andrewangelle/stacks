@@ -1,7 +1,7 @@
 import { Tooltip as TooltipPrimitive } from 'radix-ui';
 import type { ReactNode } from 'react';
 import { useState } from 'react';
-import { TooltipContent } from '~/components/Tooltip/Tooltip.styled';
+import { TooltipContent } from '~/components/shared/Tooltip/Tooltip.styled';
 
 type TooltipProps = {
   portal?: boolean;

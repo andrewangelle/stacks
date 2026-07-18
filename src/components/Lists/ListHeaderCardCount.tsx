@@ -1,4 +1,4 @@
-import { Tooltip } from '~/components/Tooltip/Tooltip';
+import { Tooltip } from '~/components/shared/Tooltip/Tooltip';
 import { useGetListCardCount } from '~/db/lists/lists.query';
 
 export function ListHeaderCardCount({ listId }: { listId: string }) {

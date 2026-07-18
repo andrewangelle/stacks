@@ -1,15 +1,15 @@
 import { Suspense } from 'react';
 import { SelectSkeleton } from '~/components/Cards/MoveCardMenu/MoveCardMenu.styled';
 import {
-  ComboboxLabel,
-  ComboboxWrapper,
-} from '~/components/Combobox/Combobox.styled';
-import {
   MoveListButton,
   MoveListFieldsContainer,
 } from '~/components/Lists/ListActions/ListActions.styled';
 import { MoveListBoardSelect } from '~/components/Lists/ListActions/MoveListBoardSelect';
 import { MoveListPositionSelect } from '~/components/Lists/ListActions/MoveListPositionSelect';
+import {
+  ComboboxLabel,
+  ComboboxWrapper,
+} from '~/components/shared/Combobox/Combobox.styled';
 import { useMoveListMutation } from '~/db/lists/lists.query';
 import { useMoveListSelectOptions } from '~/utils/useMoveListSelectOptions';
 

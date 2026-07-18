@@ -3,11 +3,11 @@ import { SelectSkeleton } from '~/components/Cards/MoveCardMenu/MoveCardMenu.sty
 import {
   Combobox,
   type ComboboxItemType,
-} from '~/components/Combobox/Combobox';
+} from '~/components/shared/Combobox/Combobox';
 import {
   ComboboxLabel,
   ComboboxWrapper,
-} from '~/components/Combobox/Combobox.styled';
+} from '~/components/shared/Combobox/Combobox.styled';
 import type { ListItem } from '~/db/lists/lists.cache';
 
 type ListSelectProps = {

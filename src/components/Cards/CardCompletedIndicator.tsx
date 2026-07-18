@@ -1,7 +1,7 @@
 import type { MouseEvent } from 'react';
 import { AiOutlineCheck } from 'react-icons/ai';
 import { CardCompletedIndicatorCircle } from '~/components/Lists/CardTitleDetails/CardTitleDetails.styled';
-import { Tooltip } from '~/components/Tooltip/Tooltip';
+import { Tooltip } from '~/components/shared/Tooltip/Tooltip';
 import { useCreateActivity } from '~/db/activity/activity.query';
 import { useGetCard, useUpdateCard } from '~/db/cards/cards.query';
 import { useCurrentBoardId } from '~/utils/useCurrentBoardId';

@@ -1,7 +1,7 @@
 import type { Droppable } from '@dnd-kit/dom';
 import { PointerSensor } from '@dnd-kit/react';
 import { isSortable } from '@dnd-kit/react/sortable';
-import type { DraggableProps } from '~/components/dnd/Draggable';
+import type { DraggableProps } from '~/components/shared/dnd/Draggable';
 
 export function getSensors(type: DraggableProps['type']) {
   if (type === 'card') {

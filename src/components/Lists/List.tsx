@@ -1,10 +1,10 @@
-import { Draggable } from '~/components/dnd/Draggable';
-import { DropTargetFallback } from '~/components/dnd/DropTargetFallback';
 import { AddNewCard } from '~/components/Lists/AddNewCard';
 import { AddNewCardAtPosition } from '~/components/Lists/AddNewCardAtPosition';
 import { CardTitleDetails } from '~/components/Lists/CardTitleDetails/CardTitleDetails';
 import { ListContainer } from '~/components/Lists/List.styled';
 import { ListHeader } from '~/components/Lists/ListHeader';
+import { Draggable } from '~/components/shared/dnd/Draggable';
+import { DropTargetFallback } from '~/components/shared/dnd/DropTargetFallback';
 import { moveCardToNewList, reorderCardsByIndex } from '~/db/cards/cards.cache';
 import { useGetListById } from '~/db/lists/lists.query';
 import { useCrossContainerMove } from '~/utils/useCrossContainerMove';

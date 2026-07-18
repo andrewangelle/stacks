@@ -2,7 +2,7 @@ import { Suspense } from 'react';
 import { Checklist } from '~/components/Checklists/Checklist';
 import { ChecklistSkeleton } from '~/components/Checklists/ChecklistSkeleton';
 import { ChecklistsContainer } from '~/components/Checklists/Checklists.styled';
-import { Draggable } from '~/components/dnd/Draggable';
+import { Draggable } from '~/components/shared/dnd/Draggable';
 import { reorderChecklistsByIndex } from '~/db/checklists/checklists.cache';
 import { useGetChecklists } from '~/db/checklists/checklists.query';
 import { useCurrentCardId } from '~/utils/useCurrentCardId';

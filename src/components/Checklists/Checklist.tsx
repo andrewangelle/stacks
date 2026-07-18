@@ -11,8 +11,8 @@ import {
 } from '~/components/Checklists/Checklists.styled';
 import { DeleteChecklist } from '~/components/Checklists/DeleteChecklist';
 import { ToggleCheckedItems } from '~/components/Checklists/ToggleCheckedItems';
-import { Draggable } from '~/components/dnd/Draggable';
-import { DropTargetFallback } from '~/components/dnd/DropTargetFallback';
+import { Draggable } from '~/components/shared/dnd/Draggable';
+import { DropTargetFallback } from '~/components/shared/dnd/DropTargetFallback';
 import {
   moveChecklistItemToNewChecklist,
   reorderChecklistItemsByVisibleIndex,

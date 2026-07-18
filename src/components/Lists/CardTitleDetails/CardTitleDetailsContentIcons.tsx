@@ -6,7 +6,7 @@ import {
   CardTitleDetailsChecklistTotalsContainer,
   CardTitleDetailsContentIconsContainer,
 } from '~/components/Lists/CardTitleDetails/CardTitleDetails.styled';
-import { Tooltip } from '~/components/Tooltip/Tooltip';
+import { Tooltip } from '~/components/shared/Tooltip/Tooltip';
 import { useGetCardTitleDetailsChecklists } from '~/db/checklists/checklists.query';
 import { Flex } from '~/styles/Page.styled';
 import { useCardTitleDetailsVisibility } from '~/utils/useCardTitleDetailsVisibility';
