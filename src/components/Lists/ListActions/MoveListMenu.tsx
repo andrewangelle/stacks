@@ -15,13 +15,11 @@ import { useMoveListSelectOptions } from '~/utils/useMoveListSelectOptions';
 
 type MoveListMenuProps = {
   id: string;
-  onMoved: () => void;
+  closeMenu: () => void;
 };
 
-export function MoveListMenu({ id, onMoved }: MoveListMenuProps) {
-  const { mutate: moveList, isPending: isMovingList } = useMoveListMutation({
-    onSuccess: onMoved,
-  });
+export function MoveListMenu({ id, closeMenu }: MoveListMenuProps) {
+  const { mutate: moveList, isPending: isMovingList } = useMoveListMutation();
   const {
     isListsLoading,
     selectedBoardId,
@@ -40,6 +38,8 @@ export function MoveListMenu({ id, onMoved }: MoveListMenuProps) {
     if (!canMove) {
       return;
     }
+
+    closeMenu();
 
     moveList({
       listId: id,

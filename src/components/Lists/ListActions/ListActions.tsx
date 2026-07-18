@@ -96,7 +96,7 @@ export function ListActions({ id }: ListActionsProps) {
         )}
 
         {view === 'move' && (
-          <MoveListMenu id={id} onMoved={() => closePopover(false)} />
+          <MoveListMenu id={id} closeMenu={() => closePopover(false)} />
         )}
 
         {view === 'delete' && (
