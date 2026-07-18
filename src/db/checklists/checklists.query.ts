@@ -142,7 +142,7 @@ export function useUpdateChecklist() {
       });
     },
 
-    onSuccess(_result, variables) {
+    onMutate(variables) {
       const patch: Partial<Checklist> = {};
 
       if (variables.checklistTitle !== undefined) {
@@ -168,6 +168,15 @@ export function useUpdateChecklist() {
             item.id === variables.checklistId ? { ...item, ...patch } : item,
           ),
       );
+    },
+
+    onError(_error, variables) {
+      queryClient.invalidateQueries({
+        queryKey: queryKeys.detail(variables.checklistId),
+      });
+      queryClient.invalidateQueries({
+        queryKey: queryKeys.list(variables.cardId),
+      });
     },
   });
 }
