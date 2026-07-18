@@ -89,6 +89,7 @@ export const DeleteChecklistButton = styled(CardModalActionButton)``;
 export const ChecklistHeaderActions = styled.div`
   display: flex;
   gap: 8px;
+  flex-shrink: 0;
 `;
 
 export const ToggleCheckedItemsButton = styled(Button)({
@@ -111,9 +112,12 @@ export const AllItemsCompleteMessage = styled.p`
   margin: 8px 0 8px ${cardModalContentIndent};
 `;
 
-export const ChecklistHeader = styled.div` 
+export const ChecklistHeader = styled.div`
   display: flex;
+  flex-wrap: wrap;
   justify-content: space-between;
+  align-items: flex-start;
+  gap: 8px;
 `;
 
 export const ChecklistProgressIndicator = styled(Progress.Indicator)` 
@@ -147,6 +151,8 @@ export const ChecklistProgressPercentage = styled.span`
 
 export const ChecklistTitle = styled(CardModalTitle)`
   font-size: 14px;
+  min-width: 0;
+  overflow-wrap: anywhere;
 `;
 export const EditChecklistTitleForm = styled(EditCardTitleForm)``;
 export const EditChecklistTitleInput = styled(EditCardTitleInput)`

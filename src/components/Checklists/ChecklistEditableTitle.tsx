@@ -44,8 +44,11 @@ export function ChecklistEditableTitle({ id }: ChecklistEditableTitleProps) {
   }
 
   return (
-    <Flex data-testid="Flex" style={{ alignItems: 'center' }}>
-      <BsCheck2Square size={24} />
+    <Flex
+      data-testid="Flex"
+      style={{ alignItems: 'center', minWidth: 0, flex: '1 1 auto' }}
+    >
+      <BsCheck2Square size={24} style={{ flexShrink: 0 }} />
 
       {!isEditingTitle && (
         <ChecklistTitle data-testid="ChecklistTitle" onClick={openEditTitle}>
