@@ -8,7 +8,7 @@ import {
   ComboboxLabel,
   ComboboxWrapper,
 } from '~/components/shared/Combobox/Combobox.styled';
-import type { ListItem } from '~/db/lists/lists.cache';
+import type { ListItem } from '~/db/lists/lists.query';
 
 type ListSelectProps = {
   isListsLoading: boolean;

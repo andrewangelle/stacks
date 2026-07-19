@@ -1,31 +1,10 @@
 import type {
   CreateActivityArgs,
   DeleteActivityArgs,
-  GetActivityArgs,
-  GetActivityByIdArgs,
   UpdateActivityArgs,
 } from '~/db/activity/activity.schemas';
 import { prisma } from '~/db/prisma';
 import type { WithUserId } from '~/db/withUserId';
-
-export function getActivityQuery(data: WithUserId<GetActivityArgs>) {
-  return prisma.activity.findMany({
-    where: {
-      cardId: data.cardId,
-      card: { list: { board: { userId: data.userId } } },
-    },
-    orderBy: { createdAt: 'desc' },
-  });
-}
-
-export function getActivityByIdQuery(data: WithUserId<GetActivityByIdArgs>) {
-  return prisma.activity.findFirst({
-    where: {
-      id: data.activityId,
-      card: { list: { board: { userId: data.userId } } },
-    },
-  });
-}
 
 export async function createActivityQuery(
   data: WithUserId<CreateActivityArgs>,

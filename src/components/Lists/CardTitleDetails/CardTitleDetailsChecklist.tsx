@@ -30,7 +30,7 @@ export function CardTitleDetailsChecklist({
   onCompleteAllItems = () => null,
 }: CardTitleDetailsChecklistProps) {
   const { data: checklist } = useGetChecklist({ checklistId });
-  const { mutate: updateItem, isSuccess } = useUpdateChecklistItem({
+  const { mutate: updateItem } = useUpdateChecklistItem({
     checklistId,
   });
   const createActivity = useCreateActivity();
@@ -75,10 +75,10 @@ export function CardTitleDetailsChecklist({
   }
 
   useEffect(() => {
-    if (completedAllItems && isSuccess) {
+    if (completedAllItems) {
       onCompleteAllItems();
     }
-  }, [completedAllItems, isSuccess, onCompleteAllItems]);
+  }, [completedAllItems, onCompleteAllItems]);
 
   return (
     <CardTitleDetailsChecklistContainer data-testid="CardTitleDetailsChecklistContainer">

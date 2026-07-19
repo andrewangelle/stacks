@@ -2,7 +2,6 @@ import { createServerFn } from '@tanstack/react-start';
 import {
   CreateListSchema,
   DeleteListSchema,
-  GetListsSchema,
   MoveListSchema,
   ReorderListsSchema,
   UpdateListSchema,
@@ -10,19 +9,11 @@ import {
 import {
   createListQuery,
   deleteListQuery,
-  getListsQuery,
   moveListQuery,
   reorderListsQuery,
   updateListQuery,
 } from '~/db/lists/lists.server';
 import { authMiddleware } from '~/middleware/auth';
-
-export const getLists = createServerFn({ method: 'GET' })
-  .validator(GetListsSchema)
-  .middleware([authMiddleware])
-  .handler(async ({ data, context }) =>
-    getListsQuery({ ...data, userId: context.uid }),
-  );
 
 export const createList = createServerFn({ method: 'POST' })
   .validator(CreateListSchema)

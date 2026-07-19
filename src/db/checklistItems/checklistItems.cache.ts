@@ -1,47 +1,20 @@
 import {
+  type ChecklistItemPayload,
+  findChecklist,
+  getBoardsCache,
+  patchChecklistItems,
+  restoreBoardsCache,
+} from '~/db/boards/boards.cache';
+import {
   moveChecklistItem as moveChecklistItemServer,
   reorderChecklistItems as reorderChecklistItemsServer,
 } from '~/db/checklistItems/checklistItems.functions';
-import { checklistQueryKeys } from '~/db/checklists/checklists.query';
-import type { Checklist, ChecklistItem } from '~/generated/prisma/client';
-import { queryClient } from '~/query';
 
-/**
- * Checklist items are not stored under their own query key. They live inside the
- * checklist-by-id cache (`checklistQueryKeys.detail`), which `getChecklistById`
- * populates with a nested `items` array. Reads select out of that cache and every
- * mutation patches the same `items` array so updates reflect immediately without a
- * refetch.
- */
-type ChecklistWithItems = Checklist & { items: ChecklistItem[] };
-
-export function getCachedChecklistItems(checklistId: string): ChecklistItem[] {
-  return (
-    queryClient.getQueryData<ChecklistWithItems>(
-      checklistQueryKeys.detail(checklistId),
-    )?.items ?? []
-  );
-}
-
-export function patchChecklistItems(
+export function getCachedChecklistItems(
   checklistId: string,
-  updater: (items: ChecklistItem[]) => ChecklistItem[],
-) {
-  queryClient.setQueryData<ChecklistWithItems>(
-    checklistQueryKeys.detail(checklistId),
-    (cache) => {
-      if (!cache) {
-        return cache;
-      }
-      return { ...cache, items: updater(cache.items ?? []) };
-    },
-  );
-}
-
-export function invalidateCardChecklistView(cardId: string) {
-  queryClient.invalidateQueries({
-    queryKey: checklistQueryKeys.cardChecklistView(cardId),
-  });
+): ChecklistItemPayload[] {
+  const boards = getBoardsCache();
+  return boards ? (findChecklist(boards, checklistId)?.items ?? []) : [];
 }
 
 export function reorderChecklistItemsByIndex(
@@ -49,6 +22,8 @@ export function reorderChecklistItemsByIndex(
   fromIndex: number,
   toIndex: number,
 ) {
+  const snapshot = getBoardsCache();
+
   patchChecklistItems(checklistId, (items) => {
     const next = [...items];
     next.splice(toIndex, 0, next.splice(fromIndex, 1)[0]);
@@ -61,9 +36,7 @@ export function reorderChecklistItemsByIndex(
 
   reorderChecklistItemsServer({ data: { checklistId, orderedIds } }).catch(
     () => {
-      queryClient.invalidateQueries({
-        queryKey: checklistQueryKeys.detail(checklistId),
-      });
+      restoreBoardsCache(snapshot);
     },
   );
 }
@@ -76,8 +49,8 @@ export function reorderChecklistItemsByVisibleIndex({
   toVisible,
 }: {
   checklistId: string;
-  items: ChecklistItem[];
-  visibleItems: ChecklistItem[];
+  items: ChecklistItemPayload[];
+  visibleItems: ChecklistItemPayload[];
   fromVisible: number;
   toVisible: number;
 }) {
@@ -95,7 +68,7 @@ export function reorderChecklistItemsByVisibleIndex({
 
 /** Map a drag index from visible-only UI to the full checklist item order in the database. */
 export function resolveTargetFullIndex(
-  targetItems: ChecklistItem[],
+  targetItems: ChecklistItemPayload[],
   targetVisibleIndex: number,
   hideCheckedItems: boolean,
 ) {
@@ -116,24 +89,23 @@ export function resolveTargetFullIndex(
 }
 
 /**
- * Optimistic cache update + server persist when a checklist item moves to another
- * checklist on the same card. targetVisibleIndex comes from sortable indices, which
- * respect hideCheckedItems in the UI; resolveTargetFullIndex maps that to the full
- * item array order the server stores.
+ * Optimistic cache update + server persist when a checklist item moves to
+ * another checklist on the same card. targetVisibleIndex comes from sortable
+ * indices, which respect hideCheckedItems in the UI; resolveTargetFullIndex
+ * maps that to the full item array order the server stores.
  */
 export function moveChecklistItemToNewChecklist({
   itemId,
   sourceChecklistId,
   targetChecklistId,
   targetVisibleIndex,
-  cardId,
 }: {
   itemId: string;
   sourceChecklistId: string;
   targetChecklistId: string;
   targetVisibleIndex: number;
-  cardId: string;
 }) {
+  const snapshot = getBoardsCache();
   const sourceItems = getCachedChecklistItems(sourceChecklistId);
   const item = sourceItems.find((record) => record.id === itemId);
 
@@ -141,19 +113,17 @@ export function moveChecklistItemToNewChecklist({
     return;
   }
 
-  const targetItems = getCachedChecklistItems(targetChecklistId);
-
-  const targetChecklist = queryClient.getQueryData<ChecklistWithItems>(
-    checklistQueryKeys.detail(targetChecklistId),
-  );
+  const targetChecklist = snapshot
+    ? findChecklist(snapshot, targetChecklistId)
+    : undefined;
 
   const targetFullIndex = resolveTargetFullIndex(
-    targetItems,
+    targetChecklist?.items ?? [],
     targetVisibleIndex,
     targetChecklist?.hideCheckedItems ?? false,
   );
 
-  const movedItem: ChecklistItem = { ...item, checklistId: targetChecklistId };
+  const movedItem = { ...item, checklistId: targetChecklistId };
 
   patchChecklistItems(sourceChecklistId, (items) =>
     items.filter((record) => record.id !== itemId),
@@ -173,19 +143,7 @@ export function moveChecklistItemToNewChecklist({
       targetChecklistId,
       targetIndex: targetFullIndex,
     },
-  })
-    .then(() => {
-      // Card title progress badge reads a separate query — refresh after persist,
-      // not before, or a refetch can overwrite the optimistic item lists above.
-      invalidateCardChecklistView(cardId);
-    })
-    .catch(() => {
-      queryClient.invalidateQueries({
-        queryKey: checklistQueryKeys.detail(sourceChecklistId),
-      });
-      queryClient.invalidateQueries({
-        queryKey: checklistQueryKeys.detail(targetChecklistId),
-      });
-      invalidateCardChecklistView(cardId);
-    });
+  }).catch(() => {
+    restoreBoardsCache(snapshot);
+  });
 }

@@ -2,35 +2,16 @@ import { createServerFn } from '@tanstack/react-start';
 import {
   CreateChecklistSchema,
   DeleteChecklistSchema,
-  GetChecklistByIdSchema,
-  GetChecklistsSchema,
   ReorderChecklistsSchema,
   UpdateChecklistSchema,
 } from '~/db/checklists/checklists.schemas';
 import {
   createChecklistQuery,
   deleteChecklistQuery,
-  getCardTitleDetailsChecklistsQuery,
-  getChecklistByIdQuery,
-  getChecklistsQuery,
   reorderChecklistsQuery,
   updateChecklistQuery,
 } from '~/db/checklists/checklists.server';
 import { authMiddleware } from '~/middleware/auth';
-
-export const getChecklists = createServerFn({ method: 'GET' })
-  .validator(GetChecklistsSchema)
-  .middleware([authMiddleware])
-  .handler(async ({ data, context }) =>
-    getChecklistsQuery({ ...data, userId: context.uid }),
-  );
-
-export const getChecklistById = createServerFn({ method: 'GET' })
-  .validator(GetChecklistByIdSchema)
-  .middleware([authMiddleware])
-  .handler(async ({ data, context }) =>
-    getChecklistByIdQuery({ ...data, userId: context.uid }),
-  );
 
 export const createChecklist = createServerFn({ method: 'POST' })
   .validator(CreateChecklistSchema)
@@ -51,13 +32,6 @@ export const updateChecklist = createServerFn({ method: 'POST' })
   .middleware([authMiddleware])
   .handler(async ({ data, context }) =>
     updateChecklistQuery({ ...data, userId: context.uid }),
-  );
-
-export const getCardTitleDetailsChecklists = createServerFn({ method: 'GET' })
-  .validator(GetChecklistsSchema)
-  .middleware([authMiddleware])
-  .handler(async ({ data, context }) =>
-    getCardTitleDetailsChecklistsQuery({ ...data, userId: context.uid }),
   );
 
 export const reorderChecklists = createServerFn({ method: 'POST' })

@@ -12,20 +12,12 @@ import {
   createCardQuery,
   deleteCardQuery,
   getBoardIdByCardIdQuery,
-  getCardByIdQuery,
   moveCardQuery,
   reorderCardsQuery,
   setCardChecklistExpandedQuery,
   updateCardQuery,
 } from '~/db/cards/cards.server';
 import { authMiddleware } from '~/middleware/auth';
-
-export const getCardById = createServerFn({ method: 'GET' })
-  .validator(GetCardByIdSchema)
-  .middleware([authMiddleware])
-  .handler(async ({ data, context }) =>
-    getCardByIdQuery({ ...data, userId: context.uid }),
-  );
 
 export const getBoardIdByCardId = createServerFn({ method: 'GET' })
   .validator(GetCardByIdSchema)

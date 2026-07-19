@@ -1,11 +1,15 @@
+import { useMutation, useSuspenseQuery } from '@tanstack/react-query';
 import {
-  useMutation,
-  useQueryClient,
-  useSuspenseQuery,
-} from '@tanstack/react-query';
+  type BoardsPayload,
+  boardsQueryKey,
+  findBoard,
+  getBoardsCache,
+  patchBoard,
+  restoreBoardsCache,
+  setBoardsCache,
+} from '~/db/boards/boards.cache';
 import {
   createBoard,
-  getBoardById,
   getBoards,
   updateBoard,
 } from '~/db/boards/boards.functions';
@@ -13,31 +17,24 @@ import type {
   CreateBoardArgs,
   UpdateBoardArgs,
 } from '~/db/boards/boards.schemas';
-import type { Stack } from '~/generated/prisma/client';
 import { useCurrentBoardId } from '~/utils/useCurrentBoardId';
 
-const queryKeys = {
-  list: () => ['boards'] as const,
-  detail: (boardId: string) => ['board', boardId] as const,
-};
-
 export const boardsQueryOptions = {
-  queryKey: queryKeys.list(),
+  queryKey: boardsQueryKey,
   queryFn() {
     return getBoards();
   },
 };
 
 export function useGetBoards() {
-  return useSuspenseQuery<Stack[]>(boardsQueryOptions);
+  return useSuspenseQuery(boardsQueryOptions);
 }
 
 export function boardByIdQueryOptions(boardId: string) {
   return {
-    queryKey: queryKeys.detail(boardId),
-    enabled: !!boardId,
-    queryFn() {
-      return getBoardById({ data: { boardId } });
+    ...boardsQueryOptions,
+    select(boards: BoardsPayload) {
+      return findBoard(boards, boardId);
     },
   };
 }
@@ -52,7 +49,6 @@ export function useGetBoardById({ id }: { id: string }) {
 }
 
 export function useCreateBoard() {
-  const queryClient = useQueryClient();
   const mutation = useMutation({
     mutationFn(data: CreateBoardArgs) {
       return createBoard({
@@ -61,12 +57,9 @@ export function useCreateBoard() {
     },
 
     onSuccess(result) {
-      queryClient.setQueryData<Stack[]>(queryKeys.list(), (cache = []) => {
-        if (result) {
-          return [...cache, result];
-        }
-        return cache;
-      });
+      if (result) {
+        setBoardsCache((boards) => [...boards, { ...result, lists: [] }]);
+      }
     },
   });
 
@@ -74,27 +67,27 @@ export function useCreateBoard() {
 }
 
 export function useUpdateBoard() {
-  const queryClient = useQueryClient();
   const mutation = useMutation({
     mutationFn({ boardId, boardTitle, boardColor }: UpdateBoardArgs) {
       return updateBoard({
         data: { boardId, boardTitle, boardColor },
       });
     },
+
     onMutate(variables) {
-      queryClient.setQueryData<Stack>(
-        queryKeys.detail(variables.boardId),
-        (cache = {} as Stack) => ({
-          ...cache,
-          boardTitle: variables.boardTitle,
-          boardColor: variables.boardColor ?? cache.boardColor,
-        }),
-      );
+      const snapshot = getBoardsCache();
+
+      patchBoard(variables.boardId, (board) => ({
+        ...board,
+        boardTitle: variables.boardTitle,
+        boardColor: variables.boardColor ?? board.boardColor,
+      }));
+
+      return { snapshot };
     },
-    onError(_error, variables) {
-      queryClient.invalidateQueries({
-        queryKey: queryKeys.detail(variables.boardId),
-      });
+
+    onError(_error, _variables, context) {
+      restoreBoardsCache(context?.snapshot);
     },
   });
 
