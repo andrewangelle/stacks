@@ -17,12 +17,17 @@ on:
           - firefox
           - webkit
           - mobile:chrome
-          - mobile:edge
-          - mobile:opera
+          - mobile:safari
+          - edge
+          - chrome
 
 jobs:
   test:
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        shard: [1, 2, 3]
     steps:
       - name: Checkout
         uses: actions/checkout@v6
@@ -33,17 +38,17 @@ jobs:
         uses: actions/setup-node@v6
         with:
           node-version: lts/*
-      
+
       - name: Install pnpm
         uses: pnpm/action-setup@v5
         with:
           version: 10.33.2+sha512.a90faf6feeab71ad6c6e57f94e0fe1a12f5dcc22cd754db40ae9593eb6a3e0b6b12e3540218bb37ae083404b1f2ce6db2a4121e979829b4aff94b99f49da1cf8
-      
+
       - name: Get pnpm store directory
         shell: bash
         run: |
           echo "STORE_PATH=$(pnpm store path --silent)" >> $GITHUB_ENV
-      
+
       - name: Setup pnpm cache
         uses: actions/cache@v5
         with:
@@ -51,7 +56,7 @@ jobs:
           key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
           restore-keys: |
             ${{ runner.os }}-pnpm-store-
-      
+
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
@@ -71,22 +76,74 @@ jobs:
         id: target
         run: |
           case "${{ inputs.browser || 'chromium' }}" in
-            chromium)     script="test";              browsers="chromium" ;;
-            all)          script="test:all";          browsers="" ;;
-            firefox)      script="test:firefox";      browsers="firefox" ;;
-            webkit)       script="test:webkit";       browsers="webkit" ;;
+            chromium)      script="test";               browsers="chromium" ;;
+            all)           script="test:all";           browsers="chromium firefox webkit msedge chrome" ;;
+            firefox)       script="test:firefox";       browsers="firefox" ;;
+            webkit)        script="test:webkit";        browsers="webkit" ;;
             mobile:chrome) script="test:mobile:chrome"; browsers="chromium" ;;
-            mobile:edge)  script="test:mobile:edge";  browsers="msedge" ;;
-            mobile:opera) script="test:mobile:opera"; browsers="chromium" ;;
+            mobile:safari) script="test:mobile:safari"; browsers="webkit" ;;
+            edge)          script="test:edge";          browsers="msedge" ;;
+            chrome)        script="test:chrome";        browsers="chrome" ;;
+            *)             echo "Unknown browser target: ${{ inputs.browser }}" >&2; exit 1 ;;
           esac
           echo "script=$script" >> "$GITHUB_OUTPUT"
           echo "browsers=$browsers" >> "$GITHUB_OUTPUT"
 
-      # An empty browser list installs every browser, which is what `all` needs.
       - name: Install Playwright Browsers
         run: pnpm exec playwright install --with-deps ${{ steps.target.outputs.browsers }}
 
-      # Smoke + boards only until board.test.ts is enabled (see tests/README.md).
-      - run: pnpm ${{ steps.target.outputs.script }}
+      - name: Run Playwright tests (shard ${{ matrix.shard }}/${{ strategy.job-total }})
+        run: pnpm ${{ steps.target.outputs.script }} --shard=${{ matrix.shard }}/${{ strategy.job-total }}
         env:
           CI: true
+
+      - name: Upload blob report
+        if: always()
+        uses: actions/upload-artifact@v5
+        with:
+          name: blob-report-${{ matrix.shard }}
+          path: blob-report
+          if-no-files-found: ignore
+          retention-days: 1
+
+  merge-reports:
+    if: always()
+    needs: [test]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Setup Node
+        uses: actions/setup-node@v6
+        with:
+          node-version: lts/*
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v5
+        with:
+          version: 10.33.2+sha512.a90faf6feeab71ad6c6e57f94e0fe1a12f5dcc22cd754db40ae9593eb6a3e0b6b12e3540218bb37ae083404b1f2ce6db2a4121e979829b4aff94b99f49da1cf8
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Download blob reports
+        id: download
+        continue-on-error: true
+        uses: actions/download-artifact@v5
+        with:
+          path: all-blob-reports
+          pattern: blob-report-*
+          merge-multiple: true
+
+      - name: Merge into HTML report
+        if: steps.download.outcome == 'success'
+        run: pnpm exec playwright merge-reports --reporter html ./all-blob-reports
+
+      - name: Upload merged HTML report
+        if: steps.download.outcome == 'success'
+        uses: actions/upload-artifact@v5
+        with:
+          name: html-report
+          path: playwright-report
+          retention-days: 14

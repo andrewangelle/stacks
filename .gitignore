@@ -12,6 +12,7 @@ src/generated
 .understand-anything
 /test-results/
 /playwright-report/
+/blob-report/
 /playwright/.cache/
 .claude/skills/playwright-cli/
 .playwright-cli/

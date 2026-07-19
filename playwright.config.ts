@@ -13,7 +13,8 @@ export default defineConfig({
   /* Fail the build on CI if you accidentally left test.only in the source code. */
   forbidOnly: !!process.env.CI,
   retries: 1,
-  reporter: 'html',
+  // CI shards emit blob reports that the merge-reports job stitches into HTML.
+  reporter: process.env.CI ? 'blob' : [['list'], ['html', { open: 'never' }]],
   
   /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
   use: {

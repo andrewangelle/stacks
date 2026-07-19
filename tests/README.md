@@ -35,7 +35,7 @@ pnpm exec playwright test tests/index.test.ts --project=chromium   # ~1s with wa
 pnpm exec playwright test tests/boards.test.ts --project=chromium  # ~20s cold start
 ```
 
-CI currently runs `index` + `boards` only. `board.test.ts` is skipped until the Add List UI flow is confirmed in headed mode.
+CI runs the whole suite against chromium, split across 3 shards (one runner each, one worker per runner). Each shard uploads a blob report; a `merge-reports` job stitches them into a single HTML report artifact.
 
 ## Test layout
 
@@ -43,7 +43,7 @@ CI currently runs `index` + `boards` only. `board.test.ts` is skipped until the 
 |------|--------|---------|
 | `index.test.ts` | Passing | Auth redirect to boards |
 | `boards.test.ts` | Passing | Seeded board appears on boards page |
-| `board.test.ts` | Skipped | Add list and card on a board (next increment) |
+| `board.test.ts` | Passing | Add list and card on a board, edit board name |
 | `helpers/resetDb.ts` | Clears in-memory DB between tests |
 | `mocks/` | Prisma + Clerk doubles (wired via `vite.config.e2e.ts`) |
 
