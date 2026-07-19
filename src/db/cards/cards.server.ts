@@ -11,15 +11,6 @@ import { prisma } from '~/db/prisma';
 import type { WithUserId } from '~/db/withUserId';
 import type { Prisma } from '~/generated/prisma/client';
 
-export function getCardByIdQuery(data: WithUserId<GetCardByIdArgs>) {
-  return prisma.card.findFirst({
-    where: {
-      id: data.cardId,
-      list: { board: { userId: data.userId } },
-    },
-  });
-}
-
 export async function getBoardIdByCardIdQuery(
   data: WithUserId<GetCardByIdArgs>,
 ) {

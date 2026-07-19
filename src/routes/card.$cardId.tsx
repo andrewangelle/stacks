@@ -13,6 +13,7 @@ import {
   getBoardHeaderServer,
   getNavBarServer,
 } from '~/components/server/Nav.functions';
+import { boardsQueryOptions } from '~/db/boards/boards.query';
 import { getBoardIdByCardId } from '~/db/cards/cards.functions';
 
 export const Route = createFileRoute('/card/$cardId')({
@@ -21,6 +22,8 @@ export const Route = createFileRoute('/card/$cardId')({
       context.queryClient.clear();
       throw redirect({ to: '/auth/sign-in' });
     }
+
+    await context.queryClient.ensureQueryData(boardsQueryOptions);
 
     const cardQuery = await getBoardIdByCardId({
       data: { cardId: params.cardId },

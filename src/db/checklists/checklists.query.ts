@@ -1,17 +1,21 @@
+import { useMutation, useSuspenseQuery } from '@tanstack/react-query';
 import {
-  useMutation,
-  useQueryClient,
-  useSuspenseQuery,
-} from '@tanstack/react-query';
+  type BoardsPayload,
+  findCard,
+  findChecklist,
+  getBoardsCache,
+  patchCard,
+  patchCardChecklists,
+  patchChecklist,
+  restoreBoardsCache,
+} from '~/db/boards/boards.cache';
+import { boardsQueryOptions } from '~/db/boards/boards.query';
 import { setCardChecklistExpanded } from '~/db/cards/cards.functions';
 import type { SetCardChecklistExpandedArgs } from '~/db/cards/cards.schemas';
-import { invalidateCardChecklistView } from '~/db/checklists/checklists.cache';
+import { toCardChecklistView } from '~/db/checklists/checklists.cache';
 import {
   createChecklist,
   deleteChecklist,
-  getCardTitleDetailsChecklists,
-  getChecklistById,
-  getChecklists,
   updateChecklist,
 } from '~/db/checklists/checklists.functions';
 import type {
@@ -21,61 +25,27 @@ import type {
   GetChecklistsArgs,
   UpdateChecklistArgs,
 } from '~/db/checklists/checklists.schemas';
-import { findCardChecklistView } from '~/db/lists/lists.cache';
-import type { Checklist } from '~/generated/prisma/client';
-import { queryClient } from '~/query';
-import { useCurrentBoardId } from '~/utils/useCurrentBoardId';
 
-export type ChecklistItem = Pick<
-  Checklist,
-  'id' | 'checklistTitle' | 'createdAt'
->;
-
-function toChecklistItem(item: Checklist): ChecklistItem {
-  return {
-    id: item.id,
-    checklistTitle: item.checklistTitle,
-    createdAt: item.createdAt,
-  };
-}
-
-const queryKeys = {
-  list: (cardId: string) => ['checklists', cardId] as const,
-  detail: (checklistId: string) => ['checklist', checklistId] as const,
-  cardChecklistView: (cardId: string) => ['cardChecklistView', cardId] as const,
-};
-
-export const checklistQueryKeys = queryKeys;
+const emptyChecklistView = toCardChecklistView({
+  isChecklistsExpanded: false,
+  expandedChecklistId: null,
+  checklists: [],
+});
 
 export function checklistByIdQueryOptions(data: GetChecklistByIdArgs) {
   return {
-    queryKey: queryKeys.detail(data.checklistId),
-    queryFn() {
-      return getChecklistById({
-        data,
-      });
+    ...boardsQueryOptions,
+    select(boards: BoardsPayload) {
+      return findChecklist(boards, data.checklistId);
     },
   };
 }
 
 export function checklistsQueryOptions(cardId: string) {
   return {
-    queryKey: queryKeys.list(cardId),
-    queryFn() {
-      return getChecklists({
-        data: { cardId },
-      });
-    },
-  };
-}
-
-export function cardTitleDetailsChecklistsQueryOptions(cardId: string) {
-  return {
-    queryKey: queryKeys.cardChecklistView(cardId),
-    queryFn() {
-      return getCardTitleDetailsChecklists({
-        data: { cardId },
-      });
+    ...boardsQueryOptions,
+    select(boards: BoardsPayload) {
+      return findCard(boards, cardId)?.checklists ?? [];
     },
   };
 }
@@ -97,11 +67,10 @@ export function useCreateChecklist() {
     },
 
     onSuccess(result, variables) {
-      queryClient.setQueryData<ChecklistItem[]>(
-        queryKeys.list(variables.cardId),
-        (cache = []) => [...cache, toChecklistItem(result.data[0])],
-      );
-      invalidateCardChecklistView(variables.cardId);
+      patchCardChecklists(variables.cardId, (checklists) => [
+        ...checklists,
+        { ...result.data[0], items: [] },
+      ]);
     },
   });
 
@@ -109,7 +78,6 @@ export function useCreateChecklist() {
 }
 
 export function useDeleteChecklist() {
-  const queryClient = useQueryClient();
   const mutation = useMutation({
     mutationFn(data: DeleteChecklistArgs) {
       return deleteChecklist({
@@ -118,15 +86,11 @@ export function useDeleteChecklist() {
     },
 
     onSuccess(_result, variables) {
-      queryClient.setQueryData<ChecklistItem[]>(
-        queryKeys.list(variables.cardId),
-        (cache = []) =>
-          cache.filter((item) => item.id !== variables.checklistId),
+      patchCardChecklists(variables.cardId, (checklists) =>
+        checklists.filter(
+          (checklist) => checklist.id !== variables.checklistId,
+        ),
       );
-      queryClient.removeQueries({
-        queryKey: queryKeys.detail(variables.checklistId),
-      });
-      invalidateCardChecklistView(variables.cardId);
     },
   });
 
@@ -134,7 +98,6 @@ export function useDeleteChecklist() {
 }
 
 export function useUpdateChecklist() {
-  const queryClient = useQueryClient();
   return useMutation({
     mutationFn(data: UpdateChecklistArgs) {
       return updateChecklist({
@@ -143,61 +106,46 @@ export function useUpdateChecklist() {
     },
 
     onMutate(variables) {
-      const patch: Partial<Checklist> = {};
+      const snapshot = getBoardsCache();
 
-      if (variables.checklistTitle !== undefined) {
-        patch.checklistTitle = variables.checklistTitle;
-      }
+      patchChecklist(variables.checklistId, (checklist) => ({
+        ...checklist,
+        checklistTitle: variables.checklistTitle ?? checklist.checklistTitle,
+        hideCheckedItems:
+          variables.hideCheckedItems ?? checklist.hideCheckedItems,
+      }));
 
-      if (variables.hideCheckedItems !== undefined) {
-        patch.hideCheckedItems = variables.hideCheckedItems;
-      }
-
-      queryClient.setQueryData<Checklist>(
-        queryKeys.detail(variables.checklistId),
-        (cache = {} as Checklist) => ({
-          ...cache,
-          ...patch,
-        }),
-      );
-
-      queryClient.setQueryData<Checklist[]>(
-        queryKeys.list(variables.cardId),
-        (cache = []) =>
-          cache.map((item) =>
-            item.id === variables.checklistId ? { ...item, ...patch } : item,
-          ),
-      );
+      return { snapshot };
     },
 
-    onError(_error, variables) {
-      queryClient.invalidateQueries({
-        queryKey: queryKeys.detail(variables.checklistId),
-      });
-      queryClient.invalidateQueries({
-        queryKey: queryKeys.list(variables.cardId),
-      });
+    onError(_error, _variables, context) {
+      restoreBoardsCache(context?.snapshot);
     },
   });
 }
 
+/**
+ * The card-front checklist rollup, derived straight from the card's checklists
+ * in the boards tree — item mutations update it with no extra bookkeeping.
+ */
 export function useGetCardTitleDetailsChecklists(data: GetChecklistsArgs) {
-  const boardId = useCurrentBoardId();
-
   return useSuspenseQuery({
-    ...cardTitleDetailsChecklistsQueryOptions(data.cardId),
-    initialData: () => findCardChecklistView(boardId, data.cardId),
-    select(data) {
-      const checklistsWithIncompleteItems = data.checklists.filter(
+    ...boardsQueryOptions,
+    select(boards: BoardsPayload) {
+      const card = findCard(boards, data.cardId);
+      const view = card ? toCardChecklistView(card) : emptyChecklistView;
+
+      const checklistsWithIncompleteItems = view.checklists.filter(
         (checklist) => checklist.completedItems < checklist.totalItems,
       );
+
       return {
-        isChecklistsExpanded: data.isChecklistsExpanded,
-        expandedChecklistId: data.expandedChecklistId,
-        completedItemsForCard: data.completedItemsForCard,
-        totalItemsForCard: data.totalItemsForCard,
+        isChecklistsExpanded: view.isChecklistsExpanded,
+        expandedChecklistId: view.expandedChecklistId,
+        completedItemsForCard: view.completedItemsForCard,
+        totalItemsForCard: view.totalItemsForCard,
         checklists: checklistsWithIncompleteItems,
-        isAllCompleted: data.completedItemsForCard === data.totalItemsForCard,
+        isAllCompleted: view.completedItemsForCard === view.totalItemsForCard,
         hasMultiple: checklistsWithIncompleteItems.length > 1,
         singleChecklistId: checklistsWithIncompleteItems[0]?.id,
       };
@@ -205,43 +153,34 @@ export function useGetCardTitleDetailsChecklists(data: GetChecklistsArgs) {
   });
 }
 
-type CardChecklistView = Awaited<
-  ReturnType<typeof getCardTitleDetailsChecklists>
->;
-
 /**
  * Persist the card-title-details checklist expansion to the server: whether the
  * whole checklist view is expanded (`isChecklistsExpanded`) and which single
  * checklist accordion is open (`expandedChecklistId`). Optimistically patches
- * the card checklist view cache so the UI updates instantly.
+ * the card in the boards tree so the UI updates instantly.
  */
 export function useSetCardChecklistExpanded() {
-  const queryClient = useQueryClient();
   return useMutation({
     mutationFn(data: SetCardChecklistExpandedArgs) {
       return setCardChecklistExpanded({ data });
     },
     onMutate(variables) {
-      queryClient.setQueryData<CardChecklistView>(
-        queryKeys.cardChecklistView(variables.cardId),
-        (cache) => {
-          if (!cache) {
-            return cache;
-          }
-          return {
-            ...cache,
-            isChecklistsExpanded:
-              variables.isChecklistsExpanded ?? cache.isChecklistsExpanded,
-            expandedChecklistId:
-              variables.expandedChecklistId !== undefined
-                ? variables.expandedChecklistId
-                : cache.expandedChecklistId,
-          };
-        },
-      );
+      const snapshot = getBoardsCache();
+
+      patchCard(variables.cardId, (card) => ({
+        ...card,
+        isChecklistsExpanded:
+          variables.isChecklistsExpanded ?? card.isChecklistsExpanded,
+        expandedChecklistId:
+          variables.expandedChecklistId !== undefined
+            ? variables.expandedChecklistId
+            : card.expandedChecklistId,
+      }));
+
+      return { snapshot };
     },
-    onError(_error, variables) {
-      invalidateCardChecklistView(variables.cardId);
+    onError(_error, _variables, context) {
+      restoreBoardsCache(context?.snapshot);
     },
   });
 }

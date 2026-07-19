@@ -33,7 +33,6 @@ export function Checklist({ id }: { id: string }) {
       sourceChecklistId: args.sourceGroupId,
       targetChecklistId: args.targetGroupId,
       targetVisibleIndex: args.toIndex,
-      cardId: checklist?.cardId ?? '',
     }),
   );
   const headerRef = useRef<HTMLDivElement>(null);

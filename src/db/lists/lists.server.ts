@@ -1,11 +1,6 @@
-import {
-  cardChecklistViewSelect,
-  toCardChecklistView,
-} from '~/db/checklists/checklists.server';
 import type {
   CreateListArgs,
   DeleteListArgs,
-  GetListsArgs,
   MoveListArgs,
   ReorderListsArgs,
   UpdateListArgs,
@@ -13,57 +8,6 @@ import type {
 import { prisma } from '~/db/prisma';
 import type { WithUserId } from '~/db/withUserId';
 import type { Prisma } from '~/generated/prisma/client';
-
-export async function getListsQuery(data: WithUserId<GetListsArgs>) {
-  const lists = await prisma.list.findMany({
-    where: {
-      boardId: { startsWith: data.boardId },
-      board: { userId: data.userId },
-    },
-    orderBy: [{ position: 'asc' }, { createdAt: 'asc' }],
-    select: {
-      id: true,
-      listTitle: true,
-      createdAt: true,
-      position: true,
-      boardId: true,
-      cards: {
-        select: {
-          id: true,
-          cardDescription: true,
-          isCompleted: true,
-          position: true,
-          cardTitle: true,
-          createdAt: true,
-          ...cardChecklistViewSelect,
-          activities: { where: { type: 'comment' }, select: { id: true } },
-        },
-        orderBy: [{ position: 'asc' }, { createdAt: 'asc' }],
-      },
-    },
-  });
-
-  return lists.map((list) => ({
-    ...list,
-    cards: list.cards.map(
-      ({
-        checklists,
-        isChecklistsExpanded,
-        expandedChecklistId,
-        activities,
-        ...card
-      }) => ({
-        ...card,
-        commentsCount: activities.length,
-        checklistView: toCardChecklistView({
-          isChecklistsExpanded,
-          expandedChecklistId,
-          checklists,
-        }),
-      }),
-    ),
-  }));
-}
 
 export async function createListQuery(data: WithUserId<CreateListArgs>) {
   const board = await prisma.stack.findFirst({

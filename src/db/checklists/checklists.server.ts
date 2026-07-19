@@ -1,112 +1,11 @@
 import type {
   CreateChecklistArgs,
   DeleteChecklistArgs,
-  GetChecklistByIdArgs,
-  GetChecklistsArgs,
   ReorderChecklistsArgs,
   UpdateChecklistArgs,
 } from '~/db/checklists/checklists.schemas';
 import { prisma } from '~/db/prisma';
 import type { WithUserId } from '~/db/withUserId';
-import type { Prisma } from '~/generated/prisma/client';
-
-export const cardChecklistViewSelect = {
-  isChecklistsExpanded: true,
-  expandedChecklistId: true,
-  checklists: {
-    select: {
-      id: true,
-      checklistTitle: true,
-      items: { select: { label: true, isCompleted: true } },
-    },
-    orderBy: [{ position: 'asc' }, { createdAt: 'asc' }],
-  },
-} satisfies Prisma.CardSelect;
-
-export function getChecklistsQuery(data: WithUserId<GetChecklistsArgs>) {
-  return prisma.checklist.findMany({
-    where: {
-      cardId: data.cardId,
-      card: { list: { board: { userId: data.userId } } },
-    },
-    orderBy: [{ position: 'asc' }, { createdAt: 'asc' }],
-    select: { id: true, checklistTitle: true, createdAt: true, items: true },
-  });
-}
-
-export function getChecklistByIdQuery(data: WithUserId<GetChecklistByIdArgs>) {
-  return prisma.checklist.findFirst({
-    where: {
-      id: data.checklistId,
-      userId: data.userId,
-    },
-    select: {
-      cardId: true,
-      listId: true,
-      userId: true,
-      checklistTitle: true,
-      createdAt: true,
-      position: true,
-      hideCheckedItems: true,
-      items: {
-        where: { checklistId: data.checklistId },
-      },
-    },
-  });
-}
-
-export function toCardChecklistView(
-  card: Prisma.CardGetPayload<{ select: typeof cardChecklistViewSelect }>,
-) {
-  let completedItemsForCard = 0;
-  let totalItemsForCard = 0;
-
-  const checklistsWithStats = card.checklists.map((checklist) => {
-    const completedItems = checklist.items.filter((item) => item.isCompleted);
-    const totalItems = checklist.items.length;
-
-    completedItemsForCard += completedItems.length;
-    totalItemsForCard += totalItems;
-
-    return {
-      id: checklist.id,
-      checklistTitle: checklist.checklistTitle,
-      completedItems: completedItems.length,
-      totalItems,
-      titles: completedItems.map((item) => item.label),
-    };
-  });
-
-  return {
-    isChecklistsExpanded: card.isChecklistsExpanded,
-    expandedChecklistId: card.expandedChecklistId,
-    completedItemsForCard,
-    totalItemsForCard,
-    checklists: checklistsWithStats.filter(
-      (checklist) => checklist.totalItems > 0,
-    ),
-  };
-}
-
-export async function getCardTitleDetailsChecklistsQuery(
-  data: WithUserId<GetChecklistsArgs>,
-) {
-  const card = await prisma.card.findFirst({
-    where: {
-      id: data.cardId,
-      list: { board: { userId: data.userId } },
-    },
-    select: cardChecklistViewSelect,
-  });
-
-  return toCardChecklistView(
-    card ?? {
-      isChecklistsExpanded: false,
-      expandedChecklistId: null,
-      checklists: [],
-    },
-  );
-}
 
 export async function createChecklistQuery(
   data: WithUserId<CreateChecklistArgs>,

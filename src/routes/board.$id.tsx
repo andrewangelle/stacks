@@ -13,7 +13,8 @@ import {
   getBoardHeaderServer,
   getNavBarServer,
 } from '~/components/server/Nav.functions';
-import { boardByIdQueryOptions } from '~/db/boards/boards.query';
+import { findBoard } from '~/db/boards/boards.cache';
+import { boardsQueryOptions } from '~/db/boards/boards.query';
 
 export const Route = createFileRoute('/board/$id')({
   async loader({ context, params }) {
@@ -22,9 +23,9 @@ export const Route = createFileRoute('/board/$id')({
       throw redirect({ to: '/auth/sign-in' });
     }
 
-    const board = await context.queryClient.ensureQueryData(
-      boardByIdQueryOptions(params.id),
-    );
+    const boards =
+      await context.queryClient.ensureQueryData(boardsQueryOptions);
+    const board = findBoard(boards, params.id);
 
     const NavBarServer = await getNavBarServer({
       data: { boardId: params.id },

@@ -1,19 +1,21 @@
+import { useMutation, useQuery, useSuspenseQuery } from '@tanstack/react-query';
 import {
-  useMutation,
-  useQuery,
-  useQueryClient,
-  useSuspenseQuery,
-} from '@tanstack/react-query';
-import type { ListItem } from '~/db/lists/lists.cache';
-import {
-  rollbackListCaches,
-  toListItem,
-  updateMovedListCache,
-} from '~/db/lists/lists.cache';
+  type BoardsPayload,
+  type CardPayload,
+  findBoard,
+  findList,
+  getBoardsCache,
+  type ListPayload,
+  patchBoardLists,
+  patchList,
+  restoreBoardsCache,
+} from '~/db/boards/boards.cache';
+import { boardsQueryOptions } from '~/db/boards/boards.query';
+import { toCardChecklistView } from '~/db/checklists/checklists.cache';
+import { moveListInBoardsCache } from '~/db/lists/lists.cache';
 import {
   createList,
   deleteList,
-  getLists,
   moveList,
   updateList,
 } from '~/db/lists/lists.functions';
@@ -25,18 +27,45 @@ import type {
 } from '~/db/lists/lists.schemas';
 import { useCurrentBoardId } from '~/utils/useCurrentBoardId';
 
-const queryKeys = {
-  list: (boardId: string) => ['lists', boardId] as const,
-};
+/**
+ * The shape the board page renders: a list with its card fronts, where
+ * `commentsCount` and `checklistView` are derived from the card's activities
+ * and checklists in the boards tree.
+ */
+export type ListCardItem = ReturnType<typeof toListCardItem>;
+export type ListItem = ReturnType<typeof toListItem>;
 
-export const listQueryKeys = queryKeys;
+export function toListCardItem(card: CardPayload) {
+  return {
+    id: card.id,
+    cardTitle: card.cardTitle,
+    cardDescription: card.cardDescription,
+    isCompleted: card.isCompleted,
+    position: card.position,
+    createdAt: card.createdAt,
+    commentsCount: card.activities.filter(
+      (activity) => activity.type === 'comment',
+    ).length,
+    checklistView: toCardChecklistView(card),
+  };
+}
+
+export function toListItem(list: ListPayload) {
+  return {
+    id: list.id,
+    listTitle: list.listTitle,
+    createdAt: list.createdAt,
+    position: list.position,
+    boardId: list.boardId,
+    cards: list.cards.map(toListCardItem),
+  };
+}
 
 export function listsQueryOptions(boardId: string) {
   return {
-    queryKey: queryKeys.list(boardId),
-    enabled: !!boardId,
-    queryFn() {
-      return getLists({ data: { boardId } });
+    ...boardsQueryOptions,
+    select(boards: BoardsPayload) {
+      return findBoard(boards, boardId)?.lists.map(toListItem) ?? [];
     },
   };
 }
@@ -51,40 +80,44 @@ export function useGetListsByBoardId({ boardId }: { boardId: string }) {
 }
 
 export function useGetListById({ id }: { id: string }) {
-  const boardId = useCurrentBoardId();
-
   return useSuspenseQuery({
-    ...listsQueryOptions(boardId),
-    select(data) {
-      return data.find((item) => item.id === id);
+    ...boardsQueryOptions,
+    select(boards: BoardsPayload) {
+      const list = findList(boards, id);
+      return list ? toListItem(list) : undefined;
     },
   });
 }
 
 export function useGetListCardCount({ listId }: { listId: string }) {
-  const boardId = useCurrentBoardId();
-
   return useSuspenseQuery({
-    ...listsQueryOptions(boardId),
-    select(data) {
-      return data.find((item) => item.id === listId)?.cards.length ?? 0;
+    ...boardsQueryOptions,
+    select(boards: BoardsPayload) {
+      return findList(boards, listId)?.cards.length ?? 0;
     },
   });
 }
 
 export function useGetListByCardId({ id }: { id: string }) {
-  const boardId = useCurrentBoardId();
-
   return useSuspenseQuery({
-    ...listsQueryOptions(boardId),
-    select(data) {
-      return data.find((item) => item.cards.some((card) => card.id === id));
+    ...boardsQueryOptions,
+    select(boards: BoardsPayload) {
+      for (const board of boards) {
+        const list = board.lists.find((item) =>
+          item.cards.some((card) => card.id === id),
+        );
+
+        if (list) {
+          return toListItem(list);
+        }
+      }
+
+      return undefined;
     },
   });
 }
 
 export function useUpdateList() {
-  const queryClient = useQueryClient();
   const mutation = useMutation({
     mutationFn(data: UpdateListArgs) {
       return updateList({
@@ -93,21 +126,18 @@ export function useUpdateList() {
     },
 
     onMutate(variables) {
-      queryClient.setQueryData<ListItem[]>(
-        queryKeys.list(variables.boardId),
-        (cache = []) =>
-          cache.map((item) =>
-            item.id === variables.listId
-              ? { ...item, listTitle: variables.listTitle }
-              : item,
-          ),
-      );
+      const snapshot = getBoardsCache();
+
+      patchList(variables.listId, (list) => ({
+        ...list,
+        listTitle: variables.listTitle,
+      }));
+
+      return { snapshot };
     },
 
-    onError(_error, variables) {
-      queryClient.invalidateQueries({
-        queryKey: queryKeys.list(variables.boardId),
-      });
+    onError(_error, _variables, context) {
+      restoreBoardsCache(context?.snapshot);
     },
   });
 
@@ -115,16 +145,15 @@ export function useUpdateList() {
 }
 
 export function useCreateList() {
-  const queryClient = useQueryClient();
   const mutation = useMutation({
     mutationFn(args: CreateListArgs) {
       return createList({ data: args });
     },
     onSuccess(result, variables) {
-      queryClient.setQueryData<ListItem[]>(
-        queryKeys.list(variables.boardId),
-        (cache = []) => [...cache, toListItem(result.data[0])],
-      );
+      patchBoardLists(variables.boardId, (lists) => [
+        ...lists,
+        { ...result.data[0], cards: [] },
+      ]);
     },
   });
 
@@ -132,9 +161,10 @@ export function useCreateList() {
 }
 
 /**
- * Move a list to a position on another board or reposition it within its own board. Applies a
- * surgical optimistic update across the affected boards' `['lists']` caches so neither board
- * refetches (and re-suspends into its loading skeleton); rolls the caches back if the move fails.
+ * Move a list to a position on another board or reposition it within its own
+ * board. The optimistic patch moves the list inside the boards tree, so neither
+ * board refetches (and re-suspends into its loading skeleton); the snapshot
+ * restores the tree if the move fails.
  */
 export function useMoveListMutation() {
   return useMutation({
@@ -142,34 +172,34 @@ export function useMoveListMutation() {
       return moveList({ data });
     },
     onMutate(variables) {
-      return { snapshot: updateMovedListCache(variables) };
+      const snapshot = getBoardsCache();
+      moveListInBoardsCache(variables);
+      return { snapshot };
     },
     onError(_error, _variables, context) {
-      if (context?.snapshot) {
-        rollbackListCaches(context.snapshot);
-      }
+      restoreBoardsCache(context?.snapshot);
     },
   });
 }
 
 export function useDeleteList() {
-  const queryClient = useQueryClient();
   const mutation = useMutation({
     mutationFn(data: DeleteListArgs) {
       return deleteList({ data });
     },
 
     onMutate(variables) {
-      queryClient.setQueryData<ListItem[]>(
-        queryKeys.list(variables.boardId),
-        (cache = []) => cache.filter((item) => item.id !== variables.listId),
+      const snapshot = getBoardsCache();
+
+      patchBoardLists(variables.boardId, (lists) =>
+        lists.filter((list) => list.id !== variables.listId),
       );
+
+      return { snapshot };
     },
 
-    onError(_error, variables) {
-      queryClient.invalidateQueries({
-        queryKey: queryKeys.list(variables.boardId),
-      });
+    onError(_error, _variables, context) {
+      restoreBoardsCache(context?.snapshot);
     },
   });
 

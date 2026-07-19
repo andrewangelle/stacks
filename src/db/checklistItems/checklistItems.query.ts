@@ -1,8 +1,12 @@
 import { useMutation, useQuery } from '@tanstack/react-query';
 import {
-  invalidateCardChecklistView,
+  type BoardsPayload,
+  findChecklist,
+  getBoardsCache,
   patchChecklistItems,
-} from '~/db/checklistItems/checklistItems.cache';
+  restoreBoardsCache,
+} from '~/db/boards/boards.cache';
+import { boardsQueryOptions } from '~/db/boards/boards.query';
 import {
   createChecklistItem,
   deleteChecklistItem,
@@ -15,27 +19,24 @@ import type {
   GetChecklistItemsArgs,
   UpdateChecklistItemArgs,
 } from '~/db/checklistItems/checklistItems.schemas';
-import {
-  checklistByIdQueryOptions,
-  checklistQueryKeys,
-} from '~/db/checklists/checklists.query';
 import type { ChecklistItem } from '~/generated/prisma/client';
-import { queryClient } from '~/query';
 
 export function useGetChecklistItem(data: GetChecklistItemByIdArgs) {
   return useQuery({
-    ...checklistByIdQueryOptions({ checklistId: data.checklistId }),
-    select(response) {
-      return response?.items?.find((item) => item.id === data.itemId);
+    ...boardsQueryOptions,
+    select(boards: BoardsPayload) {
+      return findChecklist(boards, data.checklistId)?.items.find(
+        (item) => item.id === data.itemId,
+      );
     },
   });
 }
 
 export function useGetChecklistItems(data: GetChecklistItemsArgs) {
   return useQuery({
-    ...checklistByIdQueryOptions({ checklistId: data.checklistId }),
-    select(response) {
-      return response?.items ?? [];
+    ...boardsQueryOptions,
+    select(boards: BoardsPayload) {
+      return findChecklist(boards, data.checklistId)?.items ?? [];
     },
   });
 }
@@ -49,30 +50,26 @@ export function useCreateChecklistItem() {
     },
 
     onMutate(variables) {
-      patchChecklistItems(variables.checklistId, (items) => {
-        return [...items, { ...variables, id: 'placeholder' } as ChecklistItem];
-      });
+      const snapshot = getBoardsCache();
+
+      patchChecklistItems(variables.checklistId, (items) => [
+        ...items,
+        { ...variables, id: 'placeholder' } as ChecklistItem,
+      ]);
+
+      return { snapshot };
     },
 
     onSuccess(result, variables) {
       const [created] = result.data;
 
-      patchChecklistItems(variables.checklistId, (items) => [
-        ...items.map((item) => {
-          if (item.id === 'placeholder') {
-            return created;
-          }
-          return item;
-        }),
-      ]);
-
-      invalidateCardChecklistView(variables.cardId);
+      patchChecklistItems(variables.checklistId, (items) =>
+        items.map((item) => (item.id === 'placeholder' ? created : item)),
+      );
     },
 
-    onError(_, variables) {
-      queryClient.invalidateQueries({
-        queryKey: checklistQueryKeys.detail(variables.checklistId),
-      });
+    onError(_error, _variables, context) {
+      restoreBoardsCache(context?.snapshot);
     },
   });
 
@@ -92,25 +89,19 @@ export function useUpdateChecklistItem({
     },
 
     onMutate(variables) {
-      patchChecklistItems(checklistId, (cache) =>
-        cache.map((item) => {
-          if (item.id === variables.itemId) {
-            return { ...item, ...variables };
-          }
-          return item;
-        }),
+      const snapshot = getBoardsCache();
+
+      patchChecklistItems(checklistId, (items) =>
+        items.map((item) =>
+          item.id === variables.itemId ? { ...item, ...variables } : item,
+        ),
       );
+
+      return { snapshot };
     },
 
-    onSuccess(result) {
-      const [{ cardId }] = result;
-      invalidateCardChecklistView(cardId);
-    },
-
-    onError() {
-      queryClient.invalidateQueries({
-        queryKey: checklistQueryKeys.detail(checklistId),
-      });
+    onError(_error, _variables, context) {
+      restoreBoardsCache(context?.snapshot);
     },
   });
 }
@@ -128,20 +119,17 @@ export function useDeleteChecklistItem({
     },
 
     onMutate(variables) {
-      patchChecklistItems(checklistId, (cache) =>
-        cache.filter((item) => item.id !== variables.itemId),
+      const snapshot = getBoardsCache();
+
+      patchChecklistItems(checklistId, (items) =>
+        items.filter((item) => item.id !== variables.itemId),
       );
+
+      return { snapshot };
     },
 
-    onSuccess(result) {
-      const [{ cardId }] = result.data;
-      invalidateCardChecklistView(cardId);
-    },
-
-    onError() {
-      queryClient.invalidateQueries({
-        queryKey: checklistQueryKeys.detail(checklistId),
-      });
+    onError(_error, _variables, context) {
+      restoreBoardsCache(context?.snapshot);
     },
   });
 
