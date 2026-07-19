@@ -455,7 +455,21 @@ async function selectMovePosition(page: Page, position: string) {
 async function submitMove(page: Page) {
   const moveButton = page.getByTestId('MoveCardButton');
   await expect(moveButton).toBeEnabled();
+  // The board shows the move optimistically, so nothing on screen marks the
+  // write as done. Reloads and hard navigations read from the server, so wait
+  // for the move's own response; the waiter is armed before the click so it
+  // can't be missed.
+  const moved = waitForServerFnResponse(page);
   await moveButton.click();
+  await moved;
+}
+
+function waitForServerFnResponse(page: Page) {
+  return page.waitForResponse(
+    (response) =>
+      response.url().includes('/_serverFn') &&
+      response.request().method() === 'POST',
+  );
 }
 
 async function expectListOrder(
