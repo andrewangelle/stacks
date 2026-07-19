@@ -18,7 +18,7 @@ export const Route = createFileRoute('/boards')({
       throw redirect({ to: '/auth/sign-in' });
     }
 
-    await context.queryClient.ensureQueryData(boardsQueryOptions);
+    context.queryClient.prefetchQuery(boardsQueryOptions);
 
     return {
       BoardsServer: await getBoardsServer(),
