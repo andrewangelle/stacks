@@ -34,6 +34,7 @@ model Stack {
   lists      List[]
   activities Activity[]
 
+  @@index([userId])
   @@map("stacks")
 }
 
@@ -49,6 +50,8 @@ model List {
   user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   cards     Card[]
 
+  @@index([boardId])
+  @@index([userId])
   @@map("lists")
 }
 
@@ -71,6 +74,8 @@ model Card {
   checklistItems       ChecklistItem[]
   activities           Activity[]
 
+  @@index([listId])
+  @@index([userId])
   @@map("cards")
 }
 
@@ -89,6 +94,8 @@ model Checklist {
   user             User            @relation(fields: [userId], references: [id], onDelete: Cascade)
   items            ChecklistItem[]
 
+  @@index([cardId])
+  @@index([userId])
   @@map("checklists")
 }
 
@@ -107,6 +114,8 @@ model ChecklistItem {
   checklist   Checklist @relation(fields: [checklistId], references: [id], onDelete: Cascade)
   user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
 
+  @@index([checklistId])
+  @@index([userId])
   @@map("checklist_items")
 }
 
@@ -124,5 +133,7 @@ model Activity {
   board     Stack    @relation(fields: [boardId], references: [id], onDelete: Cascade)
   user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
+  @@index([cardId])
+  @@index([userId])
   @@map("activities")
 }
