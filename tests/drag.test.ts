@@ -119,6 +119,69 @@ test.describe('Drag and drop', () => {
     await expect(page.getByTestId('ListName')).toHaveText(['Done', 'To Do']);
   });
 
+  test('reorders lists reached through the masked board url', async ({
+    page,
+    request,
+  }) => {
+    await resetDb(request);
+    const board = await seedBoard(request, 'Sprint Board');
+    await seedCard(request, {
+      boardId: board.id,
+      listTitle: 'To Do',
+      cardTitle: 'First card',
+    });
+    await seedCard(request, {
+      boardId: board.id,
+      listTitle: 'Done',
+      cardTitle: 'Second card',
+    });
+
+    // Navigating from the boards page masks the url to the board id's first 8
+    // chars. The reorder must send the full id the server matches on, or it
+    // rejects the request and the optimistic reorder rolls straight back.
+    await page.goto('/boards');
+    await waitForHydratedAction(
+      () => page.getByTestId('BoardCardContainer').click(),
+      async () => page.url().includes('/board/'),
+    );
+    await expect(page).toHaveURL(`/board/${board.id.slice(0, 8)}`);
+
+    await expect(page.getByTestId('ListContainer')).toHaveCount(2);
+    await expect(page.getByTestId('ListName')).toHaveText(['To Do', 'Done']);
+
+    const reorderPersisted = page.waitForResponse(
+      (res) =>
+        res.url().includes('_serverFn') &&
+        res.request().method() === 'POST' &&
+        res.status() === 200,
+    );
+
+    await waitForHydratedAction(
+      () =>
+        dragToLocator(
+          page,
+          listByTitle(page, 'To Do'),
+          listByTitle(page, 'Done'),
+        ),
+      async () => {
+        const names = await page.getByTestId('ListName').allTextContents();
+        return names[0]?.trim() === 'Done';
+      },
+    );
+
+    await reorderPersisted;
+
+    // The rollback is what a masked-id reorder looks like from the outside, so
+    // hold the new order past the server round-trip before reloading.
+    await expect(page.getByTestId('ListName')).toHaveText(['Done', 'To Do']);
+    await page.waitForTimeout(500);
+    await expect(page.getByTestId('ListName')).toHaveText(['Done', 'To Do']);
+
+    await page.reload();
+    await expect(page.getByTestId('ListContainer')).toHaveCount(2);
+    await expect(page.getByTestId('ListName')).toHaveText(['Done', 'To Do']);
+  });
+
   test('moves a checklist item to another checklist on the same card', async ({
     page,
     request,

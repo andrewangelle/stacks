@@ -24,15 +24,17 @@ export function reorderDraggedList(
   });
 
   const boards = getBoardsCache();
-  const orderedIds = boards
-    ? (findBoard(boards, boardId)?.lists.map((list) => list.id) ?? [])
-    : [];
+  // `boardId` here is the route param, which is masked to an 8-char prefix on
+  // the board url. The server matches board ids exactly, so send the full id
+  // off the board we just resolved out of the cache.
+  const board = boards ? findBoard(boards, boardId) : undefined;
+  const orderedIds = board?.lists.map((list) => list.id) ?? [];
 
-  if (orderedIds.length === 0) {
+  if (!board || orderedIds.length === 0) {
     return;
   }
 
-  reorderListsServer({ data: { boardId, orderedIds } }).catch(() => {
+  reorderListsServer({ data: { boardId: board.id, orderedIds } }).catch(() => {
     restoreBoardsCache(snapshot);
   });
 }
