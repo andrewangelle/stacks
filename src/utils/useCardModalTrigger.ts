@@ -6,6 +6,7 @@ import {
   useRef,
   useState,
 } from 'react';
+import { prefetchActivities } from '~/db/activity/activity.cache';
 import { useCurrentBoardId } from '~/utils/useCurrentBoardId';
 import { useIsMobile } from '~/utils/useIsMobile';
 
@@ -50,6 +51,7 @@ export function useCardModalTrigger(id: string) {
   function handleTriggerFocus() {
     setIsFocused(true);
     pointerFocusedRef.current = true;
+    prefetchActivities(id);
   }
 
   function handleTriggerBlur(event: FocusEvent<HTMLDivElement>) {
@@ -64,6 +66,7 @@ export function useCardModalTrigger(id: string) {
     setHovering(true);
     pointerFocusedRef.current = true;
     ref.current?.focus({ preventScroll: true });
+    prefetchActivities(id);
   }
 
   function handleListCardMouseLeave() {
