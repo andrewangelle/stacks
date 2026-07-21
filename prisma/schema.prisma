@@ -133,7 +133,7 @@ model Activity {
   board     Stack    @relation(fields: [boardId], references: [id], onDelete: Cascade)
   user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-  @@index([cardId])
+  @@index([cardId, createdAt]) 
   @@index([userId])
   @@map("activities")
 }
