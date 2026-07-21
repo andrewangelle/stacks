@@ -14,11 +14,14 @@ export function getBoardColorQuery(data: WithUserId<GetBoardByIdArgs>) {
 }
 
 /**
- * Load the user's whole workspace — boards, lists, cards, checklists with their
- * items, and card activity — as one joined query. `setCache` in boards.cache.ts
- * fans this payload out to every per-entity query cache, so the boards, board,
- * and card screens all render without further fetches. Every relation arrives
- * sorted the way its screen renders it; nothing downstream re-sorts or regroups.
+ * Load the user's whole workspace — boards, lists, cards, and checklists with
+ * their items — as one joined query, so the boards, board, and card screens all
+ * render without further fetches. Every relation arrives sorted the way its
+ * screen renders it; nothing downstream re-sorts or regroups.
+ *
+ * Card activity is deliberately absent: it grows with a card's history rather
+ * than its current state, so only the comment count the card front renders is
+ * joined here. The entries themselves load per card — see activity.query.ts.
  */
 export function getBoardsQuery(data: { userId: string }) {
   return prisma.stack.findMany({
@@ -40,7 +43,9 @@ export function getBoardsQuery(data: { userId: string }) {
                   },
                 },
               },
-              activities: { orderBy: { createdAt: 'desc' } },
+              _count: {
+                select: { activities: { where: { type: 'comment' } } },
+              },
             },
           },
         },

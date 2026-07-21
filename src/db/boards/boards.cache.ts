@@ -3,10 +3,12 @@ import { queryClient } from '~/query';
 
 /**
  * The `['boards']` query holds the user's entire workspace — the result of the
- * single joined query in boards.server.ts — and is the only client cache.
- * Every read hook selects its slice out of this tree (see the *.query.ts
- * files), and every mutation patches the tree through the helpers below, so
- * there are no copies to fall out of sync.
+ * single joined query in boards.server.ts. Every read hook selects its slice
+ * out of this tree (see the *.query.ts files), and every mutation patches the
+ * tree through the helpers below, so there are no copies to fall out of sync.
+ *
+ * Card activity is the single exception: it is cached per card, because it
+ * scales with history rather than with current state. See activity.cache.ts.
  */
 
 export type BoardsPayload = Awaited<ReturnType<typeof getBoards>>;
@@ -15,7 +17,6 @@ export type ListPayload = BoardPayload['lists'][number];
 export type CardPayload = ListPayload['cards'][number];
 export type ChecklistPayload = CardPayload['checklists'][number];
 export type ChecklistItemPayload = ChecklistPayload['items'][number];
-export type ActivityPayload = CardPayload['activities'][number];
 
 export const boardsQueryKey = ['boards'] as const;
 
@@ -170,13 +171,17 @@ export function patchCardChecklists(
   }));
 }
 
-export function patchCardActivities(
-  cardId: string,
-  patch: (activities: ActivityPayload[]) => ActivityPayload[],
-) {
+/**
+ * Keep the card front's comment count in step with the per-card activity cache.
+ * The count is the only thing the boards tree knows about activity.
+ */
+export function patchCardCommentsCount(cardId: string, delta: number) {
   patchCard(cardId, (card) => ({
     ...card,
-    activities: patch(card.activities),
+    _count: {
+      ...card._count,
+      activities: Math.max(card._count.activities + delta, 0),
+    },
   }));
 }
 

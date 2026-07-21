@@ -1,10 +1,18 @@
 import type {
   CreateActivityArgs,
   DeleteActivityArgs,
+  GetActivityArgs,
   UpdateActivityArgs,
 } from '~/db/activity/activity.schemas';
 import { prisma } from '~/db/prisma';
 import type { WithUserId } from '~/db/withUserId';
+
+export function getActivitiesQuery(data: WithUserId<GetActivityArgs>) {
+  return prisma.activity.findMany({
+    where: { cardId: data.cardId, userId: data.userId },
+    orderBy: { createdAt: 'desc' },
+  });
+}
 
 export async function createActivityQuery(
   data: WithUserId<CreateActivityArgs>,
