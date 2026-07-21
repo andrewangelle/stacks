@@ -7,11 +7,28 @@ import type {
 import { prisma } from '~/db/prisma';
 import type { WithUserId } from '~/db/withUserId';
 
-export function getActivitiesQuery(data: WithUserId<GetActivityArgs>) {
-  return prisma.activity.findMany({
+export const ACTIVITY_PAGE_SIZE = 10;
+
+/**
+ * Keyset pagination: `createdAt` alone is not unique, so the sort is broken by
+ * `id` to give the rows a total order. That total order is what makes the
+ * cursor stable — without it, ties can be re-shuffled between pages and an
+ * entry gets skipped or served twice.
+ */
+export async function getActivitiesQuery(data: WithUserId<GetActivityArgs>) {
+  const items = await prisma.activity.findMany({
     where: { cardId: data.cardId, userId: data.userId },
-    orderBy: { createdAt: 'desc' },
+    orderBy: [{ createdAt: 'desc' }, { id: 'desc' }],
+    take: ACTIVITY_PAGE_SIZE,
+    ...(data.cursor ? { cursor: { id: data.cursor }, skip: 1 } : {}),
   });
+
+  const lastItem = items[items.length - 1];
+
+  return {
+    items,
+    nextCursor: items.length === ACTIVITY_PAGE_SIZE ? lastItem.id : null,
+  };
 }
 
 export async function createActivityQuery(

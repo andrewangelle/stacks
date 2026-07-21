@@ -1,10 +1,17 @@
-import { useMutation, useQuery, useSuspenseQuery } from '@tanstack/react-query';
 import {
+  useInfiniteQuery,
+  useMutation,
+  useSuspenseInfiniteQuery,
+} from '@tanstack/react-query';
+import {
+  type ActivitiesPage,
   type ActivitiesPayload,
   activitiesQueryKey,
   findActivity,
+  flattenActivities,
   getActivitiesCache,
   patchActivities,
+  prependActivity,
   restoreActivitiesCache,
 } from '~/db/activity/activity.cache';
 import {
@@ -26,34 +33,51 @@ import {
   restoreBoardsCache,
 } from '~/db/boards/boards.cache';
 
+/**
+ * One paginated cache entry per card backs every read below. The type filters
+ * are applied to the pages already loaded rather than pushed into the query,
+ * so a card keeps a single cursor to advance and a single cache to patch —
+ * scrolling the panel is what deepens the comments view too.
+ */
 export function activitiesQueryOptions(cardId: string) {
   return {
     queryKey: activitiesQueryKey(cardId),
-    queryFn() {
-      return getActivities({ data: { cardId } });
+    queryFn({ pageParam }: { pageParam: string | null }) {
+      return getActivities({ data: { cardId, cursor: pageParam } });
+    },
+    initialPageParam: null as string | null,
+    getNextPageParam(lastPage: ActivitiesPage) {
+      return lastPage.nextCursor;
     },
     enabled: cardId !== '',
   };
 }
 
 export function useGetActivity(data: GetActivityArgs) {
-  return useSuspenseQuery(activitiesQueryOptions(data.cardId));
+  return useSuspenseInfiniteQuery({
+    ...activitiesQueryOptions(data.cardId),
+    select: flattenActivities,
+  });
 }
 
 export function useGetActivityFeed(data: GetActivityArgs) {
-  return useQuery({
+  return useInfiniteQuery({
     ...activitiesQueryOptions(data.cardId),
     select(activities: ActivitiesPayload) {
-      return activities.filter((item) => item.type === 'feed');
+      return flattenActivities(activities).filter(
+        (item) => item.type === 'feed',
+      );
     },
   });
 }
 
 export function useGetComments(data: GetActivityArgs) {
-  return useQuery({
+  return useInfiniteQuery({
     ...activitiesQueryOptions(data.cardId),
     select(activities: ActivitiesPayload) {
-      return activities.filter((item) => item.type === 'comment');
+      return flattenActivities(activities).filter(
+        (item) => item.type === 'comment',
+      );
     },
   });
 }
@@ -61,10 +85,12 @@ export function useGetComments(data: GetActivityArgs) {
 export function useGetActivityById(
   data: GetActivityByIdArgs & GetActivityArgs,
 ) {
-  return useQuery({
+  return useInfiniteQuery({
     ...activitiesQueryOptions(data.cardId),
     select(activities: ActivitiesPayload) {
-      return activities.find((item) => item.id === data.activityId);
+      return flattenActivities(activities).find(
+        (item) => item.id === data.activityId,
+      );
     },
   });
 }
@@ -76,10 +102,7 @@ export function useCreateActivity() {
     },
 
     onSuccess(result, variables) {
-      patchActivities(variables.cardId, (activities) => [
-        result,
-        ...activities,
-      ]);
+      prependActivity(variables.cardId, result);
 
       if (result.type === 'comment') {
         patchCardCommentsCount(variables.cardId, 1);

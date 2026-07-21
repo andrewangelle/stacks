@@ -55,7 +55,7 @@ export function ActivitySkeleton() {
   );
 }
 
-function ActivityEntrySkeleton() {
+export function ActivityEntrySkeleton() {
   return (
     <ActivityContainer data-testid="ActivityContainer">
       <ActivityRow data-testid="ActivityRow">

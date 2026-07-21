@@ -22,7 +22,7 @@
     "db:deploy": "prisma migrate deploy",
     "db:studio": "prisma studio",
     "test:db:setup": "docker compose up -d --wait && cross-env DATABASE_URL=postgresql://test:test@localhost:5432/test prisma migrate deploy",
-    "update:tsr": "pnpm add @tanstack/react-start@latest @tanstack/react-router@latest @tanstack/react-router-devtools@latest @tanstack/react-router-ssr-query@latest @tanstack/react-query@latest @tanstack/react-query-devtools@latest",
+    "update:tsr": "sh ./scripts/update-tsr.sh",
     "test": "cross-env playwright test --project=chromium",
     "test:all": "cross-env playwright test",
     "test:firefox": "cross-env playwright test --project=firefox",

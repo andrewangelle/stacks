@@ -23,6 +23,6 @@ export function useScrollToHashId(
   }, [location.hash, id, enabled, ref]);
 }
 
-function getHashId(hash: string | undefined): string {
+export function getHashId(hash: string | undefined): string {
   return hash?.match(/\w+-(.+)/)?.[1] ?? '';
 }
