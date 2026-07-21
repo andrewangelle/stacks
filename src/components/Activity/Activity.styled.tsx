@@ -10,7 +10,46 @@ const activitySidebarLayout = '@media (min-width: 851px)';
 
 export const ActivityPanelContainer = styled.div`
   box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  min-height: 0;
   min-width: 0;
+  width: 100%;
+`;
+
+/**
+ * The virtualizer's scroll element. It has to own its scrolling in both
+ * layouts: in the sidebar it fills whatever height the activity column was
+ * given, and on narrow screens — where the column itself stops scrolling and
+ * the modal body takes over — it falls back to a viewport-relative height so
+ * the list still has a measurable box to virtualize against.
+ */
+export const ActivityListViewport = styled.div`
+  position: relative;
+  box-sizing: border-box;
+  flex: 1 1 auto;
+  min-height: 0;
+  min-width: 0;
+  width: 100%;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  max-height: 60vh;
+
+  ${activitySidebarLayout} {
+    max-height: none;
+  }
+`;
+
+export const ActivityListContainer = styled.div`
+  position: relative;
+  width: 100%;
+`;
+
+export const ActivityListRow = styled.div`
+  position: absolute;
+  top: 0;
+  left: 0;
   width: 100%;
 `;
 

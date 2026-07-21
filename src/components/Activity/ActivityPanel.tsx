@@ -8,8 +8,7 @@ import {
   ActivityTitle,
   HideActivityButton,
 } from '~/components/Activity/Activity.styled';
-import { ActivityComment } from '~/components/Activity/ActivityComment';
-import { ActivityEntry } from '~/components/Activity/ActivityEntry';
+import { ActivityList } from '~/components/Activity/ActivityList';
 import { AddComment } from '~/components/Activity/AddComment';
 import { useGetActivity, useGetComments } from '~/db/activity/activity.query';
 import { useCurrentCardId } from '~/utils/useCurrentCardId';
@@ -21,8 +20,13 @@ export function ActivityPanel() {
   const [selectedActivityId, setSelectedActivityId] = useState<string | null>(
     null,
   );
-  const { data } = useGetActivity({ cardId });
+  const { data, hasNextPage, isFetchingNextPage, fetchNextPage } =
+    useGetActivity({ cardId });
   const { data: comments } = useGetComments({ cardId });
+
+  // Both views page through the same cursor, so whichever one is on screen is
+  // what keeps pulling entries in.
+  const entries = showActivity ? data : (comments ?? []);
 
   useEffect(() => {
     const [, activityId = ''] = location.hash?.split('activity-') ?? [];
@@ -56,34 +60,14 @@ export function ActivityPanel() {
 
       <AddComment />
 
-      {!showActivity &&
-        comments?.map((comment) => (
-          <ActivityComment
-            key={comment.id}
-            id={comment.id}
-            isSelected={selectedActivityId === comment.id}
-            onSelect={() => setSelectedActivityId(comment.id)}
-          />
-        ))}
-
-      {showActivity &&
-        data?.map((entry) =>
-          entry?.type === 'feed' ? (
-            <ActivityEntry
-              key={entry.id}
-              id={entry.id}
-              isSelected={selectedActivityId === entry.id}
-              onSelect={() => setSelectedActivityId(entry.id)}
-            />
-          ) : (
-            <ActivityComment
-              key={entry.id}
-              id={entry.id}
-              isSelected={selectedActivityId === entry.id}
-              onSelect={() => setSelectedActivityId(entry.id)}
-            />
-          ),
-        )}
+      <ActivityList
+        entries={entries}
+        selectedActivityId={selectedActivityId}
+        onSelect={setSelectedActivityId}
+        hasNextPage={hasNextPage}
+        isFetchingNextPage={isFetchingNextPage}
+        fetchNextPage={fetchNextPage}
+      />
     </ActivityPanelContainer>
   );
 }

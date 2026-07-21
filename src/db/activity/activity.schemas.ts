@@ -2,6 +2,7 @@ import { z } from 'zod';
 
 export const GetActivitySchema = z.object({
   cardId: z.string(),
+  cursor: z.string().nullish(),
 });
 
 export const GetActivityByIdSchema = z.object({

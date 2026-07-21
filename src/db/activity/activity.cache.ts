@@ -1,3 +1,4 @@
+import type { InfiniteData } from '@tanstack/react-query';
 import type { getActivities } from '~/db/activity/activity.functions';
 import { queryClient } from '~/query';
 import { activitiesQueryOptions } from './activity.query';
@@ -9,16 +10,27 @@ import { activitiesQueryOptions } from './activity.query';
  * the single boards query safe to load up front. Entries are fetched per card
  * when that card opens and cached under `['activities', cardId]`.
  *
+ * That unbounded growth is also why this cache is paginated: the panel pulls
+ * ten entries at a time as the virtualized list scrolls, so the cache holds an
+ * `InfiniteData` of pages rather than one flat array. Read it through
+ * `flattenActivities`; write to it through the patch helpers, which walk every
+ * loaded page so an edit lands wherever the entry happens to live.
+ *
  * The boards tree still carries each card's comment count, since card fronts
  * render it. Mutations here patch both caches so the count never drifts from
  * the entries — see `patchCardCommentsCount` in boards.cache.ts.
  */
 
-export type ActivitiesPayload = Awaited<ReturnType<typeof getActivities>>;
-export type ActivityPayload = ActivitiesPayload[number];
+export type ActivitiesPage = Awaited<ReturnType<typeof getActivities>>;
+export type ActivityPayload = ActivitiesPage['items'][number];
+export type ActivitiesPayload = InfiniteData<ActivitiesPage, string | null>;
 
 export function activitiesQueryKey(cardId: string) {
   return ['activities', cardId] as const;
+}
+
+export function flattenActivities(data: ActivitiesPayload | undefined) {
+  return data?.pages.flatMap((page) => page.items) ?? [];
 }
 
 export function getActivitiesCache(cardId: string) {
@@ -53,14 +65,49 @@ export function patchActivities(
 ) {
   queryClient.setQueryData<ActivitiesPayload>(
     activitiesQueryKey(cardId),
-    (activities) => (activities ? patch(activities) : activities),
+    (data) =>
+      data && {
+        ...data,
+        pages: data.pages.map((page) => ({
+          ...page,
+          items: patch(page.items),
+        })),
+      },
+  );
+}
+
+/**
+ * Entries are newest-first, so a new one belongs at the head of the first page.
+ * That page then holds eleven entries; this is deliberate, since re-chunking
+ * would invalidate the cursors the later pages were already fetched with.
+ */
+export function prependActivity(cardId: string, activity: ActivityPayload) {
+  queryClient.setQueryData<ActivitiesPayload>(
+    activitiesQueryKey(cardId),
+    (data) => {
+      const [firstPage, ...restPages] = data?.pages ?? [];
+
+      if (!data || !firstPage) {
+        return data;
+      }
+
+      return {
+        ...data,
+        pages: [
+          { ...firstPage, items: [activity, ...firstPage.items] },
+          ...restPages,
+        ],
+      };
+    },
   );
 }
 
 export function findActivity(cardId: string, activityId: string) {
-  return getActivitiesCache(cardId)?.find((item) => item.id === activityId);
+  return flattenActivities(getActivitiesCache(cardId)).find(
+    (item) => item.id === activityId,
+  );
 }
 
 export async function prefetchActivities(cardId: string) {
-  await queryClient.prefetchQuery(activitiesQueryOptions(cardId));
+  await queryClient.prefetchInfiniteQuery(activitiesQueryOptions(cardId));
 }
