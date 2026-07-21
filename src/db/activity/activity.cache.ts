@@ -1,5 +1,6 @@
 import type { getActivities } from '~/db/activity/activity.functions';
 import { queryClient } from '~/query';
+import { activitiesQueryOptions } from './activity.query';
 
 /**
  * The one slice of the workspace that lives outside the `['boards']` tree.
@@ -58,4 +59,8 @@ export function patchActivities(
 
 export function findActivity(cardId: string, activityId: string) {
   return getActivitiesCache(cardId)?.find((item) => item.id === activityId);
+}
+
+export async function prefetchActivities(cardId: string) {
+  await queryClient.prefetchQuery(activitiesQueryOptions(cardId));
 }
