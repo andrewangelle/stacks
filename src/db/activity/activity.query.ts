@@ -1,7 +1,16 @@
-import { useMutation, useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery, useSuspenseQuery } from '@tanstack/react-query';
+import {
+  type ActivitiesPayload,
+  activitiesQueryKey,
+  findActivity,
+  getActivitiesCache,
+  patchActivities,
+  restoreActivitiesCache,
+} from '~/db/activity/activity.cache';
 import {
   createActivity,
   deleteActivity,
+  getActivities,
   updateActivity,
 } from '~/db/activity/activity.functions';
 import type {
@@ -12,41 +21,39 @@ import type {
   UpdateActivityArgs,
 } from '~/db/activity/activity.schemas';
 import {
-  type BoardsPayload,
-  findCard,
   getBoardsCache,
-  patchCardActivities,
+  patchCardCommentsCount,
   restoreBoardsCache,
 } from '~/db/boards/boards.cache';
-import { boardsQueryOptions } from '~/db/boards/boards.query';
+
+export function activitiesQueryOptions(cardId: string) {
+  return {
+    queryKey: activitiesQueryKey(cardId),
+    queryFn() {
+      return getActivities({ data: { cardId } });
+    },
+    enabled: cardId !== '',
+  };
+}
 
 export function useGetActivity(data: GetActivityArgs) {
-  return useQuery({
-    ...boardsQueryOptions,
-    select(boards: BoardsPayload) {
-      return findCard(boards, data.cardId)?.activities ?? [];
-    },
-  });
+  return useSuspenseQuery(activitiesQueryOptions(data.cardId));
 }
 
 export function useGetActivityFeed(data: GetActivityArgs) {
   return useQuery({
-    ...boardsQueryOptions,
-    select(boards: BoardsPayload) {
-      return findCard(boards, data.cardId)?.activities.filter(
-        (item) => item.type === 'feed',
-      );
+    ...activitiesQueryOptions(data.cardId),
+    select(activities: ActivitiesPayload) {
+      return activities.filter((item) => item.type === 'feed');
     },
   });
 }
 
 export function useGetComments(data: GetActivityArgs) {
   return useQuery({
-    ...boardsQueryOptions,
-    select(boards: BoardsPayload) {
-      return findCard(boards, data.cardId)?.activities.filter(
-        (item) => item.type === 'comment',
-      );
+    ...activitiesQueryOptions(data.cardId),
+    select(activities: ActivitiesPayload) {
+      return activities.filter((item) => item.type === 'comment');
     },
   });
 }
@@ -55,11 +62,9 @@ export function useGetActivityById(
   data: GetActivityByIdArgs & GetActivityArgs,
 ) {
   return useQuery({
-    ...boardsQueryOptions,
-    select(boards: BoardsPayload) {
-      return findCard(boards, data.cardId)?.activities.find(
-        (item) => item.id === data.activityId,
-      );
+    ...activitiesQueryOptions(data.cardId),
+    select(activities: ActivitiesPayload) {
+      return activities.find((item) => item.id === data.activityId);
     },
   });
 }
@@ -71,10 +76,14 @@ export function useCreateActivity() {
     },
 
     onSuccess(result, variables) {
-      patchCardActivities(variables.cardId, (activities) => [
+      patchActivities(variables.cardId, (activities) => [
         result,
         ...activities,
       ]);
+
+      if (result.type === 'comment') {
+        patchCardCommentsCount(variables.cardId, 1);
+      }
     },
   });
 
@@ -90,9 +99,9 @@ export function useUpdateActivity() {
     },
 
     onMutate(variables) {
-      const snapshot = getBoardsCache();
+      const snapshot = getActivitiesCache(variables.cardId);
 
-      patchCardActivities(variables.cardId, (activities) =>
+      patchActivities(variables.cardId, (activities) =>
         activities.map((item) =>
           item.id === variables.activityId
             ? { ...item, content: variables.content }
@@ -103,8 +112,8 @@ export function useUpdateActivity() {
       return { snapshot };
     },
 
-    onError(_error, _variables, context) {
-      restoreBoardsCache(context?.snapshot);
+    onError(_error, variables, context) {
+      restoreActivitiesCache(variables.cardId, context?.snapshot);
     },
   });
 
@@ -118,17 +127,24 @@ export function useDeleteActivity() {
     },
 
     onMutate(variables) {
-      const snapshot = getBoardsCache();
+      const snapshot = getActivitiesCache(variables.cardId);
+      const boardsSnapshot = getBoardsCache();
+      const deleted = findActivity(variables.cardId, variables.activityId);
 
-      patchCardActivities(variables.cardId, (activities) =>
+      patchActivities(variables.cardId, (activities) =>
         activities.filter((item) => item.id !== variables.activityId),
       );
 
-      return { snapshot };
+      if (deleted?.type === 'comment') {
+        patchCardCommentsCount(variables.cardId, -1);
+      }
+
+      return { snapshot, boardsSnapshot };
     },
 
-    onError(_error, _variables, context) {
-      restoreBoardsCache(context?.snapshot);
+    onError(_error, variables, context) {
+      restoreActivitiesCache(variables.cardId, context?.snapshot);
+      restoreBoardsCache(context?.boardsSnapshot);
     },
   });
 

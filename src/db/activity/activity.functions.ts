@@ -2,14 +2,23 @@ import { createServerFn } from '@tanstack/react-start';
 import {
   CreateActivitySchema,
   DeleteActivitySchema,
+  GetActivitySchema,
   UpdateActivitySchema,
 } from '~/db/activity/activity.schemas';
 import {
   createActivityQuery,
   deleteActivityQuery,
+  getActivitiesQuery,
   updateActivityQuery,
 } from '~/db/activity/activity.server';
 import { authMiddleware } from '~/middleware/auth';
+
+export const getActivities = createServerFn({ method: 'GET' })
+  .validator(GetActivitySchema)
+  .middleware([authMiddleware])
+  .handler(async ({ data, context }) =>
+    getActivitiesQuery({ ...data, userId: context.uid }),
+  );
 
 export const createActivity = createServerFn({ method: 'POST' })
   .validator(CreateActivitySchema)

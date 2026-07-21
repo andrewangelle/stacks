@@ -29,8 +29,8 @@ import { useCurrentBoardId } from '~/utils/useCurrentBoardId';
 
 /**
  * The shape the board page renders: a list with its card fronts, where
- * `commentsCount` and `checklistView` are derived from the card's activities
- * and checklists in the boards tree.
+ * `commentsCount` and `checklistView` are derived from the card's joined
+ * comment count and its checklists in the boards tree.
  */
 export type ListCardItem = ReturnType<typeof toListCardItem>;
 export type ListItem = ReturnType<typeof toListItem>;
@@ -43,9 +43,7 @@ export function toListCardItem(card: CardPayload) {
     isCompleted: card.isCompleted,
     position: card.position,
     createdAt: card.createdAt,
-    commentsCount: card.activities.filter(
-      (activity) => activity.type === 'comment',
-    ).length,
+    commentsCount: card._count.activities,
     checklistView: toCardChecklistView(card),
   };
 }

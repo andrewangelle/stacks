@@ -1,4 +1,5 @@
 import { useMutation, useSuspenseQuery } from '@tanstack/react-query';
+import { invalidateActivitiesCache } from '~/db/activity/activity.cache';
 import {
   type BoardsPayload,
   findCard,
@@ -56,7 +57,11 @@ export function useCreateCard() {
     },
 
     onSuccess(result, variables) {
-      const newCard = { ...result.data[0], checklists: [], activities: [] };
+      const newCard = {
+        ...result.data[0],
+        checklists: [],
+        _count: { activities: 0 },
+      };
 
       patchListCards(variables.listId, (cards) => {
         if (variables.position === undefined) {
@@ -104,7 +109,8 @@ export function useUpdateCard() {
 /**
  * Move a card to another list, possibly on another board. The server rewrites
  * positions and records board transfers in the card's activity feed, so one
- * refetch of the boards tree picks up everything it changed.
+ * refetch of the boards tree picks up everything it changed, except the new
+ * feed entries, which live in the card's own activity cache.
  */
 export function useMoveCardMutation() {
   return useMutation({
@@ -115,8 +121,9 @@ export function useMoveCardMutation() {
     }: MoveCardArgs & { sourceBoardId: string; targetBoardId: string }) {
       return moveCard({ data });
     },
-    onSuccess() {
+    onSuccess(_result, variables) {
       invalidateBoardsCache();
+      invalidateActivitiesCache(variables.cardId);
     },
   });
 }

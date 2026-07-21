@@ -1,6 +1,7 @@
 import { useNavigate, useRouterState } from '@tanstack/react-router';
 import { Suspense, useEffect, useRef, useState } from 'react';
 import { ActivityPanel } from '~/components/Activity/ActivityPanel';
+import { ActivitySkeleton } from '~/components/Activity/ActivitySkeleton';
 import {
   CardActionsContainer,
   CardActivityColumn,
@@ -105,7 +106,9 @@ export function Card({ variant = 'modal' }: CardProps) {
         )}
 
         <ActivityColumn data-testid="CardActivityColumn">
-          <ActivityPanel />
+          <Suspense fallback={<ActivitySkeleton />}>
+            <ActivityPanel />
+          </Suspense>
         </ActivityColumn>
       </CardModalBody>
     </>
