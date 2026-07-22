@@ -10,23 +10,13 @@ import {
 } from '~/components/Activity/Activity.styled';
 import { ActivityList } from '~/components/Activity/ActivityList';
 import { AddComment } from '~/components/Activity/AddComment';
-import { useGetActivity, useGetComments } from '~/db/activity/activity.query';
-import { useCurrentCardId } from '~/utils/useCurrentCardId';
 
 export function ActivityPanel() {
-  const cardId = useCurrentCardId();
   const location = useLocation();
   const [showActivity, setShowActivity] = useState(true);
   const [selectedActivityId, setSelectedActivityId] = useState<string | null>(
     null,
   );
-  const { data, hasNextPage, isFetchingNextPage, fetchNextPage } =
-    useGetActivity({ cardId });
-  const { data: comments } = useGetComments({ cardId });
-
-  // Both views page through the same cursor, so whichever one is on screen is
-  // what keeps pulling entries in.
-  const entries = showActivity ? data : (comments ?? []);
 
   useEffect(() => {
     const [, activityId = ''] = location.hash?.split('activity-') ?? [];
@@ -61,12 +51,9 @@ export function ActivityPanel() {
       <AddComment />
 
       <ActivityList
-        entries={entries}
+        showActivity={showActivity}
         selectedActivityId={selectedActivityId}
         onSelect={setSelectedActivityId}
-        hasNextPage={hasNextPage}
-        isFetchingNextPage={isFetchingNextPage}
-        fetchNextPage={fetchNextPage}
       />
     </ActivityPanelContainer>
   );
