@@ -1,7 +1,7 @@
 import type { APIRequestContext, Locator, Page } from '@playwright/test';
 import { expect, test } from '~test/fixtures';
 import { resetDb } from '~test/helpers/resetDb';
-import { seedBoard, seedCard } from '~test/helpers/seed';
+import { seedActivities, seedBoard, seedCard } from '~test/helpers/seed';
 import { waitForInteractiveTrigger } from '~test/helpers/waitForInteractiveTrigger';
 
 test.describe('Activity', () => {
@@ -132,6 +132,43 @@ test.describe('Activity copy link', () => {
     const linkedComment = page
       .getByTestId('ActivityContainer')
       .filter({ hasText: 'Looks good' });
+
+    await expect(async () => {
+      await expect(
+        linkedComment.getByTestId('ActivityCommentContent'),
+      ).toBeVisible();
+      await expect(linkedComment).toBeInViewport();
+    }).toPass();
+  });
+
+  test('deep links to an entry beyond the first page of activities', async ({
+    page,
+    request,
+  }) => {
+    await resetDb(request);
+    const board = await seedBoard(request, 'Sprint Board');
+    const { list, card } = await seedCard(request, {
+      boardId: board.id,
+      listTitle: 'To Do',
+      cardTitle: 'Ship feature',
+    });
+
+    const activities = await seedActivities(request, {
+      boardId: board.id,
+      listId: list.id,
+      cardId: card.id,
+      count: 35,
+    });
+
+    // The feed loads ten entries at a time, so the target sits on the third
+    // page — the list has to keep paging past the first fetch to reveal it.
+    const target = activities[29];
+
+    await page.goto(`/board/${board.id}/card/${card.id}#activity-${target.id}`);
+
+    const linkedComment = page
+      .getByTestId('ActivityContainer')
+      .filter({ hasText: target.content });
 
     await expect(async () => {
       await expect(
