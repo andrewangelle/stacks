@@ -22,13 +22,10 @@ export function useActivityList({ showActivity }: { showActivity: boolean }) {
   const location = useLocation();
   const entries = showActivity ? data : (comments ?? []);
 
-  // One trailing skeleton row stands in for the next page, so reaching it is
-  // both the fetch trigger and the pending indicator.
-  const rowCount = hasNextPage ? entries.length + 1 : entries.length;
-
   const { getVirtualItems, scrollToIndex, getTotalSize, measureElement } =
     useVirtualizer({
-      count: rowCount,
+      // One trailing skeleton row is the + 1
+      count: hasNextPage ? entries.length + 1 : entries.length,
       getScrollElement: () => scrollRef.current,
       estimateSize: () => ESTIMATED_ROW_HEIGHT,
       getItemKey: (index) => entries[index]?.id ?? LOADER_KEY,
@@ -36,29 +33,40 @@ export function useActivityList({ showActivity }: { showActivity: boolean }) {
     });
 
   const virtualRows = getVirtualItems();
-  const lastVirtualRow = virtualRows[virtualRows.length - 1];
+  const lastEntry = virtualRows[virtualRows.length - 1];
   const hasScrolledToLoader =
-    !!lastVirtualRow && lastVirtualRow.index >= entries.length - 1;
+    !!lastEntry && lastEntry.index >= entries.length - 1;
 
   // A deep link can point at an entry that is loaded but scrolled out of the
   // rendered window, where the per-entry `scrollIntoView` never runs because
   // the element was never mounted. Bring it into the window first.
-  const hashId = getHashId(location.hash);
-  const hashIndex = hashId
-    ? entries.findIndex((entry) => entry.id === hashId)
+  const deepLinkedId = getHashId(location.hash);
+  const deepLinkedIndex = deepLinkedId
+    ? entries.findIndex((entry) => entry.id === deepLinkedId)
     : -1;
 
-  useEffect(() => {
-    if (hasScrolledToLoader && hasNextPage && !isFetchingNextPage) {
-      fetchNextPage();
-    }
-  }, [hasScrolledToLoader, hasNextPage, isFetchingNextPage, fetchNextPage]);
+  // The link can also point past the loaded pages entirely,
+  const isDeepLinkedAndMissing = deepLinkedId !== '' && deepLinkedIndex === -1;
 
   useEffect(() => {
-    if (hashIndex >= 0) {
-      scrollToIndex(hashIndex, { align: 'center' });
+    const shouldFetch = hasScrolledToLoader || isDeepLinkedAndMissing;
+
+    if (shouldFetch && hasNextPage && !isFetchingNextPage) {
+      fetchNextPage();
     }
-  }, [hashIndex, scrollToIndex]);
+  }, [
+    hasScrolledToLoader,
+    isDeepLinkedAndMissing,
+    hasNextPage,
+    isFetchingNextPage,
+    fetchNextPage,
+  ]);
+
+  useEffect(() => {
+    if (deepLinkedIndex >= 0) {
+      scrollToIndex(deepLinkedIndex, { align: 'center' });
+    }
+  }, [deepLinkedIndex, scrollToIndex]);
 
   return {
     list: entries,

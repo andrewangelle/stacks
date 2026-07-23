@@ -100,6 +100,32 @@ export function resetDB(): Plugin {
           return;
         }
 
+        if (req.url === '/__test/seed-activities' && req.method === 'POST') {
+          try {
+            const { seedActivities } = await server.ssrLoadModule(
+              path.join(fixturesDir, 'seedActivities.ts'),
+            );
+
+            const body = await readJsonBody<{
+              boardId: string;
+              listId: string;
+              cardId: string;
+              count: number;
+              type?: string;
+            }>(req);
+
+            const seeded = await seedActivities(body);
+
+            res.setHeader('Content-Type', 'application/json');
+            res.statusCode = 200;
+            res.end(JSON.stringify(seeded));
+          } catch {
+            res.statusCode = 400;
+            res.end();
+          }
+          return;
+        }
+
         if (req.url === '/__test/seed-card' && req.method === 'POST') {
           try {
             const { seedCard } = await server.ssrLoadModule(
