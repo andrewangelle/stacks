@@ -6,4 +6,7 @@ pnpm add @tanstack/react-start@latest \
  @tanstack/react-router-ssr-query@latest \
  @tanstack/react-query@latest \
  @tanstack/react-query-devtools@latest \
- @tanstack/react-virtual@latest
+ @tanstack/react-virtual@latest \
+ @sentry/tanstackstart-react@latest \
+ @netlify/vite-plugin-tanstack-start@latest \
+ @clerk/tanstack-react-start@latest
