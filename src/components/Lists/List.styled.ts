@@ -41,7 +41,9 @@ export const ListContentContainer = styled.div`
 export const ListHeaderContainer = styled.div`
   position: sticky;
   top: 0;
-  z-index: 2;
+  /* Stays under NavBarContainer's z-index 2: nothing here creates a stacking
+     context, so these values compete with the fixed nav and its menus. */
+  z-index: 1;
   display: flex;
   justify-content: space-between;
   align-items: baseline;
@@ -53,8 +55,9 @@ export const AddCardFooter = styled.div`
   position: sticky;
   bottom: 0;
   /* Below the header: the list actions popover renders inside it, and an equal
-     z-index would let this footer paint over the popover's options. */
-  z-index: 1;
+     z-index would let this footer paint over the popover's options. Still above
+     the cards, which paint at this level earlier in tree order. */
+  z-index: 0;
   display: flex;
   flex-direction: column;
   background-color: ${listBackground};
