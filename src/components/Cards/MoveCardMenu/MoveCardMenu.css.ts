@@ -61,11 +61,15 @@ export const dropdownLabel = style({
 export const moveCardButton = style([
   button,
   {
-    padding: '10px 20px',
-    alignSelf: 'flex-start',
-    margin: '8px',
-    fontWeight: 500,
-    width: 'stretch',
+    selectors: {
+      [`&${button}`]: {
+        padding: '10px 20px',
+        alignSelf: 'flex-start',
+        margin: '8px',
+        fontWeight: 500,
+        width: 'stretch',
+      },
+    },
   },
 ]);
 

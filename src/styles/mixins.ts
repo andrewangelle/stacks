@@ -1,16 +1,21 @@
 import type { ComplexStyleRule } from '@vanilla-extract/css';
 
-export const secondaryButtonStyles = {
+export const secondaryButtonBase = {
   background: 'transparent',
   color: 'rgba(9, 30, 66, 0.9)',
   border: '1px solid rgba(9, 30, 66, 0.2)',
   cursor: 'pointer',
   fontWeight: 600,
+} satisfies ComplexStyleRule;
 
-  ':hover': {
-    background: 'rgba(9, 30, 66, 0.04)',
-    color: 'rgba(9, 30, 66, 0.9)',
-  },
+export const secondaryButtonHover = {
+  background: 'rgba(9, 30, 66, 0.04)',
+  color: 'rgba(9, 30, 66, 0.9)',
+} satisfies ComplexStyleRule;
+
+export const secondaryButtonStyles = {
+  ...secondaryButtonBase,
+  ':hover': secondaryButtonHover,
 } satisfies ComplexStyleRule;
 
 /**

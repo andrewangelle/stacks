@@ -110,8 +110,12 @@ export const addListButton = style({
 export const addCardButton = style([
   button,
   {
-    margin: 0,
-    padding: '8px',
+    selectors: {
+      [`&${button}`]: {
+        margin: 0,
+        padding: '8px',
+      },
+    },
   },
 ]);
 
@@ -144,16 +148,19 @@ export const addCardInput = style({
 export const closeAddCardButton = style([
   button,
   {
-    border: 'none',
-    color: 'black',
-    padding: '8px',
-    background: 'none',
-    cursor: 'pointer',
-    margin: '0 8px',
-    fontWeight: 600,
-
-    ':hover': {
-      backgroundColor: 'rgba(0, 0, 0, .3)',
+    selectors: {
+      [`&${button}`]: {
+        border: 'none',
+        color: 'black',
+        padding: '8px',
+        background: 'none',
+        cursor: 'pointer',
+        margin: '0 8px',
+        fontWeight: 600,
+      },
+      [`&${button}:hover`]: {
+        backgroundColor: 'rgba(0, 0, 0, .3)',
+      },
     },
   },
 ]);

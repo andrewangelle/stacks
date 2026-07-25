@@ -330,11 +330,19 @@ export const cardTitleDetailsSpinner = style({
   animation: `${cardTitleDetailsSpin} 0.6s linear infinite`,
 });
 
+// listCardSkeleton is itself a composition, so its value is a space-joined
+// class list; the specificity bump must target only its own (first) class.
+const listCardSkeletonOwnClass = listCardSkeleton.split(' ')[0];
+
 export const cardTitleDetailsContentSkeleton = style([
   listCardSkeleton,
   {
-    width: '50px',
-    marginTop: '4px',
+    selectors: {
+      [`&${listCardSkeletonOwnClass}`]: {
+        width: '50px',
+        marginTop: '4px',
+      },
+    },
   },
 ]);
 
