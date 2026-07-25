@@ -3,7 +3,8 @@ import { recipe } from '@vanilla-extract/recipes';
 import {
   disabledButtonStyles,
   hoverOverlay,
-  secondaryButtonStyles,
+  secondaryButtonBase,
+  secondaryButtonHover,
 } from '~/styles/mixins';
 import { button } from '~/styles/Page.css';
 import {
@@ -326,23 +327,29 @@ export const descriptionInput = style({
 export const saveDescriptionButton = style([
   button,
   {
-    padding: '8px 10px',
-    margin: `0 10px 0 ${cardModalContentIndent}`,
+    selectors: {
+      [`&${button}`]: {
+        padding: '8px 10px',
+        margin: `0 10px 0 ${cardModalContentIndent}`,
+      },
+    },
   },
 ]);
 
 export const closeDescriptionButton = style([
   button,
   {
-    ...secondaryButtonStyles,
-    padding: '8px 10px',
-    margin: 0,
-    color: 'black',
-    border: 'none',
-
     selectors: {
-      '&:hover:not(:disabled)': {
-        color: secondaryButtonStyles.color,
+      [`&${button}`]: {
+        ...secondaryButtonBase,
+        padding: '8px 10px',
+        margin: 0,
+        color: 'black',
+        border: 'none',
+      },
+      [`&${button}:hover`]: secondaryButtonHover,
+      [`&${button}:hover:not(:disabled)`]: {
+        color: secondaryButtonBase.color,
       },
     },
   },
@@ -358,17 +365,19 @@ export const cardDescriptionText = style({
 export const editDescriptionButton = style([
   button,
   {
-    ...secondaryButtonStyles,
-    color: 'rgba(9, 30, 66, 0.725)',
-    border: '1px solid rgba(9, 30, 66, 0.2)',
-    padding: '8px 10px',
-    margin: 0,
-    fontSize: '14px',
-    flexShrink: 0,
-
     selectors: {
-      '&:hover:not(:disabled)': {
-        color: secondaryButtonStyles.color,
+      [`&${button}`]: {
+        ...secondaryButtonBase,
+        color: 'rgba(9, 30, 66, 0.725)',
+        border: '1px solid rgba(9, 30, 66, 0.2)',
+        padding: '8px 10px',
+        margin: 0,
+        fontSize: '14px',
+        flexShrink: 0,
+      },
+      [`&${button}:hover`]: secondaryButtonHover,
+      [`&${button}:hover:not(:disabled)`]: {
+        color: secondaryButtonBase.color,
       },
     },
   },

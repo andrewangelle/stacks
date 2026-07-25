@@ -4,7 +4,7 @@ import {
   editCardTitleInput,
 } from '~/components/Cards/Card.css';
 import { animationStyles } from '~/styles/animations';
-import { secondaryButtonStyles } from '~/styles/mixins';
+import { secondaryButtonBase, secondaryButtonHover } from '~/styles/mixins';
 import { button } from '~/styles/Page.css';
 import { cardModalContentIndent, fontFamily } from '~/styles/tokens';
 
@@ -66,9 +66,13 @@ export const createChecklistInput = style({
 export const createChecklistAddButton = style([
   button,
   {
-    padding: '10px 20px',
-    alignSelf: 'flex-start',
-    margin: '8px',
+    selectors: {
+      [`&${button}`]: {
+        padding: '10px 20px',
+        alignSelf: 'flex-start',
+        margin: '8px',
+      },
+    },
   },
 ]);
 
@@ -85,17 +89,19 @@ export const checklistHeaderActions = style({
 export const toggleCheckedItemsButton = style([
   button,
   {
-    ...secondaryButtonStyles,
-    color: 'rgba(9, 30, 66, 0.725)',
-    border: '1px solid rgba(9, 30, 66, 0.2)',
-    padding: '8px 10px',
-    margin: 0,
-    fontSize: '14px',
-    flexShrink: 0,
-
     selectors: {
-      '&:hover:not(:disabled)': {
-        color: secondaryButtonStyles.color,
+      [`&${button}`]: {
+        ...secondaryButtonBase,
+        color: 'rgba(9, 30, 66, 0.725)',
+        border: '1px solid rgba(9, 30, 66, 0.2)',
+        padding: '8px 10px',
+        margin: 0,
+        fontSize: '14px',
+        flexShrink: 0,
+      },
+      [`&${button}:hover`]: secondaryButtonHover,
+      [`&${button}:hover:not(:disabled)`]: {
+        color: secondaryButtonBase.color,
       },
     },
   },
@@ -147,16 +153,24 @@ export const checklistProgressPercentage = style({
 export const checklistTitle = style([
   cardModalTitle,
   {
-    fontSize: '14px',
-    minWidth: 0,
-    overflowWrap: 'anywhere',
+    selectors: {
+      [`&${cardModalTitle}`]: {
+        fontSize: '14px',
+        minWidth: 0,
+        overflowWrap: 'anywhere',
+      },
+    },
   },
 ]);
 
 export const editChecklistTitleInput = style([
   editCardTitleInput,
   {
-    fontSize: '14px',
+    selectors: {
+      [`&${editCardTitleInput}`]: {
+        fontSize: '14px',
+      },
+    },
   },
 ]);
 

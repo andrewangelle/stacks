@@ -2,7 +2,11 @@ import { style } from '@vanilla-extract/css';
 import { recipe } from '@vanilla-extract/recipes';
 import { cardModalTitle } from '~/components/Cards/Card.css';
 import { animationStyles } from '~/styles/animations';
-import { activityFieldStyles, secondaryButtonStyles } from '~/styles/mixins';
+import {
+  activityFieldStyles,
+  secondaryButtonBase,
+  secondaryButtonHover,
+} from '~/styles/mixins';
 import { button } from '~/styles/Page.css';
 import {
   activitySidebarQuery,
@@ -78,17 +82,19 @@ export const activityHeader = style({
 export const hideActivityButton = style([
   button,
   {
-    ...secondaryButtonStyles,
-    padding: '8px 10px',
-    margin: 0,
-    fontSize: '14px',
-    flexShrink: 0,
-    color: 'rgba(9, 30, 66, 0.725)',
-    border: '1px solid rgba(9, 30, 66, 0.2)',
-
     selectors: {
-      '&:hover:not(:disabled)': {
-        color: secondaryButtonStyles.color,
+      [`&${button}`]: {
+        ...secondaryButtonBase,
+        padding: '8px 10px',
+        margin: 0,
+        fontSize: '14px',
+        flexShrink: 0,
+        color: 'rgba(9, 30, 66, 0.725)',
+        border: '1px solid rgba(9, 30, 66, 0.2)',
+      },
+      [`&${button}:hover`]: secondaryButtonHover,
+      [`&${button}:hover:not(:disabled)`]: {
+        color: secondaryButtonBase.color,
       },
     },
   },
@@ -151,10 +157,14 @@ export const activityRow = style({
 export const activityTitle = style([
   cardModalTitle,
   {
-    fontSize: '14px',
-    fontWeight: 600,
-    margin: 0,
-    minWidth: 0,
+    selectors: {
+      [`&${cardModalTitle}`]: {
+        fontSize: '14px',
+        fontWeight: 600,
+        margin: 0,
+        minWidth: 0,
+      },
+    },
   },
 ]);
 
@@ -245,9 +255,13 @@ export const editCommentActionsRow = style({
 export const saveCommentButton = style([
   button,
   {
-    padding: '8px 10px',
-    margin: 0,
-    fontWeight: 600,
+    selectors: {
+      [`&${button}`]: {
+        padding: '8px 10px',
+        margin: 0,
+        fontWeight: 600,
+      },
+    },
   },
 ]);
 

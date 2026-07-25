@@ -1,7 +1,7 @@
 import { style } from '@vanilla-extract/css';
 import { recipe } from '@vanilla-extract/recipes';
 import { animationStyles } from '~/styles/animations';
-import { secondaryButtonStyles } from '~/styles/mixins';
+import { secondaryButtonBase, secondaryButtonHover } from '~/styles/mixins';
 import { button } from '~/styles/Page.css';
 import { blue, cardModalContentIndent, fontFamily, red } from '~/styles/tokens';
 
@@ -10,16 +10,18 @@ const checklistRowColumns = `${cardModalContentIndent} minmax(0, 1fr)`;
 export const addChecklistItemButton = style([
   button,
   {
-    ...secondaryButtonStyles,
-    padding: '8px 10px',
-    margin: `12px 0px 0px ${cardModalContentIndent}`,
-    fontSize: '14px',
-    color: 'rgba(9, 30, 66, 0.725)',
-    border: '1px solid rgba(9, 30, 66, 0.2)',
-
     selectors: {
-      '&:hover:not(:disabled)': {
-        color: secondaryButtonStyles.color,
+      [`&${button}`]: {
+        ...secondaryButtonBase,
+        padding: '8px 10px',
+        margin: `12px 0px 0px ${cardModalContentIndent}`,
+        fontSize: '14px',
+        color: 'rgba(9, 30, 66, 0.725)',
+        border: '1px solid rgba(9, 30, 66, 0.2)',
+      },
+      [`&${button}:hover`]: secondaryButtonHover,
+      [`&${button}:hover:not(:disabled)`]: {
+        color: secondaryButtonBase.color,
       },
     },
   },
@@ -89,18 +91,26 @@ export const editChecklistItemContainer = style({
 export const addChecklistButton = style([
   button,
   {
-    padding: '8px 10px',
-    margin: '0 10px 0 0px',
+    selectors: {
+      [`&${button}`]: {
+        padding: '8px 10px',
+        margin: '0 10px 0 0px',
+      },
+    },
   },
 ]);
 
 export const deleteChecklistPopoverButton = style([
   button,
   {
-    background: red,
-    width: '100%',
-    margin: '15px 0px 0px',
-    padding: '8px 10px',
+    selectors: {
+      [`&${button}`]: {
+        background: red,
+        width: '100%',
+        margin: '15px 0px 0px',
+        padding: '8px 10px',
+      },
+    },
   },
 ]);
 

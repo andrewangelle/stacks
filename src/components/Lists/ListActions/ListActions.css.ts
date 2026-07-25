@@ -114,13 +114,16 @@ export const listActionsPopoverHeader = style({
 export const listActionsPopoverClose = style([
   popoverClose,
   {
-    fontWeight: 600,
-    margin: '4px',
-    position: 'relative',
-
-    ':hover': {
-      background: 'rgba(9, 30, 66, 0.2)',
-      borderRadius: '4px',
+    selectors: {
+      [`&${popoverClose}`]: {
+        fontWeight: 600,
+        margin: '4px',
+        position: 'relative',
+      },
+      [`&${popoverClose}:hover`]: {
+        background: 'rgba(9, 30, 66, 0.2)',
+        borderRadius: '4px',
+      },
     },
   },
 ]);
@@ -151,10 +154,14 @@ export const listActionsOption = style({
 export const deleteListButton = style([
   button,
   {
-    background: red,
-    width: '100%',
-    margin: '15px 0px 0px',
-    padding: '8px 10px',
+    selectors: {
+      [`&${button}`]: {
+        background: red,
+        width: '100%',
+        margin: '15px 0px 0px',
+        padding: '8px 10px',
+      },
+    },
   },
 ]);
 
@@ -167,9 +174,13 @@ export const moveListFieldsContainer = style({
 export const moveListButton = style([
   button,
   {
-    width: 'calc(100% - 20px)',
-    margin: '8px 10px 0px',
-    padding: '10px 20px',
-    fontWeight: 500,
+    selectors: {
+      [`&${button}`]: {
+        width: 'calc(100% - 20px)',
+        margin: '8px 10px 0px',
+        padding: '10px 20px',
+        fontWeight: 500,
+      },
+    },
   },
 ]);

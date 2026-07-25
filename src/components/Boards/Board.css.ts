@@ -1,25 +1,36 @@
 import { style } from '@vanilla-extract/css';
 import { recipe } from '@vanilla-extract/recipes';
-import {
-  boardPageBackgroundBase,
-  boardPageGradientVariants,
-} from '~/components/Nav/Nav.css';
+import { boardPageBackgroundBase } from '~/components/Nav/Nav.css';
 import { button } from '~/styles/Page.css';
-import { fontFamily } from '~/styles/tokens';
+import {
+  boardGradientVars,
+  fontFamily,
+  mapBoardBackgrounds,
+} from '~/styles/tokens';
 
 export const boardListsFallback = recipe({
   base: [
     boardPageBackgroundBase,
     {
-      position: 'absolute',
-      inset: 0,
-      height: 'auto',
-      width: 'auto',
-      padding: 0,
+      selectors: {
+        [`&${boardPageBackgroundBase}`]: {
+          position: 'absolute',
+          inset: 0,
+          height: 'auto',
+          width: 'auto',
+          padding: 0,
+        },
+      },
     },
   ],
   variants: {
-    background: boardPageGradientVariants,
+    background: mapBoardBackgrounds((name) => ({
+      selectors: {
+        [`&${boardPageBackgroundBase}`]: {
+          background: boardGradientVars[name],
+        },
+      },
+    })),
   },
 });
 
@@ -61,24 +72,31 @@ export const addListInput = style({
 export const createListButton = style([
   button,
   {
-    margin: 0,
-    padding: '8px',
+    selectors: {
+      [`&${button}`]: {
+        margin: 0,
+        padding: '8px',
+      },
+    },
   },
 ]);
 
 export const closeAddListButton = style([
   button,
   {
-    border: 'none',
-    color: 'black',
-    padding: '8px',
-    background: 'none',
-    cursor: 'pointer',
-    margin: '0 8px',
-    fontWeight: 600,
-
-    ':hover': {
-      backgroundColor: 'rgba(0, 0, 0, .3)',
+    selectors: {
+      [`&${button}`]: {
+        border: 'none',
+        color: 'black',
+        padding: '8px',
+        background: 'none',
+        cursor: 'pointer',
+        margin: '0 8px',
+        fontWeight: 600,
+      },
+      [`&${button}:hover`]: {
+        backgroundColor: 'rgba(0, 0, 0, .3)',
+      },
     },
   },
 ]);

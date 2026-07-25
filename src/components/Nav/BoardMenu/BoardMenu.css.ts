@@ -119,13 +119,16 @@ export const boardMenuPopoverHeader = style({
 export const boardMenuPopoverClose = style([
   popoverClose,
   {
-    fontWeight: 600,
-    margin: '4px',
-    position: 'relative',
-
-    ':hover': {
-      background: 'rgba(9, 30, 66, 0.2)',
-      borderRadius: '4px',
+    selectors: {
+      [`&${popoverClose}`]: {
+        fontWeight: 600,
+        margin: '4px',
+        position: 'relative',
+      },
+      [`&${popoverClose}:hover`]: {
+        background: 'rgba(9, 30, 66, 0.2)',
+        borderRadius: '4px',
+      },
     },
   },
 ]);
@@ -157,9 +160,13 @@ export const changeBoardBackgroundChoice = recipe({
   base: [
     backgroundChoiceBase,
     {
-      height: '86px',
-      width: '91px',
-      cursor: 'pointer',
+      selectors: {
+        [`&${backgroundChoiceBase}`]: {
+          height: '86px',
+          width: '91px',
+          cursor: 'pointer',
+        },
+      },
     },
   ],
   variants: {
