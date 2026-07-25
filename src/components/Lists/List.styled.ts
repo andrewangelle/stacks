@@ -21,7 +21,7 @@ export const ListContainer = styled.div<ListContainerProps>({
   boxSizing: 'border-box',
   display: 'flex',
   flexDirection: 'column',
-  maxHeight: (props) => (props.isMobile ? '90%%' : '100%'),
+  maxHeight: (props) => (props.isMobile ? '80%' : '100%'),
   height: 'max-content',
   position: 'relative',
   whiteSpace: 'normal',
