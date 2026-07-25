@@ -4,6 +4,7 @@ import {
   boardBarVars,
   boardGradientVars,
   boardNavVars,
+  fixedChromeOffset,
   fontFamily,
 } from '~/styles/tokens';
 
@@ -17,6 +18,7 @@ const navSolidBackgroundTransition = {
 };
 
 export const NavBarContainer = styled('div')({
+  boxSizing: 'border-box',
   width: '100%',
   zIndex: 2,
   color: 'white',
@@ -119,14 +121,20 @@ type BoardPageBackgroundProps = {
 };
 
 export const BoardPageBackground = styled('div')<BoardPageBackgroundProps>({
+  boxSizing: 'border-box',
   height: '100vh',
-  width: 'max-content',
-  minWidth: '100vw',
+  width: '100%',
   background: 'transparent',
   position: 'relative',
-  top: 66,
   display: 'flex',
-  padding: '50px 30px 30px',
+  overflowX: 'auto',
+  overflowY: 'hidden',
+  padding: `${fixedChromeOffset} 30px 30px`,
+  // Lists keep their own width and scroll sideways instead of being squeezed
+  // into the viewport.
+  '& > *': {
+    flexShrink: 0,
+  },
   ...navBackgroundFlashAnimation,
   variants: [
     {
