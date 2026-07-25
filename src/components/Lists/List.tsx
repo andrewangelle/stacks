@@ -1,7 +1,10 @@
 import { AddNewCard } from '~/components/Lists/AddNewCard';
 import { AddNewCardAtPosition } from '~/components/Lists/AddNewCardAtPosition';
 import { CardTitleDetails } from '~/components/Lists/CardTitleDetails/CardTitleDetails';
-import { ListContainer } from '~/components/Lists/List.styled';
+import {
+  ListContainer,
+  ListContentContainer,
+} from '~/components/Lists/List.styled';
 import { ListHeader } from '~/components/Lists/ListHeader';
 import { Draggable } from '~/components/shared/dnd/Draggable';
 import { DropTargetFallback } from '~/components/shared/dnd/DropTargetFallback';
@@ -24,7 +27,7 @@ export function List({ id: listId }: { id: string }) {
     <ListContainer data-testid="ListContainer" key={listId}>
       <ListHeader id={listId} />
 
-      <div ref={ref} style={{ width: '100%', minWidth: 0 }}>
+      <ListContentContainer ref={ref} data-testid="ListContentContainer">
         {list?.cards?.map((card, index) => {
           return (
             <Draggable
@@ -57,7 +60,7 @@ export function List({ id: listId }: { id: string }) {
             </Draggable>
           );
         })}
-      </div>
+      </ListContentContainer>
 
       <DropTargetFallback id={`list-drop:${listId}`} type="card" />
 

@@ -3,16 +3,16 @@ import { activityFieldStyles } from '~/components/Activity/Activity.styled';
 import { fontFamily } from '~/components/Boards/Boards.styled';
 import { animationStyles } from '~/styles/animations';
 import { Button } from '~/styles/Page.styled';
-import { focusRingBlue } from '~/styles/tokens';
+import { focusRingBlue, listBackground } from '~/styles/tokens';
 
-export const ListGridContainer = styled.div` 
+export const ListGridContainer = styled.div`
   display: grid;
   grid-template-rows: 100% 1fr max-content;
   grid-template-columns: 100px 1fr max-content;
 `;
 
-export const ListContainer = styled.div` 
-  background-color: #ebecf0;
+export const ListContainer = styled.div`
+  background-color: ${listBackground};
   border-radius: 8px;
   box-sizing: border-box;
   display: flex;
@@ -22,9 +22,49 @@ export const ListContainer = styled.div`
   position: relative;
   white-space: normal;
   width: 275px;
-  padding: 8px;
+  padding: 0px 8px;
   margin: 0 15px;
-  overflow: scroll;
+  overflow: auto;
+`;
+
+export const ListContentContainer = styled.div`
+  overscroll-behavior: contain;
+  width: 100%;
+  min-width: 0;
+`;
+
+/**
+ * Cards scroll underneath the header and the add-card footer, so those two
+ * carry the list's vertical padding themselves — ListContainer only pads the
+ * sides, or the gap would show cards passing through it.
+ */
+export const ListHeaderContainer = styled.div`
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  background-color: ${listBackground};
+  padding-top: 8px;
+`;
+
+export const AddCardFooter = styled.div`
+  position: sticky;
+  bottom: 0;
+  /* Below the header: the list actions popover renders inside it, and an equal
+     z-index would let this footer paint over the popover's options. */
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  background-color: ${listBackground};
+  padding-bottom: 8px;
+
+  /* While adding a card the footer rejoins the flow, so the input and its
+     buttons scroll with the cards. */
+  &[data-editing] {
+    position: static;
+  }
 `;
 
 export const ListName = styled.div` 

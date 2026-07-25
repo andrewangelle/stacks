@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import {
   AddCardButton,
+  AddCardFooter,
   AddCardInput,
   AddCardText,
   CloseAddCardButton,
@@ -50,7 +51,10 @@ export function AddNewCard({ listId }: AddNewCardProps) {
   }, [isSuccess, response, boardId, createActivity, reset]);
 
   return (
-    <>
+    <AddCardFooter
+      data-testid="AddCardFooter"
+      data-editing={isAddingCard ? '' : undefined}
+    >
       {isAddingCard && (
         <AddCardInput
           data-testid="AddCardInput"
@@ -89,6 +93,6 @@ export function AddNewCard({ listId }: AddNewCardProps) {
           </CloseAddCardButton>
         )}
       </Flex>
-    </>
+    </AddCardFooter>
   );
 }
