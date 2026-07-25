@@ -11,21 +11,25 @@ export const ListGridContainer = styled.div`
   grid-template-columns: 100px 1fr max-content;
 `;
 
-export const ListContainer = styled.div`
-  background-color: ${listBackground};
-  border-radius: 8px;
-  box-sizing: border-box;
-  display: flex;
-  flex-direction: column;
-  max-height: 100%;
-  height: max-content;
-  position: relative;
-  white-space: normal;
-  width: 275px;
-  padding: 0px 8px;
-  margin: 0 15px;
-  overflow: auto;
-`;
+type ListContainerProps = {
+  isMobile: boolean;
+};
+
+export const ListContainer = styled.div<ListContainerProps>({
+  backgroundColor: listBackground,
+  borderRadius: '8px',
+  boxSizing: 'border-box',
+  display: 'flex',
+  flexDirection: 'column',
+  maxHeight: (props) => (props.isMobile ? '90%%' : '100%'),
+  height: 'max-content',
+  position: 'relative',
+  whiteSpace: 'normal',
+  width: '275px',
+  padding: '0px 8px',
+  margin: '0 15px',
+  overflow: 'auto',
+});
 
 export const ListContentContainer = styled.div`
   overscroll-behavior: contain;
