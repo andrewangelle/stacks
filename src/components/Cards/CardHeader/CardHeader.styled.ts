@@ -1,36 +1,14 @@
-import { styled } from '@pigment-css/react';
 import { Dialog } from 'radix-ui';
+import * as styles from '~/components/Cards/CardHeader/CardHeader.css';
+import { styledEl } from '~/styles/styledEl';
 
-export const CardHeaderContainer = styled.div` 
-  display: flex;
-  flex-shrink: 0;
-  justify-content: space-between;
-  align-items: center;
-  padding: 12px 16px;
-  border-bottom: 1px solid rgba(0,0,0, 0.2);
-`;
+export const CardHeaderContainer = styledEl('div', styles.cardHeaderContainer);
 
-export const CardModalClose = styled(Dialog.Close)` 
-  border: none;
-  right: 0;
-  padding: 8px 12px;
-  cursor: pointer;
-  background: white;
-  border-radius: 100%;
+export const CardModalClose = styledEl(Dialog.Close, styles.cardModalClose);
 
-  &:hover {
-    background: rgba(0,0,0, 0.1);
-  }
-`;
+export const CardPageClose = styledEl(Dialog.Close, styles.cardPageClose);
 
-export const CardPageClose = styled(CardModalClose)`
-  background: transparent;
-`;
-
-export const CardModalCloseSpinnerSlot = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 2px 4px;
-  margin: 4px;
-`;
+export const CardModalCloseSpinnerSlot = styledEl(
+  'div',
+  styles.cardModalCloseSpinnerSlot,
+);

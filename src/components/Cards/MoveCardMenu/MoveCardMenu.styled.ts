@@ -1,176 +1,48 @@
-import { styled } from '@pigment-css/react';
 import { Popover, Select } from 'radix-ui';
-import { fontFamily } from '~/components/Boards/Boards.styled';
-import { animationStyles } from '~/styles/animations';
-import { Button } from '~/styles/Page.styled';
-import { blue, focusRingBlue } from '~/styles/tokens';
+import * as styles from '~/components/Cards/MoveCardMenu/MoveCardMenu.css';
+import { buttonEl } from '~/styles/Page.styled';
+import { styledEl } from '~/styles/styledEl';
 
-export const SelectSkeleton = styled.div({
-  background: 'rgba(9, 30, 66, 0.25)',
-  cursor: 'default',
-  pointerEvents: 'none',
-  minHeight: '40px',
-  borderRadius: '8px',
-  margin: '0px 8px 8px',
-  ...animationStyles.pulse,
-});
+export const SelectSkeleton = styledEl('div', styles.selectSkeleton);
 
-export const MoveCardMenuTrigger = styled(Popover.Trigger)` 
-  display: flex;
-  align-items: center;
-  gap: 4px;
-  border: none;
-  background: rgb(221, 222, 225);
-  border-radius: 4px;
-  padding: 4px;
-  font-weight: 600;
-  cursor: pointer;
+export const MoveCardMenuTrigger = styledEl(
+  Popover.Trigger,
+  styles.moveCardMenuTrigger,
+);
 
-  &:hover {
-    background: rgb(183, 185, 190)
-  }
-`;
+export const MoveCardMenuContent = styledEl(
+  Popover.Content,
+  styles.moveCardMenuContent,
+);
 
-export const MoveCardMenuContent = styled(Popover.Content)` 
-  width: 350px;
-  border-radius: 8px; 
-  font-family: ${fontFamily};
-  font-size: 14px;
-  background: #fff;
-  display: flex;
-  flex-direction: column;
-  z-index: 1;
-  box-shadow: 0px 8px 12px #1E1F2126, 0px 0px 1px #1E1F214F;
-`;
+export const MoveCardMenuHeader = styledEl('div', styles.moveCardMenuHeader);
 
-export const MoveCardMenuHeader = styled.div`
-  display: flex;
-  justify-content: center;
-  padding: 10px;
-  font-size: 14px;
-  font-weight: 600;
-  color: rgba(9, 30, 66, .75);
-`;
+export const DropdownLabel = styledEl('div', styles.dropdownLabel);
 
-export const DropdownLabel = styled.div` 
-  font-family: ${fontFamily};
-  font-size: 12px;
-  font-weight: 700;
-  color: rgba(9, 30, 66, .75);
-  padding: 10px;
-`;
+export const MoveCardButton = buttonEl(styles.moveCardButton);
 
-export const MoveCardButton = styled(Button)` 
-  padding: 10px 20px;
-  align-self: flex-start;
-  margin: 8px;
-  font-weight: 500;
-  width: stretch;
-`;
+export const SelectTrigger = styledEl(Select.Trigger, styles.selectTrigger);
 
-export const SelectTrigger = styled(Select.Trigger)`
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 8px;
-  box-sizing: border-box;
-  width: calc(100% - 20px);
-  margin: 0 10px 10px;
-  padding: 8px;
-  border: 2px solid rgba(9, 30, 66, .2);
-  border-radius: 8px;
-  background: #fff;
-  font-family: ${fontFamily};
-  font-size: 14px;
-  color: rgba(9, 30, 66, .95);
-  cursor: pointer;
-  outline: none;
+export const SelectContent = styledEl(Select.Content, styles.selectContent);
 
-  &:hover {
-    border-color: rgba(9, 30, 66, .35);
-  }
+export const SelectViewport = styledEl(Select.Viewport, styles.selectViewport);
 
-  &:focus,
-  &[data-state='open'] {
-    border-color: ${focusRingBlue};
-  }
-`;
+export const SelectLabel = styledEl(Select.Label, styles.selectLabel);
 
-export const SelectContent = styled(Select.Content)`
-  z-index: 1001;
-  box-sizing: border-box;
-  width: var(--radix-select-trigger-width);
-  max-height: var(--radix-select-content-available-height);
-  border-radius: 8px;
-  background: #fff;
-  font-family: ${fontFamily};
-  box-shadow: 0px 8px 12px #1E1F2126, 0px 0px 1px #1E1F214F;
-  overflow: hidden;
-`;
+export const SelectItem = styledEl(Select.Item, styles.selectItem);
 
-export const SelectViewport = styled(Select.Viewport)`
-  padding: 4px 0;
-`;
+export const SelectItemCurrent = styledEl('span', styles.selectItemCurrent);
 
-export const SelectLabel = styled(Select.Label)`
-  padding: 12px 14px 6px;
-  font-family: ${fontFamily};
-  font-size: 14px;
-  font-weight: 700;
-  color: rgba(9, 30, 66, .9);
-`;
+export const MoveCardSelectRow = styledEl('div', styles.moveCardSelectRow);
 
-export const SelectItem = styled(Select.Item)`
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-  padding: 10px 14px;
-  font-size: 14px;
-  color: rgba(9, 30, 66, .9);
-  cursor: pointer;
-  outline: none;
-  user-select: none;
+export const MoveCardListColumn = styledEl('div', styles.moveCardListColumn);
 
-  &[data-highlighted] {
-    background: rgb(244, 245, 247);
-  }
+export const MoveCardPositionColumn = styledEl(
+  'div',
+  styles.moveCardPositionColumn,
+);
 
-  &[data-state='checked'],
-  &[data-state='checked'][data-highlighted] {
-    background: #E9F2FF;
-    color: ${blue};
-    box-shadow: inset 3px 0 0 ${blue};
-  }
-
-  &:hover {
-    background: rgb(221, 222, 225);
-    box-shadow: inset 3px 0 0 ${blue};
-  }
-`;
-
-export const SelectItemCurrent = styled.span`
-  font-size: 13px;
-  color: ${blue};
-`;
-
-export const MoveCardSelectRow = styled.div`
-  display: flex;
-  align-items: flex-start;
-`;
-
-export const MoveCardListColumn = styled.div`
-  width: 70%;
-`;
-
-export const MoveCardPositionColumn = styled.div`
-  width: 30%;
-
-`;
-
-export const MoveCardFieldsContainer = styled.div`
-  padding-top: 24px;
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-`;
+export const MoveCardFieldsContainer = styledEl(
+  'div',
+  styles.moveCardFieldsContainer,
+);

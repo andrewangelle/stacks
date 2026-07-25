@@ -1,196 +1,29 @@
-import { styled } from '@pigment-css/react';
-import type { BackgroundProps } from '~/components/Boards/Boards.styled';
-import {
-  boardBarVars,
-  boardGradientVars,
-  boardNavVars,
-  fixedChromeOffset,
-  fontFamily,
-} from '~/styles/tokens';
+import * as styles from '~/components/Nav/Nav.css';
+import { styledEl } from '~/styles/styledEl';
 
-const navBackgroundFlashAnimation = {
-  animation: 'nav-background-flash 0.45s ease-out',
-};
+export const NavBarContainer = styledEl('div', styles.navBarContainer);
 
-const navSolidBackgroundTransition = {
-  transition: 'background-color 0.35s ease-out',
-  ...navBackgroundFlashAnimation,
-};
+export const NavBarContent = styledEl('div', styles.navBarContent, [
+  'background',
+]);
 
-export const NavBarContainer = styled('div')({
-  boxSizing: 'border-box',
-  width: '100%',
-  zIndex: 2,
-  color: 'white',
-  display: 'flex',
-  flexDirection: 'column',
-  position: 'fixed',
-});
+export const NavColumn = styledEl('div', styles.navColumn);
 
-export const NavBarContent = styled.div<BackgroundProps>({
-  display: 'flex',
-  justifyContent: 'space-between',
-  minHeight: '46px',
-  ...navSolidBackgroundTransition,
-  variants: [
-    {
-      props: { background: 'blue' },
-      style: {
-        background: boardNavVars.blue,
-      },
-    },
-    {
-      props: { background: 'green' },
-      style: {
-        background: boardNavVars.green,
-      },
-    },
-    {
-      props: { background: 'lightGreen' },
-      style: {
-        background: boardNavVars.lightGreen,
-      },
-    },
-    {
-      props: { background: 'orange' },
-      style: {
-        background: boardNavVars.orange,
-      },
-    },
-    {
-      props: { background: 'red' },
-      style: {
-        background: boardNavVars.red,
-      },
-    },
-  ],
-});
+export const BoardHeaderContainer = styledEl(
+  'div',
+  styles.boardHeaderContainer,
+  ['background'],
+);
 
-export const NavColumn = styled('div')({
-  flex: '1 1 0',
-  display: 'flex',
-  justifyContent: 'flex-end',
-});
+export const BoardPageBackground = styledEl('div', styles.boardPageBackground, [
+  'background',
+]);
 
-export const BoardHeaderContainer = styled(NavBarContainer)<BackgroundProps>({
-  padding: '10px',
-  zIndex: 1,
-  position: 'relative',
-  ...navSolidBackgroundTransition,
-  variants: [
-    {
-      props: { background: 'blue' },
-      style: {
-        background: boardBarVars.blue,
-        borderBottom: '1px solid white',
-      },
-    },
-    {
-      props: { background: 'green' },
-      style: {
-        background: boardBarVars.green,
-        borderBottom: '1px solid white',
-      },
-    },
-    {
-      props: { background: 'lightGreen' },
-      style: {
-        background: boardBarVars.lightGreen,
-        borderBottom: '1px solid white',
-      },
-    },
-    {
-      props: { background: 'orange' },
-      style: {
-        background: boardBarVars.orange,
-        borderBottom: '1px solid white',
-      },
-    },
-    {
-      props: { background: 'red' },
-      style: {
-        background: boardBarVars.red,
-        borderBottom: '1px solid white',
-      },
-    },
-  ],
-});
+export const BoardTitle = styledEl('button', styles.boardTitle);
 
-type BoardPageBackgroundProps = {
-  background?: string;
-};
+export const EditBoardTitleForm = styledEl('form', styles.editBoardTitleForm);
 
-export const BoardPageBackground = styled('div')<BoardPageBackgroundProps>({
-  boxSizing: 'border-box',
-  height: '100vh',
-  width: '100%',
-  background: 'transparent',
-  position: 'relative',
-  display: 'flex',
-  overflowX: 'auto',
-  overflowY: 'hidden',
-  padding: `${fixedChromeOffset} 30px 30px`,
-  // Lists keep their own width and scroll sideways instead of being squeezed
-  // into the viewport.
-  '& > *': {
-    flexShrink: 0,
-  },
-  ...navBackgroundFlashAnimation,
-  variants: [
-    {
-      props: { background: 'blue' },
-      style: { background: boardGradientVars.blue },
-    },
-    {
-      props: { background: 'green' },
-      style: { background: boardGradientVars.green },
-    },
-    {
-      props: { background: 'lightGreen' },
-      style: { background: boardGradientVars.lightGreen },
-    },
-    {
-      props: { background: 'orange' },
-      style: { background: boardGradientVars.orange },
-    },
-    {
-      props: { background: 'red' },
-      style: { background: boardGradientVars.red },
-    },
-  ],
-});
-
-export const BoardTitle = styled.button`
-  color: inherit;
-  background: none;
-  border: none;
-  padding: 10px;
-  cursor: pointer;
-  display: inline-block;
-  width: max-content;
-  border-radius: 8px;
-  font-size: 16px;
-  font-weight: 500;
-  font-family: ${fontFamily};
-
-  &:hover {
-    background-color: rgba(255, 255, 255, 0.1);
-  }
-`;
-
-export const EditBoardTitleForm = styled.form`
-  width: max-content;
-  height: 40px;
-  position: relative;
-  top: -5px;
-`;
-
-export const EditBoardTitleInput = styled.input` 
-  font-family: ${fontFamily};
-  font-weight: 500;
-  font-size: 16px;
-  border-radius: 0px;
-  border: none;
-  margin: 8px 0px 12px;
-  padding: 10px;
-`;
+export const EditBoardTitleInput = styledEl(
+  'input',
+  styles.editBoardTitleInput,
+);

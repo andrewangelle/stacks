@@ -1,337 +1,120 @@
-import { styled } from '@pigment-css/react';
+import { Dialog } from 'radix-ui';
+import * as styles from '~/components/Activity/Activity.css';
 import { ActivityTimestamp } from '~/components/Activity/ActivityTimestamp';
-import { fontFamily } from '~/components/Boards/Boards.styled';
-import { CardModalTitle } from '~/components/Cards/Card.styled';
-import { animationStyles } from '~/styles/animations';
-import { Button, secondaryButtonStyles } from '~/styles/Page.styled';
-import { completedGreen, userNameIconBlue } from '~/styles/tokens';
+import { activityFieldStyles } from '~/styles/mixins';
+import { buttonEl } from '~/styles/Page.styled';
+import { styledEl } from '~/styles/styledEl';
 
-const activitySidebarLayout = '@media (min-width: 851px)';
+export { activityFieldStyles };
 
-export const ActivityPanelContainer = styled.div`
-  box-sizing: border-box;
-  display: flex;
-  flex-direction: column;
-  height: 100%;
-  min-height: 0;
-  min-width: 0;
-  width: 100%;
-`;
+export const ActivityPanelContainer = styledEl(
+  'div',
+  styles.activityPanelContainer,
+);
 
-/**
- * The virtualizer's scroll element. It has to own its scrolling in both
- * layouts: in the sidebar it fills whatever height the activity column was
- * given, and on narrow screens — where the column itself stops scrolling and
- * the modal body takes over — it falls back to a viewport-relative height so
- * the list still has a measurable box to virtualize against.
- */
-export const ActivityListViewport = styled.div`
-  position: relative;
-  box-sizing: border-box;
-  flex: 1 1 auto;
-  min-height: 0;
-  min-width: 0;
-  width: 100%;
-  overflow-y: auto;
-  overscroll-behavior: contain;
-  max-height: 60vh;
+export const ActivityListViewport = styledEl(
+  'div',
+  styles.activityListViewport,
+);
 
-  ${activitySidebarLayout} {
-    max-height: none;
-  }
-`;
+export const ActivityListContainer = styledEl(
+  'div',
+  styles.activityListContainer,
+);
 
-export const ActivityListContainer = styled.div`
-  position: relative;
-  width: 100%;
-`;
+export const ActivityListRow = styledEl('div', styles.activityListRow);
 
-export const ActivityListRow = styled.div`
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-`;
+export const ActivityHeader = styledEl('div', styles.activityHeader);
 
-export const ActivityHeader = styled.div` 
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  gap: 8px;
-  box-sizing: border-box;
-  min-width: 0;
-  width: 100%;
-  padding: 12px;
+export const HideActivityButton = buttonEl(styles.hideActivityButton);
 
-  ${activitySidebarLayout} {
-    padding: 12px 12px 8px 8px;
-  }
-`;
+export const AddCommentContainer = styledEl('div', styles.addCommentContainer);
 
-export const HideActivityButton = styled(Button)({
-  ...secondaryButtonStyles,
-  padding: '8px 10px',
-  margin: 0,
-  fontSize: '14px',
-  flexShrink: 0,
-  color: 'rgba(9, 30, 66, 0.725)',
-  border: '1px solid rgba(9, 30, 66, 0.2)',
+export const ActivityContainer = styledEl('div', styles.activityContainer, [
+  'isSelected',
+]);
 
-  '&:hover:not(:disabled)': {
-    color: secondaryButtonStyles.color,
-  },
-});
+export const ActivityRow = styledEl('div', styles.activityRow);
 
-type ActivityContainerProps = {
-  isSelected?: boolean;
-};
+export const ActivityTitle = styledEl(Dialog.Title, styles.activityTitle);
 
-export const AddCommentContainer = styled.div`
-  box-sizing: border-box;
-  margin: 18px 0;
-  padding: 0 12px;
-  border-left: 4px solid transparent;
-  min-width: 0;
-  width: 100%;
+export const ActivityHeaderTitle = styledEl('div', styles.activityHeaderTitle);
 
-  ${activitySidebarLayout} {
-    padding: 0 12px 0 8px;
-  }
-`;
+export const ActivityCommentContainer = styledEl(
+  'div',
+  styles.activityCommentContainer,
+);
 
-export const ActivityContainer = styled.div<ActivityContainerProps>({
-  boxSizing: 'border-box',
-  padding: '18px 12px',
-  minWidth: 0,
-  width: '100%',
+export const AddCommentForm = styledEl('form', styles.addCommentForm);
 
-  background: ({ isSelected }) => (isSelected ? '#D3E4F4' : 'transparent'),
-  borderLeft: ({ isSelected }) =>
-    isSelected ? '4px solid #0C66E4' : '4px solid transparent',
+export const ActivityMeta = styledEl('div', styles.activityMeta);
 
-  [activitySidebarLayout]: {
-    padding: '8px 12px 8px 8px',
-  },
-});
+export const ActivityAuthorName = styledEl('span', styles.activityAuthorName);
 
-export const ActivityRow = styled.div`
-  display: flex;
-  align-items: flex-start;
-  gap: 8px;
-  box-sizing: border-box;
-  min-width: 0;
-  width: 100%;
-`;
+export const ActivityMetaTime = styledEl('span', styles.activityMetaTime);
 
-export const ActivityTitle = styled(CardModalTitle)` 
-  font-size: 14px;
-  font-weight: 600;
-  margin: 0;
-  min-width: 0;
-`;
+export const ActivityNameCircle = styledEl('div', styles.activityNameCircle);
 
-export const ActivityHeaderTitle = styled.div`
-  display: flex;
-  align-items: baseline;
-  gap: 4px;
-  flex: 1;
-  min-width: 0;
-`;
+export const AddCommentInput = styledEl('input', styles.addCommentInput);
 
-export const ActivityCommentContainer = styled.div` 
-  display: flex;
-  flex-direction: column;
-  flex: 1;
-  min-width: 0;
-  font-size: 12px;
-`;
+export const ActivityCommentContent = styledEl(
+  'div',
+  styles.activityCommentContent,
+);
 
-export const AddCommentForm = styled.form` 
-  display: flex;
-  flex-direction: column;
-  flex: 1;
-  min-width: 0;
-  font-size: 12px;
-`;
+export const ActivityEntryContent = styledEl(
+  'div',
+  styles.activityEntryContent,
+);
 
-export const ActivityMeta = styled.div`
-  line-height: 1.4;
-  overflow-wrap: anywhere;
-`;
+export const EditCommentActionsRow = styledEl(
+  'div',
+  styles.editCommentActionsRow,
+);
 
-export const ActivityAuthorName = styled.span`
-  font-weight: 700;
-  font-size: 14px;
-`;
+export const SaveCommentButton = buttonEl(styles.saveCommentButton);
 
-export const ActivityMetaTime = styled.span`
-  margin-left: 4px;
-  cursor: pointer;
-  text-decoration: underline;
-  color: #0000EE;
-`;
+export const EditCommentLink = styledEl('button', styles.editCommentLink);
 
-export const ActivityNameCircle = styled.div` 
-  border-radius: 100%;
-  background: ${userNameIconBlue};
-  color: white;
-  flex-shrink: 0;
-  height: 32px;
-  width: 32px;
-  position: relative;
-  font-size: 13px;
-  font-weight: 500;
-`;
+export const DeleteCommentLink = styledEl('button', styles.editCommentLink);
 
-export const activityFieldStyles = {
-  border: '0.05px solid rgba(9, 30, 66, 0.2)',
-  borderRadius: '8px',
-  padding: '8px 10px',
-  boxShadow: '0 1px 0 #091e4240',
-};
+export const EditCommentActionsSeperator = styledEl(
+  'div',
+  styles.editCommentActionsSeperator,
+);
 
-export const AddCommentInput = styled.input` 
-  box-sizing: border-box;
-  width: 100%;
-  max-width: 100%;
-  border: ${activityFieldStyles.border};
-  border-radius: ${activityFieldStyles.borderRadius};
-  padding: ${activityFieldStyles.padding};
-  box-shadow: ${activityFieldStyles.boxShadow};
-`;
+export const ActivityTimestampMeta = styledEl(
+  'div',
+  styles.activityTimestampMeta,
+);
 
-export const ActivityCommentContent = styled.div` 
-  box-sizing: border-box;
-  font-family: ${fontFamily};
-  font-size: 14px;
-  margin-top: 8px;
-  max-width: 100%;
-  overflow-wrap: anywhere;
-  border: ${activityFieldStyles.border};
-  border-radius: ${activityFieldStyles.borderRadius};
-  padding: ${activityFieldStyles.padding};
-  background: white; 
-  box-shadow: ${activityFieldStyles.boxShadow};
-`;
+export const ActivityLinkToCard = styledEl('span', styles.activityLinkToCard);
 
-export const ActivityEntryContent = styled.div`
-  line-height: 1.4;
-  overflow-wrap: anywhere;
-`;
+export const CommentTimestamp = styledEl(
+  ActivityTimestamp,
+  styles.commentTimestamp,
+);
 
-export const EditCommentActionsRow = styled.div`
-  display: flex;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: 4px;
-  margin-top: 8px;
-`;
+export const ActivityLogoSkeleton = styledEl(
+  'div',
+  styles.activityLogoSkeleton,
+);
 
-export const SaveCommentButton = styled(Button)` 
-  padding: 8px 10px;
-  margin: 0;
-  font-weight: 600;
-`;
+export const ActivityContentSkeleton = styledEl(
+  'div',
+  styles.activityContentSkeleton,
+);
 
-export const EditCommentLink = styled.button`
-  border: none;
-  background: none;
-  text-decoration: underline;
-  cursor: pointer;
-  padding: 0;
-  font: inherit;
-  color: inherit;
-`;
+export const ActivityTimestampSkeleton = styledEl(
+  'div',
+  styles.activityTimestampSkeleton,
+);
 
-export const DeleteCommentLink = styled(EditCommentLink)``;
+export const PaperclipReveal = styledEl('span', styles.paperclipReveal, [
+  'isVisible',
+]);
 
-export const EditCommentActionsSeperator = styled.div`
-  width: 3.5px;
-  height: 3.5px;
-  background: black;
-  border-radius: 100%;
-  flex-shrink: 0;
-  position: relative;
-  top: 1px;
-`;
-
-export const ActivityTimestampMeta = styled.div`
-  margin-top: 4px;
-  cursor: pointer;
-  text-decoration: underline;
-  color: #0000EE;
-`;
-
-export const ActivityLinkToCard = styled.span`
-  margin-top: 4px;
-  cursor: pointer;
-  text-decoration: underline;
-  color: #0000EE;
-`;
-
-export const CommentTimestamp = styled(ActivityTimestamp)`
-  display: inline;
-  margin: 0px 0px 0px 5px;
-`;
-
-export const ActivityLogoSkeleton = styled.div({
-  background: 'rgba(9, 30, 66, 0.25)',
-  cursor: 'default',
-  pointerEvents: 'none',
-  minHeight: '16px',
-  borderRadius: '100%',
-  flexShrink: 0,
-  height: 32,
-  width: 32,
-  position: 'relative',
-  ...animationStyles.pulse,
-});
-
-export const ActivityContentSkeleton = styled.div({
-  background: 'rgba(9, 30, 66, 0.25)',
-  cursor: 'default',
-  pointerEvents: 'none',
-  borderRadius: '8px',
-  flexShrink: 0,
-  height: 14,
-  width: '100%',
-  position: 'relative',
-  ...animationStyles.pulse,
-});
-
-export const ActivityTimestampSkeleton = styled.div({
-  background: 'rgba(9, 30, 66, 0.25)',
-  cursor: 'default',
-  pointerEvents: 'none',
-  borderRadius: '8px',
-  flexShrink: 0,
-  height: 14,
-  width: '25%',
-  position: 'relative',
-  ...animationStyles.pulse,
-});
-
-export const PaperclipReveal = styled.span<{ isVisible?: boolean }>({
-  display: 'inline-flex',
-  alignItems: 'center',
-  verticalAlign: 'middle',
-  overflow: 'hidden',
-  maxWidth: ({ isVisible }) => (isVisible ? '20px' : '0px'),
-  opacity: ({ isVisible }) => (isVisible ? 1 : 0),
-  transform: ({ isVisible }) =>
-    isVisible ? 'translateX(0)' : 'translateX(-6px)',
-  transition: 'max-width 350ms ease, opacity 350ms ease, transform 350ms ease',
-});
-
-export const ActivityCopiedCheckmark = styled.span({
-  backgroundColor: 'transparent',
-  border: `1px solid ${completedGreen}`,
-  borderRadius: '100%',
-  flexShrink: 0,
-  height: 10,
-  width: 10,
-  position: 'relative',
-  color: completedGreen,
-  display: 'inline-flex',
-  margin: '0 0 0 4px',
-});
+export const ActivityCopiedCheckmark = styledEl(
+  'span',
+  styles.activityCopiedCheckmark,
+);
