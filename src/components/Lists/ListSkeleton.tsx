@@ -10,7 +10,7 @@ import {
 
 export function ListSkeleton() {
   return (
-    <ListContainer data-testid="ListContainer">
+    <ListContainer data-testid="ListContainer" isMobile={false}>
       <ListHeaderSkeletonRow data-testid="ListHeaderSkeletonRow">
         <ListNameSkeleton data-testid="ListNameSkeleton" />
         <ListCountSkeleton data-testid="ListCountSkeleton" />
