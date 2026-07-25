@@ -10,12 +10,49 @@ export const completedGreen = '#1f845a';
 export const userNameIconBlue = '#1558BC';
 export const listBackground = '#ebecf0';
 
+/** Section icon width (description list icon, checklist icon, etc.). */
+export const cardModalSectionIconSize = '24px';
+
+/** Left edge of description body, checklist labels, inputs, and action rows (icon + 16px gap). */
+export const cardModalContentIndent = '40px';
+
+/**
+ * Below this width the card modal drops its two-column grid; above it the
+ * activity list sits in a sidebar. Bare queries — `@media` keys in `.css.ts`
+ * take the condition without the at-rule prefix.
+ */
+export const cardModalBreakpointQuery = '(max-width: 850px)';
+export const activitySidebarQuery = '(min-width: 851px)';
+
 /**
  * The nav bar and board header are `position: fixed`, so they take up no space
  * in the document flow. Board content sizes itself against the full viewport
  * and clears the chrome with this much top padding instead.
  */
 export const fixedChromeOffset = '116px';
+
+export type BoardBackground =
+  | 'green'
+  | 'lightGreen'
+  | 'blue'
+  | 'orange'
+  | 'red';
+
+/**
+ * Applies `build` to every board background name, keeping the literal keys that
+ * `recipe()` needs to type its `background` variant.
+ */
+export function mapBoardBackgrounds<T>(
+  build: (name: BoardBackground) => T,
+): Record<BoardBackground, T> {
+  return {
+    green: build('green'),
+    lightGreen: build('lightGreen'),
+    blue: build('blue'),
+    orange: build('orange'),
+    red: build('red'),
+  };
+}
 
 /** References gradients in `board-gradient.css` — edit that file to tune. */
 export const boardGradientVars = {

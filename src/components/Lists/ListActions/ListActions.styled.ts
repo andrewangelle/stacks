@@ -1,177 +1,52 @@
-import { styled } from '@pigment-css/react';
 import { Popover } from 'radix-ui';
-import { fontFamily, PopoverClose } from '~/components/Boards/Boards.styled';
-import { Button } from '~/styles/Page.styled';
-import { red } from '~/styles/tokens';
+import * as styles from '~/components/Lists/ListActions/ListActions.css';
+import { buttonEl } from '~/styles/Page.styled';
+import { styledEl } from '~/styles/styledEl';
 
-export const ListActionsPopoverTrigger = styled(Popover.Trigger)` 
-  border: none;
-  background: transparent;
-  cursor: pointer;
-  width: auto;
-  padding: 0;
-`;
+export const ListActionsPopoverTrigger = styledEl(
+  Popover.Trigger,
+  styles.listActionsPopoverTrigger,
+);
 
-type IsOpenProps = {
-  isOpen: boolean;
-};
+export const ListActionsPopoverButton = styledEl(
+  'div',
+  styles.listActionsPopoverButton,
+  ['isOpen'],
+);
 
-export const ListActionsPopoverButton = styled.div<IsOpenProps>({
-  border: 'none',
-  cursor: 'pointer',
-  position: 'relative',
-  overflow: 'hidden',
-  borderRadius: '8px',
-  margin: 'auto',
-  display: 'flex',
-  alignSelf: 'center',
-  textAlign: 'center',
-  justifyContent: 'center',
-  whiteSpace: 'nowrap',
-  fontWeight: 600,
-  padding: '0px 10px 8px',
+export const ListActionsPopoverButtonBack = styledEl(
+  'button',
+  styles.listActionsPopoverButtonBack,
+  ['isActive'],
+);
 
-  // applies hover effect to the button
-  '&::before': {
-    content: '""',
-    position: 'absolute',
-    inset: 0,
-    borderRadius: 'inherit',
-    backgroundColor: '#000',
-    opacity: 0,
-    pointerEvents: 'none',
-    transition: 'opacity 0.15s ease',
-  },
+export const ListActionsPopoverButtonText = styledEl(
+  'span',
+  styles.listActionsPopoverButtonText,
+);
 
-  '&:disabled': {
-    background: 'rgba(9, 30, 66, 0.02)',
-    color: 'rgba(9, 30, 66, 0.2)',
-    border: '1px solid rgba(9, 30, 66, 0.2)',
-    cursor: 'not-allowed',
-  },
+export const ListActionsPopoverHeader = styledEl(
+  'div',
+  styles.listActionsPopoverHeader,
+);
 
-  '&:hover': {
-    background: (props) =>
-      props.isOpen ? 'rgba(0, 0, 0, 0.8)' : 'rgba(9, 30, 66, 0.2)',
-    color: (props) => (props.isOpen ? 'white' : 'rgba(9, 30, 66, 0.9)'),
-  },
+export const ListActionsPopoverClose = styledEl(
+  Popover.Close,
+  styles.listActionsPopoverClose,
+);
 
-  color: (props) => (props.isOpen ? 'white' : 'rgba(9, 30, 66, 0.9)'),
-  background: (props) => (props.isOpen ? 'rgba(0, 0, 0, 0.8)' : 'transparent'),
-});
+export const ListActionsOptionsContainer = styledEl(
+  'div',
+  styles.listActionsOptionsContainer,
+);
 
-type IsActiveProps = {
-  isActive: boolean;
-};
+export const ListActionsOption = styledEl('button', styles.listActionsOption);
 
-export const ListActionsPopoverButtonBack = styled.button<IsActiveProps>({
-  border: 'none',
-  cursor: (props) => (props.isActive ? 'pointer' : 'default'),
-  position: 'relative',
-  overflow: 'hidden',
-  borderRadius: '4px',
-  margin: 'auto',
-  display: 'flex',
-  alignSelf: 'center',
-  textAlign: 'center',
-  justifyContent: 'center',
-  whiteSpace: 'nowrap',
-  fontWeight: 600,
+export const DeleteListButton = buttonEl(styles.deleteListButton);
 
-  // applies hover effect to the button
-  '&::before': {
-    content: '""',
-    position: 'absolute',
-    inset: 0,
-    borderRadius: 'inherit',
-    backgroundColor: '#000',
-    opacity: 0,
-    pointerEvents: 'none',
-    transition: 'opacity 0.15s ease',
-  },
+export const MoveListFieldsContainer = styledEl(
+  'div',
+  styles.moveListFieldsContainer,
+);
 
-  '&:disabled': {
-    background: 'rgba(9, 30, 66, 0.02)',
-    color: 'rgba(9, 30, 66, 0.2)',
-    border: '1px solid rgba(9, 30, 66, 0.2)',
-    cursor: 'not-allowed',
-  },
-
-  '&:hover': {
-    background: (props) =>
-      props.isActive ? 'rgba(9, 30, 66, 0.2)' : 'transparent',
-    color: 'rgba(9, 30, 66, 0.9)',
-  },
-
-  color: 'rgba(9, 30, 66, 0.9)',
-  background: 'transparent',
-});
-
-export const ListActionsPopoverButtonText = styled.span`
-  font-family: ${fontFamily};
-  font-size: 14px;
-`;
-
-export const ListActionsPopoverHeader = styled.div`
-  font-weight: 600;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  color: rgba(9, 30, 66, .75);
-  padding: 5px 0px 10px 5px;
-`;
-
-export const ListActionsPopoverClose = styled(PopoverClose)`
-  && {
-    font-weight: 600;
-    margin: 4px;
-    position: relative;
-  }
-  &&:hover {
-    background: rgba(9, 30, 66, 0.2);
-    border-radius: 4px;
-  }
-`;
-
-export const ListActionsOptionsContainer = styled.div`
-  display: flex;
-  flex-direction: column;
-`;
-
-export const ListActionsOption = styled.button`
-  padding: 8px 10px;
-  cursor: pointer;
-  border: none;
-  background: transparent;
-  text-align: left;
-  width: 100%;
-  font-size: 14px;
-
-  &:hover {
-    background: rgba(0,0,0,0.05);
-  }
-
-  &:active {
-    background: rgba(0,0,0,0.1);
-  }
-`;
-
-export const DeleteListButton = styled(Button)`
-  background: ${red};
-  width: 100%;
-  margin: 15px 0px 0px;
-  padding: 8px 10px;
-`;
-
-export const MoveListFieldsContainer = styled.div`
-  display: flex;
-  flex-direction: column;
-  padding-top: 8px;
-`;
-
-export const MoveListButton = styled(Button)`
-  width: calc(100% - 20px);
-  margin: 8px 10px 0px;
-  padding: 10px 20px;
-  font-weight: 500;
-`;
+export const MoveListButton = buttonEl(styles.moveListButton);

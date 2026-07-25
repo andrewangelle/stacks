@@ -1,8 +1,8 @@
-import { styled } from '@pigment-css/react';
 import { Link } from '@tanstack/react-router';
 import { Popover } from 'radix-ui';
 import type { ReactNode } from 'react';
-import { blue, fontFamily } from '~/styles/tokens';
+import * as styles from '~/styles/Page.css';
+import { styledEl } from '~/styles/styledEl';
 
 type PaddingProps = {
   padding: string;
@@ -13,123 +13,41 @@ export function Padding({ padding, children }: PaddingProps) {
   return <div style={{ padding }}>{children}</div>;
 }
 
-export const Center = styled.div` 
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-`;
+export const Center = styledEl('div', styles.center);
 
-export const FlexColumn = styled.div` 
-  display: flex;
-  flex-direction: column;
-  margin: 10px auto;
-`;
+export const FlexColumn = styledEl('div', styles.flexColumn);
 
-export const Flex = styled.div` 
-  display: flex;
-`;
+export const Flex = styledEl('div', styles.flex);
 
-export const FlexCenter = styled.div`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  min-height: 100vh;
+export const FlexCenter = styledEl('div', styles.flexCenter);
 
-`;
-
-type ButtonExtraProps = {
+export type ButtonExtraProps = {
   secondary?: boolean;
 };
 
-export const secondaryButtonStyles = {
-  background: 'transparent',
-  color: 'rgba(9, 30, 66, 0.9)',
-  border: '1px solid rgba(9, 30, 66, 0.2)',
-  cursor: 'pointer',
-  fontWeight: 600,
+/**
+ * `secondary` is a legacy no-op flag carried by call sites; it selects nothing
+ * and must be kept off the DOM. Every button built from the shared base goes
+ * through here so the strip list stays in one place.
+ */
+export function buttonEl(className: string) {
+  return styledEl<'button', ButtonExtraProps>('button', className, [
+    'secondary',
+  ]);
+}
 
-  '&:hover': {
-    background: 'rgba(9, 30, 66, 0.04)',
-    color: 'rgba(9, 30, 66, 0.9)',
-  },
-};
+export const Button = buttonEl(styles.button);
 
-export const Button = styled('button')<ButtonExtraProps>({
-  position: 'relative',
-  overflow: 'hidden',
-  borderRadius: '8px',
-  margin: 'auto',
-  display: 'flex',
-  alignSelf: 'center',
-  textAlign: 'center',
-  justifyContent: 'center',
-  whiteSpace: 'nowrap',
+export const LogoLink = styledEl(Link, styles.logoLink);
 
-  // applies hover effect to the button
-  '&::before': {
-    content: '""',
-    position: 'absolute',
-    inset: 0,
-    borderRadius: 'inherit',
-    backgroundColor: '#000',
-    opacity: 0,
-    pointerEvents: 'none',
-    transition: 'opacity 0.15s ease',
-  },
+export const LogoIconSlot = styledEl('span', styles.logoIconSlot);
 
-  '&:hover:not(:disabled)::before': {
-    opacity: 0.1,
-  },
+export const PopoverOptionsContent = styledEl(
+  Popover.Content,
+  styles.popoverOptionsContent,
+);
 
-  '&:disabled': {
-    background: 'rgba(9, 30, 66, 0.02)',
-    color: 'rgba(9, 30, 66, 0.2)',
-    border: '1px solid rgba(9, 30, 66, 0.2)',
-    cursor: 'not-allowed',
-  },
-
-  background: `${blue}`,
-  color: '#fff',
-  border: 'none',
-  cursor: 'pointer',
-
-  '&:hover:not(:disabled)': {
-    color: 'white',
-  },
-});
-
-export const LogoLink = styled(Link)({
-  textDecoration: 'none',
-  color: 'white',
-  cursor: 'pointer',
-  display: 'flex',
-  alignItems: 'center',
-  gap: '8px',
-  minHeight: 'unset',
-});
-
-export const LogoIconSlot = styled.span`
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 18px;
-  height: 18px;
-`;
-
-export const PopoverOptionsContent = styled(Popover.Content)` 
-  width: 304px;
-  border-radius: 8px; 
-  font-family: ${fontFamily};
-  font-size: 14px;
-  background: #fff;
-  display: flex;
-  flex-direction: column;
-  z-index: 1;
-  box-shadow: 0px 8px 12px #1E1F2126, 0px 0px 1px #1E1F214F;
-  padding: 10px 0px;
-`;
-
-export const PopoverOptionsContentContainer = styled.div`
-  padding: 0px 10px;
-`;
+export const PopoverOptionsContentContainer = styledEl(
+  'div',
+  styles.popoverOptionsContentContainer,
+);

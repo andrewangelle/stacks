@@ -3,6 +3,7 @@ import { CompositeComponent } from '@tanstack/react-start/rsc';
 import { Suspense } from 'react';
 import { BoardListsFallback } from '~/components/Boards/Board.styled';
 import { BoardLists } from '~/components/Boards/BoardLists';
+import type { BoardBackground } from '~/components/Boards/Boards.styled';
 import { Card } from '~/components/Cards/Card';
 import { CardFallback } from '~/components/Cards/CardFallback';
 import { BoardHeader } from '~/components/Nav/BoardHeader';
@@ -88,7 +89,7 @@ export const Route = createFileRoute('/card/$cardId')({
                 fallback={
                   <BoardListsFallback
                     data-testid="BoardListsFallback"
-                    background={boardColor}
+                    background={boardColor as BoardBackground}
                   />
                 }
               >
