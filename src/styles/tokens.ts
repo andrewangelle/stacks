@@ -8,6 +8,7 @@ export const focusRingBlue = '#2F80ED';
 export const fontFamily = "'App Sans', sans-serif";
 export const completedGreen = '#1f845a';
 export const userNameIconBlue = '#1558BC';
+export const listBackground = '#ebecf0';
 
 /**
  * The nav bar and board header are `position: fixed`, so they take up no space
