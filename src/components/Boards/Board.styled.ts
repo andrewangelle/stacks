@@ -7,8 +7,10 @@ import { BoardPageBackground } from '~/components/Nav/Nav.styled';
 import { Button } from '~/styles/Page.styled';
 
 export const BoardListsFallback = styled(BoardPageBackground)`
-  top: -8px;
-  left: -30px;
+  position: absolute;
+  inset: 0;
+  height: auto;
+  width: auto;
   padding: 0;
 `;
 

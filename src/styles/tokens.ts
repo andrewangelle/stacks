@@ -9,6 +9,13 @@ export const fontFamily = "'App Sans', sans-serif";
 export const completedGreen = '#1f845a';
 export const userNameIconBlue = '#1558BC';
 
+/**
+ * The nav bar and board header are `position: fixed`, so they take up no space
+ * in the document flow. Board content sizes itself against the full viewport
+ * and clears the chrome with this much top padding instead.
+ */
+export const fixedChromeOffset = '116px';
+
 /** References gradients in `board-gradient.css` — edit that file to tune. */
 export const boardGradientVars = {
   green: 'var(--board-gradient-green)',

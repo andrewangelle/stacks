@@ -13,8 +13,7 @@ import {
   getBoardHeaderServer,
   getNavBarServer,
 } from '~/components/server/Nav.functions';
-import { findBoard } from '~/db/boards/boards.cache';
-import { boardsQueryOptions } from '~/db/boards/boards.query';
+import { getBoardColor } from '~/db/boards/boards.functions';
 
 export const Route = createFileRoute('/board/$id')({
   async loader({ context, params }) {
@@ -23,9 +22,9 @@ export const Route = createFileRoute('/board/$id')({
       throw redirect({ to: '/auth/sign-in' });
     }
 
-    const boards =
-      await context.queryClient.ensureQueryData(boardsQueryOptions);
-    const board = findBoard(boards, params.id);
+    const boardColor = await getBoardColor({
+      data: { boardId: params.id },
+    });
 
     const NavBarServer = await getNavBarServer({
       data: { boardId: params.id },
@@ -41,7 +40,7 @@ export const Route = createFileRoute('/board/$id')({
 
     return {
       boardId: params.id,
-      boardColor: board?.boardColor ?? 'blue',
+      boardColor: boardColor ?? 'blue',
       NavBarServer,
       BoardPageServer,
       BoardHeaderServer,
