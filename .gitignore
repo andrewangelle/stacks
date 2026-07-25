@@ -17,3 +17,4 @@ src/generated
 .claude/skills/playwright-cli/
 .playwright-cli/
 .claude/worktrees
+.DS_Store

@@ -37,6 +37,27 @@ export const Route = createRootRouteWithContext<RouterContext>()({
   },
   head() {
     return {
+      link: [
+        { rel: 'icon', href: '/favicon.svg', type: 'image/svg+xml' },
+        {
+          rel: 'apple-touch-icon',
+          sizes: '180x180',
+          href: '/apple-touch-icon.png',
+        },
+        {
+          rel: 'icon',
+          type: 'image/png',
+          sizes: '32x32',
+          href: '/favicon-32x32.png',
+        },
+        {
+          rel: 'icon',
+          type: 'image/png',
+          sizes: '16x16',
+          href: '/favicon-16x16.png',
+        },
+        { rel: 'manifest', href: '/site.webmanifest' },
+      ],
       meta: [
         { charSet: 'utf-8' },
         {
@@ -52,7 +73,6 @@ export const Route = createRootRouteWithContext<RouterContext>()({
       <html lang="en">
         <head>
           <HeadContent />
-          <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
         </head>
         <body>
           <Providers>
