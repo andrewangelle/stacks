@@ -11,6 +11,7 @@ import { DropTargetFallback } from '~/components/shared/dnd/DropTargetFallback';
 import { moveCardToNewList, reorderCardsByIndex } from '~/db/cards/cards.cache';
 import { useGetListById } from '~/db/lists/lists.query';
 import { useCrossContainerMove } from '~/utils/useCrossContainerMove';
+import { useIsMobile } from '~/utils/useIsMobile';
 
 export function List({ id: listId }: { id: string }) {
   const { ref, onMove } = useCrossContainerMove((args) => {
@@ -22,9 +23,9 @@ export function List({ id: listId }: { id: string }) {
     });
   });
   const { data: list } = useGetListById({ id: listId });
-
+  const isMobile = useIsMobile();
   return (
-    <ListContainer data-testid="ListContainer" key={listId}>
+    <ListContainer data-testid="ListContainer" key={listId} isMobile={isMobile}>
       <ListHeader id={listId} />
 
       <ListContentContainer ref={ref} data-testid="ListContentContainer">
