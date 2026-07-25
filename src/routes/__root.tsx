@@ -2,6 +2,7 @@ import '~/styles/animations.css';
 import '~/styles/board-gradient.css';
 import '~/styles/drag.css';
 import '~/styles/global.css';
+import '~/styles/stylesheets';
 import { ClerkProvider } from '@clerk/tanstack-react-start';
 import { DragDropProvider } from '@dnd-kit/react';
 import {
