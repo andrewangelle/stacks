@@ -408,7 +408,11 @@ async function openMoveMenu(page: Page, boardId: string, cardId: string) {
   await page.goto(`/board/${boardId}/card/${cardId}`);
   await waitForCardModal(page);
 
-  await page.getByTestId('MoveCardMenuTrigger').click();
+  await waitForInteractiveTrigger(
+    page,
+    '[data-testid="MoveCardMenuContent"]',
+    '[data-testid="MoveCardMenuTrigger"]',
+  );
   await expect(page.getByTestId('MoveCardMenuContent')).toBeVisible();
 }
 
