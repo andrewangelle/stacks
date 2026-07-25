@@ -57,9 +57,7 @@ export function DeleteCardPopover() {
         alignOffset={4}
       >
         <ChecklistPopoverHeader data-testid="ChecklistPopoverHeader">
-          <div style={{ fontWeight: 600 }}>
-            {`Delete ${data?.cardTitle ?? ''}?`}
-          </div>
+          <div style={{ fontWeight: 600 }}>Delete Card?</div>
           <PopoverClose data-testid="PopoverClose">X</PopoverClose>
         </ChecklistPopoverHeader>
 
