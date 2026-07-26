@@ -33,7 +33,7 @@ export function DeleteCardPopover() {
         className={cardStyles.deleteCardPopoverTrigger}
         data-testid="DeleteCardPopoverTrigger"
       >
-        <Tooltip portal={false} content="Delete card">
+        <Tooltip content="Delete card">
           <div
             className={cardStyles.cardModalActionButton({ isOpen: open })}
             data-testid="CardModalSiderButton"
