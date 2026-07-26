@@ -4,18 +4,15 @@ import { useState } from 'react';
 import * as styles from '~/components/shared/Tooltip/Tooltip.css';
 
 type TooltipProps = {
-  portal?: boolean;
   disabled?: boolean;
   content: ReactNode;
   children: ReactNode;
 };
 
-export function Tooltip({
-  portal = true,
-  disabled,
-  content,
-  children,
-}: TooltipProps) {
+// The content must stay portaled. Rendered inline it unmounts next to the
+// trigger on blur, which aborts the browser's in-flight Tab navigation and
+// strands focus — inside a dialog that means Tab never gets past the trigger.
+export function Tooltip({ disabled, content, children }: TooltipProps) {
   const [isOpen, setIsOpen] = useState(false);
 
   return (
@@ -25,19 +22,8 @@ export function Tooltip({
         onOpenChange={(nextIsOpen) => !disabled && setIsOpen(nextIsOpen)}
       >
         <TooltipPrimitive.Trigger asChild>{children}</TooltipPrimitive.Trigger>
-        {portal && (
-          <TooltipPrimitive.Portal>
-            <TooltipPrimitive.Content
-              className={styles.tooltipContent}
-              side="bottom"
-              sideOffset={8}
-            >
-              {content}
-            </TooltipPrimitive.Content>
-          </TooltipPrimitive.Portal>
-        )}
 
-        {!portal && (
+        <TooltipPrimitive.Portal>
           <TooltipPrimitive.Content
             className={styles.tooltipContent}
             side="bottom"
@@ -45,7 +31,7 @@ export function Tooltip({
           >
             {content}
           </TooltipPrimitive.Content>
-        )}
+        </TooltipPrimitive.Portal>
       </TooltipPrimitive.Root>
     </TooltipPrimitive.Provider>
   );

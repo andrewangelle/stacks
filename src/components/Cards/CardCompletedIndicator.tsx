@@ -50,10 +50,7 @@ export function CardCompletedIndicator({
   }
 
   return (
-    <Tooltip
-      portal={false}
-      content={isCompleted ? 'Mark incomplete' : 'Mark complete'}
-    >
+    <Tooltip content={isCompleted ? 'Mark incomplete' : 'Mark complete'}>
       <button
         className={styles.cardCompletedIndicatorCircle}
         style={

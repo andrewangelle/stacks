@@ -46,7 +46,7 @@ export function CreateChecklist() {
         className={cardStyles.createChecklistPopoverTrigger}
         data-testid="CreateChecklistPopoverTrigger"
       >
-        <Tooltip portal={false} content="Create checklist">
+        <Tooltip content="Create checklist">
           <div
             className={cardStyles.cardModalActionButton({ isOpen: open })}
             data-testid="CardModalActionButton"

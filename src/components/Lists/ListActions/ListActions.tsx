@@ -36,7 +36,7 @@ export function ListActions({ id }: ListActionsProps) {
         className={listActionsStyles.listActionsPopoverTrigger}
         data-testid="ListActionsPopoverTrigger"
       >
-        <Tooltip portal={true} content="List actions">
+        <Tooltip content="List actions">
           <div
             className={listActionsStyles.listActionsPopoverButton({
               isOpen: open,
