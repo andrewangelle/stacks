@@ -196,7 +196,6 @@ export const backgroundChoiceBase = style({
   borderRadius: '5px',
   margin: '5px',
   position: 'relative',
-  color: '#fff',
   cursor: 'pointer',
 });
 

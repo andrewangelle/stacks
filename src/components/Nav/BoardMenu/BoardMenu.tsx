@@ -42,6 +42,7 @@ export function BoardMenu() {
       <Popover.Content
         className={pageStyles.popoverOptionsContent}
         data-testid="PopoverOptionsContent"
+        style={{ width: '332px' }}
       >
         <div
           className={boardMenuStyles.boardMenuPopoverHeader}
