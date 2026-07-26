@@ -1,5 +1,5 @@
 import { faker } from '@faker-js/faker';
-import type { BoardBackground } from '~/styles/tokens';
+import type { BoardBackground } from '~/components/Boards/Boards.styled';
 
 const BOARD_COLORS: BoardBackground[] = [
   'green',

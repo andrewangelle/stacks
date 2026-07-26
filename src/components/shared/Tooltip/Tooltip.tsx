@@ -1,7 +1,7 @@
 import { Tooltip as TooltipPrimitive } from 'radix-ui';
 import type { ReactNode } from 'react';
 import { useState } from 'react';
-import * as styles from '~/components/shared/Tooltip/Tooltip.css';
+import { TooltipContent } from '~/components/shared/Tooltip/Tooltip.styled';
 
 type TooltipProps = {
   disabled?: boolean;
@@ -9,9 +9,6 @@ type TooltipProps = {
   children: ReactNode;
 };
 
-// The content must stay portaled. Rendered inline it unmounts next to the
-// trigger on blur, which aborts the browser's in-flight Tab navigation and
-// strands focus — inside a dialog that means Tab never gets past the trigger.
 export function Tooltip({ disabled, content, children }: TooltipProps) {
   const [isOpen, setIsOpen] = useState(false);
 
@@ -24,13 +21,9 @@ export function Tooltip({ disabled, content, children }: TooltipProps) {
         <TooltipPrimitive.Trigger asChild>{children}</TooltipPrimitive.Trigger>
 
         <TooltipPrimitive.Portal>
-          <TooltipPrimitive.Content
-            className={styles.tooltipContent}
-            side="bottom"
-            sideOffset={8}
-          >
+          <TooltipContent side="bottom" sideOffset={8}>
             {content}
-          </TooltipPrimitive.Content>
+          </TooltipContent>
         </TooltipPrimitive.Portal>
       </TooltipPrimitive.Root>
     </TooltipPrimitive.Provider>

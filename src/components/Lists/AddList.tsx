@@ -1,8 +1,13 @@
 import { useState } from 'react';
-import * as boardStyles from '~/components/Boards/Board.css';
-import * as listStyles from '~/components/Lists/List.css';
+import {
+  AddListContainer,
+  AddListInput,
+  CloseAddListButton,
+  CreateListButton,
+} from '~/components/Boards/Board.styled';
+import { AddListButton } from '~/components/Lists/List.styled';
 import { useCreateList } from '~/db/lists/lists.query';
-import * as pageStyles from '~/styles/Page.css';
+import { Flex } from '~/styles/Page.styled';
 import { useCurrentBoardId } from '~/utils/useCurrentBoardId';
 import { useOutsideClick } from '~/utils/useOutsideClick';
 
@@ -28,57 +33,47 @@ export function AddLists() {
   }
 
   return (
-    <div
-      className={boardStyles.addListContainer}
+    <AddListContainer
       data-testid="AddListContainer"
       data-editing={isEditing ? '' : undefined}
       ref={outsideClickRef}
     >
       {!isEditing && (
-        <button
-          type="button"
-          className={listStyles.addListButton}
+        <AddListButton
           data-testid="AddListButton"
           onClick={() => setEditing(true)}
         >
           + Add another list
-        </button>
+        </AddListButton>
       )}
 
       {isEditing && (
         <>
-          <input
-            className={boardStyles.addListInput}
+          <AddListInput
             data-testid="AddListInput"
             value={listName}
+            autoFocus
             onChange={(event) => setListName(event.target.value)}
           />
 
-          <div
-            className={pageStyles.flex}
-            data-testid="Flex"
-            style={{ margin: '0' }}
-          >
-            <button
-              type="button"
-              className={boardStyles.createListButton}
+          <Flex data-testid="Flex" style={{ margin: '0' }}>
+            <CreateListButton
               data-testid="CreateListButton"
               onClick={onListCreate}
             >
               Add list
-            </button>
+            </CreateListButton>
 
-            <button
-              type="button"
-              className={boardStyles.closeAddListButton}
+            <CloseAddListButton
               data-testid="CloseAddListButton"
+              $secondary
               onClick={() => setEditing(false)}
             >
               X
-            </button>
-          </div>
+            </CloseAddListButton>
+          </Flex>
         </>
       )}
-    </div>
+    </AddListContainer>
   );
 }

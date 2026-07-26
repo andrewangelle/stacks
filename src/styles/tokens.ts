@@ -1,3 +1,5 @@
+import type { BoardBackground } from '~/components/Boards/Boards.styled';
+
 export const darkGray = '#5e6c84';
 export const green = '#519839';
 export const lightGreen = '#4bbf6b';
@@ -10,49 +12,12 @@ export const completedGreen = '#1f845a';
 export const userNameIconBlue = '#1558BC';
 export const listBackground = '#ebecf0';
 
-/** Section icon width (description list icon, checklist icon, etc.). */
-export const cardModalSectionIconSize = '24px';
-
-/** Left edge of description body, checklist labels, inputs, and action rows (icon + 16px gap). */
-export const cardModalContentIndent = '40px';
-
-/**
- * Below this width the card modal drops its two-column grid; above it the
- * activity list sits in a sidebar. Bare queries — `@media` keys in `.css.ts`
- * take the condition without the at-rule prefix.
- */
-export const cardModalBreakpointQuery = '(max-width: 850px)';
-export const activitySidebarQuery = '(min-width: 851px)';
-
 /**
  * The nav bar and board header are `position: fixed`, so they take up no space
  * in the document flow. Board content sizes itself against the full viewport
  * and clears the chrome with this much top padding instead.
  */
 export const fixedChromeOffset = '116px';
-
-export type BoardBackground =
-  | 'green'
-  | 'lightGreen'
-  | 'blue'
-  | 'orange'
-  | 'red';
-
-/**
- * Applies `build` to every board background name, keeping the literal keys that
- * `recipe()` needs to type its `background` variant.
- */
-export function mapBoardBackgrounds<T>(
-  build: (name: BoardBackground) => T,
-): Record<BoardBackground, T> {
-  return {
-    green: build('green'),
-    lightGreen: build('lightGreen'),
-    blue: build('blue'),
-    orange: build('orange'),
-    red: build('red'),
-  };
-}
 
 /** References gradients in `board-gradient.css` — edit that file to tune. */
 export const boardGradientVars = {
@@ -125,3 +90,71 @@ export const tokenShades = {
     base: '#2F80ED',
   },
 } as const;
+
+export function getBoardGradientVars(background?: BoardBackground) {
+  switch (background) {
+    case 'green':
+      return boardGradientVars.green;
+    case 'lightGreen':
+      return boardGradientVars.lightGreen;
+    case 'blue':
+      return boardGradientVars.blue;
+    case 'orange':
+      return boardGradientVars.orange;
+    case 'red':
+      return boardGradientVars.red;
+    default:
+      return boardGradientVars.blue;
+  }
+}
+
+export function getBoardBarVars(background?: BoardBackground) {
+  switch (background) {
+    case 'green':
+      return boardBarVars.green;
+    case 'lightGreen':
+      return boardBarVars.lightGreen;
+    case 'blue':
+      return boardBarVars.blue;
+    case 'orange':
+      return boardBarVars.orange;
+    case 'red':
+      return boardBarVars.red;
+    default:
+      return boardBarVars.blue;
+  }
+}
+
+export function getBoardGradientHoverVars(background?: BoardBackground) {
+  switch (background) {
+    case 'green':
+      return boardGradientHoverVars.green;
+    case 'lightGreen':
+      return boardGradientHoverVars.lightGreen;
+    case 'blue':
+      return boardGradientHoverVars.blue;
+    case 'orange':
+      return boardGradientHoverVars.orange;
+    case 'red':
+      return boardGradientHoverVars.red;
+    default:
+      return boardGradientHoverVars.blue;
+  }
+}
+
+export function getBoardNavVars(background?: BoardBackground) {
+  switch (background) {
+    case 'green':
+      return boardNavVars.green;
+    case 'lightGreen':
+      return boardNavVars.lightGreen;
+    case 'blue':
+      return boardNavVars.blue;
+    case 'orange':
+      return boardNavVars.orange;
+    case 'red':
+      return boardNavVars.red;
+    default:
+      return boardNavVars.blue;
+  }
+}

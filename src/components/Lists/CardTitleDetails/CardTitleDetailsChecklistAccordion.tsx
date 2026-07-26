@@ -1,7 +1,14 @@
-import { Accordion } from 'radix-ui';
 import { Suspense } from 'react';
 import { RiArrowRightSLine } from 'react-icons/ri';
-import * as styles from '~/components/Lists/CardTitleDetails/CardTitleDetails.css';
+import {
+  CardTitleDetailsChecklistAccordionChevron,
+  CardTitleDetailsChecklistAccordionContent,
+  CardTitleDetailsChecklistAccordionCount,
+  CardTitleDetailsChecklistAccordionHeader,
+  CardTitleDetailsChecklistAccordionItem,
+  CardTitleDetailsChecklistAccordionTitle,
+  CardTitleDetailsChecklistAccordionTrigger,
+} from '~/components/Lists/CardTitleDetails/CardTitleDetails.styled';
 import { CardTitleDetailsChecklist } from '~/components/Lists/CardTitleDetails/CardTitleDetailsChecklist';
 import { CardTitleDetailsChecklistFallback } from '~/components/Lists/CardTitleDetails/CardTitleDetailsChecklistFallback';
 import { useGetCardTitleDetailsChecklists } from '~/db/checklists/checklists.query';
@@ -24,53 +31,38 @@ export function CardTitleDetailsChecklistAccordion({
 
   if (!checklist) return null;
   return (
-    <Accordion.Item
-      className={styles.cardTitleDetailsChecklistAccordionItem}
+    <CardTitleDetailsChecklistAccordionItem
       data-testid="CardTitleDetailsChecklistAccordionItem"
       key={checklist.id}
       value={checklist.id}
     >
-      <Accordion.Header
-        className={styles.cardTitleDetailsChecklistAccordionHeader}
-        data-testid="CardTitleDetailsChecklistAccordionHeader"
-      >
-        <Accordion.Trigger
-          className={styles.cardTitleDetailsChecklistAccordionTrigger}
+      <CardTitleDetailsChecklistAccordionHeader data-testid="CardTitleDetailsChecklistAccordionHeader">
+        <CardTitleDetailsChecklistAccordionTrigger
           data-testid="CardTitleDetailsChecklistAccordionTrigger"
           onClick={(event) => event.stopPropagation()}
         >
-          <span
-            className={styles.cardTitleDetailsChecklistAccordionChevron}
-            data-testid="CardTitleDetailsChecklistAccordionChevron"
-          >
+          <CardTitleDetailsChecklistAccordionChevron data-testid="CardTitleDetailsChecklistAccordionChevron">
             <RiArrowRightSLine size={16} />
-          </span>
+          </CardTitleDetailsChecklistAccordionChevron>
 
-          <span
-            className={styles.cardTitleDetailsChecklistAccordionTitle}
-            data-testid="CardTitleDetailsChecklistAccordionTitle"
-          >
+          <CardTitleDetailsChecklistAccordionTitle data-testid="CardTitleDetailsChecklistAccordionTitle">
             {checklist.checklistTitle}
-          </span>
+          </CardTitleDetailsChecklistAccordionTitle>
 
-          <span
-            className={styles.cardTitleDetailsChecklistAccordionCount}
-            data-testid="CardTitleDetailsChecklistAccordionCount"
-          >
+          <CardTitleDetailsChecklistAccordionCount data-testid="CardTitleDetailsChecklistAccordionCount">
             {checklist.completedItems}/{checklist.totalItems}
-          </span>
-        </Accordion.Trigger>
-      </Accordion.Header>
+          </CardTitleDetailsChecklistAccordionCount>
+        </CardTitleDetailsChecklistAccordionTrigger>
+      </CardTitleDetailsChecklistAccordionHeader>
 
-      <Accordion.Content
-        className={styles.cardTitleDetailsChecklistAccordionContent}
+      <CardTitleDetailsChecklistAccordionContent
         data-testid="CardTitleDetailsChecklistAccordionContent"
         onPointerDown={(event) => event.stopPropagation()}
       >
         <Suspense fallback={<CardTitleDetailsChecklistFallback />}>
           <CardTitleDetailsChecklist checklistId={checklist.id} collapsible />
         </Suspense>
-      </Accordion.Content>
-    </Accordion.Item>
+      </CardTitleDetailsChecklistAccordionContent>
+    </CardTitleDetailsChecklistAccordionItem>
   );
 }

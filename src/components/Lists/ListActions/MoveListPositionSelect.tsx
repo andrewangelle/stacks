@@ -1,10 +1,13 @@
 import { useCallback, useMemo } from 'react';
-import * as moveCardMenuStyles from '~/components/Cards/MoveCardMenu/MoveCardMenu.css';
+import { SelectSkeleton } from '~/components/Cards/MoveCardMenu/MoveCardMenu.styled';
 import {
   Combobox,
   type ComboboxItemType,
 } from '~/components/shared/Combobox/Combobox';
-import * as comboboxStyles from '~/components/shared/Combobox/Combobox.css';
+import {
+  ComboboxLabel,
+  ComboboxWrapper,
+} from '~/components/shared/Combobox/Combobox.styled';
 
 type MoveListPositionSelectProps = {
   isListsLoading: boolean;
@@ -52,21 +55,10 @@ export function MoveListPositionSelect({
 
   if (isListsLoading) {
     return (
-      <div
-        className={comboboxStyles.comboboxWrapper}
-        data-testid="ComboboxWrapper"
-      >
-        <span
-          className={comboboxStyles.comboboxLabel}
-          data-testid="ComboboxLabel"
-        >
-          Position
-        </span>
-        <div
-          className={moveCardMenuStyles.selectSkeleton}
-          style={{ minHeight: '44px' }}
-        />
-      </div>
+      <ComboboxWrapper data-testid="ComboboxWrapper">
+        <ComboboxLabel data-testid="ComboboxLabel">Position</ComboboxLabel>
+        <SelectSkeleton style={{ minHeight: '44px' }} />
+      </ComboboxWrapper>
     );
   }
 

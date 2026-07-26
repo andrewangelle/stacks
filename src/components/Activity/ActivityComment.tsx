@@ -1,9 +1,15 @@
 import { useUser } from '@clerk/tanstack-react-start';
 import { useRef } from 'react';
-import * as styles from '~/components/Activity/Activity.css';
+import {
+  ActivityAuthorName,
+  ActivityCommentContainer,
+  ActivityContainer,
+  ActivityMeta,
+  ActivityRow,
+  CommentTimestamp,
+} from '~/components/Activity/Activity.styled';
 import { ActivityLogo } from '~/components/Activity/ActivityLogo';
 import { ActivitySkeleton } from '~/components/Activity/ActivitySkeleton';
-import { ActivityTimestamp } from '~/components/Activity/ActivityTimestamp';
 import { EditableComment } from '~/components/Activity/EditableComment';
 import { useGetActivityById } from '~/db/activity/activity.query';
 import { useCurrentCardId } from '~/utils/useCurrentCardId';
@@ -32,39 +38,32 @@ export function ActivityComment({
   }
 
   return (
-    <div
-      className={styles.activityContainer({ isSelected })}
+    <ActivityContainer
       data-testid="ActivityContainer"
       key={data?.id}
       ref={ref}
+      $isSelected={isSelected}
     >
-      <div className={styles.activityRow} data-testid="ActivityRow">
+      <ActivityRow data-testid="ActivityRow">
         <ActivityLogo />
 
-        <div
-          className={styles.activityCommentContainer}
-          data-testid="ActivityCommentContainer"
-        >
-          <div className={styles.activityMeta} data-testid="ActivityMeta">
-            <span
-              className={styles.activityAuthorName}
-              data-testid="ActivityAuthorName"
-            >
+        <ActivityCommentContainer data-testid="ActivityCommentContainer">
+          <ActivityMeta data-testid="ActivityMeta">
+            <ActivityAuthorName data-testid="ActivityAuthorName">
               {user?.firstName} {user?.lastName}
-            </span>
+            </ActivityAuthorName>
 
-            <ActivityTimestamp
-              className={styles.commentTimestamp}
+            <CommentTimestamp
               testId="CommentTimestamp"
               id={data.id}
               isSelected={isSelected}
               onSelect={onSelect}
             />
-          </div>
+          </ActivityMeta>
 
           <EditableComment id={data.id} />
-        </div>
-      </div>
-    </div>
+        </ActivityCommentContainer>
+      </ActivityRow>
+    </ActivityContainer>
   );
 }

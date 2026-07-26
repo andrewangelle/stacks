@@ -1,9 +1,19 @@
 import { useNavigate, useRouterState } from '@tanstack/react-router';
-import { Dialog } from 'radix-ui';
 import { Suspense, useEffect, useRef, useState } from 'react';
 import { ActivityPanel } from '~/components/Activity/ActivityPanel';
 import { ActivitySkeleton } from '~/components/Activity/ActivitySkeleton';
-import * as cardStyles from '~/components/Cards/Card.css';
+import {
+  CardActionsContainer,
+  CardActivityColumn,
+  CardMainColumn,
+  CardModalBody,
+  CardModalContent,
+  CardModalOverlay,
+  CardModalPortal,
+  CardModalRoot,
+  CardPageActivityColumn,
+  CardPageContent,
+} from '~/components/Cards/Card.styled';
 import { CardColumnResize } from '~/components/Cards/CardColumnResize';
 import { CardDescription } from '~/components/Cards/CardDescription';
 import { CardEditableTitle } from '~/components/Cards/CardEditableTitle';
@@ -11,7 +21,7 @@ import { CardHeader } from '~/components/Cards/CardHeader/CardHeader';
 import { DeleteCardPopover } from '~/components/Cards/DeleteCardPopover';
 import { ChecklistSkeleton } from '~/components/Checklists/ChecklistSkeleton';
 import { CardChecklists } from '~/components/Checklists/Checklists';
-import * as checklistsStyles from '~/components/Checklists/Checklists.css';
+import { ChecklistsContainer } from '~/components/Checklists/Checklists.styled';
 import { CreateChecklist } from '~/components/Checklists/CreateChecklist';
 import { usePreventModalCloseOnDevToolsEvent } from '~/components/DevTools';
 import { useCardColumnWidth } from '~/utils/useCardColumnWidth';
@@ -56,9 +66,7 @@ export function Card({ variant = 'modal' }: CardProps) {
   }
 
   const isPage = variant === 'page';
-  const activityColumnClassName = isPage
-    ? cardStyles.cardPageActivityColumn
-    : cardStyles.cardActivityColumn;
+  const ActivityColumn = isPage ? CardPageActivityColumn : CardActivityColumn;
 
   const cardBody = (
     <>
@@ -68,41 +76,27 @@ export function Card({ variant = 'modal' }: CardProps) {
         asPage={isPage}
       />
 
-      <div
-        className={cardStyles.cardModalBody}
-        data-testid="CardModalBody"
-        style={cardModalBodyStyle}
-      >
-        <div
-          className={cardStyles.cardMainColumn}
-          data-testid="CardMainColumn"
-          ref={mainColumnRef}
-        >
+      <CardModalBody data-testid="CardModalBody" style={cardModalBodyStyle}>
+        <CardMainColumn data-testid="CardMainColumn" ref={mainColumnRef}>
           <CardEditableTitle />
 
-          <div
-            className={cardStyles.cardActionsContainer}
-            data-testid="CardActionsContainer"
-          >
+          <CardActionsContainer data-testid="CardActionsContainer">
             <CreateChecklist />
             <DeleteCardPopover />
-          </div>
+          </CardActionsContainer>
 
           <CardDescription />
 
           <Suspense
             fallback={
-              <div
-                className={checklistsStyles.checklistsContainer}
-                data-testid="ChecklistsContainer"
-              >
+              <ChecklistsContainer data-testid="ChecklistsContainer">
                 <ChecklistSkeleton />
-              </div>
+              </ChecklistsContainer>
             }
           >
             <CardChecklists />
           </Suspense>
-        </div>
+        </CardMainColumn>
 
         {isWideLayout && (
           <CardColumnResize
@@ -111,28 +105,24 @@ export function Card({ variant = 'modal' }: CardProps) {
           />
         )}
 
-        <div
-          className={activityColumnClassName}
-          data-testid="CardActivityColumn"
-        >
+        <ActivityColumn data-testid="CardActivityColumn">
           <Suspense fallback={<ActivitySkeleton />}>
             <ActivityPanel />
           </Suspense>
-        </div>
-      </div>
+        </ActivityColumn>
+      </CardModalBody>
     </>
   );
 
   if (isPage) {
     return (
-      <Dialog.Root
+      <CardModalRoot
         data-testid="CardModalRoot"
         open
         modal={false}
         onOpenChange={handleOpenChange}
       >
-        <Dialog.Content
-          className={cardStyles.cardPageContent}
+        <CardPageContent
           data-testid="CardModalContent"
           aria-describedby={undefined}
           onCloseAutoFocus={(event) => {
@@ -143,24 +133,20 @@ export function Card({ variant = 'modal' }: CardProps) {
           }}
         >
           {cardBody}
-        </Dialog.Content>
-      </Dialog.Root>
+        </CardPageContent>
+      </CardModalRoot>
     );
   }
 
   return (
-    <Dialog.Root
+    <CardModalRoot
       data-testid="CardModalRoot"
       open
       onOpenChange={handleOpenChange}
     >
-      <Dialog.Portal data-testid="CardModalPortal">
-        <Dialog.Overlay
-          className={cardStyles.cardModalOverlay}
-          data-testid="CardModalOverlay"
-        >
-          <Dialog.Content
-            className={cardStyles.cardModalContent}
+      <CardModalPortal data-testid="CardModalPortal">
+        <CardModalOverlay data-testid="CardModalOverlay">
+          <CardModalContent
             data-testid="CardModalContent"
             aria-describedby={undefined}
             onCloseAutoFocus={(event) => {
@@ -169,9 +155,9 @@ export function Card({ variant = 'modal' }: CardProps) {
             onPointerDownOutside={preventCloseOnDevToolsEvent}
           >
             {cardBody}
-          </Dialog.Content>
-        </Dialog.Overlay>
-      </Dialog.Portal>
-    </Dialog.Root>
+          </CardModalContent>
+        </CardModalOverlay>
+      </CardModalPortal>
+    </CardModalRoot>
   );
 }

@@ -1,7 +1,7 @@
 import { Suspense } from 'react';
 import { Checklist } from '~/components/Checklists/Checklist';
 import { ChecklistSkeleton } from '~/components/Checklists/ChecklistSkeleton';
-import * as styles from '~/components/Checklists/Checklists.css';
+import { ChecklistsContainer } from '~/components/Checklists/Checklists.styled';
 import { Draggable } from '~/components/shared/dnd/Draggable';
 import { reorderChecklistsByIndex } from '~/db/checklists/checklists.cache';
 import { useGetChecklists } from '~/db/checklists/checklists.query';
@@ -12,10 +12,7 @@ export function CardChecklists() {
   const { data } = useGetChecklists({ cardId });
 
   return (
-    <div
-      className={styles.checklistsContainer}
-      data-testid="ChecklistsContainer"
-    >
+    <ChecklistsContainer data-testid="ChecklistsContainer">
       {data?.map((checklist, index) => (
         <Draggable
           key={checklist.id}
@@ -33,6 +30,6 @@ export function CardChecklists() {
           </Suspense>
         </Draggable>
       ))}
-    </div>
+    </ChecklistsContainer>
   );
 }

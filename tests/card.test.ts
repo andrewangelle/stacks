@@ -145,8 +145,8 @@ test.describe('Card', () => {
     );
 
     await page
-      .getByTestId('CardActionsContainer')
       .getByTestId('DeleteChecklistPopoverButton')
+      .filter({ hasText: /^Delete card$/ })
       .click();
 
     // Deleting navigates back to the board, but the card only leaves the list

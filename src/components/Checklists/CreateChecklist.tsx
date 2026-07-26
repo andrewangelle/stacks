@@ -1,9 +1,22 @@
 import { Popover } from 'radix-ui';
 import { useState } from 'react';
 import { BsCheck2Square } from 'react-icons/bs';
-import * as boardsStyles from '~/components/Boards/Boards.css';
-import * as cardStyles from '~/components/Cards/Card.css';
-import * as checklistsStyles from '~/components/Checklists/Checklists.css';
+import {
+  CreateBoardCloseBorder,
+  PopoverClose,
+} from '~/components/Boards/Boards.styled';
+import {
+  CardModalActionButton,
+  CardModalSiderButtonText,
+  CreateChecklistPopoverTrigger,
+} from '~/components/Cards/Card.styled';
+import {
+  ChecklistPopoverContent,
+  ChecklistPopoverHeader,
+  CreateChecklistAddButton,
+  CreateChecklistInput,
+  CreateChecklistTitle,
+} from '~/components/Checklists/Checklists.styled';
 import { Tooltip } from '~/components/shared/Tooltip/Tooltip';
 import { useCreateActivity } from '~/db/activity/activity.query';
 import { useGetCardById } from '~/db/cards/cards.query';
@@ -42,77 +55,54 @@ export function CreateChecklist() {
 
   return (
     <Popover.Root open={open} onOpenChange={setOpen}>
-      <Popover.Trigger
-        className={cardStyles.createChecklistPopoverTrigger}
-        data-testid="CreateChecklistPopoverTrigger"
-      >
+      <CreateChecklistPopoverTrigger data-testid="CreateChecklistPopoverTrigger">
         <Tooltip content="Create checklist">
-          <div
-            className={cardStyles.cardModalActionButton({ isOpen: open })}
+          <CardModalActionButton
             data-testid="CardModalActionButton"
+            $isOpen={open}
           >
             <BsCheck2Square
               style={{ marginRight: '4px', position: 'relative', top: '2px' }}
             />
-            <span
-              className={cardStyles.cardModalSiderButtonText}
-              data-testid="CardModalSiderButtonText"
-            >
+            <CardModalSiderButtonText data-testid="CardModalSiderButtonText">
               Checklist
-            </span>
-          </div>
+            </CardModalSiderButtonText>
+          </CardModalActionButton>
         </Tooltip>
-      </Popover.Trigger>
+      </CreateChecklistPopoverTrigger>
 
-      <Popover.Content
-        className={checklistsStyles.checklistPopoverContent}
+      <ChecklistPopoverContent
         data-testid="ChecklistPopoverContent"
         side="bottom"
         align="start"
         sideOffset={8}
         alignOffset={4}
       >
-        <div
-          className={checklistsStyles.checklistPopoverHeader}
-          data-testid="ChecklistPopoverHeader"
-        >
+        <ChecklistPopoverHeader data-testid="ChecklistPopoverHeader">
           Add checklist
-          <Popover.Close
-            className={boardsStyles.popoverClose}
-            data-testid="PopoverClose"
-          >
-            X
-          </Popover.Close>
-        </div>
+          <PopoverClose data-testid="PopoverClose">X</PopoverClose>
+        </ChecklistPopoverHeader>
 
-        <hr
-          className={boardsStyles.createBoardCloseBorder}
-          data-testid="CreateBoardCloseBorder"
-        />
+        <CreateBoardCloseBorder data-testid="CreateBoardCloseBorder" />
 
-        <div
-          className={checklistsStyles.createChecklistTitle}
-          data-testid="CreateChecklistTitle"
-        >
+        <CreateChecklistTitle data-testid="CreateChecklistTitle">
           Title
-        </div>
+        </CreateChecklistTitle>
 
-        <input
-          className={checklistsStyles.createChecklistInput}
+        <CreateChecklistInput
           data-testid="CreateChecklistInput"
           value={checklistTitle}
+          autoFocus
           onChange={(event) => setChecklistTitle(event.target.value)}
         />
 
-        <button
-          type="button"
-          className={checklistsStyles.createChecklistAddButton}
+        <CreateChecklistAddButton
           data-testid="CreateChecklistAddButton"
           onClick={addChecklist}
         >
           Add
-        </button>
-      </Popover.Content>
+        </CreateChecklistAddButton>
+      </ChecklistPopoverContent>
     </Popover.Root>
   );
 }

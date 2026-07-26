@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import * as styles from '~/components/Activity/Activity.css';
+import { ActivityCommentContent } from '~/components/Activity/Activity.styled';
 import { ActivitySkeleton } from '~/components/Activity/ActivitySkeleton';
 import { EditCommentActions } from '~/components/Activity/EditCommentActions';
 import { EditCommentForm } from '~/components/Activity/EditCommentForm';
@@ -30,12 +30,9 @@ export function EditableComment({ id }: EditableCommentProps) {
 
   return (
     <>
-      <div
-        className={styles.activityCommentContent}
-        data-testid="ActivityCommentContent"
-      >
+      <ActivityCommentContent data-testid="ActivityCommentContent">
         {data.content}
-      </div>
+      </ActivityCommentContent>
 
       <EditCommentActions id={id} setIsEditing={setIsEditing} />
     </>

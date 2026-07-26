@@ -1,7 +1,12 @@
-import { Checkbox } from 'radix-ui';
 import { type CSSProperties, useState } from 'react';
 import { AiOutlineCheck } from 'react-icons/ai';
-import * as styles from '~/components/ChecklistItem/ChecklistItem.css';
+import {
+  CheckboxIndicator,
+  CheckboxRoot,
+  ChecklistCheckboxContainer,
+  ChecklistCheckboxContentColumn,
+  ChecklistLeadingColumn,
+} from '~/components/ChecklistItem/ChecklistItem.styled';
 import { ChecklistItemOptions } from '~/components/ChecklistItem/ChecklistItemOptions';
 import { ChecklistItemSkeleton } from '~/components/ChecklistItem/ChecklistItemSkeleton';
 import { EditableChecklistLabel } from '~/components/ChecklistItem/EditableChecklistLabel';
@@ -69,39 +74,23 @@ export function ChecklistItem({
   }
 
   return (
-    <div
-      className={styles.checklistCheckboxContainer}
-      data-testid="ChecklistCheckboxContainer"
-    >
-      <div
-        className={styles.checklistLeadingColumn}
-        data-testid="ChecklistLeadingColumn"
-      >
-        <Checkbox.Root
-          className={styles.checkboxRoot({
-            checked: checklistItem?.isCompleted,
-          })}
+    <ChecklistCheckboxContainer data-testid="ChecklistCheckboxContainer">
+      <ChecklistLeadingColumn data-testid="ChecklistLeadingColumn">
+        <CheckboxRoot
           data-testid="CheckboxRoot"
           data-editing={isEditingLabel ? '' : undefined}
           checked={checklistItem?.isCompleted}
           onClick={toggleCheckbox}
         >
-          <Checkbox.Indicator
-            className={styles.checkboxIndicator}
-            data-testid="CheckboxIndicator"
-          >
+          <CheckboxIndicator data-testid="CheckboxIndicator">
             <AiOutlineCheck style={checkIconStyles} />
-          </Checkbox.Indicator>
-        </Checkbox.Root>
-      </div>
+          </CheckboxIndicator>
+        </CheckboxRoot>
+      </ChecklistLeadingColumn>
 
-      {/* biome-ignore lint/a11y/noStaticElementInteractions: <Not sure on fix> */}
-      {/* biome-ignore lint/a11y/useKeyWithMouseEvents: <Not needed> */}
-      <div
-        className={styles.checklistCheckboxContentColumn({
-          isHovering: isHovering && !isEditingLabel,
-        })}
+      <ChecklistCheckboxContentColumn
         data-testid="ChecklistContentColumn"
+        $isHovering={isHovering && !isEditingLabel}
         onMouseOver={() => setHovering(true)}
         onMouseOut={() => setHovering(false)}
       >
@@ -119,7 +108,7 @@ export function ChecklistItem({
             isHovering={isHovering}
           />
         )}
-      </div>
-    </div>
+      </ChecklistCheckboxContentColumn>
+    </ChecklistCheckboxContainer>
   );
 }

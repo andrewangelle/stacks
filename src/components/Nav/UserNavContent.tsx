@@ -1,20 +1,21 @@
 import { Show, UserButton } from '@clerk/tanstack-react-start';
 import { Logo } from '~/components/Nav/Logo';
-import * as styles from '~/components/Nav/Nav.css';
+import { NavColumn } from '~/components/Nav/Nav.styled';
+import { Padding } from '~/styles/Page.styled';
 
 export function UserNavContent() {
   return (
     <>
-      <div className={styles.navColumn} data-testid="column-placeholder" />
+      <NavColumn data-testid="column-placeholder" />
       <Logo />
 
-      <div className={styles.navColumn} data-testid="column-placeholder">
+      <NavColumn data-testid="column-placeholder">
         <Show when="signed-in">
-          <div style={{ padding: '5px 20px 0px 0px' }}>
+          <Padding padding="5px 20px 0px 0px">
             <UserButton />
-          </div>
+          </Padding>
         </Show>
-      </div>
+      </NavColumn>
     </>
   );
 }

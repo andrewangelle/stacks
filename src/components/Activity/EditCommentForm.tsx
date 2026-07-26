@@ -1,6 +1,10 @@
 import { type SubmitEvent, useState } from 'react';
-import * as activityStyles from '~/components/Activity/Activity.css';
-import * as listStyles from '~/components/Lists/List.css';
+import {
+  AddCommentInput,
+  EditCommentActionsRow,
+  SaveCommentButton,
+} from '~/components/Activity/Activity.styled';
+import { CloseAddCardButton } from '~/components/Lists/List.styled';
 import { useUpdateActivity } from '~/db/activity/activity.query';
 import type { Activity } from '~/generated/prisma/client';
 import { useCurrentCardId } from '~/utils/useCurrentCardId';
@@ -30,37 +34,30 @@ export function EditCommentForm({
 
   return (
     <form onSubmit={saveComment}>
-      <input
-        className={activityStyles.addCommentInput}
+      <AddCommentInput
         name="comment"
         data-testid="AddCommentInput"
         placeholder={content}
+        autoFocus
         style={{ margin: '8px 0px' }}
         value={editedComment}
         onChange={(event) => setEditedComment(event.target.value)}
       />
 
-      <div
-        className={activityStyles.editCommentActionsRow}
-        data-testid="EditCommentActionsRow"
-      >
-        <button
-          className={activityStyles.saveCommentButton}
-          data-testid="SaveCommentButton"
-          type="submit"
-        >
+      <EditCommentActionsRow data-testid="EditCommentActionsRow">
+        <SaveCommentButton data-testid="SaveCommentButton" type="submit">
           Save
-        </button>
+        </SaveCommentButton>
 
-        <button
-          className={listStyles.closeAddCardButton}
+        <CloseAddCardButton
           data-testid="CloseAddCardButton"
           type="button"
+          $secondary
           onClick={() => setIsEditing(false)}
         >
           Cancel
-        </button>
-      </div>
+        </CloseAddCardButton>
+      </EditCommentActionsRow>
     </form>
   );
 }

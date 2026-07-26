@@ -1,7 +1,6 @@
-import { assignInlineVars } from '@vanilla-extract/dynamic';
 import type { MouseEvent } from 'react';
 import { AiOutlineCheck } from 'react-icons/ai';
-import * as styles from '~/components/Lists/CardTitleDetails/CardTitleDetails.css';
+import { CardCompletedIndicatorCircle } from '~/components/Lists/CardTitleDetails/CardTitleDetails.styled';
 import { Tooltip } from '~/components/shared/Tooltip/Tooltip';
 import { useCreateActivity } from '~/db/activity/activity.query';
 import { useGetCard, useUpdateCard } from '~/db/cards/cards.query';
@@ -51,13 +50,8 @@ export function CardCompletedIndicator({
 
   return (
     <Tooltip content={isCompleted ? 'Mark incomplete' : 'Mark complete'}>
-      <button
-        className={styles.cardCompletedIndicatorCircle}
-        style={
-          circleSize
-            ? assignInlineVars({ [styles.circleSizeVar]: circleSize })
-            : undefined
-        }
+      <CardCompletedIndicatorCircle
+        $circleSize={circleSize}
         aria-label="Mark card complete"
         data-completed={isCompleted ? '' : undefined}
         data-testid="CardTitleModalTriggerCircle"
@@ -71,7 +65,7 @@ export function CardCompletedIndicator({
             data-testid="CardCompletedIndicatorCheckmark"
           />
         )}
-      </button>
+      </CardCompletedIndicatorCircle>
     </Tooltip>
   );
 }

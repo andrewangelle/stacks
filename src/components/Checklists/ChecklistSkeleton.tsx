@@ -1,58 +1,41 @@
 import { BsCheck2Square } from 'react-icons/bs';
-import * as checklistItemStyles from '~/components/ChecklistItem/ChecklistItem.css';
-import * as checklistsStyles from '~/components/Checklists/Checklists.css';
+import {
+  ChecklistContentColumn,
+  ChecklistLeadingColumn,
+} from '~/components/ChecklistItem/ChecklistItem.styled';
+import {
+  ChecklistContainer,
+  ChecklistHeader,
+  ChecklistNameSkeleton,
+  ChecklistNameSkeletonContainer,
+  ChecklistProgressRow,
+  ChecklistProgressSkeleton,
+  DeleteChecklistSkeleton,
+} from '~/components/Checklists/Checklists.styled';
 
 export function ChecklistSkeleton() {
   return (
-    <div
-      className={checklistsStyles.checklistContainer}
-      data-testid="ChecklistContainer"
-    >
-      <div
-        className={checklistsStyles.checklistHeader}
-        data-testid="ChecklistHeader"
-      >
-        <div
-          className={checklistsStyles.checklistNameSkeletonContainer}
-          data-testid="ChecklistNameSkeletonContainer"
-        >
+    <ChecklistContainer data-testid="ChecklistContainer">
+      <ChecklistHeader data-testid="ChecklistHeader">
+        <ChecklistNameSkeletonContainer data-testid="ChecklistNameSkeletonContainer">
           <BsCheck2Square size={24} />
-          <div
-            className={checklistsStyles.checklistNameSkeleton}
-            data-testid="ChecklistNameSkeleton"
-          />
-        </div>
-        <div
-          className={checklistsStyles.deleteChecklistSkeleton}
-          data-testid="DeleteChecklistSkeleton"
-        />
-      </div>
+          <ChecklistNameSkeleton data-testid="ChecklistNameSkeleton" />
+        </ChecklistNameSkeletonContainer>
+        <DeleteChecklistSkeleton data-testid="DeleteChecklistSkeleton" />
+      </ChecklistHeader>
 
-      <div
-        className={checklistsStyles.checklistProgressRow}
-        data-testid="ChecklistProgressRow"
-      >
-        <div
-          className={checklistItemStyles.checklistLeadingColumn}
-          data-testid="ChecklistLeadingColumn"
-        >
-          <div
-            className={checklistsStyles.checklistProgressSkeleton}
-            data-testid="ChecklistProgressSkeleton"
-          />
-        </div>
+      <ChecklistProgressRow data-testid="ChecklistProgressRow">
+        <ChecklistLeadingColumn data-testid="ChecklistLeadingColumn">
+          <ChecklistProgressSkeleton data-testid="ChecklistProgressSkeleton" />
+        </ChecklistLeadingColumn>
 
-        <div
-          className={checklistItemStyles.checklistContentColumn}
-          data-testid="ChecklistContentColumn"
-        >
-          <div
-            className={checklistsStyles.checklistProgressSkeleton}
+        <ChecklistContentColumn data-testid="ChecklistContentColumn">
+          <ChecklistProgressSkeleton
             data-testid="ChecklistProgressSkeleton"
             style={{ marginLeft: '8px' }}
           />
-        </div>
-      </div>
-    </div>
+        </ChecklistContentColumn>
+      </ChecklistProgressRow>
+    </ChecklistContainer>
   );
 }

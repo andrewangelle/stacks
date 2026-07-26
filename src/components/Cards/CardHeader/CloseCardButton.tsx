@@ -1,31 +1,27 @@
-import { Dialog } from 'radix-ui';
 import type { CardHeaderProps } from '~/components/Cards/CardHeader/CardHeader';
-import * as cardHeaderStyles from '~/components/Cards/CardHeader/CardHeader.css';
-import * as cardTitleDetailsStyles from '~/components/Lists/CardTitleDetails/CardTitleDetails.css';
+import {
+  CardModalClose,
+  CardModalCloseSpinnerSlot,
+  CardPageClose,
+} from '~/components/Cards/CardHeader/CardHeader.styled';
+import { CardTitleDetailsSpinner } from '~/components/Lists/CardTitleDetails/CardTitleDetails.styled';
 
 export function CloseCardButton({
   isNavigating,
   asPage,
 }: Pick<CardHeaderProps, 'isNavigating' | 'asPage'>) {
-  const closeClassName = asPage
-    ? cardHeaderStyles.cardPageClose
-    : cardHeaderStyles.cardModalClose;
+  const CloseButton = asPage ? CardPageClose : CardModalClose;
 
   return (
     <>
       {isNavigating && (
-        <div
-          className={cardHeaderStyles.cardModalCloseSpinnerSlot}
-          data-testid="CardModalCloseSpinner"
-        >
-          <div className={cardTitleDetailsStyles.cardTitleDetailsSpinner} />
-        </div>
+        <CardModalCloseSpinnerSlot data-testid="CardModalCloseSpinner">
+          <CardTitleDetailsSpinner />
+        </CardModalCloseSpinnerSlot>
       )}
 
       {!isNavigating && (
-        <Dialog.Close className={closeClassName} data-testid="CardModalClose">
-          X
-        </Dialog.Close>
+        <CloseButton data-testid="CardModalClose">X</CloseButton>
       )}
     </>
   );

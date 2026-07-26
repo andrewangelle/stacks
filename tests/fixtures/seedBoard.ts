@@ -1,5 +1,5 @@
+import type { BoardBackground } from '~/components/Boards/Boards.styled';
 import { prisma } from '~/db/prisma';
-import type { BoardBackground } from '~/styles/tokens';
 import { buildBoard } from '~test/factories/board';
 import { TEST_USER_ID } from '~test/mocks/constants';
 

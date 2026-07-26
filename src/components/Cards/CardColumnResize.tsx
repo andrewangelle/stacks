@@ -1,5 +1,5 @@
 import { type PointerEvent, useRef } from 'react';
-import * as styles from '~/components/Cards/Card.css';
+import { ResizeableCardColumnHandle } from '~/components/Cards/Card.styled';
 import {
   ACTIVITY_COLUMN_MAX_WIDTH,
   ACTIVITY_COLUMN_MIN_WIDTH,
@@ -49,8 +49,7 @@ export function CardColumnResize({
   }
 
   return (
-    <div
-      className={styles.resizeableCardColumnHandle}
+    <ResizeableCardColumnHandle
       data-testid="ResizeableCardColumnHandle"
       onPointerDown={initializePointer}
       onPointerMove={resizeColumnWidth}

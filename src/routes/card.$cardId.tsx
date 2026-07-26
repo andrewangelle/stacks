@@ -1,12 +1,12 @@
 import { createFileRoute, redirect } from '@tanstack/react-router';
 import { CompositeComponent } from '@tanstack/react-start/rsc';
 import { Suspense } from 'react';
-import * as boardStyles from '~/components/Boards/Board.css';
+import { BoardListsFallback } from '~/components/Boards/Board.styled';
 import { BoardLists } from '~/components/Boards/BoardLists';
 import { Card } from '~/components/Cards/Card';
 import { CardFallback } from '~/components/Cards/CardFallback';
 import { BoardHeader } from '~/components/Nav/BoardHeader';
-import * as navStyles from '~/components/Nav/Nav.css';
+import { NavBarContainer } from '~/components/Nav/Nav.styled';
 import { UserNavContent } from '~/components/Nav/UserNavContent';
 import { getBoardPageServer } from '~/components/server/Board.functions';
 import {
@@ -15,7 +15,6 @@ import {
 } from '~/components/server/Nav.functions';
 import { boardsQueryOptions } from '~/db/boards/boards.query';
 import { getBoardIdByCardId } from '~/db/cards/cards.functions';
-import type { BoardBackground } from '~/styles/tokens';
 
 export const Route = createFileRoute('/card/$cardId')({
   async loader({ context, params }) {
@@ -68,10 +67,7 @@ export const Route = createFileRoute('/card/$cardId')({
 
     return (
       <>
-        <div
-          className={navStyles.navBarContainer}
-          data-testid="NavBarContainer"
-        >
+        <NavBarContainer data-testid="NavBarContainer">
           <CompositeComponent src={NavBarServer.src}>
             <UserNavContent />
           </CompositeComponent>
@@ -79,7 +75,7 @@ export const Route = createFileRoute('/card/$cardId')({
           <CompositeComponent src={BoardHeaderServer.src}>
             <BoardHeader />
           </CompositeComponent>
-        </div>
+        </NavBarContainer>
 
         {isMobile ? (
           <Suspense fallback={<CardFallback />}>
@@ -90,11 +86,9 @@ export const Route = createFileRoute('/card/$cardId')({
             <CompositeComponent src={BoardPageServer.src}>
               <Suspense
                 fallback={
-                  <div
-                    className={boardStyles.boardListsFallback({
-                      background: boardColor as BoardBackground,
-                    })}
+                  <BoardListsFallback
                     data-testid="BoardListsFallback"
+                    $background={boardColor}
                   />
                 }
               >

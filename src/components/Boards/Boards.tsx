@@ -1,7 +1,7 @@
 import { useSuspenseQuery } from '@tanstack/react-query';
 import { Suspense } from 'react';
 import { Board } from '~/components/Boards/Board';
-import * as styles from '~/components/Boards/Boards.css';
+import { BoardCardSkeleton } from '~/components/Boards/Boards.styled';
 import { CreateBoard } from '~/components/Boards/CreateBoard';
 import { boardsQueryOptions } from '~/db/boards/boards.query';
 
@@ -14,11 +14,7 @@ export function Boards() {
         <Suspense
           key={board.id}
           fallback={
-            <div
-              className={styles.boardCardSkeleton}
-              data-testid="BoardCardSkeleton"
-              key={board.id}
-            />
+            <BoardCardSkeleton data-testid="BoardCardSkeleton" key={board.id} />
           }
         >
           <Board key={board.id} boardId={board.id} />

@@ -1,11 +1,14 @@
 import { Popover } from 'radix-ui';
-import * as activityStyles from '~/components/Activity/Activity.css';
-import * as boardsStyles from '~/components/Boards/Boards.css';
-import * as checklistItemStyles from '~/components/ChecklistItem/ChecklistItem.css';
-import * as checklistsStyles from '~/components/Checklists/Checklists.css';
+import { DeleteCommentLink } from '~/components/Activity/Activity.styled';
+import { PopoverClose } from '~/components/Boards/Boards.styled';
+import { DeleteChecklistPopoverButton } from '~/components/ChecklistItem/ChecklistItem.styled';
+import { ChecklistPopoverHeader } from '~/components/Checklists/Checklists.styled';
 import { useDeleteActivity } from '~/db/activity/activity.query';
 import type { Activity } from '~/generated/prisma/client';
-import * as pageStyles from '~/styles/Page.css';
+import {
+  PopoverOptionsContent,
+  PopoverOptionsContentContainer,
+} from '~/styles/Page.styled';
 import { useCurrentCardId } from '~/utils/useCurrentCardId';
 
 const strings = {
@@ -21,43 +24,26 @@ export function DeleteCommentPopover(props: Pick<Activity, 'id'>) {
   return (
     <Popover.Root>
       <Popover.Trigger asChild>
-        <button
-          className={activityStyles.editCommentLink}
-          type="button"
-          data-testid="DeleteCommentLink"
-        >
+        <DeleteCommentLink type="button" data-testid="DeleteCommentLink">
           {strings.deleteCommentButton}
-        </button>
+        </DeleteCommentLink>
       </Popover.Trigger>
 
       <Popover.Portal>
-        <Popover.Content
-          className={activityStyles.deleteCommentPopoverContent}
+        <PopoverOptionsContent
           data-testid="PopoverOptionsContent"
-          side="bottom"
-          align="start"
-          sideOffset={8}
+          style={{ zIndex: 3 }}
         >
-          <div
-            className={checklistsStyles.checklistPopoverHeader}
-            data-testid="ChecklistPopoverHeader"
-          >
+          <ChecklistPopoverHeader data-testid="ChecklistPopoverHeader">
             <div style={{ fontWeight: 600 }}>{strings.deleteComment}?</div>
 
-            <Popover.Close
-              className={boardsStyles.popoverClose}
-              data-testid="PopoverClose"
-            >
-              X
-            </Popover.Close>
-          </div>
+            <PopoverClose data-testid="PopoverClose">X</PopoverClose>
+          </ChecklistPopoverHeader>
 
-          <div className={pageStyles.popoverOptionsContentContainer}>
+          <PopoverOptionsContentContainer>
             {strings.deleteCommentConfirmation}
 
-            <button
-              type="button"
-              className={checklistItemStyles.deleteChecklistPopoverButton}
+            <DeleteChecklistPopoverButton
               data-testid="DeleteChecklistPopoverButton"
               onClick={() =>
                 deleteActivity({
@@ -67,9 +53,9 @@ export function DeleteCommentPopover(props: Pick<Activity, 'id'>) {
               }
             >
               {strings.deleteCommentButton}
-            </button>
-          </div>
-        </Popover.Content>
+            </DeleteChecklistPopoverButton>
+          </PopoverOptionsContentContainer>
+        </PopoverOptionsContent>
       </Popover.Portal>
     </Popover.Root>
   );

@@ -1,7 +1,7 @@
 import { Show, SignIn, UserButton } from '@clerk/tanstack-react-start';
 import { createFileRoute, redirect } from '@tanstack/react-router';
 import { NavBarClient } from '~/components/Nav/NavBarClient';
-import * as styles from '~/styles/Page.css';
+import { FlexCenter } from '~/styles/Page.styled';
 
 export const Route = createFileRoute('/auth/sign-in')({
   loader({ context }) {
@@ -15,7 +15,7 @@ export const Route = createFileRoute('/auth/sign-in')({
       <>
         <NavBarClient />
 
-        <div className={styles.flexCenter} data-testid="FlexCenter">
+        <FlexCenter data-testid="FlexCenter">
           <Show when="signed-in">
             <UserButton />
           </Show>
@@ -23,7 +23,7 @@ export const Route = createFileRoute('/auth/sign-in')({
           <Show when="signed-out">
             <SignIn />
           </Show>
-        </div>
+        </FlexCenter>
       </>
     );
   },
