@@ -1,5 +1,5 @@
-import { styled } from '@pigment-css/react';
 import { Dialog } from 'radix-ui';
+import { styled } from 'styled-components';
 
 export const CardHeaderContainer = styled.div` 
   display: flex;

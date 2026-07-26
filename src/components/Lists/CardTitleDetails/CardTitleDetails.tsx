@@ -56,7 +56,7 @@ export function CardTitleDetails({
       >
         <ListCardTitleDetailsContainer
           data-testid="ListCardTitleDetailsContainer"
-          isCompleted={isCompleted}
+          $isCompleted={isCompleted}
         >
           <CardCompletedIndicator
             cardId={id}

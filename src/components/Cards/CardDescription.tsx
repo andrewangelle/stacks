@@ -53,7 +53,7 @@ export function CardDescription() {
         {data?.cardDescription && !isEditing && (
           <EditDescriptionButton
             data-testid="EditDescriptionButton"
-            secondary
+            $secondary
             onClick={editDescription}
           >
             Edit
@@ -96,7 +96,7 @@ export function CardDescription() {
 
             <CloseDescriptionButton
               data-testid="CloseDescriptionButton"
-              secondary
+              $secondary
               onClick={() => setEditing(false)}
             >
               Cancel

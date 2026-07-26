@@ -49,12 +49,9 @@ export function CardCompletedIndicator({
   }
 
   return (
-    <Tooltip
-      portal={false}
-      content={isCompleted ? 'Mark incomplete' : 'Mark complete'}
-    >
+    <Tooltip content={isCompleted ? 'Mark incomplete' : 'Mark complete'}>
       <CardCompletedIndicatorCircle
-        circleSize={circleSize}
+        $circleSize={circleSize}
         aria-label="Mark card complete"
         data-completed={isCompleted ? '' : undefined}
         data-testid="CardTitleModalTriggerCircle"

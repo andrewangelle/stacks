@@ -56,10 +56,10 @@ export function CreateChecklist() {
   return (
     <Popover.Root open={open} onOpenChange={setOpen}>
       <CreateChecklistPopoverTrigger data-testid="CreateChecklistPopoverTrigger">
-        <Tooltip portal={false} content="Create checklist">
+        <Tooltip content="Create checklist">
           <CardModalActionButton
             data-testid="CardModalActionButton"
-            isOpen={open}
+            $isOpen={open}
           >
             <BsCheck2Square
               style={{ marginRight: '4px', position: 'relative', top: '2px' }}

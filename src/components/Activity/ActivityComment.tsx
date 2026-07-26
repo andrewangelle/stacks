@@ -42,7 +42,7 @@ export function ActivityComment({
       data-testid="ActivityContainer"
       key={data?.id}
       ref={ref}
-      isSelected={isSelected}
+      $isSelected={isSelected}
     >
       <ActivityRow data-testid="ActivityRow">
         <ActivityLogo />

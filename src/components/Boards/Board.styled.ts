@@ -1,4 +1,4 @@
-import { styled } from '@pigment-css/react';
+import { styled } from 'styled-components';
 import {
   type BoardBackground,
   fontFamily,
@@ -18,28 +18,28 @@ type BackgroundProps = {
   background?: BoardBackground;
 };
 
-export const BoardHeaderFallback = styled.div<BackgroundProps>({
-  height: '39.5px',
-});
+export const BoardHeaderFallback = styled.div<BackgroundProps>`
+  height: 39.5px;
+`;
 
-export const AddListContainer = styled('div')({
-  position: 'relative',
-  fontFamily: fontFamily,
-  backgroundColor: 'rgba(255, 255, 255, .3)',
-  padding: '12px 12px 10px',
-  width: '225px',
-  borderRadius: '8px',
-  color: '#fff',
-  cursor: 'pointer',
-  height: '25px',
-  '&[data-editing]': {
-    height: 'max-content',
-    backgroundColor: '#ebecf0',
-  },
-  '&:hover:not([data-editing])': {
-    backgroundColor: 'rgba(255, 255, 255, .5)',
-  },
-});
+export const AddListContainer = styled.div`
+  position: relative;
+  font-family: ${fontFamily};
+  background-color: rgba(255, 255, 255, .3);
+  padding: 12px 12px 10px;
+  width: 225px;
+  border-radius: 8px;
+  color: #fff;
+  cursor: pointer;
+  height: 25px;
+  &[data-editing] {
+    height: max-content;
+    background-color: #ebecf0;
+  }
+  &:hover:not([data-editing]) {
+    background-color: rgba(255, 255, 255, .5);
+  }
+`;
 
 export const AddListInput = styled.input` 
   border-radius: 8px;

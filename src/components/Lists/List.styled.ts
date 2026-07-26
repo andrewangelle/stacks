@@ -1,5 +1,4 @@
-import { styled } from '@pigment-css/react';
-import { activityFieldStyles } from '~/components/Activity/Activity.styled';
+import { styled } from 'styled-components';
 import { fontFamily } from '~/components/Boards/Boards.styled';
 import { animationStyles } from '~/styles/animations';
 import { Button } from '~/styles/Page.styled';
@@ -12,24 +11,25 @@ export const ListGridContainer = styled.div`
 `;
 
 type ListContainerProps = {
-  isMobile: boolean;
+  $isMobile: boolean;
 };
 
-export const ListContainer = styled.div<ListContainerProps>({
-  backgroundColor: listBackground,
-  borderRadius: '8px',
-  boxSizing: 'border-box',
-  display: 'flex',
-  flexDirection: 'column',
-  maxHeight: (props) => (props.isMobile ? '80%' : '100%'),
-  height: 'max-content',
-  position: 'relative',
-  whiteSpace: 'normal',
-  width: '275px',
-  padding: '0px 8px',
-  margin: '0 15px',
-  overflow: 'auto',
-});
+export const ListContainer = styled.div<ListContainerProps>`
+
+  background-color: ${listBackground};
+  border-radius: 8px;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  max-height: ${({ $isMobile }) => ($isMobile ? '80%' : '100%')};
+  height: max-content;
+  position: relative;
+  white-space: normal;
+  width: 275px;
+  padding: 0px 8px;
+  margin: 0 15px;
+  overflow: auto;
+`;
 
 export const ListContentContainer = styled.div`
   overscroll-behavior: contain;
@@ -92,15 +92,15 @@ export const EditListNameInput = styled.input`
   font-size: 14px;
 `;
 
-export const AddListButton = styled.button({
-  border: 'none',
-  background: 'none',
-  cursor: 'pointer',
-  fontWeight: 500,
-  fontSize: 14,
-  color: 'white',
-  letterSpacing: '0.05rem',
-});
+export const AddListButton = styled.button`
+  border: none;
+  background: none;
+  cursor: pointer;
+  font-weight: 500;
+  font-size: 14px;
+  color: white;
+  letter-spacing: 0.05rem;
+`;
 
 export const AddCardButton = styled(Button)` 
   margin: 0;
@@ -172,13 +172,13 @@ export const ListCardContainer = styled.div`
   }
 `;
 
-export const ListCardSkeleton = styled(ListCardContainer)({
-  background: 'rgba(9, 30, 66, 0.25)',
-  cursor: 'default',
-  pointerEvents: 'none',
-  minHeight: '16px',
-  ...animationStyles.pulse,
-});
+export const ListCardSkeleton = styled(ListCardContainer)`
+  background: rgba(9, 30, 66, 0.25);
+  cursor: default;
+  pointer-events: none;
+  min-height: 16px;
+  ${animationStyles.pulse}
+`;
 
 export const ListHeaderSkeletonRow = styled.div`
   display: flex;
@@ -232,7 +232,7 @@ export const AddNewCardAtPositionPlus = styled.div`
   color: rgba(0, 0, 0, 0.7);
   border-radius: 2px;
   box-shadow: 0.5px 0.5px 0.5px 0.5px #091e4240; 
-  border: ${activityFieldStyles.border};
+  border: 0.05px solid rgba(9, 30, 66, 0.2);
   border-radius: 5px;
   z-index: 1;
 `;

@@ -93,7 +93,7 @@ export function ActivityTimestamp({
 
       <PaperclipReveal
         data-testid="PaperclipReveal"
-        isVisible={showPaperclipIcon}
+        $isVisible={showPaperclipIcon}
         aria-hidden={!showPaperclipIcon}
       >
         <GoPaperclip

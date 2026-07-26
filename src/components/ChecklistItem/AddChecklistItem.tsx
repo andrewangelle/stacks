@@ -32,7 +32,7 @@ export function AddChecklistItem({ checklistId }: { checklistId: string }) {
       {!isEditing && (
         <AddChecklistItemButton
           data-testid="AddChecklistItemButton"
-          secondary
+          $secondary
           onClick={() => setIsEditing(true)}
         >
           Add an item
@@ -59,7 +59,7 @@ export function AddChecklistItem({ checklistId }: { checklistId: string }) {
 
             <CloseDescriptionButton
               data-testid="CloseDescriptionButton"
-              secondary
+              $secondary
               onClick={() => setIsEditing(false)}
             >
               Cancel

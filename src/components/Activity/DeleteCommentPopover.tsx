@@ -29,29 +29,34 @@ export function DeleteCommentPopover(props: Pick<Activity, 'id'>) {
         </DeleteCommentLink>
       </Popover.Trigger>
 
-      <PopoverOptionsContent data-testid="PopoverOptionsContent">
-        <ChecklistPopoverHeader data-testid="ChecklistPopoverHeader">
-          <div style={{ fontWeight: 600 }}>{strings.deleteComment}?</div>
+      <Popover.Portal>
+        <PopoverOptionsContent
+          data-testid="PopoverOptionsContent"
+          style={{ zIndex: 3 }}
+        >
+          <ChecklistPopoverHeader data-testid="ChecklistPopoverHeader">
+            <div style={{ fontWeight: 600 }}>{strings.deleteComment}?</div>
 
-          <PopoverClose data-testid="PopoverClose">X</PopoverClose>
-        </ChecklistPopoverHeader>
+            <PopoverClose data-testid="PopoverClose">X</PopoverClose>
+          </ChecklistPopoverHeader>
 
-        <PopoverOptionsContentContainer>
-          {strings.deleteCommentConfirmation}
+          <PopoverOptionsContentContainer>
+            {strings.deleteCommentConfirmation}
 
-          <DeleteChecklistPopoverButton
-            data-testid="DeleteChecklistPopoverButton"
-            onClick={() =>
-              deleteActivity({
-                activityId: props.id,
-                cardId,
-              })
-            }
-          >
-            {strings.deleteCommentButton}
-          </DeleteChecklistPopoverButton>
-        </PopoverOptionsContentContainer>
-      </PopoverOptionsContent>
+            <DeleteChecklistPopoverButton
+              data-testid="DeleteChecklistPopoverButton"
+              onClick={() =>
+                deleteActivity({
+                  activityId: props.id,
+                  cardId,
+                })
+              }
+            >
+              {strings.deleteCommentButton}
+            </DeleteChecklistPopoverButton>
+          </PopoverOptionsContentContainer>
+        </PopoverOptionsContent>
+      </Popover.Portal>
     </Popover.Root>
   );
 }

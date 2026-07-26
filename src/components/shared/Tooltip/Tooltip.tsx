@@ -4,18 +4,12 @@ import { useState } from 'react';
 import { TooltipContent } from '~/components/shared/Tooltip/Tooltip.styled';
 
 type TooltipProps = {
-  portal?: boolean;
   disabled?: boolean;
   content: ReactNode;
   children: ReactNode;
 };
 
-export function Tooltip({
-  portal = true,
-  disabled,
-  content,
-  children,
-}: TooltipProps) {
+export function Tooltip({ disabled, content, children }: TooltipProps) {
   const [isOpen, setIsOpen] = useState(false);
 
   return (
@@ -25,19 +19,12 @@ export function Tooltip({
         onOpenChange={(nextIsOpen) => !disabled && setIsOpen(nextIsOpen)}
       >
         <TooltipPrimitive.Trigger asChild>{children}</TooltipPrimitive.Trigger>
-        {portal && (
-          <TooltipPrimitive.Portal>
-            <TooltipContent side="bottom" sideOffset={8}>
-              {content}
-            </TooltipContent>
-          </TooltipPrimitive.Portal>
-        )}
 
-        {!portal && (
+        <TooltipPrimitive.Portal>
           <TooltipContent side="bottom" sideOffset={8}>
             {content}
           </TooltipContent>
-        )}
+        </TooltipPrimitive.Portal>
       </TooltipPrimitive.Root>
     </TooltipPrimitive.Provider>
   );

@@ -34,7 +34,7 @@ export function ActivitySkeleton() {
 
         <HideActivityButton
           data-testid="HideActivityButton"
-          secondary={true}
+          $secondary={true}
           onClick={() => setShowActivity((prev) => !prev)}
         >
           {showActivity ? 'Hide details' : 'Show details'}

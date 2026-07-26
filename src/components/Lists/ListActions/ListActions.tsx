@@ -46,10 +46,10 @@ export function ListActions({ id }: ListActionsProps) {
   return (
     <Popover.Root open={open} onOpenChange={closePopover}>
       <ListActionsPopoverTrigger data-testid="ListActionsPopoverTrigger">
-        <Tooltip portal={true} content="List actions">
+        <Tooltip content="List actions">
           <ListActionsPopoverButton
             data-testid="ListActionsPopoverButton"
-            isOpen={open}
+            $isOpen={open}
           >
             <ListActionsPopoverButtonText data-testid="ListActionsPopoverButtonText">
               ...
@@ -58,64 +58,66 @@ export function ListActions({ id }: ListActionsProps) {
         </Tooltip>
       </ListActionsPopoverTrigger>
 
-      <PopoverOptionsContent data-testid="PopoverOptionsContent">
-        <ListActionsPopoverHeader data-testid="ListActionsPopoverHeader">
-          <div>
-            <ListActionsPopoverButtonBack
-              tabIndex={view !== 'actions' ? 0 : -1}
-              isActive={view !== 'actions'}
-              onClick={() => setView('actions')}
-            >
-              {view !== 'actions' ? '<' : ''}
-            </ListActionsPopoverButtonBack>
-          </div>
+      <Popover.Portal>
+        <PopoverOptionsContent data-testid="PopoverOptionsContent">
+          <ListActionsPopoverHeader data-testid="ListActionsPopoverHeader">
+            <div>
+              <ListActionsPopoverButtonBack
+                tabIndex={view !== 'actions' ? 0 : -1}
+                $isActive={view !== 'actions'}
+                onClick={() => setView('actions')}
+              >
+                {view !== 'actions' ? '<' : ''}
+              </ListActionsPopoverButtonBack>
+            </div>
 
-          <div>{viewTitles[view]}</div>
+            <div>{viewTitles[view]}</div>
 
-          <ListActionsPopoverClose data-testid="ListActionsPopoverClose">
-            X
-          </ListActionsPopoverClose>
-        </ListActionsPopoverHeader>
+            <ListActionsPopoverClose data-testid="ListActionsPopoverClose">
+              X
+            </ListActionsPopoverClose>
+          </ListActionsPopoverHeader>
 
-        {view === 'actions' && (
-          <ListActionsOptionsContainer data-testid="ListActionsOptionsContainer">
-            <ListActionsOption
-              data-testid="ListActionsOption"
-              onClick={() => setView('move')}
-            >
-              Move list
-            </ListActionsOption>
+          {view === 'actions' && (
+            <ListActionsOptionsContainer data-testid="ListActionsOptionsContainer">
+              <ListActionsOption
+                data-testid="ListActionsOption"
+                onClick={() => setView('move')}
+              >
+                Move list
+              </ListActionsOption>
 
-            <ListActionsOption
-              data-testid="ListActionsOption"
-              onClick={() => setView('delete')}
-            >
-              Archive this list
-            </ListActionsOption>
-          </ListActionsOptionsContainer>
-        )}
+              <ListActionsOption
+                data-testid="ListActionsOption"
+                onClick={() => setView('delete')}
+              >
+                Archive this list
+              </ListActionsOption>
+            </ListActionsOptionsContainer>
+          )}
 
-        {view === 'move' && (
-          <MoveListMenu id={id} closeMenu={() => closePopover(false)} />
-        )}
+          {view === 'move' && (
+            <MoveListMenu id={id} closeMenu={() => closePopover(false)} />
+          )}
 
-        {view === 'delete' && (
-          <PopoverOptionsContentContainer>
-            This list will be deleted
-            <DeleteListButton
-              data-testid="DeleteListButton"
-              onClick={() =>
-                deleteList({
-                  listId: id,
-                  boardId,
-                })
-              }
-            >
-              Delete list
-            </DeleteListButton>
-          </PopoverOptionsContentContainer>
-        )}
-      </PopoverOptionsContent>
+          {view === 'delete' && (
+            <PopoverOptionsContentContainer>
+              This list will be deleted
+              <DeleteListButton
+                data-testid="DeleteListButton"
+                onClick={() =>
+                  deleteList({
+                    listId: id,
+                    boardId,
+                  })
+                }
+              >
+                Delete list
+              </DeleteListButton>
+            </PopoverOptionsContentContainer>
+          )}
+        </PopoverOptionsContent>
+      </Popover.Portal>
     </Popover.Root>
   );
 }

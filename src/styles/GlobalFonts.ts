@@ -1,8 +1,8 @@
-import { globalCss } from '@pigment-css/react';
+import { createGlobalStyle } from 'styled-components';
 
 import { fontFamily } from '~/styles/tokens';
 
-globalCss`
+const GlobalFonts = createGlobalStyle`
   @font-face {
     font-family: 'App Sans';
     src: url('/AppSans-latin.woff2') format('woff2');
@@ -27,6 +27,4 @@ globalCss`
   }
 `;
 
-export default function GlobalFonts() {
-  return null;
-}
+export default GlobalFonts;

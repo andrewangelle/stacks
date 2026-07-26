@@ -39,7 +39,7 @@ export function CardTitleDetailsContentIcons({
   return (
     <CardTitleDetailsContentIconsContainer
       data-testid="CardTitleDetailsContentIconsContainer"
-      commentsCount={commentsCount}
+      $commentsCount={commentsCount}
     >
       {commentsCount > 0 && (
         <Tooltip content="Comments">
@@ -66,8 +66,8 @@ export function CardTitleDetailsContentIcons({
         <Tooltip content={checklistTooltipText}>
           <CardTitleDetailsChecklistTotalsContainer
             data-testid="CardTitleDetailsChecklistTotalsContainer"
-            isAllCompleted={data?.isAllCompleted ?? false}
-            isOpen={isOpen}
+            $isAllCompleted={data?.isAllCompleted ?? false}
+            $isOpen={isOpen}
             onClick={toggleOpen}
           >
             <RiCheckboxLine size={14} />

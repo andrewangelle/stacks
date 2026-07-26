@@ -1,116 +1,115 @@
-import { styled } from '@pigment-css/react';
 import { Accordion, Checkbox } from 'radix-ui';
+import { css, styled } from 'styled-components';
 import { ListCardSkeleton } from '~/components/Lists/List.styled';
 import { blue, darkGray, focusRingBlue, fontFamily } from '~/styles/tokens';
 
 const circleSizeDefault = '15px';
 
 type IsCompletedProps = {
-  isCompleted: boolean;
+  $isCompleted: boolean;
 };
 
-export const ListCardTitleDetailsContainer = styled.div<IsCompletedProps>({
-  display: 'inline-flex',
-  alignItems: 'center',
-  width: '100%',
-  minWidth: 0,
-  wordBreak: 'break-word',
-  color: ({ isCompleted }) => (isCompleted ? 'rgba(0, 0, 0, 0.5)' : 'inherit'),
-});
+export const ListCardTitleDetailsContainer = styled.div<IsCompletedProps>`
+
+  display: inline-flex;
+  align-items: center;
+  width: 100%;
+  min-width: 0;
+  word-break: break-word;
+  color: ${({ $isCompleted }) => ($isCompleted ? 'rgba(0, 0, 0, 0.5)' : 'inherit')};
+`;
 
 type CardCompletedIndicatorCircleProps = {
-  circleSize?: string;
+  $circleSize?: string;
 };
 
-export const CardCompletedIndicatorCircle = styled(
-  'button',
-)<CardCompletedIndicatorCircleProps>({
-  display: 'inline-flex',
-  flexShrink: 0,
-  alignItems: 'center',
-  justifyContent: 'center',
-  boxSizing: 'border-box',
-  width: 0,
-  height: ({ circleSize = circleSizeDefault }) => circleSize,
-  marginRight: 0,
-  padding: 0,
-  borderRadius: '50%',
-  border: `1.5px solid ${darkGray}`,
-  backgroundColor: 'transparent',
-  color: '#fff',
-  opacity: 0,
-  overflow: 'hidden',
-  cursor: 'pointer',
-  transition:
-    'opacity 250ms ease, width 250ms ease, margin-right 250ms ease, background-color 250ms ease, border-color 250ms ease',
+export const CardCompletedIndicatorCircle = styled.button<CardCompletedIndicatorCircleProps>`
+  display: inline-flex;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  width: 0;
+  height: ${({ $circleSize = circleSizeDefault }) => $circleSize};
+  margin-right: 0;
+  padding: 0;
+  border-radius: 50%;
+  border: 1.5px solid ${darkGray};
+  background-color: transparent;
+  color: #fff;
+  opacity: 0;
+  overflow: hidden;
+  cursor: pointer;
+  transition: opacity 250ms ease, width 250ms ease, margin-right 250ms ease, background-color 250ms ease, border-color 250ms ease;
+  align-self: center;
 
-  alignSelf: 'center',
+  ${({ $circleSize = circleSizeDefault }) =>
+    $circleSize &&
+    css`
+    width: ${$circleSize};
+    margin-right: 6px;
+    opacity: 1;
+  `}
 
-  // Reveal on hover/focus of the card (data-visible) or when this control
-  // itself receives keyboard focus.
-  '&[data-visible], &:focus-visible': {
-    width: ({ circleSize = circleSizeDefault }) => circleSize,
-    marginRight: '6px',
-    opacity: 1,
-  },
-
-  '&:focus-visible': {
-    outline: `2px solid ${focusRingBlue}`,
-    outlineOffset: '1px',
-  },
-
-  '&[data-completed]': {
-    width: ({ circleSize = circleSizeDefault }) => circleSize,
-    marginRight: '6px',
-    opacity: 1,
-    backgroundColor: '#6A9A23',
-    borderColor: '#6A9A23',
-  },
-});
+  &[data-visible], &:focus-visible {
+    width: ${({ $circleSize = circleSizeDefault }) => $circleSize};
+    margin-right: 6px;
+    opacity: 1;
+  }
+  &:focus-visible {
+    outline: 2px solid ${focusRingBlue};
+    outline-offset: 1px;
+  }
+  &[data-completed] {
+    width: ${({ $circleSize = circleSizeDefault }) => $circleSize};
+    margin-right: 6px;
+    opacity: 1;
+    background-color: #6A9A23;
+    border-color: #6A9A23;
+  }
+`;
 
 type ChecklistTotalsContainerProps = {
-  isOpen: boolean;
-  isAllCompleted: boolean;
+  $isOpen: boolean;
+  $isAllCompleted: boolean;
 };
 
-export const CardTitleDetailsChecklistTotalsContainer =
-  styled.div<ChecklistTotalsContainerProps>({
-    display: 'inline-flex',
-    alignItems: 'center',
-    gap: '4px',
-    margin: '2px 0px 0px 2px',
-    padding: '2px 4px 2px 3px',
-    borderRadius: '3px',
-    fontSize: '12px',
-    lineHeight: '16px',
-    cursor: 'pointer',
-    userSelect: 'none',
+export const CardTitleDetailsChecklistTotalsContainer = styled.div<ChecklistTotalsContainerProps>`
+  
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  margin: 2px 0px 0px 2px;
+  padding: 2px 4px 2px 3px;
+  border-radius: 3px;
+  font-size: 12px;
+  line-height: 16px;
+  cursor: pointer;
+  user-select: none;
 
-    '&:hover': {
-      backgroundColor: 'rgba(0, 85, 204, 0.12)',
-    },
+  &:hover {
+    background-color: rgba(0, 85, 204, 0.12);
+  }
+  
+  ${({ $isOpen }) =>
+    $isOpen &&
+    css`
+    background-color: rgba(0, 85, 204, 0.12);
+    color: #0055cc;
+  `}
 
-    variants: [
-      {
-        props: { isOpen: true },
-        style: {
-          backgroundColor: 'rgba(0, 85, 204, 0.12)',
-          color: '#0055cc',
-        },
-      },
-      {
-        props: { isAllCompleted: true },
-        style: {
-          backgroundColor: '#5B7F24',
-          color: '#fff',
-          '&:hover': {
-            backgroundColor: '#5B7F24',
-            cursor: 'default',
-          },
-        },
-      },
-    ],
-  });
+  ${({ $isAllCompleted }) =>
+    $isAllCompleted &&
+    css`
+    background-color: #5B7F24;
+    color: #fff;
+
+    &:hover {
+      background-color: #5B7F24;
+      cursor: default;
+    }
+  `}
+`;
 
 export const CardTitleDetailsChecklistDivider = styled.div`
   width: 100%;
@@ -246,30 +245,27 @@ export const CardTitleDetailsChecklistItemRow = styled.div`
   color: #172b4d;
 `;
 
-export const CardTitleDetailsChecklistCheckbox = styled(Checkbox.Root)({
-  width: '14px',
-  height: '14px',
-  flexShrink: 0,
-  marginTop: '3px',
-  display: 'flex',
-  alignItems: 'center',
-  justifyContent: 'center',
-  borderRadius: '2px',
-  border: '1px solid rgba(9, 30, 66, 0.5)',
-  backgroundColor: '#fff',
-  cursor: 'pointer',
+export const CardTitleDetailsChecklistCheckbox = styled(Checkbox.Root)`
+  width: 14px;
+  height: 14px;
+  flex-shrink: 0;
+  margin-top: 3px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 2px;
+  border: 1px solid rgba(9, 30, 66, 0.5);
+  background-color: #fff;
+  cursor: pointer;
 
-  variants: [
-    {
-      props: { checked: true },
-      style: {
-        backgroundColor: blue,
-        borderColor: blue,
-        color: '#fff',
-      },
-    },
-  ],
-});
+  ${({ checked }) =>
+    checked &&
+    css`
+    background-color: blue;
+    border-color: blue;
+    color: #fff;
+  `}
+`;
 
 export const CardTitleDetailsChecklistCheckboxIndicator = styled(
   Checkbox.Indicator,
@@ -311,14 +307,15 @@ export const CardTitleDetailsChecklistShowMore = styled.button`
   }
 `;
 
-export const CardTitleDetailsContentIconsContainer = styled.div<{
-  commentsCount: number;
-}>({
-  display: 'flex',
-  alignItems: 'baseline',
-  gap: '8px',
-  paddingLeft: ({ commentsCount }) => (commentsCount > 0 ? '2px' : '0'),
-});
+type CommentsCountProps = {
+  $commentsCount: number;
+};
+export const CardTitleDetailsContentIconsContainer = styled.div<CommentsCountProps>`
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  padding-left: ${({ $commentsCount }) => ($commentsCount > 0 ? '2px' : '0')};
+`;
 
 export const CardTitleDetailsSpinnerContainer = styled.div`
   position: absolute;

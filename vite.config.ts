@@ -1,5 +1,5 @@
 import netlify from '@netlify/vite-plugin-tanstack-start';
-import { pigment } from '@pigment-css/vite-plugin';
+// import { pigment } from '@pigment-css/vite-plugin';
 import viteReact from '@vitejs/plugin-react';
 import { tanstackStart } from '@tanstack/react-start/plugin/vite';
 import * as dotenv from 'dotenv';
@@ -32,12 +32,11 @@ export default defineConfig({
   ssr: {
     // Bundle react-icons for SSR — Node otherwise loads .esm.js as CJS and throws
     // "Cannot use import statement outside a module" on Netlify.
-    noExternal: ['react-is', '@mui/utils', '@pigment-css/react', 'react-icons'],
+    noExternal: ['react-is', '@mui/utils', 'react-icons'],
     optimizeDeps: {
       include: [
         'react-is',
         '@mui/utils/deepmerge',
-        '@pigment-css/react',
         'react-icons',
       ],
     },
@@ -67,7 +66,6 @@ export default defineConfig({
       }
     }),
     netlify(),
-    pigment({}),
     rsc(),
     viteReact(),
     sentryTanstackStart({

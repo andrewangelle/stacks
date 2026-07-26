@@ -51,7 +51,7 @@ export function DeleteChecklist({ id }: { id: string }) {
       <DeleteChecklistPopoverTrigger data-testid="DeleteChecklistPopoverTrigger">
         <DeleteChecklistButton
           data-testid="DeleteChecklistButton"
-          isOpen={open}
+          $isOpen={open}
         >
           Delete
         </DeleteChecklistButton>

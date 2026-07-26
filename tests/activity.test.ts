@@ -2,6 +2,7 @@ import type { APIRequestContext, Locator, Page } from '@playwright/test';
 import { expect, test } from '~test/fixtures';
 import { resetDb } from '~test/helpers/resetDb';
 import { seedActivities, seedBoard, seedCard } from '~test/helpers/seed';
+import { waitForHydratedAction } from '~test/helpers/waitForHydratedAction';
 import { waitForInteractiveTrigger } from '~test/helpers/waitForInteractiveTrigger';
 
 test.describe('Activity', () => {
@@ -207,69 +208,40 @@ async function openCard(page: Page, request: APIRequestContext) {
 
 async function addComment(page: Page, text: string) {
   const activityColumn = page.getByTestId('CardActivityColumn');
+  const input = activityColumn.getByTestId('AddCommentInput');
+  const saveButton = activityColumn.locator(
+    '[data-testid="SaveCommentButton"]:not([disabled])',
+  );
   const commentContent = activityColumn
     .getByTestId('ActivityCommentContent')
     .filter({ hasText: text });
-  let commentIndex = -1;
 
-  await expect(async () => {
-    const input = activityColumn.getByTestId('AddCommentInput');
-    await expect(input).toBeVisible();
-    await input.fill(text);
-    await expect(
-      activityColumn.locator(
-        '[data-testid="SaveCommentButton"]:not([disabled])',
-      ),
-    ).toBeVisible();
-  }).toPass();
+  await expect(input).toBeVisible();
 
-  await expect(async () => {
-    if ((await commentContent.count()) > 0) {
-      const containers = activityColumn.getByTestId('ActivityContainer');
-      const count = await containers.count();
+  await waitForHydratedAction(
+    async () => {
+      // Clearing before typing is what makes this retryable. A fill that lands
+      // before React hydrates leaves the text in the DOM only: hydration then
+      // initializes React's value tracker to that same text, so re-filling it
+      // dispatches no change event, `comment` stays empty and Save never enables.
+      // Writing '' first guarantees the next fill is a real change.
+      await input.fill('');
+      await input.fill(text);
+      // Bounded so an un-hydrated form fails this attempt instead of waiting out
+      // the whole test on a Save button that will never enable.
+      await saveButton.click({ timeout: 5_000 });
+    },
+    async () => (await commentContent.count()) > 0,
+  );
 
-      for (let i = 0; i < count; i++) {
-        if (
-          (await containers
-            .nth(i)
-            .getByTestId('ActivityCommentContent')
-            .filter({ hasText: text })
-            .count()) > 0
-        ) {
-          commentIndex = i;
-          return;
-        }
-      }
-    }
+  await expect(commentContent).toBeVisible();
 
-    const saveButton = activityColumn.locator(
-      '[data-testid="SaveCommentButton"]:not([disabled])',
-    );
-
-    if ((await saveButton.count()) > 0) {
-      await saveButton.click();
-    }
-
-    await expect(commentContent).toBeVisible();
-
-    const containers = activityColumn.getByTestId('ActivityContainer');
-    const count = await containers.count();
-
-    for (let i = 0; i < count; i++) {
-      if (
-        (await containers
-          .nth(i)
-          .getByTestId('ActivityCommentContent')
-          .filter({ hasText: text })
-          .count()) > 0
-      ) {
-        commentIndex = i;
-        return;
-      }
-    }
-  }).toPass();
-
-  return activityColumn.getByTestId('ActivityContainer').nth(commentIndex);
+  // Scoped by shape, not by text: the edit test rewrites the content, and a
+  // locator filtered on `text` would stop matching the moment it does.
+  return activityColumn
+    .getByTestId('ActivityContainer')
+    .filter({ has: page.getByTestId('ActivityCommentContainer') })
+    .first();
 }
 
 async function waitForSaveButton(commentContainer: Locator) {

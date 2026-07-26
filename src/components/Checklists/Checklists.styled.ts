@@ -1,5 +1,5 @@
-import { styled } from '@pigment-css/react';
 import { Popover, Progress } from 'radix-ui';
+import { styled } from 'styled-components';
 import { fontFamily } from '~/components/Boards/Boards.styled';
 import {
   CardModalActionButton,
@@ -9,7 +9,11 @@ import {
   EditCardTitleInput,
 } from '~/components/Cards/Card.styled';
 import { animationStyles } from '~/styles/animations';
-import { Button, secondaryButtonStyles } from '~/styles/Page.styled';
+import {
+  Button,
+  secondaryButtonColor,
+  secondaryButtonStyles,
+} from '~/styles/Page.styled';
 
 const checklistRowColumns = `${cardModalContentIndent} minmax(0, 1fr)`;
 
@@ -80,19 +84,19 @@ export const ChecklistHeaderActions = styled.div`
   flex-shrink: 0;
 `;
 
-export const ToggleCheckedItemsButton = styled(Button)({
-  ...secondaryButtonStyles,
-  color: 'rgba(9, 30, 66, 0.725)',
-  border: '1px solid rgba(9, 30, 66, 0.2)',
-  padding: '8px 10px',
-  margin: 0,
-  fontSize: '14px',
-  flexShrink: 0,
+export const ToggleCheckedItemsButton = styled(Button)`
+  ${secondaryButtonStyles}
+  color: rgba(9, 30, 66, 0.725);
+  border: 1px solid rgba(9, 30, 66, 0.2);
+  padding: 8px 10px;
+  margin: 0;
+  font-size: 14px;
+  flex-shrink: 0;
 
-  '&:hover:not(:disabled)': {
-    color: secondaryButtonStyles.color,
-  },
-});
+  &:hover:not(:disabled) {
+    color: ${secondaryButtonColor};
+  }
+`;
 
 export const AllItemsCompleteMessage = styled.p`
   color: #5e6c84;
@@ -153,42 +157,42 @@ export const ChecklistNameSkeletonContainer = styled.div`
   gap: 8px;
 `;
 
-export const ChecklistNameSkeleton = styled.div({
-  background: 'rgba(9, 30, 66, 0.25)',
-  cursor: 'default',
-  pointerEvents: 'none',
-  minHeight: '16px',
-  width: '75px',
-  height: '24px',
-  borderRadius: '8px',
-  flexShrink: 0,
-  position: 'relative',
-  ...animationStyles.pulse,
-});
+export const ChecklistNameSkeleton = styled.div`
+  background: rgba(9, 30, 66, 0.25);
+  cursor: default;
+  pointer-events: none;
+  min-height: 16px;
+  width: 75px;
+  height: 24px;
+  border-radius: 8px;
+  flex-shrink: 0;
+  position: relative;
+  ${animationStyles.pulse}
+`;
 
-export const DeleteChecklistSkeleton = styled.div({
-  background: 'rgba(9, 30, 66, 0.25)',
-  cursor: 'default',
-  pointerEvents: 'none',
-  minHeight: '16px',
-  width: '60px',
-  height: '32px',
-  borderRadius: '8px',
-  flexShrink: 0,
-  position: 'relative',
-  ...animationStyles.pulse,
-});
+export const DeleteChecklistSkeleton = styled.div`
+  background: rgba(9, 30, 66, 0.25);
+  cursor: default;
+  pointer-events: none;
+  min-height: 16px;
+  width: 60px;
+  height: 32px;
+  border-radius: 8px;
+  flex-shrink: 0;
+  position: relative;
+  ${animationStyles.pulse}
+`;
 
-export const ChecklistProgressSkeleton = styled.div({
-  background: 'rgba(9, 30, 66, 0.25)',
-  cursor: 'default',
-  pointerEvents: 'none',
-  minHeight: '16px',
-  width: '100%',
-  height: '8px',
-  borderRadius: '8px',
-  flexShrink: 0,
-  position: 'relative',
-  margin: '12px 0',
-  ...animationStyles.pulse,
-});
+export const ChecklistProgressSkeleton = styled.div`
+  background: rgba(9, 30, 66, 0.25);
+  cursor: default;
+  pointer-events: none;
+  min-height: 16px;
+  width: 100%;
+  height: 8px;
+  border-radius: 8px;
+  flex-shrink: 0;
+  position: relative;
+  margin: 12px 0;
+  ${animationStyles.pulse}
+`;

@@ -1,4 +1,4 @@
-import { styled } from '@pigment-css/react';
+import { styled } from 'styled-components';
 import { fontFamily } from '~/components/Boards/Boards.styled';
 import { blue, focusRingBlue } from '~/styles/tokens';
 

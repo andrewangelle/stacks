@@ -1,7 +1,11 @@
-import { styled } from '@pigment-css/react';
 import { Dialog, Popover } from 'radix-ui';
+import { styled } from 'styled-components';
 import { fontFamily } from '~/components/Boards/Boards.styled';
-import { Button, secondaryButtonStyles } from '~/styles/Page.styled';
+import {
+  Button,
+  secondaryButtonColor,
+  secondaryButtonStyles,
+} from '~/styles/Page.styled';
 import { focusRingBlue } from '~/styles/tokens';
 
 const cardModalBreakpoint = '@media (max-width: 850px)';
@@ -54,51 +58,52 @@ export const CardActionsContainer = styled.div`
 `;
 
 type IsOpenProps = {
-  isOpen: boolean;
+  $isOpen: boolean;
 };
-export const CardModalActionButton = styled.div<IsOpenProps>({
-  position: 'relative',
-  overflow: 'hidden',
-  borderRadius: '8px',
-  margin: 'auto',
-  display: 'flex',
-  alignSelf: 'center',
-  textAlign: 'center',
-  justifyContent: 'center',
-  whiteSpace: 'nowrap',
-  border: '1px solid rgba(9, 30, 66, 0.2)',
-  cursor: 'pointer',
-  fontWeight: 600,
-  padding: '8px 10px',
+export const CardModalActionButton = styled.div<IsOpenProps>`
+
+  position: relative;
+  overflow: hidden;
+  border-radius: 8px;
+  margin: auto;
+  display: flex;
+  align-self: center;
+  text-align: center;
+  justify-content: center;
+  white-space: nowrap;
+  border: 1px solid rgba(9, 30, 66, 0.2);
+  cursor: pointer;
+  font-weight: 600;
+  padding: 8px 10px;
 
   // applies hover effect to the button
-  '&::before': {
-    content: '""',
-    position: 'absolute',
-    inset: 0,
-    borderRadius: 'inherit',
-    backgroundColor: '#000',
-    opacity: 0,
-    pointerEvents: 'none',
-    transition: 'opacity 0.15s ease',
-  },
+  &::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    background-color: '#000';
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.15s ease;
+  }
 
-  '&:disabled': {
-    background: 'rgba(9, 30, 66, 0.02)',
-    color: 'rgba(9, 30, 66, 0.2)',
-    border: '1px solid rgba(9, 30, 66, 0.2)',
-    cursor: 'not-allowed',
-  },
+  &:disabled {
+    background: rgba(9, 30, 66, 0.02);
+    color: rgba(9, 30, 66, 0.2);
+    border: 1px solid rgba(9, 30, 66, 0.2);
+    cursor: 'not-allowed';
+  }
 
-  '&:hover': {
-    background: (props) =>
-      props.isOpen ? 'rgba(0, 0, 0, 0.8)' : 'rgba(9, 30, 66, 0.04)',
-    color: (props) => (props.isOpen ? 'white' : 'rgba(9, 30, 66, 0.9)'),
-  },
 
-  color: (props) => (props.isOpen ? 'white' : 'rgba(9, 30, 66, 0.9)'),
-  background: (props) => (props.isOpen ? 'rgba(0, 0, 0, 0.8)' : 'transparent'),
-});
+  &:hover {
+    background: ${({ $isOpen }) => ($isOpen ? 'rgba(0, 0, 0, 0.8)' : 'rgba(9, 30, 66, 0.04)')};
+    color: ${({ $isOpen }) => ($isOpen ? 'white' : 'rgba(9, 30, 66, 0.9)')};
+  }
+
+  color: ${({ $isOpen }) => ($isOpen ? 'white' : 'rgba(9, 30, 66, 0.9)')};
+  background: ${({ $isOpen }) => ($isOpen ? 'rgba(0, 0, 0, 0.8)' : 'transparent')};
+`;
 
 export const CardModalSiderButtonText = styled.span` 
   font-family: ${fontFamily};
@@ -217,35 +222,36 @@ export const CardPageContent = styled(Dialog.Content)`
   background: rgb(248, 248, 248);
 `;
 
-export const CardModalTrigger = styled('div')({
-  border: 'none',
-  padding: '0px',
-  cursor: 'pointer',
-  width: '100%',
-  minWidth: 0,
-  boxSizing: 'border-box',
-  borderRadius: '5px',
-  textAlign: 'left',
+export const CardModalTrigger = styled('div')`
+  border: none;
+  padding: 0px;
+  cursor: pointer;
+  width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
+  border-radius: 5px;
+  text-align: left;
 
-  '&:focus': {
-    outline: `2px solid ${focusRingBlue}`,
-    outlineOffset: '-2px',
-  },
-});
+  &:focus {
+    outline: 2px solid ${focusRingBlue};
+    outline-offset: -2px;
+  }
+`;
 
 export const CardModalTitleContainer = styled.div`
   display: flex;
   margin: 12px 12px 0px;
 `;
 
-export const CardModalTitle = styled(Dialog.Title)({
-  margin: '0 16px',
-  fontSize: '28px',
-  color: 'black',
-  '&[data-completed]': {
-    color: 'rgba(0,0,0, 0.5)',
-  },
-});
+export const CardModalTitle = styled(Dialog.Title)`
+  margin: 0 16px;
+  font-size: 28px;
+  color: black;
+
+  &[data-completed] {
+    color: rgba(0, 0, 0, 0.5);
+  }
+`;
 
 export const CardModalHiddenTitle = styled(Dialog.Title)`
   position: absolute;
@@ -311,17 +317,17 @@ export const SaveDescriptionButton = styled(Button)`
   margin: 0 10px 0 ${cardModalContentIndent};
 `;
 
-export const CloseDescriptionButton = styled(Button)({
-  ...secondaryButtonStyles,
-  padding: '8px 10px',
-  margin: 0,
-  color: 'black',
-  border: 'none',
+export const CloseDescriptionButton = styled(Button)`
+  ${secondaryButtonStyles}
+  padding: 8px 10px;
+  margin: 0;
+  color: black;
+  border: none;
 
-  '&:hover:not(:disabled)': {
-    color: secondaryButtonStyles.color,
-  },
-});
+  &:hover:not(:disabled) {
+    color: ${secondaryButtonColor};
+  }
+`;
 
 export const CardDescriptionText = styled.div` 
   font-family: ${fontFamily};
@@ -330,19 +336,19 @@ export const CardDescriptionText = styled.div`
   margin-top: 15px;
 `;
 
-export const EditDescriptionButton = styled(Button)({
-  ...secondaryButtonStyles,
-  color: 'rgba(9, 30, 66, 0.725)',
-  border: '1px solid rgba(9, 30, 66, 0.2)',
-  padding: '8px 10px',
-  margin: 0,
-  fontSize: '14px',
-  flexShrink: 0,
+export const EditDescriptionButton = styled(Button)`
+  ${secondaryButtonStyles}
+  color: rgba(9, 30, 66, 0.725);
+  border: 1px solid rgba(9, 30, 66, 0.2);
+  padding: 8px 10px;
+  margin: 0;
+  font-size: 14px;
+  flex-shrink: 0;
 
-  '&:hover:not(:disabled)': {
-    color: secondaryButtonStyles.color,
-  },
-});
+  &:hover:not(:disabled) {
+    color: ${secondaryButtonColor};
+  }
+`;
 
 export const EditCardTitleForm = styled.form`
   position: relative;

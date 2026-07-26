@@ -256,20 +256,16 @@ async function expectCardInList(
   }
 }
 
+const autoScrollBand = 0.2;
+const viewportInset = 8;
+const targetReachTimeout = 10_000;
+
 async function dragToLocator(page: Page, source: Locator, target: Locator) {
-  const sourceBox = await source.boundingBox();
-  const targetBox = await target.boundingBox();
+  await centerDragPair(page, source, target);
 
-  if (!sourceBox || !targetBox) {
-    throw new Error('Could not resolve drag source or target bounding box');
-  }
+  const from = await dragPoint(source);
 
-  const fromX = sourceBox.x + sourceBox.width / 2;
-  const fromY = sourceBox.y + Math.min(sourceBox.height / 2, 20);
-  const toX = targetBox.x + targetBox.width / 2;
-  const toY = targetBox.y + Math.min(targetBox.height / 2, 20);
-
-  await page.mouse.move(fromX, fromY);
+  await page.mouse.move(from.x, from.y);
   await page.mouse.down();
   // WebKit coalesces fast synthetic pointer moves, so dnd-kit can miss the
   // drag activation or settle on a stale drop target. Give the pointer sensor
@@ -277,10 +273,91 @@ async function dragToLocator(page: Page, source: Locator, target: Locator) {
   // second move on the target so the current drop target is up to date before
   // release.
   await page.waitForTimeout(100);
-  await page.mouse.move(fromX, fromY + 12, { steps: 5 });
+  await page.mouse.move(from.x, from.y + 12, { steps: 5 });
   await page.waitForTimeout(100);
-  await page.mouse.move(toX, toY, { steps: 30 });
-  await page.mouse.move(toX, toY, { steps: 5 });
+  await movePointerOntoTarget(page, target);
   await page.waitForTimeout(100);
   await page.mouse.up();
+}
+
+async function dragPoint(locator: Locator) {
+  const box = await locator.boundingBox();
+
+  if (!box) {
+    throw new Error('Could not resolve drag source or target bounding box');
+  }
+
+  return {
+    x: box.x + box.width / 2,
+    y: box.y + Math.min(box.height / 2, 20),
+  };
+}
+
+// Mobile viewports are narrower than two lists side by side, so the drop
+// target starts off-screen and a missed attempt leaves the board auto-scrolled
+// with the source off-screen too. The drag points still fit when the lists
+// don't.
+async function centerDragPair(page: Page, source: Locator, target: Locator) {
+  const viewport = page.viewportSize();
+
+  if (!viewport) return;
+
+  for (let attempt = 0; attempt < 3; attempt++) {
+    const from = await dragPoint(source);
+    const to = await dragPoint(target);
+    const left = Math.min(from.x, to.x);
+    const right = Math.max(from.x, to.x);
+
+    if (left >= viewportInset && right <= viewport.width - viewportInset) {
+      return;
+    }
+
+    await scrollBoardBy(source, (left + right) / 2 - viewport.width / 2);
+  }
+}
+
+async function scrollBoardBy(locator: Locator, distance: number) {
+  await locator.evaluate((element, by) => {
+    for (let node = element.parentElement; node; node = node.parentElement) {
+      if (
+        /(auto|scroll)/.test(getComputedStyle(node).overflowX) &&
+        node.scrollWidth > node.clientWidth
+      ) {
+        node.scrollLeft += by;
+        return;
+      }
+    }
+
+    window.scrollBy(by, 0);
+  }, distance);
+}
+
+async function movePointerOntoTarget(page: Page, target: Locator) {
+  const viewport = page.viewportSize();
+  const deadline = Date.now() + targetReachTimeout;
+
+  while (true) {
+    const to = await dragPoint(target);
+
+    if (!viewport || (to.x >= 0 && to.x <= viewport.width)) {
+      await page.mouse.move(to.x, to.y, { steps: 30 });
+      await page.mouse.move(to.x, to.y, { steps: 5 });
+      return;
+    }
+
+    if (Date.now() > deadline) {
+      throw new Error('Drag target never scrolled within reach of the pointer');
+    }
+
+    // Park in dnd-kit's auto-scroll band and let the board bring the target in.
+    const bandX =
+      to.x > viewport.width
+        ? viewport.width * (1 - autoScrollBand / 2)
+        : viewport.width * (autoScrollBand / 2);
+
+    await page.mouse.move(bandX, Math.min(to.y, viewport.height - 1), {
+      steps: 5,
+    });
+    await page.waitForTimeout(100);
+  }
 }

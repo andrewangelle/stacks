@@ -1,164 +1,75 @@
-import { styled } from '@pigment-css/react';
-import type { BackgroundProps } from '~/components/Boards/Boards.styled';
+import { css, styled } from 'styled-components';
+import type {
+  BackgroundProps,
+  BoardBackground,
+} from '~/components/Boards/Boards.styled';
 import {
-  boardBarVars,
-  boardGradientVars,
-  boardNavVars,
   fixedChromeOffset,
   fontFamily,
+  getBoardBarVars,
+  getBoardGradientVars,
+  getBoardNavVars,
 } from '~/styles/tokens';
 
-const navBackgroundFlashAnimation = {
-  animation: 'nav-background-flash 0.45s ease-out',
-};
+const navSolidBackgroundTransition = css`
+  transition: background-color 0.35s ease-out;
+  animation: nav-background-flash 0.45s ease-out;
+`;
 
-const navSolidBackgroundTransition = {
-  transition: 'background-color 0.35s ease-out',
-  ...navBackgroundFlashAnimation,
-};
+export const NavBarContainer = styled.div`
+  box-sizing: border-box;
+  width: 100%;
+  z-index: 2;
+  color: white;
+  display: flex;
+  flex-direction: column;
+  position: fixed;
+`;
 
-export const NavBarContainer = styled('div')({
-  boxSizing: 'border-box',
-  width: '100%',
-  zIndex: 2,
-  color: 'white',
-  display: 'flex',
-  flexDirection: 'column',
-  position: 'fixed',
-});
+export const NavBarContent = styled.div<BackgroundProps>`
+  display: flex;
+  justify-content: space-between;
+  min-height: 46px;
+  transition: background-color 0.35s ease-out;
+  animation: nav-background-flash 0.45s ease-out;
+  background: ${({ background }) => getBoardNavVars(background)};
+`;
 
-export const NavBarContent = styled.div<BackgroundProps>({
-  display: 'flex',
-  justifyContent: 'space-between',
-  minHeight: '46px',
-  ...navSolidBackgroundTransition,
-  variants: [
-    {
-      props: { background: 'blue' },
-      style: {
-        background: boardNavVars.blue,
-      },
-    },
-    {
-      props: { background: 'green' },
-      style: {
-        background: boardNavVars.green,
-      },
-    },
-    {
-      props: { background: 'lightGreen' },
-      style: {
-        background: boardNavVars.lightGreen,
-      },
-    },
-    {
-      props: { background: 'orange' },
-      style: {
-        background: boardNavVars.orange,
-      },
-    },
-    {
-      props: { background: 'red' },
-      style: {
-        background: boardNavVars.red,
-      },
-    },
-  ],
-});
+export const NavColumn = styled.div`
+  flex: 1 1 0;
+  display: flex;
+  justify-content: flex-end;
+`;
 
-export const NavColumn = styled('div')({
-  flex: '1 1 0',
-  display: 'flex',
-  justifyContent: 'flex-end',
-});
-
-export const BoardHeaderContainer = styled(NavBarContainer)<BackgroundProps>({
-  padding: '10px',
-  zIndex: 1,
-  position: 'relative',
-  ...navSolidBackgroundTransition,
-  variants: [
-    {
-      props: { background: 'blue' },
-      style: {
-        background: boardBarVars.blue,
-        borderBottom: '1px solid white',
-      },
-    },
-    {
-      props: { background: 'green' },
-      style: {
-        background: boardBarVars.green,
-        borderBottom: '1px solid white',
-      },
-    },
-    {
-      props: { background: 'lightGreen' },
-      style: {
-        background: boardBarVars.lightGreen,
-        borderBottom: '1px solid white',
-      },
-    },
-    {
-      props: { background: 'orange' },
-      style: {
-        background: boardBarVars.orange,
-        borderBottom: '1px solid white',
-      },
-    },
-    {
-      props: { background: 'red' },
-      style: {
-        background: boardBarVars.red,
-        borderBottom: '1px solid white',
-      },
-    },
-  ],
-});
+export const BoardHeaderContainer = styled(NavBarContainer)<BackgroundProps>`
+  ${navSolidBackgroundTransition}
+  padding: 10px;
+  z-index: 1;
+  position: relative;
+  background-color: ${({ background }) => getBoardBarVars(background)};
+`;
 
 type BoardPageBackgroundProps = {
   background?: string;
 };
 
-export const BoardPageBackground = styled('div')<BoardPageBackgroundProps>({
-  boxSizing: 'border-box',
-  height: '100vh',
-  width: '100%',
-  background: 'transparent',
-  position: 'relative',
-  display: 'flex',
-  overflowX: 'auto',
-  overflowY: 'hidden',
-  padding: `${fixedChromeOffset} 30px 30px`,
-  // Lists keep their own width and scroll sideways instead of being squeezed
-  // into the viewport.
-  '& > *': {
-    flexShrink: 0,
-  },
-  ...navBackgroundFlashAnimation,
-  variants: [
-    {
-      props: { background: 'blue' },
-      style: { background: boardGradientVars.blue },
-    },
-    {
-      props: { background: 'green' },
-      style: { background: boardGradientVars.green },
-    },
-    {
-      props: { background: 'lightGreen' },
-      style: { background: boardGradientVars.lightGreen },
-    },
-    {
-      props: { background: 'orange' },
-      style: { background: boardGradientVars.orange },
-    },
-    {
-      props: { background: 'red' },
-      style: { background: boardGradientVars.red },
-    },
-  ],
-});
+export const BoardPageBackground = styled.div<BoardPageBackgroundProps>`
+  box-sizing: border-box;
+  height: 100vh;
+  width: 100%;
+  background: transparent;
+  position: relative;
+  display: flex;
+  overflow-x: auto;
+  overflow-y: hidden;
+  padding: ${fixedChromeOffset} 30px 30px;
+
+  & > * {
+    flex-shrink: 0;
+  };
+
+  background:${({ background }) => getBoardGradientVars(background as BoardBackground)};
+`;
 
 export const BoardTitle = styled.button`
   color: inherit;

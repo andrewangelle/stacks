@@ -1,26 +1,30 @@
-import { styled } from '@pigment-css/react';
 import { Checkbox, Popover } from 'radix-ui';
 import { AiOutlineEllipsis } from 'react-icons/ai';
+import { css, styled } from 'styled-components';
 import { fontFamily, red } from '~/components/Boards/Boards.styled';
 import { cardModalContentIndent } from '~/components/Cards/Card.styled';
 import { animationStyles } from '~/styles/animations';
-import { Button, secondaryButtonStyles } from '~/styles/Page.styled';
+import {
+  Button,
+  secondaryButtonColor,
+  secondaryButtonStyles,
+} from '~/styles/Page.styled';
 import { blue } from '~/styles/tokens';
 
 const checklistRowColumns = `${cardModalContentIndent} minmax(0, 1fr)`;
 
-export const AddChecklistItemButton = styled(Button)({
-  ...secondaryButtonStyles,
-  padding: '8px 10px',
-  margin: `12px 0px 0px ${cardModalContentIndent}`,
-  fontSize: '14px',
-  color: 'rgba(9, 30, 66, 0.725)',
-  border: '1px solid rgba(9, 30, 66, 0.2)',
+export const AddChecklistItemButton = styled(Button)`
+  ${secondaryButtonStyles}
+  padding: 8px 10px;
+  margin: 12px 0px 0px ${cardModalContentIndent};
+  font-size: 14px;
+  color: rgba(9, 30, 66, 0.725);
+  border: 1px solid rgba(9, 30, 66, 0.2);
 
-  '&:hover:not(:disabled)': {
-    color: secondaryButtonStyles.color,
-  },
-});
+  &:hover:not(:disabled) {
+    color: ${secondaryButtonColor};
+  }
+`;
 
 export const AddChecklistItemInput = styled.textarea` 
   height: 30px;
@@ -58,15 +62,15 @@ type CheckboxLabelProps = {
   checked: boolean;
 };
 
-export const CheckboxLabel = styled('label')<CheckboxLabelProps>({
-  margin: 0,
-  fontFamily: fontFamily,
-  fontSize: '14px',
-  width: '80%',
-  cursor: 'pointer',
-  textDecoration: (props) => (props.checked ? 'line-through' : 'none'),
-  wordWrap: 'break-word',
-});
+export const CheckboxLabel = styled('label')<CheckboxLabelProps>`
+  margin: 0;
+  font-family: ${fontFamily};
+  font-size: 14px;
+  width: 80%;
+  cursor: pointer;
+  text-decoration: ${({ checked }) => (checked ? 'line-through' : 'none')};
+  word-wrap: break-word;
+`;
 
 export const EditChecklistItemContainer = styled.div`
   display: flex;
@@ -97,66 +101,58 @@ export const ChecklistContentColumn = styled.div`
 
 export const ChecklistCheckboxContentColumn = styled(
   ChecklistContentColumn,
-)<ChecklistCheckboxContainerProps>({
-  position: 'relative',
-  display: 'flex',
-  justifyContent: 'space-between',
-  alignItems: 'center',
-  padding: '8px',
-  minHeight: '25px',
-  variants: [
-    {
-      props: { isHovering: true },
-      style: {
-        background: 'rgba(0,0,0,0.1)',
-        cursor: 'pointer',
-        borderRadius: '8px',
-      },
-    },
-  ],
-});
+)<ChecklistCheckboxContainerProps>`
+  position: relative;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px;
+  min-height: 25px;
+  ${({ $isHovering }) =>
+    $isHovering &&
+    css`
+    background: rgba(0,0,0,0.1);
+    cursor: pointer;
+    border-radius: 8px;
+  `}
+`;
 
 type ChecklistCheckboxContainerProps = {
-  isHovering: boolean;
+  $isHovering: boolean;
 };
 
-export const ChecklistCheckboxContainer = styled('div')({
-  display: 'grid',
-  gridTemplateColumns: checklistRowColumns,
-  position: 'relative',
-  cursor: 'pointer',
-});
+export const ChecklistCheckboxContainer = styled('div')`
+  display: grid;
+  grid-template-columns: ${checklistRowColumns};
+  position: relative;
+  cursor: pointer;
+`;
 
-export const CheckboxRoot = styled(Checkbox.Root)({
-  width: '16px',
-  height: '16px',
-  verticalAlign: 'top',
-  top: '12px',
-  position: 'relative',
-  cursor: 'pointer',
-  appearance: 'none',
-  WebkitAppearance: 'none',
-  padding: 0,
-  margin: 0,
-  backgroundColor: 'transparent',
-  border: '2px solid rgba(9, 30, 66, 0.35)',
-  borderRadius: '3px',
-  variants: [
-    {
-      props: { checked: true },
-      style: {
-        backgroundColor: blue,
-        color: 'white',
-        borderColor: blue,
-        borderBlockColor: blue,
-        borderRadius: '3px',
-      },
-    },
-  ],
-  '&[data-editing]': {
-    top: '30px',
-  },
-});
+export const CheckboxRoot = styled(Checkbox.Root)`
+  width: 16px;
+  height: 16px;
+  vertical-align: top;
+  top: 12px;
+  position: relative;
+  cursor: pointer;
+  appearance: none;
+  padding: 0;
+  margin: 0;
+  background-color: transparent;
+  border: 2px solid rgba(9, 30, 66, 0.35);
+  border-radius: 3px;
+  ${({ checked }) =>
+    checked &&
+    css`
+    background-color: ${blue};
+    color: white;
+    border-color: ${blue};
+  `}
+
+  &[data-editing] {
+    top: 30px;
+  }
+`;
 
 export const ChecklistItemOptionsPopoverTrigger = styled(Popover.Trigger)` 
   border: none;
@@ -175,59 +171,59 @@ export const ChecklistItemOptionsPopoverTrigger = styled(Popover.Trigger)`
   }
 `;
 
-export const DeleteChecklistPopoverTrigger = styled(Popover.Trigger)({
-  border: 'none',
-  background: 'transparent',
-  cursor: 'pointer',
-  height: '100%',
-});
+export const DeleteChecklistPopoverTrigger = styled(Popover.Trigger)`
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  height: 100%;
+`;
 
-export const ChecklistItemOptionsEllipsis = styled(AiOutlineEllipsis)({
-  position: 'relative',
-  top: '1px',
-});
+export const ChecklistItemOptionsEllipsis = styled(AiOutlineEllipsis)`
+  position: relative;
+  top: 1px;
+`;
 
-export const ChecklistItemSkeletonContainer = styled.div({});
+export const ChecklistItemSkeletonContainer = styled.div``;
 
-export const CheckboxSkeleton = styled.div({
-  background: 'rgba(9, 30, 66, 0.25)',
-  cursor: 'default',
-  pointerEvents: 'none',
-  minHeight: '16px',
-  width: '18px',
-  height: '10px',
-  borderRadius: '2px',
-  flexShrink: 0,
-  position: 'relative',
-  ...animationStyles.pulse,
-});
+export const CheckboxSkeleton = styled.div`
+  background: rgba(9, 30, 66, 0.25);
+  cursor: default;
+  pointer-events: none;
+  min-height: 16px;
+  width: 18px;
+  height: 10px;
+  border-radius: 2px;
+  flex-shrink: 0;
+  position: relative;
+  ${animationStyles.pulse}
+`;
 
-export const ChecklistLabelSkeleton = styled.div({
-  background: 'rgba(9, 30, 66, 0.25)',
-  cursor: 'default',
-  pointerEvents: 'none',
-  minHeight: '16px',
-  width: '18px',
-  height: '10px',
-  borderRadius: '2px',
-  flexShrink: 0,
-  position: 'relative',
-  ...animationStyles.pulse,
-});
+export const ChecklistLabelSkeleton = styled.div`
+  background: rgba(9, 30, 66, 0.25);
+  cursor: default;
+  pointer-events: none;
+  min-height: 16px;
+  width: 18px;
+  height: 10px;
+  border-radius: 2px;
+  flex-shrink: 0;
+  position: relative;
+  ${animationStyles.pulse}
+`;
 
-export const AddChecklistButtonSkeleton = styled.div({
-  background: 'rgba(9, 30, 66, 0.25)',
-  cursor: 'default',
-  pointerEvents: 'none',
-  minHeight: '16px',
-  width: '100%',
-  height: '8px',
-  borderRadius: '8px',
-  flexShrink: 0,
-  position: 'relative',
-  margin: '12px 0',
-  ...animationStyles.pulse,
-});
+export const AddChecklistButtonSkeleton = styled.div`
+  background: rgba(9, 30, 66, 0.25);
+  cursor: default;
+  pointer-events: none;
+  min-height: 16px;
+  width: 100%;
+  height: 8px;
+  border-radius: 8px;
+  flex-shrink: 0;
+  position: relative;
+  margin: 12px 0;
+  ${animationStyles.pulse}
+`;
 
 export const ChecklistItemOptionsListContainer = styled.div`
   display: flex;

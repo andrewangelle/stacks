@@ -25,7 +25,11 @@ export function List({ id: listId }: { id: string }) {
   const { data: list } = useGetListById({ id: listId });
   const isMobile = useIsMobile();
   return (
-    <ListContainer data-testid="ListContainer" key={listId} isMobile={isMobile}>
+    <ListContainer
+      data-testid="ListContainer"
+      key={listId}
+      $isMobile={isMobile}
+    >
       <ListHeader id={listId} />
 
       <ListContentContainer ref={ref} data-testid="ListContentContainer">

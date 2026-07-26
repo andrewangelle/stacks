@@ -1,3 +1,5 @@
+import type { BoardBackground } from '~/components/Boards/Boards.styled';
+
 export const darkGray = '#5e6c84';
 export const green = '#519839';
 export const lightGreen = '#4bbf6b';
@@ -88,3 +90,71 @@ export const tokenShades = {
     base: '#2F80ED',
   },
 } as const;
+
+export function getBoardGradientVars(background?: BoardBackground) {
+  switch (background) {
+    case 'green':
+      return boardGradientVars.green;
+    case 'lightGreen':
+      return boardGradientVars.lightGreen;
+    case 'blue':
+      return boardGradientVars.blue;
+    case 'orange':
+      return boardGradientVars.orange;
+    case 'red':
+      return boardGradientVars.red;
+    default:
+      return boardGradientVars.blue;
+  }
+}
+
+export function getBoardBarVars(background?: BoardBackground) {
+  switch (background) {
+    case 'green':
+      return boardBarVars.green;
+    case 'lightGreen':
+      return boardBarVars.lightGreen;
+    case 'blue':
+      return boardBarVars.blue;
+    case 'orange':
+      return boardBarVars.orange;
+    case 'red':
+      return boardBarVars.red;
+    default:
+      return boardBarVars.blue;
+  }
+}
+
+export function getBoardGradientHoverVars(background?: BoardBackground) {
+  switch (background) {
+    case 'green':
+      return boardGradientHoverVars.green;
+    case 'lightGreen':
+      return boardGradientHoverVars.lightGreen;
+    case 'blue':
+      return boardGradientHoverVars.blue;
+    case 'orange':
+      return boardGradientHoverVars.orange;
+    case 'red':
+      return boardGradientHoverVars.red;
+    default:
+      return boardGradientHoverVars.blue;
+  }
+}
+
+export function getBoardNavVars(background?: BoardBackground) {
+  switch (background) {
+    case 'green':
+      return boardNavVars.green;
+    case 'lightGreen':
+      return boardNavVars.lightGreen;
+    case 'blue':
+      return boardNavVars.blue;
+    case 'orange':
+      return boardNavVars.orange;
+    case 'red':
+      return boardNavVars.red;
+    default:
+      return boardNavVars.blue;
+  }
+}

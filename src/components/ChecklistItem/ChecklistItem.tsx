@@ -90,7 +90,7 @@ export function ChecklistItem({
 
       <ChecklistCheckboxContentColumn
         data-testid="ChecklistContentColumn"
-        isHovering={isHovering && !isEditingLabel}
+        $isHovering={isHovering && !isEditingLabel}
         onMouseOver={() => setHovering(true)}
         onMouseOut={() => setHovering(false)}
       >

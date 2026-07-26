@@ -112,7 +112,7 @@ export function AddNewCardAtPosition({
         {isAddingCard && (
           <CloseAddCardButton
             data-testid="CloseAddCardButton"
-            secondary
+            $secondary
             onClick={() => setIsAddingCard(false)}
           >
             X

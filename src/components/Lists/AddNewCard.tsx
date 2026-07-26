@@ -86,7 +86,7 @@ export function AddNewCard({ listId }: AddNewCardProps) {
         {isAddingCard && (
           <CloseAddCardButton
             data-testid="CloseAddCardButton"
-            secondary
+            $secondary
             onClick={() => setIsAddingCard(false)}
           >
             X

@@ -87,7 +87,7 @@ export function EditableChecklistLabel({
 
         <CloseDescriptionButton
           data-testid="CloseDescriptionButton"
-          secondary
+          $secondary
           onClick={() => setIsEditingLabel(false)}
         >
           Cancel

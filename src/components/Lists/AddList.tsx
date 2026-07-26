@@ -66,7 +66,7 @@ export function AddLists() {
 
             <CloseAddListButton
               data-testid="CloseAddListButton"
-              secondary
+              $secondary
               onClick={() => setEditing(false)}
             >
               X

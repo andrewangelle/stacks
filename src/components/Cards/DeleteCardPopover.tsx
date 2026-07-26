@@ -37,10 +37,10 @@ export function DeleteCardPopover() {
   return (
     <Popover.Root open={open} onOpenChange={setOpen}>
       <DeleteCardPopoverTrigger data-testid="DeleteCardPopoverTrigger">
-        <Tooltip portal={false} content="Delete card">
+        <Tooltip content="Delete card">
           <CardModalActionButton
             data-testid="CardModalSiderButton"
-            isOpen={open}
+            $isOpen={open}
           >
             <CardModalSiderButtonText data-testid="CardModalSiderButtonText">
               Delete Card
@@ -48,29 +48,30 @@ export function DeleteCardPopover() {
           </CardModalActionButton>
         </Tooltip>
       </DeleteCardPopoverTrigger>
+      <Popover.Portal>
+        <PopoverOptionsContent
+          data-testid="PopoverOptionsContent"
+          side="bottom"
+          align="start"
+          sideOffset={8}
+          alignOffset={4}
+        >
+          <ChecklistPopoverHeader data-testid="ChecklistPopoverHeader">
+            <div style={{ fontWeight: 600 }}>Delete Card?</div>
+            <PopoverClose data-testid="PopoverClose">X</PopoverClose>
+          </ChecklistPopoverHeader>
 
-      <PopoverOptionsContent
-        data-testid="PopoverOptionsContent"
-        side="bottom"
-        align="start"
-        sideOffset={8}
-        alignOffset={4}
-      >
-        <ChecklistPopoverHeader data-testid="ChecklistPopoverHeader">
-          <div style={{ fontWeight: 600 }}>Delete Card?</div>
-          <PopoverClose data-testid="PopoverClose">X</PopoverClose>
-        </ChecklistPopoverHeader>
-
-        <PopoverOptionsContentContainer>
-          Deleting a card is permanent and there is no way to get it back.
-          <DeleteChecklistPopoverButton
-            data-testid="DeleteChecklistPopoverButton"
-            onClick={applyDelete}
-          >
-            Delete card
-          </DeleteChecklistPopoverButton>
-        </PopoverOptionsContentContainer>
-      </PopoverOptionsContent>
+          <PopoverOptionsContentContainer>
+            Deleting a card is permanent and there is no way to get it back.
+            <DeleteChecklistPopoverButton
+              data-testid="DeleteChecklistPopoverButton"
+              onClick={applyDelete}
+            >
+              Delete card
+            </DeleteChecklistPopoverButton>
+          </PopoverOptionsContentContainer>
+        </PopoverOptionsContent>
+      </Popover.Portal>
     </Popover.Root>
   );
 }

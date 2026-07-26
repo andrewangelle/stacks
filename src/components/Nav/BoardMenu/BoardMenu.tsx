@@ -34,7 +34,7 @@ export function BoardMenu() {
       <BoardMenuPopoverTrigger data-testid="BoardMenuPopoverTrigger">
         <BoardMenuPopoverButton
           data-testid="BoardMenuPopoverButton"
-          isOpen={open}
+          $isOpen={open}
         >
           <BoardMenuPopoverButtonText data-testid="BoardMenuPopoverButtonText">
             ...
@@ -42,12 +42,15 @@ export function BoardMenu() {
         </BoardMenuPopoverButton>
       </BoardMenuPopoverTrigger>
 
-      <PopoverOptionsContent data-testid="PopoverOptionsContent">
+      <PopoverOptionsContent
+        data-testid="PopoverOptionsContent"
+        style={{ width: '332px' }}
+      >
         <BoardMenuPopoverHeader data-testid="BoardMenuPopoverHeader">
           <div>
             <BoardMenuPopoverButtonBack
               tabIndex={view !== 'actions' ? 0 : -1}
-              isActive={view !== 'actions'}
+              $isActive={view !== 'actions'}
               onClick={() => setView('actions')}
             >
               {view !== 'actions' ? '<' : ''}

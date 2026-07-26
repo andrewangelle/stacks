@@ -41,7 +41,7 @@ export function ActivityEntry({
     <ActivityContainer
       data-testid="ActivityContainer"
       key={data.id}
-      isSelected={isSelected}
+      $isSelected={isSelected}
       ref={ref}
     >
       <ActivityRow data-testid="ActivityRow">

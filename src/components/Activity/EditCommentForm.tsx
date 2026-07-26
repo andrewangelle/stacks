@@ -52,7 +52,7 @@ export function EditCommentForm({
         <CloseAddCardButton
           data-testid="CloseAddCardButton"
           type="button"
-          secondary
+          $secondary
           onClick={() => setIsEditing(false)}
         >
           Cancel
