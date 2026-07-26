@@ -7,7 +7,7 @@ import {
   secondaryButtonBase,
   secondaryButtonHover,
 } from '~/styles/mixins';
-import { button } from '~/styles/Page.css';
+import { button, popoverOptionsContent } from '~/styles/Page.css';
 import {
   activitySidebarQuery,
   completedGreen,
@@ -274,6 +274,24 @@ export const editCommentLink = style({
   font: 'inherit',
   color: 'inherit',
 });
+
+/**
+ * Every feed row carries a translateY transform from the virtualizer, which
+ * makes it a stacking context — an inline popover can never paint above the
+ * rows below it, and the scrolling viewport clips it. It has to be portaled
+ * out, which in turn puts it behind the card modal overlay (Card.css
+ * `cardModalOverlay`), so it has to outrank that overlay's z-index.
+ */
+export const deleteCommentPopoverContent = style([
+  popoverOptionsContent,
+  {
+    selectors: {
+      [`&${popoverOptionsContent}`]: {
+        zIndex: 3,
+      },
+    },
+  },
+]);
 
 export const editCommentActionsSeperator = style({
   width: '3.5px',

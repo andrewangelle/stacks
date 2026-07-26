@@ -30,42 +30,47 @@ export function DeleteCommentPopover(props: Pick<Activity, 'id'>) {
         </button>
       </Popover.Trigger>
 
-      <Popover.Content
-        className={pageStyles.popoverOptionsContent}
-        data-testid="PopoverOptionsContent"
-      >
-        <div
-          className={checklistsStyles.checklistPopoverHeader}
-          data-testid="ChecklistPopoverHeader"
+      <Popover.Portal>
+        <Popover.Content
+          className={activityStyles.deleteCommentPopoverContent}
+          data-testid="PopoverOptionsContent"
+          side="bottom"
+          align="start"
+          sideOffset={8}
         >
-          <div style={{ fontWeight: 600 }}>{strings.deleteComment}?</div>
-
-          <Popover.Close
-            className={boardsStyles.popoverClose}
-            data-testid="PopoverClose"
+          <div
+            className={checklistsStyles.checklistPopoverHeader}
+            data-testid="ChecklistPopoverHeader"
           >
-            X
-          </Popover.Close>
-        </div>
+            <div style={{ fontWeight: 600 }}>{strings.deleteComment}?</div>
 
-        <div className={pageStyles.popoverOptionsContentContainer}>
-          {strings.deleteCommentConfirmation}
+            <Popover.Close
+              className={boardsStyles.popoverClose}
+              data-testid="PopoverClose"
+            >
+              X
+            </Popover.Close>
+          </div>
 
-          <button
-            type="button"
-            className={checklistItemStyles.deleteChecklistPopoverButton}
-            data-testid="DeleteChecklistPopoverButton"
-            onClick={() =>
-              deleteActivity({
-                activityId: props.id,
-                cardId,
-              })
-            }
-          >
-            {strings.deleteCommentButton}
-          </button>
-        </div>
-      </Popover.Content>
+          <div className={pageStyles.popoverOptionsContentContainer}>
+            {strings.deleteCommentConfirmation}
+
+            <button
+              type="button"
+              className={checklistItemStyles.deleteChecklistPopoverButton}
+              data-testid="DeleteChecklistPopoverButton"
+              onClick={() =>
+                deleteActivity({
+                  activityId: props.id,
+                  cardId,
+                })
+              }
+            >
+              {strings.deleteCommentButton}
+            </button>
+          </div>
+        </Popover.Content>
+      </Popover.Portal>
     </Popover.Root>
   );
 }
