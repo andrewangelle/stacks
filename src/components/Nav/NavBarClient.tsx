@@ -1,37 +1,33 @@
 import { Logo } from '~/components/Nav/Logo';
-import {
-  NavBarContainer,
-  NavBarContent,
-  NavColumn,
-} from '~/components/Nav/Nav.styled';
+import * as styles from '~/components/Nav/Nav.css';
 import { UserNavContent } from '~/components/Nav/UserNavContent';
 
 export function NavBarClient() {
   return (
-    <NavBarContainer data-testid="NavBarContainer">
-      <NavBarContent
+    <div className={styles.navBarContainer} data-testid="NavBarContainer">
+      <div
+        className={styles.navBarContent({ background: 'blue' })}
         key={'blue'}
         data-testid="NavBarContent"
-        background={'blue'}
       >
         <UserNavContent />
-      </NavBarContent>
-    </NavBarContainer>
+      </div>
+    </div>
   );
 }
 
 export function NavBarFallback() {
   return (
-    <NavBarContainer data-testid="NavBarContainer">
-      <NavBarContent
+    <div className={styles.navBarContainer} data-testid="NavBarContainer">
+      <div
+        className={styles.navBarContent({ background: 'blue' })}
         key={'blue'}
         data-testid="NavBarContent"
-        background={'blue'}
       >
-        <NavColumn data-testid="column-placeholder" />
+        <div className={styles.navColumn} data-testid="column-placeholder" />
         <Logo />
-        <NavColumn data-testid="column-placeholder" />
-      </NavBarContent>
-    </NavBarContainer>
+        <div className={styles.navColumn} data-testid="column-placeholder" />
+      </div>
+    </div>
   );
 }

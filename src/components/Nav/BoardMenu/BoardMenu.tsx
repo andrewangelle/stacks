@@ -1,17 +1,8 @@
 import { Popover } from 'radix-ui';
 import { useState } from 'react';
-import {
-  BoardMenuOption,
-  BoardMenuOptionsContainer,
-  BoardMenuPopoverButton,
-  BoardMenuPopoverButtonBack,
-  BoardMenuPopoverButtonText,
-  BoardMenuPopoverClose,
-  BoardMenuPopoverHeader,
-  BoardMenuPopoverTrigger,
-} from '~/components/Nav/BoardMenu/BoardMenu.styled';
+import * as boardMenuStyles from '~/components/Nav/BoardMenu/BoardMenu.css';
 import { ChangeBoardBackground } from '~/components/Nav/BoardMenu/ChangeBoardBackground';
-import { PopoverOptionsContent } from '~/styles/Page.styled';
+import * as pageStyles from '~/styles/Page.css';
 
 type Views = 'actions' | 'changeBackground';
 
@@ -31,49 +22,72 @@ export function BoardMenu() {
 
   return (
     <Popover.Root open={open} onOpenChange={closePopover}>
-      <BoardMenuPopoverTrigger data-testid="BoardMenuPopoverTrigger">
-        <BoardMenuPopoverButton
+      <Popover.Trigger
+        className={boardMenuStyles.boardMenuPopoverTrigger}
+        data-testid="BoardMenuPopoverTrigger"
+      >
+        <div
+          className={boardMenuStyles.boardMenuPopoverButton({ isOpen: open })}
           data-testid="BoardMenuPopoverButton"
-          isOpen={open}
         >
-          <BoardMenuPopoverButtonText data-testid="BoardMenuPopoverButtonText">
+          <span
+            className={boardMenuStyles.boardMenuPopoverButtonText}
+            data-testid="BoardMenuPopoverButtonText"
+          >
             ...
-          </BoardMenuPopoverButtonText>
-        </BoardMenuPopoverButton>
-      </BoardMenuPopoverTrigger>
+          </span>
+        </div>
+      </Popover.Trigger>
 
-      <PopoverOptionsContent data-testid="PopoverOptionsContent">
-        <BoardMenuPopoverHeader data-testid="BoardMenuPopoverHeader">
+      <Popover.Content
+        className={pageStyles.popoverOptionsContent}
+        data-testid="PopoverOptionsContent"
+      >
+        <div
+          className={boardMenuStyles.boardMenuPopoverHeader}
+          data-testid="BoardMenuPopoverHeader"
+        >
           <div>
-            <BoardMenuPopoverButtonBack
+            <button
+              type="button"
+              className={boardMenuStyles.boardMenuPopoverButtonBack({
+                isActive: view !== 'actions',
+              })}
               tabIndex={view !== 'actions' ? 0 : -1}
-              isActive={view !== 'actions'}
               onClick={() => setView('actions')}
             >
               {view !== 'actions' ? '<' : ''}
-            </BoardMenuPopoverButtonBack>
+            </button>
           </div>
 
           <div>{viewTitles[view]}</div>
 
-          <BoardMenuPopoverClose data-testid="BoardMenuPopoverClose">
+          <Popover.Close
+            className={boardMenuStyles.boardMenuPopoverClose}
+            data-testid="BoardMenuPopoverClose"
+          >
             X
-          </BoardMenuPopoverClose>
-        </BoardMenuPopoverHeader>
+          </Popover.Close>
+        </div>
 
         {view === 'actions' && (
-          <BoardMenuOptionsContainer data-testid="BoardMenuOptionsContainer">
-            <BoardMenuOption
+          <div
+            className={boardMenuStyles.boardMenuOptionsContainer}
+            data-testid="BoardMenuOptionsContainer"
+          >
+            <button
+              type="button"
+              className={boardMenuStyles.boardMenuOption}
               data-testid="BoardMenuOption"
               onClick={() => setView('changeBackground')}
             >
               Change background
-            </BoardMenuOption>
-          </BoardMenuOptionsContainer>
+            </button>
+          </div>
         )}
 
         {view === 'changeBackground' && <ChangeBoardBackground />}
-      </PopoverOptionsContent>
+      </Popover.Content>
     </Popover.Root>
   );
 }

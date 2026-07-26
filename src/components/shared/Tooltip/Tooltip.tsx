@@ -1,7 +1,7 @@
 import { Tooltip as TooltipPrimitive } from 'radix-ui';
 import type { ReactNode } from 'react';
 import { useState } from 'react';
-import { TooltipContent } from '~/components/shared/Tooltip/Tooltip.styled';
+import * as styles from '~/components/shared/Tooltip/Tooltip.css';
 
 type TooltipProps = {
   portal?: boolean;
@@ -27,16 +27,24 @@ export function Tooltip({
         <TooltipPrimitive.Trigger asChild>{children}</TooltipPrimitive.Trigger>
         {portal && (
           <TooltipPrimitive.Portal>
-            <TooltipContent side="bottom" sideOffset={8}>
+            <TooltipPrimitive.Content
+              className={styles.tooltipContent}
+              side="bottom"
+              sideOffset={8}
+            >
               {content}
-            </TooltipContent>
+            </TooltipPrimitive.Content>
           </TooltipPrimitive.Portal>
         )}
 
         {!portal && (
-          <TooltipContent side="bottom" sideOffset={8}>
+          <TooltipPrimitive.Content
+            className={styles.tooltipContent}
+            side="bottom"
+            sideOffset={8}
+          >
             {content}
-          </TooltipContent>
+          </TooltipPrimitive.Content>
         )}
       </TooltipPrimitive.Root>
     </TooltipPrimitive.Provider>

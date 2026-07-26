@@ -1,15 +1,13 @@
+import { Dialog } from 'radix-ui';
 import { useState } from 'react';
 import { BsCheck2Square } from 'react-icons/bs';
-import {
-  ChecklistTitle,
-  EditChecklistTitleForm,
-  EditChecklistTitleInput,
-} from '~/components/Checklists/Checklists.styled';
+import * as cardStyles from '~/components/Cards/Card.css';
+import * as checklistsStyles from '~/components/Checklists/Checklists.css';
 import {
   useGetChecklist,
   useUpdateChecklist,
 } from '~/db/checklists/checklists.query';
-import { Flex } from '~/styles/Page.styled';
+import * as pageStyles from '~/styles/Page.css';
 import { useOutsideClick } from '~/utils/useOutsideClick';
 
 type ChecklistEditableTitleProps = {
@@ -44,30 +42,35 @@ export function ChecklistEditableTitle({ id }: ChecklistEditableTitleProps) {
   }
 
   return (
-    <Flex
+    <div
+      className={pageStyles.flex}
       data-testid="Flex"
       style={{ alignItems: 'center', minWidth: 0, flex: '1 1 auto' }}
     >
       <BsCheck2Square size={24} style={{ flexShrink: 0 }} />
 
       {!isEditingTitle && (
-        <ChecklistTitle data-testid="ChecklistTitle" onClick={openEditTitle}>
+        <Dialog.Title
+          className={checklistsStyles.checklistTitle}
+          data-testid="ChecklistTitle"
+          onClick={openEditTitle}
+        >
           {checklist?.checklistTitle}
-        </ChecklistTitle>
+        </Dialog.Title>
       )}
 
       {isEditingTitle && (
-        <EditChecklistTitleForm ref={outsideClickRef}>
-          <EditChecklistTitleInput
+        <form className={cardStyles.editCardTitleForm} ref={outsideClickRef}>
+          <input
+            className={checklistsStyles.editChecklistTitleInput}
             data-testid="EditCardTitleInput"
             value={editedTitle}
-            autoFocus
             onChange={(event) =>
               setEditedTitle((_prevState) => event.target.value)
             }
           />
-        </EditChecklistTitleForm>
+        </form>
       )}
-    </Flex>
+    </div>
   );
 }

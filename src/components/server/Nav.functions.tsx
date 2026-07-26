@@ -1,17 +1,14 @@
 import { createServerFn } from '@tanstack/react-start';
 import { createCompositeComponent } from '@tanstack/react-start/rsc';
 import type { ReactNode } from 'react';
-import type { BoardBackground } from '~/components/Boards/Boards.styled';
-import {
-  BoardHeaderContainer,
-  NavBarContent,
-} from '~/components/Nav/Nav.styled';
+import * as styles from '~/components/Nav/Nav.css';
 import { getBoardColor } from '~/db/boards/boards.functions';
 import {
   GetBoardByIdSchema,
   MaybeBoardIdSchema,
 } from '~/db/boards/boards.schemas';
 import { authMiddleware } from '~/middleware/auth';
+import type { BoardBackground } from '~/styles/tokens';
 
 export type NavServerProps = {
   children?: ReactNode;
@@ -32,13 +29,13 @@ export const getNavBarServer = createServerFn()
       }
 
       return (
-        <NavBarContent
+        <div
+          className={styles.navBarContent({ background: boardColor })}
           key={boardColor}
           data-testid="NavBarContent"
-          background={boardColor}
         >
           {props.children}
-        </NavBarContent>
+        </div>
       );
     }),
   }));
@@ -54,13 +51,15 @@ export const getBoardHeaderServer = createServerFn()
     src: await createCompositeComponent(async (props: BoardBarServerProps) => {
       const response = await getBoardColor({ data });
       return (
-        <BoardHeaderContainer
+        <div
+          className={styles.boardHeaderContainer({
+            background: response?.boardColor as BoardBackground,
+          })}
           key={response?.boardColor}
-          background={response?.boardColor as BoardBackground}
           data-testid="BoardHeaderContainer"
         >
           {props.children}
-        </BoardHeaderContainer>
+        </div>
       );
     }),
   }));

@@ -2,16 +2,7 @@ import { useCombobox } from 'downshift';
 import type { MouseEvent } from 'react';
 import { useMemo, useState } from 'react';
 import { RxCaretDown } from 'react-icons/rx';
-import {
-  ComboboxIconButton,
-  ComboboxInput,
-  ComboboxItem,
-  ComboboxItemCurrent,
-  ComboboxLabel,
-  ComboboxMenu,
-  ComboboxTrigger,
-  ComboboxWrapper,
-} from '~/components/shared/Combobox/Combobox.styled';
+import * as styles from '~/components/shared/Combobox/Combobox.css';
 
 export type ComboboxItemType = {
   id: string;
@@ -123,8 +114,10 @@ export function Combobox({
   });
 
   return (
-    <ComboboxWrapper data-testid="ComboboxWrapper">
-      <ComboboxLabel
+    <div className={styles.comboboxWrapper} data-testid="ComboboxWrapper">
+      {/* biome-ignore lint/a11y/noLabelWithoutControl: <getLabelProps will associate with getInputProps> */}
+      <label
+        className={styles.comboboxLabel}
         {...getLabelProps({
           'data-testid': 'ComboboxLabel',
           onClick(event: MouseEvent<HTMLLabelElement>) {
@@ -135,10 +128,11 @@ export function Combobox({
         })}
       >
         {label}
-      </ComboboxLabel>
+      </label>
 
-      <ComboboxTrigger data-testid="ComboboxTrigger">
-        <ComboboxInput
+      <div className={styles.comboboxTrigger} data-testid="ComboboxTrigger">
+        <input
+          className={styles.comboboxInput}
           {...getInputProps({
             autoFocus: false,
             placeholder: selectedItem?.label,
@@ -146,7 +140,8 @@ export function Combobox({
           })}
         />
 
-        <ComboboxIconButton
+        <button
+          className={styles.comboboxIconButton}
           {...getToggleButtonProps({
             'aria-label': 'toggle menu',
             'data-testid': `${testId}-ComboboxToggleButton`,
@@ -160,10 +155,11 @@ export function Combobox({
               transition: 'transform 0.15s ease',
             }}
           />
-        </ComboboxIconButton>
-      </ComboboxTrigger>
+        </button>
+      </div>
 
-      <ComboboxMenu
+      <ul
+        className={styles.comboboxMenu}
         {...getMenuProps({
           'data-testid': `${testId}-ComboboxMenu`,
           style: {
@@ -173,7 +169,8 @@ export function Combobox({
       >
         {filteredItems.length > 0 &&
           filteredItems.map((item, index) => (
-            <ComboboxItem
+            <li
+              className={styles.comboboxItem}
               key={item.id}
               {...getItemProps({
                 'data-testid': `ComboboxItem-${item.label}`,
@@ -186,22 +183,26 @@ export function Combobox({
               {item.label}
 
               {item.current && (
-                <ComboboxItemCurrent data-testid="ComboboxItemCurrent">
+                <div
+                  className={styles.comboboxItemCurrent}
+                  data-testid="ComboboxItemCurrent"
+                >
                   (current)
-                </ComboboxItemCurrent>
+                </div>
               )}
-            </ComboboxItem>
+            </li>
           ))}
 
         {filteredItems.length === 0 && (
-          <ComboboxItem
+          <li
+            className={styles.comboboxItem}
             data-testid="ComboboxNoItems"
             style={{ textAlign: 'center' }}
           >
             No options
-          </ComboboxItem>
+          </li>
         )}
-      </ComboboxMenu>
-    </ComboboxWrapper>
+      </ul>
+    </div>
   );
 }

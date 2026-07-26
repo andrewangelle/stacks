@@ -1,11 +1,11 @@
 import { createServerFn } from '@tanstack/react-start';
 import { createCompositeComponent } from '@tanstack/react-start/rsc';
 import type { ReactNode } from 'react';
-import type { BoardBackground } from '~/components/Boards/Boards.styled';
-import { BoardPageBackground } from '~/components/Nav/Nav.styled';
+import * as styles from '~/components/Nav/Nav.css';
 import { getBoardColor } from '~/db/boards/boards.functions';
 import { GetBoardByIdSchema } from '~/db/boards/boards.schemas';
 import { authMiddleware } from '~/middleware/auth';
+import type { BoardBackground } from '~/styles/tokens';
 
 export type BoardPageServerProps = {
   children?: ReactNode;
@@ -18,13 +18,15 @@ export const getBoardPageServer = createServerFn()
     src: await createCompositeComponent(async (props: BoardPageServerProps) => {
       const response = await getBoardColor({ data });
       return (
-        <BoardPageBackground
+        <div
+          className={styles.boardPageBackground({
+            background: response?.boardColor as BoardBackground,
+          })}
           key={response?.boardColor}
           data-testid="BoardPageBackground"
-          background={response?.boardColor as BoardBackground}
         >
           {props.children}
-        </BoardPageBackground>
+        </div>
       );
     }),
   }));

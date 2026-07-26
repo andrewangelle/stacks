@@ -1,12 +1,7 @@
+import { Accordion } from 'radix-ui';
 import { type MouseEvent, Suspense, useEffect, useState } from 'react';
 import { IoIosCheckmarkCircleOutline } from 'react-icons/io';
-import {
-  AllTasksCompletedContainer,
-  AllTasksCompletedText,
-  CardTitleDetailsChecklistAccordionRoot,
-  CardTitleDetailsChecklistDivider,
-  CardTitleDetailsChecklistShowMore,
-} from '~/components/Lists/CardTitleDetails/CardTitleDetails.styled';
+import * as styles from '~/components/Lists/CardTitleDetails/CardTitleDetails.css';
 import { CardTitleDetailsChecklist } from '~/components/Lists/CardTitleDetails/CardTitleDetailsChecklist';
 import { CardTitleDetailsChecklistAccordion } from '~/components/Lists/CardTitleDetails/CardTitleDetailsChecklistAccordion';
 import { CardTitleDetailsChecklistFallback } from '~/components/Lists/CardTitleDetails/CardTitleDetailsChecklistFallback';
@@ -89,25 +84,35 @@ export function CardTitleDetailsContent({
       />
 
       {showAllCompleteView && (
-        <AllTasksCompletedContainer data-testid="AllTasksCompletedContainer">
+        <div
+          className={styles.allTasksCompletedContainer}
+          data-testid="AllTasksCompletedContainer"
+        >
           <IoIosCheckmarkCircleOutline
             size={24}
             color="#6A9A23"
             strokeWidth={12}
           />
 
-          <AllTasksCompletedText data-testid="CardTitleDetailsChecklistItemLabel">
+          <div
+            className={styles.allTasksCompletedText}
+            data-testid="CardTitleDetailsChecklistItemLabel"
+          >
             All tasks completed!
-          </AllTasksCompletedText>
-        </AllTasksCompletedContainer>
+          </div>
+        </div>
       )}
 
       {isOpen && checklists.length > 0 && (
         <>
-          <CardTitleDetailsChecklistDivider data-testid="CardTitleDetailsChecklistDivider" />
+          <div
+            className={styles.cardTitleDetailsChecklistDivider}
+            data-testid="CardTitleDetailsChecklistDivider"
+          />
 
           {data?.hasMultiple && (
-            <CardTitleDetailsChecklistAccordionRoot
+            <Accordion.Root
+              className={styles.cardTitleDetailsChecklistAccordionRoot}
               collapsible
               data-testid="CardTitleDetailsChecklistAccordion"
               onValueChange={(value: string) =>
@@ -126,17 +131,18 @@ export function CardTitleDetailsContent({
                   cardId={cardId}
                 />
               ))}
-            </CardTitleDetailsChecklistAccordionRoot>
+            </Accordion.Root>
           )}
 
           {data?.hasMultiple && truncatedCount > 0 && (
-            <CardTitleDetailsChecklistShowMore
+            <button
+              className={styles.cardTitleDetailsChecklistShowMore}
               data-testid="CardTitleDetailsChecklistShowMore"
               onClick={handleShowMore}
               type="button"
             >
               ...and {truncatedCount} more
-            </CardTitleDetailsChecklistShowMore>
+            </button>
           )}
 
           {!data?.hasMultiple && data?.singleChecklistId && (

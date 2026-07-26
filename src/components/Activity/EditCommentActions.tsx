@@ -1,8 +1,4 @@
-import {
-  EditCommentActionsRow,
-  EditCommentActionsSeperator,
-  EditCommentLink,
-} from '~/components/Activity/Activity.styled';
+import * as styles from '~/components/Activity/Activity.css';
 import { DeleteCommentPopover } from '~/components/Activity/DeleteCommentPopover';
 import type { Activity } from '~/generated/prisma/client';
 
@@ -15,17 +11,25 @@ export function EditCommentActions({
   setIsEditing,
 }: EditCommentActionsProps) {
   return (
-    <EditCommentActionsRow data-testid="EditCommentActionsRow">
-      <EditCommentLink
+    <div
+      className={styles.editCommentActionsRow}
+      data-testid="EditCommentActionsRow"
+    >
+      <button
+        type="button"
+        className={styles.editCommentLink}
         data-testid="EditCommentLink"
         onClick={() => setIsEditing(true)}
       >
         Edit
-      </EditCommentLink>
+      </button>
 
-      <EditCommentActionsSeperator data-testid="ActivityActionsSeparator" />
+      <div
+        className={styles.editCommentActionsSeperator}
+        data-testid="ActivityActionsSeparator"
+      />
 
       <DeleteCommentPopover id={id} />
-    </EditCommentActionsRow>
+    </div>
   );
 }

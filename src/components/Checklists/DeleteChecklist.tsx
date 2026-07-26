@@ -1,23 +1,15 @@
 import { Popover } from 'radix-ui';
 import { useState } from 'react';
-import { PopoverClose } from '~/components/Boards/Boards.styled';
-import {
-  DeleteChecklistPopoverButton,
-  DeleteChecklistPopoverTrigger,
-} from '~/components/ChecklistItem/ChecklistItem.styled';
-import {
-  ChecklistPopoverHeader,
-  DeleteChecklistButton,
-} from '~/components/Checklists/Checklists.styled';
+import * as boardsStyles from '~/components/Boards/Boards.css';
+import * as cardStyles from '~/components/Cards/Card.css';
+import * as checklistItemStyles from '~/components/ChecklistItem/ChecklistItem.css';
+import * as checklistsStyles from '~/components/Checklists/Checklists.css';
 import { useCreateActivity } from '~/db/activity/activity.query';
 import {
   useDeleteChecklist,
   useGetChecklist,
 } from '~/db/checklists/checklists.query';
-import {
-  PopoverOptionsContent,
-  PopoverOptionsContentContainer,
-} from '~/styles/Page.styled';
+import * as pageStyles from '~/styles/Page.css';
 import { useCurrentBoardId } from '~/utils/useCurrentBoardId';
 
 export function DeleteChecklist({ id }: { id: string }) {
@@ -48,39 +40,53 @@ export function DeleteChecklist({ id }: { id: string }) {
 
   return (
     <Popover.Root open={open} onOpenChange={setOpen}>
-      <DeleteChecklistPopoverTrigger data-testid="DeleteChecklistPopoverTrigger">
-        <DeleteChecklistButton
+      <Popover.Trigger
+        className={checklistItemStyles.deleteChecklistPopoverTrigger}
+        data-testid="DeleteChecklistPopoverTrigger"
+      >
+        <div
+          className={`${cardStyles.cardModalActionButton({ isOpen: open })} ${checklistsStyles.deleteChecklistButtonSize}`}
           data-testid="DeleteChecklistButton"
-          isOpen={open}
         >
           Delete
-        </DeleteChecklistButton>
-      </DeleteChecklistPopoverTrigger>
+        </div>
+      </Popover.Trigger>
 
-      <PopoverOptionsContent
+      <Popover.Content
+        className={pageStyles.popoverOptionsContent}
         data-testid="PopoverOptionsContent"
         side="bottom"
         align="start"
         sideOffset={8}
         alignOffset={4}
       >
-        <ChecklistPopoverHeader data-testid="ChecklistPopoverHeader">
+        <div
+          className={checklistsStyles.checklistPopoverHeader}
+          data-testid="ChecklistPopoverHeader"
+        >
           <div
             style={{ fontWeight: 600 }}
           >{`Delete ${checklist.checklistTitle}?`}</div>
-          <PopoverClose data-testid="PopoverClose">X</PopoverClose>
-        </ChecklistPopoverHeader>
+          <Popover.Close
+            className={boardsStyles.popoverClose}
+            data-testid="PopoverClose"
+          >
+            X
+          </Popover.Close>
+        </div>
 
-        <PopoverOptionsContentContainer>
+        <div className={pageStyles.popoverOptionsContentContainer}>
           Deleting a checklist is permanent and there is no way to get it back.
-          <DeleteChecklistPopoverButton
+          <button
+            type="button"
+            className={checklistItemStyles.deleteChecklistPopoverButton}
             data-testid="DeleteChecklistPopoverButton"
             onClick={applyDelete}
           >
             Delete checklist
-          </DeleteChecklistPopoverButton>
-        </PopoverOptionsContentContainer>
-      </PopoverOptionsContent>
+          </button>
+        </div>
+      </Popover.Content>
     </Popover.Root>
   );
 }

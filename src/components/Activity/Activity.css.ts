@@ -286,17 +286,29 @@ export const editCommentActionsSeperator = style({
 });
 
 export const activityTimestampMeta = style({
+  display: 'block',
+  background: 'transparent',
+  border: 'none',
+  padding: 0,
   marginTop: '4px',
   cursor: 'pointer',
   textDecoration: 'underline',
   color: '#0000EE',
+  fontSize: '14px',
+  fontFamily,
 });
 
 export const activityLinkToCard = style({
+  display: 'inline-block',
+  background: 'transparent',
+  border: 'none',
+  padding: 0,
   marginTop: '4px',
   cursor: 'pointer',
   textDecoration: 'underline',
   color: '#0000EE',
+  fontSize: '14px',
+  fontFamily,
 });
 
 export const commentTimestamp = style({

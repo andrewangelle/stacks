@@ -1,13 +1,7 @@
+import { Checkbox } from 'radix-ui';
 import { type MouseEvent, useEffect, useState } from 'react';
 import { AiOutlineCheck } from 'react-icons/ai';
-import {
-  CardTitleDetailsChecklistCheckbox,
-  CardTitleDetailsChecklistCheckboxIndicator,
-  CardTitleDetailsChecklistContainer,
-  CardTitleDetailsChecklistItemLabel,
-  CardTitleDetailsChecklistItemRow,
-  CardTitleDetailsChecklistShowMore,
-} from '~/components/Lists/CardTitleDetails/CardTitleDetails.styled';
+import * as styles from '~/components/Lists/CardTitleDetails/CardTitleDetails.css';
 import { useCreateActivity } from '~/db/activity/activity.query';
 import { useUpdateChecklistItem } from '~/db/checklistItems/checklistItems.query';
 import { useGetChecklist } from '~/db/checklists/checklists.query';
@@ -81,37 +75,51 @@ export function CardTitleDetailsChecklist({
   }, [completedAllItems, onCompleteAllItems]);
 
   return (
-    <CardTitleDetailsChecklistContainer data-testid="CardTitleDetailsChecklistContainer">
+    <div
+      className={styles.cardTitleDetailsChecklistContainer}
+      data-testid="CardTitleDetailsChecklistContainer"
+    >
       {visibleItems.map((item) => (
-        <CardTitleDetailsChecklistItemRow
+        <div
+          className={styles.cardTitleDetailsChecklistItemRow}
           data-testid="CardTitleDetailsChecklistItemRow"
           key={item.id}
         >
-          <CardTitleDetailsChecklistCheckbox
+          <Checkbox.Root
+            className={styles.cardTitleDetailsChecklistCheckbox({
+              checked: false,
+            })}
             checked={false}
             data-testid="CardTitleDetailsChecklistCheckbox"
             onClick={completeItem({ itemId: item.id, label: item.label })}
           >
-            <CardTitleDetailsChecklistCheckboxIndicator data-testid="CardTitleDetailsChecklistCheckboxIndicator">
+            <Checkbox.Indicator
+              className={styles.cardTitleDetailsChecklistCheckboxIndicator}
+              data-testid="CardTitleDetailsChecklistCheckboxIndicator"
+            >
               <AiOutlineCheck size={12} />
-            </CardTitleDetailsChecklistCheckboxIndicator>
-          </CardTitleDetailsChecklistCheckbox>
+            </Checkbox.Indicator>
+          </Checkbox.Root>
 
-          <CardTitleDetailsChecklistItemLabel data-testid="CardTitleDetailsChecklistItemLabel">
+          <span
+            className={styles.cardTitleDetailsChecklistItemLabel}
+            data-testid="CardTitleDetailsChecklistItemLabel"
+          >
             {item.label}
-          </CardTitleDetailsChecklistItemLabel>
-        </CardTitleDetailsChecklistItemRow>
+          </span>
+        </div>
       ))}
 
       {hasMore && (
-        <CardTitleDetailsChecklistShowMore
+        <button
+          className={styles.cardTitleDetailsChecklistShowMore}
           data-testid="CardTitleDetailsChecklistShowMore"
           onClick={showMore}
           type="button"
         >
           Show more
-        </CardTitleDetailsChecklistShowMore>
+        </button>
       )}
-    </CardTitleDetailsChecklistContainer>
+    </div>
   );
 }

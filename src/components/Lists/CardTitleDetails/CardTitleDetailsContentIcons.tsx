@@ -1,14 +1,11 @@
-import type { MouseEvent } from 'react';
+import type { KeyboardEvent, MouseEvent } from 'react';
 import { BiCommentDetail } from 'react-icons/bi';
 import { IoMdList } from 'react-icons/io';
 import { RiCheckboxLine } from 'react-icons/ri';
-import {
-  CardTitleDetailsChecklistTotalsContainer,
-  CardTitleDetailsContentIconsContainer,
-} from '~/components/Lists/CardTitleDetails/CardTitleDetails.styled';
+import * as cardTitleDetailsStyles from '~/components/Lists/CardTitleDetails/CardTitleDetails.css';
 import { Tooltip } from '~/components/shared/Tooltip/Tooltip';
 import { useGetCardTitleDetailsChecklists } from '~/db/checklists/checklists.query';
-import { Flex } from '~/styles/Page.styled';
+import * as pageStyles from '~/styles/Page.css';
 import { useCardTitleDetailsVisibility } from '~/utils/useCardTitleDetailsVisibility';
 
 type CardTitleDetailsContentIconsProps = {
@@ -16,7 +13,9 @@ type CardTitleDetailsContentIconsProps = {
   description: string;
   isOpen: boolean;
   toggleOpen: (
-    event: MouseEvent<HTMLDivElement, globalThis.MouseEvent>,
+    event:
+      | MouseEvent<HTMLDivElement, globalThis.MouseEvent>
+      | KeyboardEvent<HTMLDivElement>,
   ) => void;
 };
 
@@ -37,44 +36,61 @@ export function CardTitleDetailsContentIcons({
       : 'Expand checklists';
 
   return (
-    <CardTitleDetailsContentIconsContainer
+    <div
+      className={cardTitleDetailsStyles.cardTitleDetailsContentIconsContainer({
+        hasComments: commentsCount > 0,
+      })}
       data-testid="CardTitleDetailsContentIconsContainer"
-      commentsCount={commentsCount}
     >
       {commentsCount > 0 && (
         <Tooltip content="Comments">
-          <Flex style={{ fontSize: '12px', lineHeight: '16px', gap: '4px' }}>
+          <div
+            className={pageStyles.flex}
+            style={{ fontSize: '12px', lineHeight: '16px', gap: '4px' }}
+          >
             <BiCommentDetail
               size={15}
               data-testid="BiCommentDetail"
               style={{ position: 'relative', top: '1px' }}
             />
             {commentsCount}
-          </Flex>
+          </div>
         </Tooltip>
       )}
 
       {description && (
         <Tooltip content="Description">
-          <Flex style={{ fontSize: '12px', lineHeight: '16px', gap: '4px' }}>
+          <div
+            className={pageStyles.flex}
+            style={{ fontSize: '12px', lineHeight: '16px', gap: '4px' }}
+          >
             <IoMdList size={15} />
-          </Flex>
+          </div>
         </Tooltip>
       )}
 
       {hasChecklistDetails && (
         <Tooltip content={checklistTooltipText}>
-          <CardTitleDetailsChecklistTotalsContainer
+          {/* biome-ignore lint/a11y/useSemanticElements: <style conflict> */}
+          <div
+            role="button"
+            tabIndex={data?.isAllCompleted ? -1 : 0}
+            className={cardTitleDetailsStyles.cardTitleDetailsChecklistTotalsContainer(
+              { isOpen, isAllCompleted: data?.isAllCompleted ?? false },
+            )}
             data-testid="CardTitleDetailsChecklistTotalsContainer"
-            isAllCompleted={data?.isAllCompleted ?? false}
-            isOpen={isOpen}
             onClick={toggleOpen}
+            onKeyDown={(event) => {
+              if (event.key === 'Enter' || event.key === ' ') {
+                toggleOpen(event);
+              }
+            }}
           >
             <RiCheckboxLine size={14} />
             {data?.completedItemsForCard} / {data?.totalItemsForCard}
-          </CardTitleDetailsChecklistTotalsContainer>
+          </div>
         </Tooltip>
       )}
-    </CardTitleDetailsContentIconsContainer>
+    </div>
   );
 }

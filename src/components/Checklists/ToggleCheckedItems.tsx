@@ -1,4 +1,4 @@
-import { ToggleCheckedItemsButton } from '~/components/Checklists/Checklists.styled';
+import * as styles from '~/components/Checklists/Checklists.css';
 import { useGetChecklistItems } from '~/db/checklistItems/checklistItems.query';
 import {
   useGetChecklist,
@@ -22,7 +22,9 @@ export function ToggleCheckedItems({ checklistId }: { checklistId: string }) {
     : 'Hide completed items';
 
   return (
-    <ToggleCheckedItemsButton
+    <button
+      type="button"
+      className={styles.toggleCheckedItemsButton}
       data-testid="ToggleCheckedItemsButton"
       disabled={isPending}
       onClick={() =>
@@ -34,6 +36,6 @@ export function ToggleCheckedItems({ checklistId }: { checklistId: string }) {
       }
     >
       {label}
-    </ToggleCheckedItemsButton>
+    </button>
   );
 }

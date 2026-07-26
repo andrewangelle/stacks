@@ -2,9 +2,11 @@
 
 ## Styling conventions (vanilla-extract)
 
-Styles live in `*.css.ts` files; components consume them through thin wrappers
-in the sibling `*.styled.ts(x)` file built with `styledEl` / `buttonEl` from
-`~/styles/styledEl` and `~/styles/Page.styled`.
+Styles live in `*.css.ts` files. Components import them namespaced
+(`import * as styles from '~/components/Foo/Foo.css'`) and put the class on the
+element directly: `<div className={styles.fooContainer} data-testid="Foo">`. A
+file pulling in more than one stylesheet names each import after its module
+(`cardStyles`, `pageStyles`, …) instead of `styles`.
 
 - **Register every new `.css.ts` file in `src/styles/stylesheets.ts`.** That
   barrel is imported by the root route so all CSS lands in the entry chunk in

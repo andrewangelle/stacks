@@ -1,12 +1,9 @@
-import {
-  CheckboxSkeleton,
-  ChecklistCheckboxContainer,
-  ChecklistLabelSkeleton,
-} from '~/components/ChecklistItem/ChecklistItem.styled';
+import * as styles from '~/components/ChecklistItem/ChecklistItem.css';
 
 export function ChecklistItemSkeleton() {
   return (
-    <ChecklistCheckboxContainer
+    <div
+      className={styles.checklistCheckboxContainer}
       data-testid="ChecklistCheckboxContainer"
       style={{
         display: 'flex',
@@ -15,11 +12,12 @@ export function ChecklistItemSkeleton() {
         margin: '8px 0px',
       }}
     >
-      <CheckboxSkeleton data-testid="CheckboxSkeleton" />
-      <ChecklistLabelSkeleton
+      <div className={styles.checkboxSkeleton} data-testid="CheckboxSkeleton" />
+      <div
+        className={styles.checklistLabelSkeleton}
         data-testid="ChecklistLabelSkeleton"
         style={{ width: '90%', marginLeft: '12px' }}
       />
-    </ChecklistCheckboxContainer>
+    </div>
   );
 }

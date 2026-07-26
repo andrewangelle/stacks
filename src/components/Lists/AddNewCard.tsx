@@ -1,14 +1,8 @@
 import { useEffect, useState } from 'react';
-import {
-  AddCardButton,
-  AddCardFooter,
-  AddCardInput,
-  AddCardText,
-  CloseAddCardButton,
-} from '~/components/Lists/List.styled';
+import * as listStyles from '~/components/Lists/List.css';
 import { useCreateActivity } from '~/db/activity/activity.query';
 import { useCreateCard } from '~/db/cards/cards.query';
-import { Flex } from '~/styles/Page.styled';
+import * as pageStyles from '~/styles/Page.css';
 import { useCurrentBoardId } from '~/utils/useCurrentBoardId';
 
 type AddNewCardProps = {
@@ -51,48 +45,57 @@ export function AddNewCard({ listId }: AddNewCardProps) {
   }, [isSuccess, response, boardId, createActivity, reset]);
 
   return (
-    <AddCardFooter
+    <div
+      className={listStyles.addCardFooter}
       data-testid="AddCardFooter"
       data-editing={isAddingCard ? '' : undefined}
     >
       {isAddingCard && (
-        <AddCardInput
+        <input
+          className={listStyles.addCardInput}
           data-testid="AddCardInput"
           value={newCardTitle}
           placeholder="Enter a title"
-          autoFocus
           onChange={(event) =>
             setNewCardTitle((_prevState) => event.target.value)
           }
         />
       )}
 
-      <Flex data-testid="Flex">
+      <div className={pageStyles.flex} data-testid="Flex">
         {!isAddingCard && (
-          <AddCardText
+          <button
+            type="button"
+            className={listStyles.addCardText}
             data-testid="AddCardText"
             onClick={() => setIsAddingCard(true)}
           >
             + Add a card
-          </AddCardText>
+          </button>
         )}
 
         {isAddingCard && (
-          <AddCardButton data-testid="AddCardButton" onClick={onCardCreate}>
+          <button
+            type="button"
+            className={listStyles.addCardButton}
+            data-testid="AddCardButton"
+            onClick={onCardCreate}
+          >
             Add card
-          </AddCardButton>
+          </button>
         )}
 
         {isAddingCard && (
-          <CloseAddCardButton
+          <button
+            type="button"
+            className={listStyles.closeAddCardButton}
             data-testid="CloseAddCardButton"
-            secondary
             onClick={() => setIsAddingCard(false)}
           >
             X
-          </CloseAddCardButton>
+          </button>
         )}
-      </Flex>
-    </AddCardFooter>
+      </div>
+    </div>
   );
 }

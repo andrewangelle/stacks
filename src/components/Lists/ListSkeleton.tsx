@@ -1,23 +1,31 @@
-import {
-  AddListButtonSkeleton,
-  ListCardSkeleton,
-  ListCardsSkeletonRow,
-  ListContainer,
-  ListCountSkeleton,
-  ListHeaderSkeletonRow,
-  ListNameSkeleton,
-} from '~/components/Lists/List.styled';
+import * as styles from '~/components/Lists/List.css';
 
 export function ListSkeleton() {
   return (
-    <ListContainer data-testid="ListContainer" isMobile={false}>
-      <ListHeaderSkeletonRow data-testid="ListHeaderSkeletonRow">
-        <ListNameSkeleton data-testid="ListNameSkeleton" />
-        <ListCountSkeleton data-testid="ListCountSkeleton" />
-      </ListHeaderSkeletonRow>
+    <div
+      className={styles.listContainer({ isMobile: false })}
+      data-testid="ListContainer"
+    >
+      <div
+        className={styles.listHeaderSkeletonRow}
+        data-testid="ListHeaderSkeletonRow"
+      >
+        <div
+          className={styles.listNameSkeleton}
+          data-testid="ListNameSkeleton"
+        />
+        <div
+          className={styles.listCountSkeleton}
+          data-testid="ListCountSkeleton"
+        />
+      </div>
 
-      <ListCardsSkeletonRow data-testid="ListCardsSkeletonRow">
-        <ListCardSkeleton
+      <div
+        className={styles.listCardsSkeletonRow}
+        data-testid="ListCardsSkeletonRow"
+      >
+        <div
+          className={styles.listCardSkeleton}
           data-testid="ListCardSkeleton"
           style={{
             margin: '2px 0px 8px 8px',
@@ -25,8 +33,11 @@ export function ListSkeleton() {
             height: '30px',
           }}
         />
-        <AddListButtonSkeleton data-testid="AddListButtonSkeleton" />
-      </ListCardsSkeletonRow>
-    </ListContainer>
+        <div
+          className={styles.addListButtonSkeleton}
+          data-testid="AddListButtonSkeleton"
+        />
+      </div>
+    </div>
   );
 }

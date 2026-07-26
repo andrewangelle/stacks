@@ -1,7 +1,7 @@
-import { useRouterState } from '@tanstack/react-router';
+import { Link, useRouterState } from '@tanstack/react-router';
 import { RiTrelloFill } from 'react-icons/ri';
-import { CardTitleDetailsSpinner } from '~/components/Lists/CardTitleDetails/CardTitleDetails.styled';
-import { LogoIconSlot, LogoLink } from '~/styles/Page.styled';
+import * as cardTitleDetailsStyles from '~/components/Lists/CardTitleDetails/CardTitleDetails.css';
+import * as pageStyles from '~/styles/Page.css';
 
 export function Logo() {
   const routerState = useRouterState();
@@ -10,11 +10,11 @@ export function Logo() {
     routerState.location.pathname !== routerState.resolvedLocation?.pathname &&
     !routerState.location.maskedLocation?.pathname.startsWith('/card/');
   return (
-    <LogoLink to="/boards" data-testid="LogoLink">
+    <Link className={pageStyles.logoLink} to="/boards" data-testid="LogoLink">
       {showLoader && (
-        <LogoIconSlot data-testid="LogoSpinner">
-          <CardTitleDetailsSpinner />
-        </LogoIconSlot>
+        <span className={pageStyles.logoIconSlot} data-testid="LogoSpinner">
+          <div className={cardTitleDetailsStyles.cardTitleDetailsSpinner} />
+        </span>
       )}
       {!showLoader && (
         <RiTrelloFill
@@ -27,6 +27,6 @@ export function Logo() {
         />
       )}
       <span style={{ verticalAlign: 'bottom' }}>stacks - a trello clone</span>
-    </LogoLink>
+    </Link>
   );
 }
