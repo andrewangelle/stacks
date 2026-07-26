@@ -1,17 +1,9 @@
 import { useEffect, useState } from 'react';
 import { FaPlus } from 'react-icons/fa';
-import {
-  AddCardButton,
-  AddCardInput,
-  AddNewCardAtPositionContainer,
-  AddNewCardAtPositionPlus,
-  CloseAddCardButton,
-  DottedLine,
-  ListCardSkeleton,
-} from '~/components/Lists/List.styled';
+import * as listStyles from '~/components/Lists/List.css';
 import { useCreateActivity } from '~/db/activity/activity.query';
 import { useCreateCard } from '~/db/cards/cards.query';
-import { Flex } from '~/styles/Page.styled';
+import * as pageStyles from '~/styles/Page.css';
 import { useCurrentBoardId } from '~/utils/useCurrentBoardId';
 
 type AddNewCardAtPositionProps = {
@@ -64,24 +56,26 @@ export function AddNewCardAtPosition({
   if (isPending) {
     return (
       <div style={{ margin: '8px 0px' }}>
-        <ListCardSkeleton />
+        <div className={listStyles.listCardSkeleton} />
       </div>
     );
   }
 
   return (
-    <AddNewCardAtPositionContainer
+    // biome-ignore lint/a11y/noStaticElementInteractions: <style conflict>
+    <div
+      className={listStyles.addNewCardAtPositionContainer}
       data-testid={`AddNewCardAtPosition-${position}`}
       onMouseEnter={() => setIsHovering(true)}
       onMouseLeave={() => setIsHovering(false)}
     >
       {isAddingCard && (
         <div style={{ marginTop: '8px' }}>
-          <AddCardInput
+          <input
+            className={listStyles.addCardInput}
             data-testid="AddCardInput"
             value={newCardTitle}
             placeholder="Enter a title"
-            autoFocus
             onChange={(event) =>
               setNewCardTitle((_prevState) => event.target.value)
             }
@@ -89,36 +83,55 @@ export function AddNewCardAtPosition({
         </div>
       )}
 
-      <Flex data-testid="Flex" style={{ marginBottom: '8px' }}>
+      <div
+        className={pageStyles.flex}
+        data-testid="Flex"
+        style={{ marginBottom: '8px' }}
+      >
         {!isAddingCard && isHovering && (
           <>
-            <AddNewCardAtPositionPlus
+            {/* biome-ignore lint/a11y/useSemanticElements: <style conflict> */}
+            <div
+              role="button"
+              tabIndex={0}
+              className={listStyles.addNewCardAtPositionPlus}
               data-testid="AddNewCardAtPositionPlus"
               onClick={() => setIsAddingCard(true)}
+              onKeyDown={(event) => {
+                if (event.key === 'Enter' || event.key === ' ') {
+                  setIsAddingCard(true);
+                }
+              }}
             >
               <FaPlus size={12} />
-            </AddNewCardAtPositionPlus>
+            </div>
 
-            <DottedLine />
+            <div className={listStyles.dottedLine} />
           </>
         )}
 
         {isAddingCard && (
-          <AddCardButton data-testid="AddCardButton" onClick={onCardCreate}>
+          <button
+            type="button"
+            className={listStyles.addCardButton}
+            data-testid="AddCardButton"
+            onClick={onCardCreate}
+          >
             Add card
-          </AddCardButton>
+          </button>
         )}
 
         {isAddingCard && (
-          <CloseAddCardButton
+          <button
+            type="button"
+            className={listStyles.closeAddCardButton}
             data-testid="CloseAddCardButton"
-            secondary
             onClick={() => setIsAddingCard(false)}
           >
             X
-          </CloseAddCardButton>
+          </button>
         )}
-      </Flex>
-    </AddNewCardAtPositionContainer>
+      </div>
+    </div>
   );
 }

@@ -1,20 +1,13 @@
 import { useNavigate } from '@tanstack/react-router';
 import { Popover } from 'radix-ui';
 import { useState } from 'react';
-import { PopoverClose } from '~/components/Boards/Boards.styled';
-import {
-  CardModalActionButton,
-  CardModalSiderButtonText,
-  DeleteCardPopoverTrigger,
-} from '~/components/Cards/Card.styled';
-import { DeleteChecklistPopoverButton } from '~/components/ChecklistItem/ChecklistItem.styled';
-import { ChecklistPopoverHeader } from '~/components/Checklists/Checklists.styled';
+import * as boardsStyles from '~/components/Boards/Boards.css';
+import * as cardStyles from '~/components/Cards/Card.css';
+import * as checklistItemStyles from '~/components/ChecklistItem/ChecklistItem.css';
+import * as checklistsStyles from '~/components/Checklists/Checklists.css';
 import { Tooltip } from '~/components/shared/Tooltip/Tooltip';
 import { useDeleteCard, useGetCardById } from '~/db/cards/cards.query';
-import {
-  PopoverOptionsContent,
-  PopoverOptionsContentContainer,
-} from '~/styles/Page.styled';
+import * as pageStyles from '~/styles/Page.css';
 import { useCurrentBoardId } from '~/utils/useCurrentBoardId';
 import { useCurrentCardId } from '~/utils/useCurrentCardId';
 
@@ -36,41 +29,58 @@ export function DeleteCardPopover() {
 
   return (
     <Popover.Root open={open} onOpenChange={setOpen}>
-      <DeleteCardPopoverTrigger data-testid="DeleteCardPopoverTrigger">
+      <Popover.Trigger
+        className={cardStyles.deleteCardPopoverTrigger}
+        data-testid="DeleteCardPopoverTrigger"
+      >
         <Tooltip portal={false} content="Delete card">
-          <CardModalActionButton
+          <div
+            className={cardStyles.cardModalActionButton({ isOpen: open })}
             data-testid="CardModalSiderButton"
-            isOpen={open}
           >
-            <CardModalSiderButtonText data-testid="CardModalSiderButtonText">
+            <span
+              className={cardStyles.cardModalSiderButtonText}
+              data-testid="CardModalSiderButtonText"
+            >
               Delete Card
-            </CardModalSiderButtonText>
-          </CardModalActionButton>
+            </span>
+          </div>
         </Tooltip>
-      </DeleteCardPopoverTrigger>
+      </Popover.Trigger>
 
-      <PopoverOptionsContent
+      <Popover.Content
+        className={pageStyles.popoverOptionsContent}
         data-testid="PopoverOptionsContent"
         side="bottom"
         align="start"
         sideOffset={8}
         alignOffset={4}
       >
-        <ChecklistPopoverHeader data-testid="ChecklistPopoverHeader">
+        <div
+          className={checklistsStyles.checklistPopoverHeader}
+          data-testid="ChecklistPopoverHeader"
+        >
           <div style={{ fontWeight: 600 }}>Delete Card?</div>
-          <PopoverClose data-testid="PopoverClose">X</PopoverClose>
-        </ChecklistPopoverHeader>
+          <Popover.Close
+            className={boardsStyles.popoverClose}
+            data-testid="PopoverClose"
+          >
+            X
+          </Popover.Close>
+        </div>
 
-        <PopoverOptionsContentContainer>
+        <div className={pageStyles.popoverOptionsContentContainer}>
           Deleting a card is permanent and there is no way to get it back.
-          <DeleteChecklistPopoverButton
+          <button
+            type="button"
+            className={checklistItemStyles.deleteChecklistPopoverButton}
             data-testid="DeleteChecklistPopoverButton"
             onClick={applyDelete}
           >
             Delete card
-          </DeleteChecklistPopoverButton>
-        </PopoverOptionsContentContainer>
-      </PopoverOptionsContent>
+          </button>
+        </div>
+      </Popover.Content>
     </Popover.Root>
   );
 }

@@ -1,12 +1,7 @@
 import { useCallback, useEffect, useState } from 'react';
 import { AiOutlineCheck } from 'react-icons/ai';
 import { GoPaperclip } from 'react-icons/go';
-import {
-  ActivityCopiedCheckmark,
-  ActivityTimestampMeta,
-  ActivityTimestampSkeleton,
-  PaperclipReveal,
-} from '~/components/Activity/Activity.styled';
+import * as styles from '~/components/Activity/Activity.css';
 import { useGetActivityById } from '~/db/activity/activity.query';
 import { formatActivityTime } from '~/utils/formatDateTime';
 import { useCurrentCardId } from '~/utils/useCurrentCardId';
@@ -75,15 +70,26 @@ export function ActivityTimestamp({
 
   if (isLoading || !data) {
     return (
-      <ActivityTimestampMeta data-testid="ActivityTimestamp">
-        <ActivityTimestampSkeleton data-testid="ActivityTimestampSkeleton" />
-      </ActivityTimestampMeta>
+      <div
+        className={styles.activityTimestampMeta}
+        data-testid="ActivityTimestamp"
+      >
+        <div
+          className={styles.activityTimestampSkeleton}
+          data-testid="ActivityTimestampSkeleton"
+        />
+      </div>
     );
   }
 
   return (
-    <ActivityTimestampMeta
-      className={className}
+    <button
+      type="button"
+      className={
+        className
+          ? `${styles.activityTimestampMeta} ${className}`
+          : styles.activityTimestampMeta
+      }
       data-testid={testId}
       onClick={highlightAndCopyActivity}
       onMouseEnter={() => setIsHovered(true)}
@@ -91,9 +97,9 @@ export function ActivityTimestamp({
     >
       {formatActivityTime(data?.createdAt)}
 
-      <PaperclipReveal
+      <span
+        className={styles.paperclipReveal({ isVisible: showPaperclipIcon })}
         data-testid="PaperclipReveal"
-        isVisible={showPaperclipIcon}
         aria-hidden={!showPaperclipIcon}
       >
         <GoPaperclip
@@ -101,10 +107,13 @@ export function ActivityTimestamp({
           data-testid="GoPaperclip"
           style={{ marginLeft: '4px', color: 'black' }}
         />
-      </PaperclipReveal>
+      </span>
 
       {showCheckmark && (
-        <ActivityCopiedCheckmark data-testid="ActivityCopiedCheckmark">
+        <span
+          className={styles.activityCopiedCheckmark}
+          data-testid="ActivityCopiedCheckmark"
+        >
           <AiOutlineCheck
             size={8}
             data-testid="CardCompletedIndicatorCheckmark"
@@ -114,8 +123,8 @@ export function ActivityTimestamp({
               left: '1px',
             }}
           />
-        </ActivityCopiedCheckmark>
+        </span>
       )}
-    </ActivityTimestampMeta>
+    </button>
   );
 }

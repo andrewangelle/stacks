@@ -156,6 +156,13 @@ export const boardMenuOption = style({
   },
 });
 
+export const changeBoardBackgroundChoiceContainer = style({
+  display: 'flex',
+  flexWrap: 'wrap',
+  gap: '4px',
+  margin: '0px 8px',
+});
+
 export const changeBoardBackgroundChoice = recipe({
   base: [
     backgroundChoiceBase,

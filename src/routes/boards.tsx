@@ -3,8 +3,8 @@ import { CompositeComponent } from '@tanstack/react-start/rsc';
 import { Suspense } from 'react';
 import { BoardListFallback } from '~/components/Boards/BoardListFallback';
 import { Boards } from '~/components/Boards/Boards';
-import { BoardsContainer } from '~/components/Boards/Boards.styled';
-import { NavBarContainer } from '~/components/Nav/Nav.styled';
+import * as boardsStyles from '~/components/Boards/Boards.css';
+import * as navStyles from '~/components/Nav/Nav.css';
 import { NavBarFallback } from '~/components/Nav/NavBarClient';
 import { UserNavContent } from '~/components/Nav/UserNavContent';
 import { getBoardsServer } from '~/components/server/Boards.functions';
@@ -30,9 +30,12 @@ export const Route = createFileRoute('/boards')({
     return (
       <>
         <NavBarFallback />
-        <BoardsContainer data-testid="BoardsContainer">
+        <div
+          className={boardsStyles.boardsContainer}
+          data-testid="BoardsContainer"
+        >
           <BoardListFallback />
-        </BoardsContainer>
+        </div>
       </>
     );
   },
@@ -41,11 +44,14 @@ export const Route = createFileRoute('/boards')({
     const { BoardsServer, NavBarServer } = Route.useLoaderData();
     return (
       <>
-        <NavBarContainer data-testid="NavBarContainer">
+        <div
+          className={navStyles.navBarContainer}
+          data-testid="NavBarContainer"
+        >
           <CompositeComponent src={NavBarServer.src}>
             <UserNavContent />
           </CompositeComponent>
-        </NavBarContainer>
+        </div>
 
         <CompositeComponent src={BoardsServer.src}>
           <Suspense fallback={<BoardListFallback />}>

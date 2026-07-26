@@ -26,6 +26,9 @@ export default defineConfig({
     // Dialog and the Popover separate layer sets — each then reads as the top
     // layer and Escape closes both. Leaving it unbundled keeps one instance.
     exclude: ['pg', '@prisma/client', 'radix-ui'],
+    include: [
+      '@vanilla-extract/recipes/createRuntimeFn'
+    ]
   },
 
   ssr: {

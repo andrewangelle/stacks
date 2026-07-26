@@ -1,62 +1,78 @@
-import {
-  CreateBoardCloseBorder,
-  PopoverClose,
-} from '~/components/Boards/Boards.styled';
-import {
-  DropdownLabel,
-  MoveCardButton,
-  MoveCardListColumn,
-  MoveCardMenuContent,
-  MoveCardMenuHeader,
-  MoveCardPositionColumn,
-  MoveCardSelectRow,
-  SelectSkeleton,
-} from '~/components/Cards/MoveCardMenu/MoveCardMenu.styled';
+import { Popover } from 'radix-ui';
+import * as boardsStyles from '~/components/Boards/Boards.css';
+import * as moveCardMenuStyles from '~/components/Cards/MoveCardMenu/MoveCardMenu.css';
 
 export function MoveCardMenuFallback() {
   return (
-    <MoveCardMenuContent
+    <Popover.Content
+      className={moveCardMenuStyles.moveCardMenuContent}
       data-testid="MoveCardMenuContent"
       side="bottom"
       align="start"
       sideOffset={8}
       alignOffset={4}
     >
-      <MoveCardMenuHeader data-testid="MoveCardMenuHeader">
+      <div
+        className={moveCardMenuStyles.moveCardMenuHeader}
+        data-testid="MoveCardMenuHeader"
+      >
         Move card
-        <PopoverClose data-testid="PopoverClose">X</PopoverClose>
-      </MoveCardMenuHeader>
-
-      <CreateBoardCloseBorder data-testid="CreateBoardCloseBorder" />
-
-      <div>
-        <DropdownLabel data-testid="BoardSelectTitle">Board</DropdownLabel>
-
-        <SelectSkeleton />
-
-        <MoveCardSelectRow>
-          <MoveCardListColumn>
-            <DropdownLabel data-testid="ListSelectTitle">List</DropdownLabel>
-            <SelectSkeleton />
-          </MoveCardListColumn>
-
-          <MoveCardPositionColumn>
-            <DropdownLabel data-testid="PositionSelectTitle">
-              Position
-            </DropdownLabel>
-
-            <SelectSkeleton />
-          </MoveCardPositionColumn>
-        </MoveCardSelectRow>
+        <Popover.Close
+          className={boardsStyles.popoverClose}
+          data-testid="PopoverClose"
+        >
+          X
+        </Popover.Close>
       </div>
 
-      <MoveCardButton
+      <hr
+        className={boardsStyles.createBoardCloseBorder}
+        data-testid="CreateBoardCloseBorder"
+      />
+
+      <div>
+        <div
+          className={moveCardMenuStyles.dropdownLabel}
+          data-testid="BoardSelectTitle"
+        >
+          Board
+        </div>
+
+        <div className={moveCardMenuStyles.selectSkeleton} />
+
+        <div className={moveCardMenuStyles.moveCardSelectRow}>
+          <div className={moveCardMenuStyles.moveCardListColumn}>
+            <div
+              className={moveCardMenuStyles.dropdownLabel}
+              data-testid="ListSelectTitle"
+            >
+              List
+            </div>
+            <div className={moveCardMenuStyles.selectSkeleton} />
+          </div>
+
+          <div className={moveCardMenuStyles.moveCardPositionColumn}>
+            <div
+              className={moveCardMenuStyles.dropdownLabel}
+              data-testid="PositionSelectTitle"
+            >
+              Position
+            </div>
+
+            <div className={moveCardMenuStyles.selectSkeleton} />
+          </div>
+        </div>
+      </div>
+
+      <button
+        type="button"
+        className={moveCardMenuStyles.moveCardButton}
         data-testid="MoveCardButton"
         onClick={() => null}
         disabled={true}
       >
         Move
-      </MoveCardButton>
-    </MoveCardMenuContent>
+      </button>
+    </Popover.Content>
   );
 }

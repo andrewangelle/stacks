@@ -101,3 +101,10 @@ export const popoverOptionsContent = style({
 export const popoverOptionsContentContainer = style({
   padding: '0px 10px',
 });
+
+export const clearButton = style({
+  background: 'transparent',
+  border: 'none',
+  margin: 0,
+  padding: 0,
+});

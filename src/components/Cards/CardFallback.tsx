@@ -1,24 +1,25 @@
-import {
-  CardModalContent,
-  CardModalHiddenTitle,
-  CardModalOverlay,
-  CardModalPortal,
-  CardModalRoot,
-} from '~/components/Cards/Card.styled';
+import { Dialog } from 'radix-ui';
+import * as styles from '~/components/Cards/Card.css';
 
 export function CardFallback() {
   return (
-    <CardModalRoot data-testid="CardModalRoot" open>
-      <CardModalPortal data-testid="CardModalPortal">
-        <CardModalOverlay data-testid="CardModalOverlay">
-          <CardModalContent
+    <Dialog.Root data-testid="CardModalRoot" open>
+      <Dialog.Portal data-testid="CardModalPortal">
+        <Dialog.Overlay
+          className={styles.cardModalOverlay}
+          data-testid="CardModalOverlay"
+        >
+          <Dialog.Content
+            className={styles.cardModalContent}
             data-testid="CardModalContent"
             aria-describedby={undefined}
           >
-            <CardModalHiddenTitle>Loading card</CardModalHiddenTitle>
-          </CardModalContent>
-        </CardModalOverlay>
-      </CardModalPortal>
-    </CardModalRoot>
+            <Dialog.Title className={styles.cardModalHiddenTitle}>
+              Loading card
+            </Dialog.Title>
+          </Dialog.Content>
+        </Dialog.Overlay>
+      </Dialog.Portal>
+    </Dialog.Root>
   );
 }

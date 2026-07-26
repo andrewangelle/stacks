@@ -1,12 +1,11 @@
 import { createFileRoute, Outlet, redirect } from '@tanstack/react-router';
 import { CompositeComponent } from '@tanstack/react-start/rsc';
 import { Suspense } from 'react';
-import { BoardHeaderFallback } from '~/components/Boards/Board.styled';
+import * as boardStyles from '~/components/Boards/Board.css';
 import { BoardLists } from '~/components/Boards/BoardLists';
-import type { BoardBackground } from '~/components/Boards/Boards.styled';
 import { ListSkeleton } from '~/components/Lists/ListSkeleton';
 import { BoardHeader } from '~/components/Nav/BoardHeader';
-import { NavBarContainer } from '~/components/Nav/Nav.styled';
+import * as navStyles from '~/components/Nav/Nav.css';
 import { UserNavContent } from '~/components/Nav/UserNavContent';
 import { getBoardPageServer } from '~/components/server/Board.functions';
 import {
@@ -48,11 +47,14 @@ export const Route = createFileRoute('/board/$id')({
   },
 
   component() {
-    const { BoardPageServer, NavBarServer, BoardHeaderServer, boardColor } =
+    const { BoardPageServer, NavBarServer, BoardHeaderServer } =
       Route.useLoaderData();
     return (
       <>
-        <NavBarContainer data-testid="NavBarContainer">
+        <div
+          className={navStyles.navBarContainer}
+          data-testid="NavBarContainer"
+        >
           <CompositeComponent src={NavBarServer.src}>
             <UserNavContent />
           </CompositeComponent>
@@ -60,16 +62,16 @@ export const Route = createFileRoute('/board/$id')({
           <CompositeComponent src={BoardHeaderServer.src}>
             <Suspense
               fallback={
-                <BoardHeaderFallback
+                <div
+                  className={boardStyles.boardHeaderFallback}
                   data-testid="BoardHeaderFallback"
-                  background={boardColor as BoardBackground}
                 />
               }
             >
               <BoardHeader />
             </Suspense>
           </CompositeComponent>
-        </NavBarContainer>
+        </div>
 
         <CompositeComponent src={BoardPageServer.src}>
           <Suspense

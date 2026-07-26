@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { EditListNameInput, ListName } from '~/components/Lists/List.styled';
+import * as styles from '~/components/Lists/List.css';
 import { useGetListById, useUpdateList } from '~/db/lists/lists.query';
 import { useCurrentBoardId } from '~/utils/useCurrentBoardId';
 import { useOutsideClick } from '~/utils/useOutsideClick';
@@ -34,7 +34,11 @@ export function EditableListName({ listId }: EditableListNameProps) {
   return (
     <div data-testid="EditableListName">
       {!isEditingListName && (
-        <ListName
+        // biome-ignore lint/a11y/useSemanticElements: <style conflict>
+        <div
+          role="button"
+          tabIndex={0}
+          className={styles.listName}
           data-testid="ListName"
           style={{
             margin: '8px 0px 12px 8px',
@@ -43,17 +47,23 @@ export function EditableListName({ listId }: EditableListNameProps) {
             setIsEditingListName(true);
             setEditedListTitle(list?.listTitle ?? '');
           }}
+          onKeyDown={(event) => {
+            if (event.key === 'Enter' || event.key === ' ') {
+              setIsEditingListName(true);
+              setEditedListTitle(list?.listTitle ?? '');
+            }
+          }}
         >
           {list?.listTitle}
-        </ListName>
+        </div>
       )}
 
       {isEditingListName && (
-        <EditListNameInput
+        <input
+          className={styles.editListNameInput}
           ref={outsideClickRef}
           data-testid="EditListNameInput"
           value={editedListTitle}
-          autoFocus
           onChange={(event) =>
             setEditedListTitle((_prevState) => event.target.value)
           }

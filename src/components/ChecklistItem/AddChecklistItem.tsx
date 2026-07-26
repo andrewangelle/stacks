@@ -1,12 +1,6 @@
 import { useState } from 'react';
-import { CloseDescriptionButton } from '~/components/Cards/Card.styled';
-import {
-  AddChecklistButton,
-  AddChecklistItemButton,
-  AddChecklistItemInputIndented,
-  ChecklistItemActionsIndented,
-  EditChecklistItemContainer,
-} from '~/components/ChecklistItem/ChecklistItem.styled';
+import * as cardStyles from '~/components/Cards/Card.css';
+import * as checklistItemStyles from '~/components/ChecklistItem/ChecklistItem.css';
 import { useCreateChecklistItem } from '~/db/checklistItems/checklistItems.query';
 import { useGetChecklist } from '~/db/checklists/checklists.query';
 
@@ -30,42 +24,49 @@ export function AddChecklistItem({ checklistId }: { checklistId: string }) {
   return (
     <>
       {!isEditing && (
-        <AddChecklistItemButton
+        <button
+          type="button"
+          className={checklistItemStyles.addChecklistItemButton}
           data-testid="AddChecklistItemButton"
-          secondary
           onClick={() => setIsEditing(true)}
         >
           Add an item
-        </AddChecklistItemButton>
+        </button>
       )}
 
       {isEditing && (
-        <EditChecklistItemContainer>
-          <AddChecklistItemInputIndented
+        <div className={checklistItemStyles.editChecklistItemContainer}>
+          <textarea
+            className={checklistItemStyles.addChecklistItemInputIndented}
             data-testid="AddChecklistItemInput"
             value={label}
             placeholder={'Add an item'}
-            autoFocus
             onChange={(event) => setLabel(event.target.value)}
           />
 
-          <ChecklistItemActionsIndented data-testid="ChecklistItemActions">
-            <AddChecklistButton
+          <div
+            className={checklistItemStyles.checklistItemActionsIndented}
+            data-testid="ChecklistItemActions"
+          >
+            <button
+              type="button"
+              className={checklistItemStyles.addChecklistButton}
               data-testid="AddChecklistButton"
               onClick={createItem}
             >
               Add
-            </AddChecklistButton>
+            </button>
 
-            <CloseDescriptionButton
+            <button
+              type="button"
+              className={cardStyles.closeDescriptionButton}
               data-testid="CloseDescriptionButton"
-              secondary
               onClick={() => setIsEditing(false)}
             >
               Cancel
-            </CloseDescriptionButton>
-          </ChecklistItemActionsIndented>
-        </EditChecklistItemContainer>
+            </button>
+          </div>
+        </div>
       )}
     </>
   );

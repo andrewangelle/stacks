@@ -67,12 +67,16 @@ export const checkboxIndicator = style({
 
 export const checkboxLabel = recipe({
   base: {
-    margin: 0,
     fontFamily,
     fontSize: '14px',
     width: '80%',
     cursor: 'pointer',
     wordWrap: 'break-word',
+    background: 'transparent',
+    border: 'none',
+    padding: 0,
+    margin: 0,
+    textAlign: 'left',
   },
   variants: {
     checked: {

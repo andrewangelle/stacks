@@ -112,6 +112,8 @@ export const boardCardSkeleton = style([
 export const createBoardCard = style([
   boardCardBase,
   {
+    padding: 0,
+    margin: 0,
     background: 'rgba(9, 30, 66, 0.04)',
     maxHeight: '100px',
     paddingBottom: '10px',
@@ -187,6 +189,8 @@ export const createBoardBackgroundChoices = style({
 });
 
 export const backgroundChoiceBase = style({
+  border: 'none',
+  background: 'transparent',
   width: '40px',
   height: '32px',
   borderRadius: '5px',

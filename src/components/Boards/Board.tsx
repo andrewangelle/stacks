@@ -1,23 +1,24 @@
 import { useSuspenseQuery } from '@tanstack/react-query';
-import {
-  type BoardBackground,
-  BoardCardLink,
-  BoardCardTitle,
-} from '~/components/Boards/Boards.styled';
+import { Link } from '@tanstack/react-router';
+import * as styles from '~/components/Boards/Boards.css';
 import { boardByIdQueryOptions } from '~/db/boards/boards.query';
+import type { BoardBackground } from '~/styles/tokens';
 
 export function Board({ boardId }: { boardId: string }) {
   const { data: board } = useSuspenseQuery(boardByIdQueryOptions(boardId));
   return (
-    <BoardCardLink
+    <Link
+      className={styles.boardCardLink({
+        background: board?.boardColor as BoardBackground,
+      })}
       data-testid="BoardCardContainer"
       key={boardId}
-      background={board?.boardColor as BoardBackground}
-      to={`/board/${boardId}`}
+      to="/board/$id"
+      params={{ id: boardId }}
     >
-      <BoardCardTitle data-testid="BoardCardTitle">
+      <div className={styles.boardCardTitle} data-testid="BoardCardTitle">
         {board?.boardTitle}
-      </BoardCardTitle>
-    </BoardCardLink>
+      </div>
+    </Link>
   );
 }

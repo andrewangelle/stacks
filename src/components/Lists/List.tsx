@@ -1,10 +1,7 @@
 import { AddNewCard } from '~/components/Lists/AddNewCard';
 import { AddNewCardAtPosition } from '~/components/Lists/AddNewCardAtPosition';
 import { CardTitleDetails } from '~/components/Lists/CardTitleDetails/CardTitleDetails';
-import {
-  ListContainer,
-  ListContentContainer,
-} from '~/components/Lists/List.styled';
+import * as styles from '~/components/Lists/List.css';
 import { ListHeader } from '~/components/Lists/ListHeader';
 import { Draggable } from '~/components/shared/dnd/Draggable';
 import { DropTargetFallback } from '~/components/shared/dnd/DropTargetFallback';
@@ -25,10 +22,18 @@ export function List({ id: listId }: { id: string }) {
   const { data: list } = useGetListById({ id: listId });
   const isMobile = useIsMobile();
   return (
-    <ListContainer data-testid="ListContainer" key={listId} isMobile={isMobile}>
+    <div
+      className={styles.listContainer({ isMobile })}
+      data-testid="ListContainer"
+      key={listId}
+    >
       <ListHeader id={listId} />
 
-      <ListContentContainer ref={ref} data-testid="ListContentContainer">
+      <div
+        className={styles.listContentContainer}
+        ref={ref}
+        data-testid="ListContentContainer"
+      >
         {list?.cards?.map((card, index) => {
           return (
             <Draggable
@@ -61,11 +66,11 @@ export function List({ id: listId }: { id: string }) {
             </Draggable>
           );
         })}
-      </ListContentContainer>
+      </div>
 
       <DropTargetFallback id={`list-drop:${listId}`} type="card" />
 
       <AddNewCard listId={listId} />
-    </ListContainer>
+    </div>
   );
 }

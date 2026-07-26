@@ -1,16 +1,12 @@
 import { Popover } from 'radix-ui';
 import { useState } from 'react';
-import { PopoverClose } from '~/components/Boards/Boards.styled';
-import {
-  ChecklistItemOptionsEllipsis,
-  ChecklistItemOptionsListContainer,
-  ChecklistItemOptionsListItem,
-  ChecklistItemOptionsPopoverTrigger,
-} from '~/components/ChecklistItem/ChecklistItem.styled';
+import { AiOutlineEllipsis } from 'react-icons/ai';
+import * as boardsStyles from '~/components/Boards/Boards.css';
+import * as checklistItemStyles from '~/components/ChecklistItem/ChecklistItem.css';
 import { ConvertChecklistItemToCardButton } from '~/components/ChecklistItem/ConvertChecklistItemToCardButton';
-import { ChecklistPopoverHeader } from '~/components/Checklists/Checklists.styled';
+import * as checklistsStyles from '~/components/Checklists/Checklists.css';
 import { useDeleteChecklistItem } from '~/db/checklistItems/checklistItems.query';
-import { PopoverOptionsContent } from '~/styles/Page.styled';
+import * as pageStyles from '~/styles/Page.css';
 import { useOutsideClick } from '~/utils/useOutsideClick';
 
 type ChecklistItemOptionsProps = {
@@ -32,43 +28,55 @@ export function ChecklistItemOptions({
     <div ref={clickOutsidePopoverRef} data-testid="ChecklistItemOptions">
       <Popover.Root open={isOpen} onOpenChange={setOpen}>
         {(isHovering || isOpen) && (
-          <ChecklistItemOptionsPopoverTrigger
+          <Popover.Trigger
+            className={checklistItemStyles.checklistItemOptionsPopoverTrigger}
             data-testid="ChecklistItemOptionsPopoverTrigger"
             asChild
           >
-            <ChecklistItemOptionsEllipsis
+            <AiOutlineEllipsis
+              className={checklistItemStyles.checklistItemOptionsEllipsis}
               data-testid="ChecklistItemOptionsEllipsis"
               onClick={() => setOpen((prev) => !prev)}
               style={{ fill: isOpen ? 'white' : 'black' }}
             />
-          </ChecklistItemOptionsPopoverTrigger>
+          </Popover.Trigger>
         )}
 
-        <PopoverOptionsContent
+        <Popover.Content
+          className={pageStyles.popoverOptionsContent}
           data-testid="PopoverOptionsContent"
           side="bottom"
           align="start"
           sideOffset={8}
           alignOffset={4}
         >
-          <ChecklistPopoverHeader data-testid="ChecklistPopoverHeader">
+          <div
+            className={checklistsStyles.checklistPopoverHeader}
+            data-testid="ChecklistPopoverHeader"
+          >
             <div style={{ fontWeight: 600 }}>Item actions</div>
 
-            <PopoverClose
+            <Popover.Close
+              className={boardsStyles.popoverClose}
               data-testid="PopoverClose"
               onClick={() => setOpen(false)}
             >
               X
-            </PopoverClose>
-          </ChecklistPopoverHeader>
+            </Popover.Close>
+          </div>
 
-          <ChecklistItemOptionsListContainer data-testid="ChecklistItemOptionsListContainer">
+          <div
+            className={checklistItemStyles.checklistItemOptionsListContainer}
+            data-testid="ChecklistItemOptionsListContainer"
+          >
             <ConvertChecklistItemToCardButton
               id={id}
               checklistId={checklistId}
             />
 
-            <ChecklistItemOptionsListItem
+            <button
+              type="button"
+              className={checklistItemStyles.checklistItemOptionsListItem}
               data-testid="DeleteChecklistItemButton"
               onClick={() =>
                 deleteChecklistItem({
@@ -77,9 +85,9 @@ export function ChecklistItemOptions({
               }
             >
               Delete
-            </ChecklistItemOptionsListItem>
-          </ChecklistItemOptionsListContainer>
-        </PopoverOptionsContent>
+            </button>
+          </div>
+        </Popover.Content>
       </Popover.Root>
     </div>
   );

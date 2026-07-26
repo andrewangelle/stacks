@@ -1,45 +1,42 @@
+import { Dialog } from 'radix-ui';
 import { useState } from 'react';
 import { BiCommentDetail } from 'react-icons/bi';
-import {
-  ActivityCommentContainer,
-  ActivityContainer,
-  ActivityContentSkeleton,
-  ActivityEntryContent,
-  ActivityHeader,
-  ActivityHeaderTitle,
-  ActivityLogoSkeleton,
-  ActivityPanelContainer,
-  ActivityRow,
-  ActivityTimestampMeta,
-  ActivityTimestampSkeleton,
-  ActivityTitle,
-  HideActivityButton,
-} from '~/components/Activity/Activity.styled';
+import * as styles from '~/components/Activity/Activity.css';
 import { AddComment } from './AddComment';
 
 export function ActivitySkeleton() {
   const [showActivity, setShowActivity] = useState(true);
   return (
-    <ActivityPanelContainer data-testid="ActivityPanelContainer">
-      <ActivityHeader data-testid="ActivityHeader">
-        <ActivityHeaderTitle data-testid="ActivityHeaderTitle">
+    <div
+      className={styles.activityPanelContainer}
+      data-testid="ActivityPanelContainer"
+    >
+      <div className={styles.activityHeader} data-testid="ActivityHeader">
+        <div
+          className={styles.activityHeaderTitle}
+          data-testid="ActivityHeaderTitle"
+        >
           <BiCommentDetail
             size={18}
             style={{ position: 'relative', top: '4px', flexShrink: 0 }}
           />
-          <ActivityTitle data-testid="ActivityTitle">
+          <Dialog.Title
+            className={styles.activityTitle}
+            data-testid="ActivityTitle"
+          >
             Comments and activity
-          </ActivityTitle>
-        </ActivityHeaderTitle>
+          </Dialog.Title>
+        </div>
 
-        <HideActivityButton
+        <button
+          type="button"
+          className={styles.hideActivityButton}
           data-testid="HideActivityButton"
-          secondary={true}
           onClick={() => setShowActivity((prev) => !prev)}
         >
           {showActivity ? 'Hide details' : 'Show details'}
-        </HideActivityButton>
-      </ActivityHeader>
+        </button>
+      </div>
 
       <AddComment />
 
@@ -51,26 +48,44 @@ export function ActivitySkeleton() {
         ))}
 
       {!showActivity && <ActivityEntrySkeleton />}
-    </ActivityPanelContainer>
+    </div>
   );
 }
 
 export function ActivityEntrySkeleton() {
   return (
-    <ActivityContainer data-testid="ActivityContainer">
-      <ActivityRow data-testid="ActivityRow">
-        <ActivityLogoSkeleton data-testid="ActivityLogoSkeleton" />
+    <div className={styles.activityContainer()} data-testid="ActivityContainer">
+      <div className={styles.activityRow} data-testid="ActivityRow">
+        <div
+          className={styles.activityLogoSkeleton}
+          data-testid="ActivityLogoSkeleton"
+        />
 
-        <ActivityCommentContainer data-testid="ActivityCommentContainer">
-          <ActivityEntryContent data-testid="ActivityEntryContent">
-            <ActivityContentSkeleton data-testid="ActivityContentSkeleton" />
-          </ActivityEntryContent>
+        <div
+          className={styles.activityCommentContainer}
+          data-testid="ActivityCommentContainer"
+        >
+          <div
+            className={styles.activityEntryContent}
+            data-testid="ActivityEntryContent"
+          >
+            <div
+              className={styles.activityContentSkeleton}
+              data-testid="ActivityContentSkeleton"
+            />
+          </div>
 
-          <ActivityTimestampMeta data-testid="ActivityTimestamp">
-            <ActivityTimestampSkeleton data-testid="ActivityTimestampSkeleton" />
-          </ActivityTimestampMeta>
-        </ActivityCommentContainer>
-      </ActivityRow>
-    </ActivityContainer>
+          <div
+            className={styles.activityTimestampMeta}
+            data-testid="ActivityTimestamp"
+          >
+            <div
+              className={styles.activityTimestampSkeleton}
+              data-testid="ActivityTimestampSkeleton"
+            />
+          </div>
+        </div>
+      </div>
+    </div>
   );
 }

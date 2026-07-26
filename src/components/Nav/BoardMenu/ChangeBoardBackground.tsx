@@ -1,9 +1,9 @@
 import { useRouter } from '@tanstack/react-router';
 import { FaCheck } from 'react-icons/fa';
-import type { BoardBackground } from '~/components/Boards/Boards.styled';
-import { ChangeBoardBackgroundChoice } from '~/components/Nav/BoardMenu/BoardMenu.styled';
+import * as boardMenuStyles from '~/components/Nav/BoardMenu/BoardMenu.css';
 import { useGetBoard, useUpdateBoard } from '~/db/boards/boards.query';
-import { Center, Flex } from '~/styles/Page.styled';
+import * as pageStyles from '~/styles/Page.css';
+import type { BoardBackground } from '~/styles/tokens';
 import { useBoardBackgroundColor } from '~/utils/useBoardBackgroundColor';
 import { useCurrentBoardId } from '~/utils/useCurrentBoardId';
 
@@ -32,21 +32,34 @@ export function ChangeBoardBackground() {
   }
 
   return (
-    <Flex data-testid="Flex" style={{ flexWrap: 'wrap' }}>
+    <div
+      className={boardMenuStyles.changeBoardBackgroundChoiceContainer}
+      data-testid="Flex"
+    >
       {backgroundChoices.map((color) => (
-        <ChangeBoardBackgroundChoice
+        // biome-ignore lint/a11y/useSemanticElements: <style conflict>
+        <div
+          role="button"
+          tabIndex={0}
+          className={boardMenuStyles.changeBoardBackgroundChoice({
+            background: color,
+          })}
           data-testid="ChangeBoardBackgroundChoice"
           key={color}
-          background={color}
           onClick={() => onColorChange(color)}
+          onKeyDown={(event) => {
+            if (event.key === 'Enter' || event.key === ' ') {
+              onColorChange(color);
+            }
+          }}
         >
           {color === currentColor && (
-            <Center data-testid="Center">
+            <div className={pageStyles.center} data-testid="Center">
               <FaCheck />
-            </Center>
+            </div>
           )}
-        </ChangeBoardBackgroundChoice>
+        </div>
       ))}
-    </Flex>
+    </div>
   );
 }

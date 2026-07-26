@@ -1,18 +1,9 @@
+import { Dialog } from 'radix-ui';
 import { useState } from 'react';
 import { IoMdList } from 'react-icons/io';
-import {
-  CardDescriptionText,
-  CloseDescriptionButton,
-  DescriptionContainer,
-  DescriptionHeadingRow,
-  DescriptionInput,
-  DescriptionPlaceholder,
-  DescriptionTitle,
-  EditDescriptionButton,
-  SaveDescriptionButton,
-} from '~/components/Cards/Card.styled';
+import * as cardStyles from '~/components/Cards/Card.css';
 import { useGetCardById, useUpdateCard } from '~/db/cards/cards.query';
-import { Flex } from '~/styles/Page.styled';
+import * as pageStyles from '~/styles/Page.css';
 import { useCurrentCardId } from '~/utils/useCurrentCardId';
 
 export function CardDescription() {
@@ -40,70 +31,99 @@ export function CardDescription() {
   }
 
   return (
-    <DescriptionContainer data-testid="DescriptionContainer">
-      <DescriptionHeadingRow data-testid="DescriptionHeadingRow">
-        <Flex data-testid="Flex" style={{ alignItems: 'center' }}>
+    <div
+      className={cardStyles.descriptionContainer}
+      data-testid="DescriptionContainer"
+    >
+      <div
+        className={cardStyles.descriptionHeadingRow}
+        data-testid="DescriptionHeadingRow"
+      >
+        <div
+          className={pageStyles.flex}
+          data-testid="Flex"
+          style={{ alignItems: 'center' }}
+        >
           <IoMdList size={24} />
 
-          <DescriptionTitle data-testid="DescriptionTitle">
+          <Dialog.Title
+            className={cardStyles.descriptionTitle}
+            data-testid="DescriptionTitle"
+          >
             Description
-          </DescriptionTitle>
-        </Flex>
+          </Dialog.Title>
+        </div>
 
         {data?.cardDescription && !isEditing && (
-          <EditDescriptionButton
+          <button
+            type="button"
+            className={cardStyles.editDescriptionButton}
             data-testid="EditDescriptionButton"
-            secondary
             onClick={editDescription}
           >
             Edit
-          </EditDescriptionButton>
+          </button>
         )}
-      </DescriptionHeadingRow>
+      </div>
 
       {data?.cardDescription && !isEditing && (
-        <CardDescriptionText data-testid="CardDescriptionText">
+        <div
+          className={cardStyles.cardDescriptionText}
+          data-testid="CardDescriptionText"
+        >
           {data?.cardDescription}
-        </CardDescriptionText>
+        </div>
       )}
 
       {!isEditing && !data?.cardDescription && (
-        <DescriptionPlaceholder
+        // biome-ignore lint/a11y/useSemanticElements: <style discrepency>
+        <div
+          role="button"
+          tabIndex={0}
+          className={cardStyles.descriptionPlaceholder}
           data-testid="DescriptionPlaceholder"
           onClick={editDescription}
+          onKeyDown={(event) => {
+            if (event.key === 'Enter' || event.key === ' ') {
+              editDescription();
+            }
+          }}
         >
           {placeHolderText}
-        </DescriptionPlaceholder>
+        </div>
       )}
 
       {isEditing && (
         <>
-          <DescriptionInput
+          <textarea
+            className={cardStyles.descriptionInput}
             data-testid="DescriptionInput"
             value={description}
             onChange={(event) => setDescription(event.target.value)}
             placeholder={placeHolderText}
-            autoFocus
           />
 
-          <Flex data-testid="Flex">
-            <SaveDescriptionButton
+          <div className={pageStyles.flex} data-testid="Flex">
+            <button
+              type="button"
+              className={cardStyles.saveDescriptionButton}
               data-testid="SaveDescriptionButton"
               onClick={saveDescription}
             >
               Save
-            </SaveDescriptionButton>
+            </button>
 
-            <CloseDescriptionButton
+            <button
+              type="button"
+              className={cardStyles.closeDescriptionButton}
               data-testid="CloseDescriptionButton"
-              secondary
               onClick={() => setEditing(false)}
             >
               Cancel
-            </CloseDescriptionButton>
-          </Flex>
+            </button>
+          </div>
         </>
       )}
-    </DescriptionContainer>
+    </div>
   );
 }

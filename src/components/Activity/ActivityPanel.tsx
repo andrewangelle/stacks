@@ -1,13 +1,8 @@
 import { useLocation } from '@tanstack/react-router';
+import { Dialog } from 'radix-ui';
 import { useEffect, useState } from 'react';
 import { BiCommentDetail } from 'react-icons/bi';
-import {
-  ActivityHeader,
-  ActivityHeaderTitle,
-  ActivityPanelContainer,
-  ActivityTitle,
-  HideActivityButton,
-} from '~/components/Activity/Activity.styled';
+import * as styles from '~/components/Activity/Activity.css';
 import { ActivityList } from '~/components/Activity/ActivityList';
 import { AddComment } from '~/components/Activity/AddComment';
 
@@ -27,26 +22,36 @@ export function ActivityPanel() {
   }, [location.hash]);
 
   return (
-    <ActivityPanelContainer data-testid="ActivityPanelContainer">
-      <ActivityHeader data-testid="ActivityHeader">
-        <ActivityHeaderTitle data-testid="ActivityHeaderTitle">
+    <div
+      className={styles.activityPanelContainer}
+      data-testid="ActivityPanelContainer"
+    >
+      <div className={styles.activityHeader} data-testid="ActivityHeader">
+        <div
+          className={styles.activityHeaderTitle}
+          data-testid="ActivityHeaderTitle"
+        >
           <BiCommentDetail
             size={18}
             style={{ position: 'relative', top: '4px', flexShrink: 0 }}
           />
-          <ActivityTitle data-testid="ActivityTitle">
+          <Dialog.Title
+            className={styles.activityTitle}
+            data-testid="ActivityTitle"
+          >
             Comments and activity
-          </ActivityTitle>
-        </ActivityHeaderTitle>
+          </Dialog.Title>
+        </div>
 
-        <HideActivityButton
+        <button
+          type="button"
+          className={styles.hideActivityButton}
           data-testid="HideActivityButton"
-          secondary={true}
           onClick={() => setShowActivity((prev) => !prev)}
         >
           {showActivity ? 'Hide details' : 'Show details'}
-        </HideActivityButton>
-      </ActivityHeader>
+        </button>
+      </div>
 
       <AddComment />
 
@@ -55,6 +60,6 @@ export function ActivityPanel() {
         selectedActivityId={selectedActivityId}
         onSelect={setSelectedActivityId}
       />
-    </ActivityPanelContainer>
+    </div>
   );
 }

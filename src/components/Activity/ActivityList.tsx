@@ -1,8 +1,4 @@
-import {
-  ActivityListContainer,
-  ActivityListRow,
-  ActivityListViewport,
-} from '~/components/Activity/Activity.styled';
+import * as styles from '~/components/Activity/Activity.css';
 import { ActivityComment } from '~/components/Activity/ActivityComment';
 import { ActivityEntry } from '~/components/Activity/ActivityEntry';
 import { ActivityEntrySkeleton } from '~/components/Activity/ActivitySkeleton';
@@ -22,15 +18,21 @@ export function ActivityList({
   const { scrollRef, list, rows, getTotalSize, measureElement } =
     useActivityList({ showActivity });
   return (
-    <ActivityListViewport ref={scrollRef} data-testid="ActivityListViewport">
-      <ActivityListContainer
+    <div
+      className={styles.activityListViewport}
+      ref={scrollRef}
+      data-testid="ActivityListViewport"
+    >
+      <div
+        className={styles.activityListContainer}
         data-testid="ActivityListContainer"
         style={{ height: getTotalSize() }}
       >
         {rows.map((row) => {
           const entry = list[row.index];
           return (
-            <ActivityListRow
+            <div
+              className={styles.activityListRow}
               key={row.key}
               data-index={row.index}
               ref={measureElement}
@@ -53,10 +55,10 @@ export function ActivityList({
                   onSelect={() => onSelect(entry.id)}
                 />
               )}
-            </ActivityListRow>
+            </div>
           );
         })}
-      </ActivityListContainer>
-    </ActivityListViewport>
+      </div>
+    </div>
   );
 }

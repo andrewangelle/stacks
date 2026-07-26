@@ -1,13 +1,10 @@
 import { type RefObject, useCallback, useMemo } from 'react';
-import { SelectSkeleton } from '~/components/Cards/MoveCardMenu/MoveCardMenu.styled';
+import * as moveCardMenuStyles from '~/components/Cards/MoveCardMenu/MoveCardMenu.css';
 import {
   Combobox,
   type ComboboxItemType,
 } from '~/components/shared/Combobox/Combobox';
-import {
-  ComboboxLabel,
-  ComboboxWrapper,
-} from '~/components/shared/Combobox/Combobox.styled';
+import * as comboboxStyles from '~/components/shared/Combobox/Combobox.css';
 import type { ListItem } from '~/db/lists/lists.query';
 
 type ListSelectProps = {
@@ -52,10 +49,21 @@ export function ListSelect({
 
   if (isListsLoading) {
     return (
-      <ComboboxWrapper data-testid="ComboboxWrapper">
-        <ComboboxLabel data-testid="ComboboxLabel">List</ComboboxLabel>
-        <SelectSkeleton style={{ minHeight: '44px' }} />
-      </ComboboxWrapper>
+      <div
+        className={comboboxStyles.comboboxWrapper}
+        data-testid="ComboboxWrapper"
+      >
+        <span
+          className={comboboxStyles.comboboxLabel}
+          data-testid="ComboboxLabel"
+        >
+          List
+        </span>
+        <div
+          className={moveCardMenuStyles.selectSkeleton}
+          style={{ minHeight: '44px' }}
+        />
+      </div>
     );
   }
 

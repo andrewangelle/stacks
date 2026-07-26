@@ -1,13 +1,12 @@
 import { createFileRoute, redirect } from '@tanstack/react-router';
 import { CompositeComponent } from '@tanstack/react-start/rsc';
 import { Suspense } from 'react';
-import { BoardListsFallback } from '~/components/Boards/Board.styled';
+import * as boardStyles from '~/components/Boards/Board.css';
 import { BoardLists } from '~/components/Boards/BoardLists';
-import type { BoardBackground } from '~/components/Boards/Boards.styled';
 import { Card } from '~/components/Cards/Card';
 import { CardFallback } from '~/components/Cards/CardFallback';
 import { BoardHeader } from '~/components/Nav/BoardHeader';
-import { NavBarContainer } from '~/components/Nav/Nav.styled';
+import * as navStyles from '~/components/Nav/Nav.css';
 import { UserNavContent } from '~/components/Nav/UserNavContent';
 import { getBoardPageServer } from '~/components/server/Board.functions';
 import {
@@ -16,6 +15,7 @@ import {
 } from '~/components/server/Nav.functions';
 import { boardsQueryOptions } from '~/db/boards/boards.query';
 import { getBoardIdByCardId } from '~/db/cards/cards.functions';
+import type { BoardBackground } from '~/styles/tokens';
 
 export const Route = createFileRoute('/card/$cardId')({
   async loader({ context, params }) {
@@ -68,7 +68,10 @@ export const Route = createFileRoute('/card/$cardId')({
 
     return (
       <>
-        <NavBarContainer data-testid="NavBarContainer">
+        <div
+          className={navStyles.navBarContainer}
+          data-testid="NavBarContainer"
+        >
           <CompositeComponent src={NavBarServer.src}>
             <UserNavContent />
           </CompositeComponent>
@@ -76,7 +79,7 @@ export const Route = createFileRoute('/card/$cardId')({
           <CompositeComponent src={BoardHeaderServer.src}>
             <BoardHeader />
           </CompositeComponent>
-        </NavBarContainer>
+        </div>
 
         {isMobile ? (
           <Suspense fallback={<CardFallback />}>
@@ -87,9 +90,11 @@ export const Route = createFileRoute('/card/$cardId')({
             <CompositeComponent src={BoardPageServer.src}>
               <Suspense
                 fallback={
-                  <BoardListsFallback
+                  <div
+                    className={boardStyles.boardListsFallback({
+                      background: boardColor as BoardBackground,
+                    })}
                     data-testid="BoardListsFallback"
-                    background={boardColor as BoardBackground}
                   />
                 }
               >

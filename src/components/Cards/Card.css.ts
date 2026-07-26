@@ -6,7 +6,7 @@ import {
   secondaryButtonBase,
   secondaryButtonHover,
 } from '~/styles/mixins';
-import { button } from '~/styles/Page.css';
+import { button, clearButton } from '~/styles/Page.css';
 import {
   cardModalBreakpointQuery,
   cardModalContentIndent,
@@ -311,6 +311,11 @@ export const descriptionPlaceholder = style({
     background: 'rgba(0,0,0, 0.1)',
   },
 });
+
+export const descriptionPlaceholderButton = style([
+  clearButton,
+  descriptionPlaceholder,
+]);
 
 export const descriptionInput = style({
   height: '60px',
