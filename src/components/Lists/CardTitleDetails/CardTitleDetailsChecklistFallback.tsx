@@ -1,12 +1,12 @@
-import * as checklistItemStyles from '~/components/ChecklistItem/ChecklistItem.css';
-import * as cardTitleDetailsStyles from '~/components/Lists/CardTitleDetails/CardTitleDetails.css';
+import {
+  CheckboxSkeleton,
+  ChecklistLabelSkeleton,
+} from '~/components/ChecklistItem/ChecklistItem.styled';
+import { CardTitleDetailsChecklistContainer } from '~/components/Lists/CardTitleDetails/CardTitleDetails.styled';
 
 export function CardTitleDetailsChecklistFallback() {
   return (
-    <div
-      className={cardTitleDetailsStyles.cardTitleDetailsChecklistContainer}
-      data-testid="CardTitleDetailsChecklistContainer"
-    >
+    <CardTitleDetailsChecklistContainer data-testid="CardTitleDetailsChecklistContainer">
       <div
         style={{
           display: 'flex',
@@ -14,16 +14,12 @@ export function CardTitleDetailsChecklistFallback() {
           gap: '8px',
         }}
       >
-        <div
-          className={checklistItemStyles.checkboxSkeleton}
-          data-testid="CheckboxSkeleton"
-        />
-        <div
-          className={checklistItemStyles.checklistLabelSkeleton}
+        <CheckboxSkeleton data-testid="CheckboxSkeleton" />
+        <ChecklistLabelSkeleton
           data-testid="ChecklistLabelSkeleton"
           style={{ width: '83%' }}
         />
       </div>
-    </div>
+    </CardTitleDetailsChecklistContainer>
   );
 }

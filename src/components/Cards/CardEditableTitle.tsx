@@ -1,6 +1,10 @@
-import { Dialog } from 'radix-ui';
 import { useState } from 'react';
-import * as styles from '~/components/Cards/Card.css';
+import {
+  CardModalTitle,
+  CardModalTitleContainer,
+  EditCardTitleForm,
+  EditCardTitleInput,
+} from '~/components/Cards/Card.styled';
 import { CardCompletedIndicator } from '~/components/Cards/CardCompletedIndicator';
 import { useGetCardById, useUpdateCard } from '~/db/cards/cards.query';
 import { useCurrentCardId } from '~/utils/useCurrentCardId';
@@ -36,35 +40,31 @@ export function CardEditableTitle() {
   }
 
   return (
-    <div
-      className={styles.cardModalTitleContainer}
-      data-testid="CardModalTitleContainer"
-    >
+    <CardModalTitleContainer data-testid="CardModalTitleContainer">
       <CardCompletedIndicator cardId={id} circleSize="18px" />
 
       {!isEditingTitle && (
-        <Dialog.Title
-          className={styles.cardModalTitle}
+        <CardModalTitle
           data-testid="CardModalTitle"
           data-completed={card?.isCompleted ? '' : undefined}
           onClick={openEditTitle}
         >
           {card?.cardTitle}
-        </Dialog.Title>
+        </CardModalTitle>
       )}
 
       {isEditingTitle && (
-        <form className={styles.editCardTitleForm} ref={outsideClickRef}>
-          <input
-            className={styles.editCardTitleInput}
+        <EditCardTitleForm ref={outsideClickRef}>
+          <EditCardTitleInput
             data-testid="EditCardTitleInput"
             value={editedTitle}
+            autoFocus
             onChange={(event) =>
               setEditedTitle((_prevState) => event.target.value)
             }
           />
-        </form>
+        </EditCardTitleForm>
       )}
-    </div>
+    </CardModalTitleContainer>
   );
 }

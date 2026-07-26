@@ -1,5 +1,12 @@
 import { useState } from 'react';
-import * as styles from '~/components/Activity/Activity.css';
+import {
+  ActivityRow,
+  AddCommentContainer,
+  AddCommentForm,
+  AddCommentInput,
+  EditCommentActionsRow,
+  SaveCommentButton,
+} from '~/components/Activity/Activity.styled';
 import { useCreateActivity } from '~/db/activity/activity.query';
 import { useGetCardById } from '~/db/cards/cards.query';
 import { useCurrentBoardId } from '~/utils/useCurrentBoardId';
@@ -24,39 +31,27 @@ export function AddComment() {
   }
 
   return (
-    <div
-      className={styles.addCommentContainer}
-      data-testid="AddCommentContainer"
-    >
-      <div className={styles.activityRow} data-testid="ActivityRow">
-        <form
-          className={styles.addCommentForm}
-          onSubmit={(event) => event.preventDefault()}
-        >
-          <input
-            className={styles.addCommentInput}
+    <AddCommentContainer data-testid="AddCommentContainer">
+      <ActivityRow data-testid="ActivityRow">
+        <AddCommentForm onSubmit={(event) => event.preventDefault()}>
+          <AddCommentInput
             data-testid="AddCommentInput"
             value={comment}
             onChange={(event) => setComment(event.target.value)}
             placeholder="Write a comment..."
           />
 
-          <div
-            className={styles.editCommentActionsRow}
-            data-testid="EditCommentActions"
-          >
-            <button
-              type="submit"
-              className={styles.saveCommentButton}
+          <EditCommentActionsRow data-testid="EditCommentActions">
+            <SaveCommentButton
               data-testid="SaveCommentButton"
               onClick={createComment}
               disabled={!comment}
             >
               Save
-            </button>
-          </div>
-        </form>
-      </div>
-    </div>
+            </SaveCommentButton>
+          </EditCommentActionsRow>
+        </AddCommentForm>
+      </ActivityRow>
+    </AddCommentContainer>
   );
 }

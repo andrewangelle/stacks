@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import * as styles from '~/components/ChecklistItem/ChecklistItem.css';
+import { ChecklistItemOptionsListItem } from '~/components/ChecklistItem/ChecklistItem.styled';
 import { useCreateActivity } from '~/db/activity/activity.query';
 import { useCreateCard } from '~/db/cards/cards.query';
 import {
@@ -64,13 +64,11 @@ export function ConvertChecklistItemToCardButton({
   ]);
 
   return (
-    <button
-      type="button"
-      className={styles.checklistItemOptionsListItem}
+    <ChecklistItemOptionsListItem
       data-testid="ConvertChecklistItemToCardButton"
       onClick={convertToCard}
     >
       Convert to card
-    </button>
+    </ChecklistItemOptionsListItem>
   );
 }

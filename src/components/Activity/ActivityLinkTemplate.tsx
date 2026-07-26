@@ -1,7 +1,7 @@
 import { useQuery } from '@tanstack/react-query';
 import { useNavigate } from '@tanstack/react-router';
 import type { ReactNode } from 'react';
-import * as styles from '~/components/Activity/Activity.css';
+import { ActivityLinkToCard } from '~/components/Activity/Activity.styled';
 import { boardByIdQueryOptions } from '~/db/boards/boards.query';
 import { useGetCardById } from '~/db/cards/cards.query';
 import { useGetListById } from '~/db/lists/lists.query';
@@ -48,9 +48,7 @@ function LinkToCard({ id }: { id: string }) {
   const navigate = useNavigate();
   const boardId = useCurrentBoardId();
   return (
-    <button
-      type="button"
-      className={styles.activityLinkToCard}
+    <ActivityLinkToCard
       id={id}
       onClick={() => {
         navigate({
@@ -60,7 +58,7 @@ function LinkToCard({ id }: { id: string }) {
       }}
     >
       {card?.cardTitle}
-    </button>
+    </ActivityLinkToCard>
   );
 }
 
@@ -68,16 +66,14 @@ function LinkToBoard({ id }: { id: string }) {
   const { data: board } = useQuery(boardByIdQueryOptions(id));
   const navigate = useNavigate();
   return (
-    <button
-      type="button"
-      className={styles.activityLinkToCard}
+    <ActivityLinkToCard
       id={id}
       onClick={() => {
         navigate({ to: '/board/$id', params: { id } });
       }}
     >
       {board?.boardTitle}
-    </button>
+    </ActivityLinkToCard>
   );
 }
 
@@ -85,15 +81,13 @@ function LinkToList({ id }: { id: string }) {
   const { data: list } = useGetListById({ id });
   const navigate = useNavigate();
   return (
-    <button
-      type="button"
-      className={styles.activityLinkToCard}
+    <ActivityLinkToCard
       id={id}
       onClick={() => {
         navigate({ to: '/board/$id', params: { id: list?.boardId ?? '' } });
       }}
     >
       {list?.listTitle}
-    </button>
+    </ActivityLinkToCard>
   );
 }

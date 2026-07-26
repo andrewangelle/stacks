@@ -1,9 +1,15 @@
 import { Suspense } from 'react';
-import * as moveCardMenuStyles from '~/components/Cards/MoveCardMenu/MoveCardMenu.css';
-import * as listActionsStyles from '~/components/Lists/ListActions/ListActions.css';
+import { SelectSkeleton } from '~/components/Cards/MoveCardMenu/MoveCardMenu.styled';
+import {
+  MoveListButton,
+  MoveListFieldsContainer,
+} from '~/components/Lists/ListActions/ListActions.styled';
 import { MoveListBoardSelect } from '~/components/Lists/ListActions/MoveListBoardSelect';
 import { MoveListPositionSelect } from '~/components/Lists/ListActions/MoveListPositionSelect';
-import * as comboboxStyles from '~/components/shared/Combobox/Combobox.css';
+import {
+  ComboboxLabel,
+  ComboboxWrapper,
+} from '~/components/shared/Combobox/Combobox.styled';
 import { useMoveListMutation } from '~/db/lists/lists.query';
 import { useMoveListSelectOptions } from '~/utils/useMoveListSelectOptions';
 
@@ -43,27 +49,13 @@ export function MoveListMenu({ id, closeMenu }: MoveListMenuProps) {
   }
 
   return (
-    <div
-      className={listActionsStyles.moveListFieldsContainer}
-      data-testid="MoveListFieldsContainer"
-    >
+    <MoveListFieldsContainer data-testid="MoveListFieldsContainer">
       <Suspense
         fallback={
-          <div
-            className={comboboxStyles.comboboxWrapper}
-            data-testid="ComboboxWrapper"
-          >
-            <span
-              className={comboboxStyles.comboboxLabel}
-              data-testid="ComboboxLabel"
-            >
-              Board
-            </span>
-            <div
-              className={moveCardMenuStyles.selectSkeleton}
-              style={{ minHeight: '44px' }}
-            />
-          </div>
+          <ComboboxWrapper data-testid="ComboboxWrapper">
+            <ComboboxLabel data-testid="ComboboxLabel">Board</ComboboxLabel>
+            <SelectSkeleton style={{ minHeight: '44px' }} />
+          </ComboboxWrapper>
         }
       >
         <MoveListBoardSelect
@@ -82,15 +74,13 @@ export function MoveListMenu({ id, closeMenu }: MoveListMenuProps) {
         setSelectedPosition={setSelectedPosition}
       />
 
-      <button
-        type="button"
-        className={listActionsStyles.moveListButton}
+      <MoveListButton
         data-testid="MoveListButton"
         onClick={handleMove}
         disabled={!canMove || isMovingList}
       >
         Move
-      </button>
-    </div>
+      </MoveListButton>
+    </MoveListFieldsContainer>
   );
 }

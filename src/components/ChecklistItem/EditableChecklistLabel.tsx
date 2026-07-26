@@ -1,6 +1,12 @@
 import { useState } from 'react';
-import * as cardStyles from '~/components/Cards/Card.css';
-import * as checklistItemStyles from '~/components/ChecklistItem/ChecklistItem.css';
+import { CloseDescriptionButton } from '~/components/Cards/Card.styled';
+import {
+  AddChecklistButton,
+  AddChecklistItemInput,
+  CheckboxLabel,
+  ChecklistItemActions,
+  EditChecklistItemContainer,
+} from '~/components/ChecklistItem/ChecklistItem.styled';
 import {
   useGetChecklistItem,
   useUpdateChecklistItem,
@@ -45,12 +51,10 @@ export function EditableChecklistLabel({
 
   if (!isEditingLabel) {
     return (
-      <button
-        type="button"
-        className={checklistItemStyles.checkboxLabel({
-          checked: checklistItem?.isCompleted ?? false,
-        })}
+      <CheckboxLabel
+        tabIndex={0}
         data-testid="CheckboxLabel"
+        checked={checklistItem?.isCompleted ?? false}
         onClick={openEditLabel}
         onKeyDown={(event) => {
           if (event.key === 'Enter' || event.key === ' ') {
@@ -59,45 +63,36 @@ export function EditableChecklistLabel({
         }}
       >
         {checklistItem?.label}
-      </button>
+      </CheckboxLabel>
     );
   }
 
   return (
-    <div
-      className={checklistItemStyles.editChecklistItemContainer}
-      data-testid="EditChecklistItemContainer"
-    >
-      <textarea
-        className={checklistItemStyles.addChecklistItemInput}
+    <EditChecklistItemContainer data-testid="EditChecklistItemContainer">
+      <AddChecklistItemInput
         data-testid="AddChecklistItemInput"
         value={editedLabel}
         placeholder={editedLabel}
+        autoFocus
         onChange={(event) => setEditedLabel(event.target.value)}
       />
 
-      <div
-        className={checklistItemStyles.checklistItemActions}
-        data-testid="ChecklistItemActions"
-      >
-        <button
-          type="button"
-          className={checklistItemStyles.addChecklistButton}
+      <ChecklistItemActions data-testid="ChecklistItemActions">
+        <AddChecklistButton
           data-testid="AddChecklistButton"
           onClick={addChecklistItem}
         >
           Save
-        </button>
+        </AddChecklistButton>
 
-        <button
-          type="button"
-          className={cardStyles.closeDescriptionButton}
+        <CloseDescriptionButton
           data-testid="CloseDescriptionButton"
+          $secondary
           onClick={() => setIsEditingLabel(false)}
         >
           Cancel
-        </button>
-      </div>
-    </div>
+        </CloseDescriptionButton>
+      </ChecklistItemActions>
+    </EditChecklistItemContainer>
   );
 }

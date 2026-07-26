@@ -1,25 +1,18 @@
 import { EditableListName } from '~/components/Lists/EditableListName';
-import * as listStyles from '~/components/Lists/List.css';
+import { ListHeaderContainer } from '~/components/Lists/List.styled';
 import { ListActions } from '~/components/Lists/ListActions/ListActions';
 import { ListHeaderCardCount } from '~/components/Lists/ListHeaderCardCount';
-import * as pageStyles from '~/styles/Page.css';
+import { Flex } from '~/styles/Page.styled';
 
 export function ListHeader({ id: listId }: { id: string }) {
   return (
-    <div
-      className={listStyles.listHeaderContainer}
-      data-testid="ListHeaderContainer"
-    >
+    <ListHeaderContainer data-testid="ListHeaderContainer">
       <EditableListName listId={listId} />
 
-      <div
-        className={pageStyles.flex}
-        data-testid="Flex"
-        style={{ gap: '8px', alignItems: 'center' }}
-      >
+      <Flex data-testid="Flex" style={{ gap: '8px', alignItems: 'center' }}>
         <ListHeaderCardCount listId={listId} />
         <ListActions id={listId} />
-      </div>
-    </div>
+      </Flex>
+    </ListHeaderContainer>
   );
 }

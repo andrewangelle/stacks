@@ -1,6 +1,12 @@
 import { useUser } from '@clerk/tanstack-react-start';
 import { useRef } from 'react';
-import * as styles from '~/components/Activity/Activity.css';
+import {
+  ActivityAuthorName,
+  ActivityCommentContainer,
+  ActivityContainer,
+  ActivityEntryContent,
+  ActivityRow,
+} from '~/components/Activity/Activity.styled';
 import { ActivityLinkTemplate } from '~/components/Activity/ActivityLinkTemplate';
 import { ActivityLogo } from '~/components/Activity/ActivityLogo';
 import { ActivitySkeleton } from '~/components/Activity/ActivitySkeleton';
@@ -32,29 +38,20 @@ export function ActivityEntry({
   }
 
   return (
-    <div
-      className={styles.activityContainer({ isSelected })}
+    <ActivityContainer
       data-testid="ActivityContainer"
       key={data.id}
+      $isSelected={isSelected}
       ref={ref}
     >
-      <div className={styles.activityRow} data-testid="ActivityRow">
+      <ActivityRow data-testid="ActivityRow">
         <ActivityLogo />
 
-        <div
-          className={styles.activityCommentContainer}
-          data-testid="ActivityCommentContainer"
-        >
-          <div
-            className={styles.activityEntryContent}
-            data-testid="ActivityEntryContent"
-          >
-            <span
-              className={styles.activityAuthorName}
-              data-testid="ActivityAuthorName"
-            >
+        <ActivityCommentContainer data-testid="ActivityCommentContainer">
+          <ActivityEntryContent data-testid="ActivityEntryContent">
+            <ActivityAuthorName data-testid="ActivityAuthorName">
               {user?.firstName} {user?.lastName}
-            </span>{' '}
+            </ActivityAuthorName>{' '}
             <span style={{ fontSize: '14px' }}>
               <ActivityLinkTemplate>{data.content}</ActivityLinkTemplate>
             </span>
@@ -63,9 +60,9 @@ export function ActivityEntry({
               isSelected={isSelected}
               onSelect={onSelect}
             />
-          </div>
-        </div>
-      </div>
-    </div>
+          </ActivityEntryContent>
+        </ActivityCommentContainer>
+      </ActivityRow>
+    </ActivityContainer>
   );
 }

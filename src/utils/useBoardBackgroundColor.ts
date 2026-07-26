@@ -1,6 +1,6 @@
 import { useLocation } from '@tanstack/react-router';
+import type { BoardBackground } from '~/components/Boards/Boards.styled';
 import { useGetBoard } from '~/db/boards/boards.query';
-import type { BoardBackground } from '~/styles/tokens';
 
 export function useBoardBackgroundColor(): BoardBackground {
   const location = useLocation();

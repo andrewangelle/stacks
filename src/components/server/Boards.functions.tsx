@@ -1,7 +1,7 @@
 import { createServerFn } from '@tanstack/react-start';
 import { createCompositeComponent } from '@tanstack/react-start/rsc';
 import type { ReactNode } from 'react';
-import * as styles from '~/components/Boards/Boards.css';
+import { BoardsContainer } from '~/components/Boards/Boards.styled';
 import { authMiddleware } from '~/middleware/auth';
 
 export type BoardsServerProps = {
@@ -13,9 +13,9 @@ export const getBoardsServer = createServerFn()
   .handler(async () => ({
     src: await createCompositeComponent((props: BoardsServerProps) => {
       return (
-        <div className={styles.boardsContainer} data-testid="BoardsContainer">
+        <BoardsContainer data-testid="BoardsContainer">
           {props.children}
-        </div>
+        </BoardsContainer>
       );
     }),
   }));

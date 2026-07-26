@@ -1,6 +1,6 @@
 import { useUser } from '@clerk/tanstack-react-start';
-import * as activityStyles from '~/components/Activity/Activity.css';
-import * as pageStyles from '~/styles/Page.css';
+import { ActivityNameCircle } from '~/components/Activity/Activity.styled';
+import { Center } from '~/styles/Page.styled';
 
 export function useInitials() {
   const { user } = useUser();
@@ -19,13 +19,10 @@ export function useInitials() {
 export function ActivityLogo() {
   const initials = useInitials();
   return (
-    <div
-      className={activityStyles.activityNameCircle}
-      data-testid="ActivityNameCircle"
-    >
-      <div className={pageStyles.center} data-testid="Center">
+    <ActivityNameCircle data-testid="ActivityNameCircle">
+      <Center data-testid="Center">
         <div style={{ marginTop: '-2px' }}>{initials}</div>
-      </div>
-    </div>
+      </Center>
+    </ActivityNameCircle>
   );
 }

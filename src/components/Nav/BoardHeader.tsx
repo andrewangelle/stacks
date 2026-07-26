@@ -1,11 +1,15 @@
 import { useRouterState } from '@tanstack/react-router';
 import { useState } from 'react';
-import * as cardTitleDetailsStyles from '~/components/Lists/CardTitleDetails/CardTitleDetails.css';
+import { CardTitleDetailsSpinner } from '~/components/Lists/CardTitleDetails/CardTitleDetails.styled';
 import { BoardMenu } from '~/components/Nav/BoardMenu/BoardMenu';
-import * as boardMenuStyles from '~/components/Nav/BoardMenu/BoardMenu.css';
-import * as navStyles from '~/components/Nav/Nav.css';
+import { BoardMenuTriggerLoaderSlot } from '~/components/Nav/BoardMenu/BoardMenu.styled';
+import {
+  BoardTitle,
+  EditBoardTitleForm,
+  EditBoardTitleInput,
+} from '~/components/Nav/Nav.styled';
 import { useGetBoard, useUpdateBoard } from '~/db/boards/boards.query';
-import * as pageStyles from '~/styles/Page.css';
+import { Flex } from '~/styles/Page.styled';
 import { useBoardBackgroundColor } from '~/utils/useBoardBackgroundColor';
 import { useOutsideClick } from '~/utils/useOutsideClick';
 
@@ -41,50 +45,45 @@ export function BoardHeader() {
   }
 
   return (
-    <div
-      className={pageStyles.flex}
+    <Flex
       style={{
         justifyContent: 'space-between',
       }}
     >
       <div>
         {!isEditing && (
-          <button
-            className={navStyles.boardTitle}
+          <BoardTitle
             data-testid="BoardTitle"
             type="button"
             onClick={toggleEditBoardTitleForm}
             aria-label="Edit board title"
           >
             {board.data?.boardTitle}
-          </button>
+          </BoardTitle>
         )}
 
         {isEditing && (
-          <form className={navStyles.editBoardTitleForm} ref={outsideClickRef}>
-            <input
-              className={navStyles.editBoardTitleInput}
+          <EditBoardTitleForm ref={outsideClickRef}>
+            <EditBoardTitleInput
               name="boardTitle"
               data-testid="EditBoardTitleInput"
               value={editedBoardTitle}
               placeholder={board.data?.boardTitle}
+              autoFocus
               onChange={(event) => setEditedBoardTitle(event.target.value)}
               onBlur={onOutsideNameEditClick}
             />
-          </form>
+          </EditBoardTitleForm>
         )}
       </div>
 
       {loading && (
-        <span
-          className={boardMenuStyles.boardMenuTriggerLoaderSlot}
-          data-testid="BoardMenuTriggerLoaderSlot"
-        >
-          <div className={cardTitleDetailsStyles.cardTitleDetailsSpinner} />
-        </span>
+        <BoardMenuTriggerLoaderSlot data-testid="BoardMenuTriggerLoaderSlot">
+          <CardTitleDetailsSpinner />
+        </BoardMenuTriggerLoaderSlot>
       )}
 
       {!loading && <BoardMenu />}
-    </div>
+    </Flex>
   );
 }

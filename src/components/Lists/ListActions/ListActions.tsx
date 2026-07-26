@@ -1,10 +1,23 @@
 import { Popover } from 'radix-ui';
 import { useState } from 'react';
-import * as listActionsStyles from '~/components/Lists/ListActions/ListActions.css';
+import {
+  DeleteListButton,
+  ListActionsOption,
+  ListActionsOptionsContainer,
+  ListActionsPopoverButton,
+  ListActionsPopoverButtonBack,
+  ListActionsPopoverButtonText,
+  ListActionsPopoverClose,
+  ListActionsPopoverHeader,
+  ListActionsPopoverTrigger,
+} from '~/components/Lists/ListActions/ListActions.styled';
 import { MoveListMenu } from '~/components/Lists/ListActions/MoveListMenu';
 import { Tooltip } from '~/components/shared/Tooltip/Tooltip';
 import { useDeleteList } from '~/db/lists/lists.query';
-import * as pageStyles from '~/styles/Page.css';
+import {
+  PopoverOptionsContent,
+  PopoverOptionsContentContainer,
+} from '~/styles/Page.styled';
 import { useCurrentBoardId } from '~/utils/useCurrentBoardId';
 
 type ListActionsProps = {
@@ -32,82 +45,55 @@ export function ListActions({ id }: ListActionsProps) {
 
   return (
     <Popover.Root open={open} onOpenChange={closePopover}>
-      <Popover.Trigger
-        className={listActionsStyles.listActionsPopoverTrigger}
-        data-testid="ListActionsPopoverTrigger"
-      >
+      <ListActionsPopoverTrigger data-testid="ListActionsPopoverTrigger">
         <Tooltip content="List actions">
-          <div
-            className={listActionsStyles.listActionsPopoverButton({
-              isOpen: open,
-            })}
+          <ListActionsPopoverButton
             data-testid="ListActionsPopoverButton"
+            $isOpen={open}
           >
-            <span
-              className={listActionsStyles.listActionsPopoverButtonText}
-              data-testid="ListActionsPopoverButtonText"
-            >
+            <ListActionsPopoverButtonText data-testid="ListActionsPopoverButtonText">
               ...
-            </span>
-          </div>
+            </ListActionsPopoverButtonText>
+          </ListActionsPopoverButton>
         </Tooltip>
-      </Popover.Trigger>
+      </ListActionsPopoverTrigger>
 
       <Popover.Portal>
-        <Popover.Content
-          className={pageStyles.popoverOptionsContent}
-          data-testid="PopoverOptionsContent"
-        >
-          <div
-            className={listActionsStyles.listActionsPopoverHeader}
-            data-testid="ListActionsPopoverHeader"
-          >
+        <PopoverOptionsContent data-testid="PopoverOptionsContent">
+          <ListActionsPopoverHeader data-testid="ListActionsPopoverHeader">
             <div>
-              <button
-                type="button"
-                className={listActionsStyles.listActionsPopoverButtonBack({
-                  isActive: view !== 'actions',
-                })}
+              <ListActionsPopoverButtonBack
                 tabIndex={view !== 'actions' ? 0 : -1}
+                $isActive={view !== 'actions'}
                 onClick={() => setView('actions')}
               >
                 {view !== 'actions' ? '<' : ''}
-              </button>
+              </ListActionsPopoverButtonBack>
             </div>
 
             <div>{viewTitles[view]}</div>
 
-            <Popover.Close
-              className={listActionsStyles.listActionsPopoverClose}
-              data-testid="ListActionsPopoverClose"
-            >
+            <ListActionsPopoverClose data-testid="ListActionsPopoverClose">
               X
-            </Popover.Close>
-          </div>
+            </ListActionsPopoverClose>
+          </ListActionsPopoverHeader>
 
           {view === 'actions' && (
-            <div
-              className={listActionsStyles.listActionsOptionsContainer}
-              data-testid="ListActionsOptionsContainer"
-            >
-              <button
-                type="button"
-                className={listActionsStyles.listActionsOption}
+            <ListActionsOptionsContainer data-testid="ListActionsOptionsContainer">
+              <ListActionsOption
                 data-testid="ListActionsOption"
                 onClick={() => setView('move')}
               >
                 Move list
-              </button>
+              </ListActionsOption>
 
-              <button
-                type="button"
-                className={listActionsStyles.listActionsOption}
+              <ListActionsOption
                 data-testid="ListActionsOption"
                 onClick={() => setView('delete')}
               >
                 Archive this list
-              </button>
-            </div>
+              </ListActionsOption>
+            </ListActionsOptionsContainer>
           )}
 
           {view === 'move' && (
@@ -115,11 +101,9 @@ export function ListActions({ id }: ListActionsProps) {
           )}
 
           {view === 'delete' && (
-            <div className={pageStyles.popoverOptionsContentContainer}>
+            <PopoverOptionsContentContainer>
               This list will be deleted
-              <button
-                type="button"
-                className={listActionsStyles.deleteListButton}
+              <DeleteListButton
                 data-testid="DeleteListButton"
                 onClick={() =>
                   deleteList({
@@ -129,10 +113,10 @@ export function ListActions({ id }: ListActionsProps) {
                 }
               >
                 Delete list
-              </button>
-            </div>
+              </DeleteListButton>
+            </PopoverOptionsContentContainer>
           )}
-        </Popover.Content>
+        </PopoverOptionsContent>
       </Popover.Portal>
     </Popover.Root>
   );

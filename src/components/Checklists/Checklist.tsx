@@ -3,7 +3,12 @@ import { AddChecklistItem } from '~/components/ChecklistItem/AddChecklistItem';
 import { ChecklistItem } from '~/components/ChecklistItem/ChecklistItem';
 import { ChecklistEditableTitle } from '~/components/Checklists/ChecklistEditableTitle';
 import { ChecklistProgress } from '~/components/Checklists/ChecklistProgress';
-import * as styles from '~/components/Checklists/Checklists.css';
+import {
+  AllItemsCompleteMessage,
+  ChecklistContainer,
+  ChecklistHeader,
+  ChecklistHeaderActions,
+} from '~/components/Checklists/Checklists.styled';
 import { DeleteChecklist } from '~/components/Checklists/DeleteChecklist';
 import { ToggleCheckedItems } from '~/components/Checklists/ToggleCheckedItems';
 import { Draggable } from '~/components/shared/dnd/Draggable';
@@ -44,29 +49,21 @@ export function Checklist({ id }: { id: string }) {
   useScrollToHashId(id, headerRef, isSuccess && isItemsSuccess);
 
   return (
-    <div className={styles.checklistContainer} data-testid="ChecklistContainer">
-      <div
-        className={styles.checklistHeader}
-        data-testid="ChecklistHeader"
-        key={id}
-        ref={headerRef}
-      >
+    <ChecklistContainer data-testid="ChecklistContainer">
+      <ChecklistHeader data-testid="ChecklistHeader" key={id} ref={headerRef}>
         <ChecklistEditableTitle id={id} />
-        <div className={styles.checklistHeaderActions}>
+        <ChecklistHeaderActions>
           <ToggleCheckedItems checklistId={id} />
           <DeleteChecklist id={id} />
-        </div>
-      </div>
+        </ChecklistHeaderActions>
+      </ChecklistHeader>
 
       <ChecklistProgress checklistId={id} />
 
       {showAllItemsCompleteMessage && (
-        <p
-          className={styles.allItemsCompleteMessage}
-          data-testid="AllItemsCompleteMessage"
-        >
+        <AllItemsCompleteMessage data-testid="AllItemsCompleteMessage">
           Everything in this checklist is complete!
-        </p>
+        </AllItemsCompleteMessage>
       )}
 
       <div ref={ref} style={{ width: '100%', minWidth: 0 }}>
@@ -103,6 +100,6 @@ export function Checklist({ id }: { id: string }) {
       <DropTargetFallback id={`checklist-drop:${id}`} type="checklistItem" />
 
       <AddChecklistItem checklistId={id} />
-    </div>
+    </ChecklistContainer>
   );
 }

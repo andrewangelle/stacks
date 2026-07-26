@@ -1,6 +1,13 @@
-import { Progress } from 'radix-ui';
-import * as checklistItemStyles from '~/components/ChecklistItem/ChecklistItem.css';
-import * as checklistsStyles from '~/components/Checklists/Checklists.css';
+import {
+  ChecklistContentColumn,
+  ChecklistLeadingColumn,
+} from '~/components/ChecklistItem/ChecklistItem.styled';
+import {
+  ChecklistProgressIndicator,
+  ChecklistProgressPercentage,
+  ChecklistProgressRoot,
+  ChecklistProgressRow,
+} from '~/components/Checklists/Checklists.styled';
 import { useGetChecklistItems } from '~/db/checklistItems/checklistItems.query';
 
 export function ChecklistProgress({ checklistId }: { checklistId: string }) {
@@ -11,41 +18,25 @@ export function ChecklistProgress({ checklistId }: { checklistId: string }) {
     completedItems?.length === data?.length ? '#5B7F24' : 'black';
 
   return (
-    <div
-      className={checklistsStyles.checklistProgressRow}
-      data-testid="ChecklistProgressRow"
-    >
-      <div
-        className={checklistItemStyles.checklistLeadingColumn}
-        data-testid="ChecklistLeadingColumn"
-      >
-        <span
-          className={checklistsStyles.checklistProgressPercentage}
-          data-testid="ChecklistProgressPercentage"
-        >
+    <ChecklistProgressRow data-testid="ChecklistProgressRow">
+      <ChecklistLeadingColumn data-testid="ChecklistLeadingColumn">
+        <ChecklistProgressPercentage data-testid="ChecklistProgressPercentage">
           {`${progressPercent}%`}
-        </span>
-      </div>
+        </ChecklistProgressPercentage>
+      </ChecklistLeadingColumn>
 
-      <div
-        className={checklistItemStyles.checklistContentColumn}
-        data-testid="ChecklistContentColumn"
-      >
-        <Progress.Root
-          className={checklistsStyles.checklistProgressRoot}
-          data-testid="ChecklistProgressRoot"
-        >
-          <Progress.Indicator
-            className={checklistsStyles.checklistProgressIndicator}
+      <ChecklistContentColumn data-testid="ChecklistContentColumn">
+        <ChecklistProgressRoot data-testid="ChecklistProgressRoot">
+          <ChecklistProgressIndicator
             data-testid="ChecklistProgressIndicator"
             style={{
               width: `${progressPercent}%`,
               backgroundColor: progressFill,
             }}
           />
-        </Progress.Root>
-      </div>
-    </div>
+        </ChecklistProgressRoot>
+      </ChecklistContentColumn>
+    </ChecklistProgressRow>
   );
 }
 

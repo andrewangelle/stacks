@@ -2,7 +2,7 @@ import * as Sentry from '@sentry/tanstackstart-react';
 import type { ErrorComponentProps } from '@tanstack/react-router';
 import { useEffect } from 'react';
 import { NavBarClient } from '~/components/Nav/NavBarClient';
-import * as styles from '~/styles/Page.css';
+import { FlexCenter } from '~/styles/Page.styled';
 
 export function AppError(props: ErrorComponentProps) {
   useEffect(() => {
@@ -12,14 +12,10 @@ export function AppError(props: ErrorComponentProps) {
   return (
     <>
       <NavBarClient />
-      <div
-        className={styles.flexCenter}
-        data-testid="FlexCenter"
-        style={{ flexDirection: 'column' }}
-      >
+      <FlexCenter data-testid="FlexCenter" style={{ flexDirection: 'column' }}>
         <h1>Yikes</h1>
         <p>Something went wrong</p>
-      </div>
+      </FlexCenter>
     </>
   );
 }

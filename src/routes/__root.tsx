@@ -1,8 +1,6 @@
 import '~/styles/animations.css';
 import '~/styles/board-gradient.css';
 import '~/styles/drag.css';
-import '~/styles/global.css';
-import '~/styles/stylesheets';
 import { ClerkProvider } from '@clerk/tanstack-react-start';
 import { DragDropProvider } from '@dnd-kit/react';
 import {
@@ -12,9 +10,13 @@ import {
   Scripts,
 } from '@tanstack/react-router';
 import type { ReactNode } from 'react';
+import { StyleSheetManager } from 'styled-components';
+import { rscPlugin } from 'styled-components/plugins';
 import { DevTools } from '~/components/DevTools';
 import { fetchUserId } from '~/middleware/auth';
 import type { queryClient } from '~/query';
+import GlobalFonts from '~/styles/GlobalFonts';
+import { ServerStyles, useServerStyleSheet } from '~/styles/ServerStyles';
 import { detectMobile } from '~/utils/detectMobile';
 
 type RouterContext = {
@@ -22,10 +24,15 @@ type RouterContext = {
 };
 
 function Providers({ children }: { children: ReactNode }) {
+  const sheet = useServerStyleSheet();
+
   return (
-    <ClerkProvider>
-      <DragDropProvider>{children}</DragDropProvider>
-    </ClerkProvider>
+    <StyleSheetManager plugins={[rscPlugin]} sheet={sheet?.instance}>
+      <ClerkProvider>
+        <DragDropProvider>{children}</DragDropProvider>
+      </ClerkProvider>
+      <ServerStyles sheet={sheet} />
+    </StyleSheetManager>
   );
 }
 
@@ -78,6 +85,7 @@ export const Route = createRootRouteWithContext<RouterContext>()({
           <Providers>
             <Outlet />
             <Scripts />
+            <GlobalFonts />
             <DevTools />
           </Providers>
         </body>

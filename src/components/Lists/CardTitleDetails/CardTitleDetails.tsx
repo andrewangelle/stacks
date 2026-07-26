@@ -1,9 +1,14 @@
 import { Suspense } from 'react';
-import * as cardStyles from '~/components/Cards/Card.css';
+import { CardModalTrigger } from '~/components/Cards/Card.styled';
 import { CardCompletedIndicator } from '~/components/Cards/CardCompletedIndicator';
-import * as cardTitleDetailsStyles from '~/components/Lists/CardTitleDetails/CardTitleDetails.css';
+import {
+  CardTitleDetailsContentSkeleton,
+  CardTitleDetailsSpinner,
+  CardTitleDetailsSpinnerContainer,
+  ListCardTitleDetailsContainer,
+} from '~/components/Lists/CardTitleDetails/CardTitleDetails.styled';
 import { CardTitleDetailsContent } from '~/components/Lists/CardTitleDetails/CardTitleDetailsContent';
-import * as listStyles from '~/components/Lists/List.css';
+import { ListCardContainer } from '~/components/Lists/List.styled';
 import { useCardModalTrigger } from '~/utils/useCardModalTrigger';
 
 type CardTitleDetailsProps = {
@@ -35,22 +40,8 @@ export function CardTitleDetails({
   } = useCardModalTrigger(id);
 
   return (
-    // biome-ignore lint/a11y/useFocusableInteractive: <handled elsewhere>
-    // biome-ignore lint/a11y/useSemanticElements: <handled elsewhere>
-    <div
-      role="button"
-      className={cardStyles.cardModalTrigger}
-      data-testid="CardModalTrigger"
-      onClick={open}
-      onKeyDown={(event) => {
-        if (event.key === 'Enter' || event.key === ' ') {
-          open();
-        }
-      }}
-    >
-      {/* biome-ignore lint/a11y/useSemanticElements: <style conflict> */}
-      <div
-        className={listStyles.listCardContainer}
+    <CardModalTrigger data-testid="CardModalTrigger" onClick={open}>
+      <ListCardContainer
         ref={ref}
         role="button"
         tabIndex={0}
@@ -63,26 +54,18 @@ export function CardTitleDetails({
         onMouseLeave={onMouseLeave}
         onPointerDown={onPointerDown}
       >
-        <div
-          className={cardTitleDetailsStyles.listCardTitleDetailsContainer({
-            isCompleted,
-          })}
+        <ListCardTitleDetailsContainer
           data-testid="ListCardTitleDetailsContainer"
+          $isCompleted={isCompleted}
         >
           <CardCompletedIndicator
             cardId={id}
             visible={isHovering || isFocused}
           />
           {title}
-        </div>
+        </ListCardTitleDetailsContainer>
 
-        <Suspense
-          fallback={
-            <div
-              className={cardTitleDetailsStyles.cardTitleDetailsContentSkeleton}
-            />
-          }
-        >
+        <Suspense fallback={<CardTitleDetailsContentSkeleton />}>
           <CardTitleDetailsContent
             cardId={id}
             description={description}
@@ -91,17 +74,11 @@ export function CardTitleDetails({
         </Suspense>
 
         {isLoading && (
-          <div
-            className={cardTitleDetailsStyles.cardTitleDetailsSpinnerContainer}
-            data-testid="CardTitleDetailsSpinnerContainer"
-          >
-            <div
-              className={cardTitleDetailsStyles.cardTitleDetailsSpinner}
-              data-testid="CardTitleDetailsSpinner"
-            />
-          </div>
+          <CardTitleDetailsSpinnerContainer data-testid="CardTitleDetailsSpinnerContainer">
+            <CardTitleDetailsSpinner data-testid="CardTitleDetailsSpinner" />
+          </CardTitleDetailsSpinnerContainer>
         )}
-      </div>
-    </div>
+      </ListCardContainer>
+    </CardModalTrigger>
   );
 }

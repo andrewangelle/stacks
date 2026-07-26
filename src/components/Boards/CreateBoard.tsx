@@ -1,10 +1,23 @@
 import { Popover } from 'radix-ui';
 import { useState } from 'react';
 import { FaCheck } from 'react-icons/fa';
-import * as boardsStyles from '~/components/Boards/Boards.css';
+import {
+  type BoardBackground,
+  CreateBoardBackgroundChoice,
+  CreateBoardBackgroundChoices,
+  CreateBoardBackgroundText,
+  CreateBoardButton,
+  CreateBoardCard,
+  CreateBoardCloseBorder,
+  CreateBoardPopoverContent,
+  CreateBoardPopoverHeader,
+  CreateBoardPopoverTrigger,
+  CreateBoardTitleInput,
+  PopoverClose,
+} from '~/components/Boards/Boards.styled';
 import { useCreateBoard } from '~/db/boards/boards.query';
-import * as pageStyles from '~/styles/Page.css';
-import type { BoardBackground } from '~/styles/tokens';
+
+import { Center } from '~/styles/Page.styled';
 
 const backgroundChoices: BoardBackground[] = [
   'green',
@@ -32,98 +45,72 @@ export function CreateBoard() {
   }
 
   return (
-    <Popover.Root open={isCreateOpen} onOpenChange={setCreateOpen}>
-      <Popover.Trigger
-        className={boardsStyles.createBoardPopoverTrigger}
-        data-testid="CreateBoardPopoverTrigger"
-      >
-        <div
-          className={boardsStyles.createBoardCard}
+    <Popover.Root open={isCreateOpen}>
+      <CreateBoardPopoverTrigger data-testid="CreateBoardPopoverTrigger">
+        <CreateBoardCard
           data-testid="CreateBoardCard"
+          onClick={() => setCreateOpen((prevState) => !prevState)}
         >
           Create new board
-        </div>
-      </Popover.Trigger>
+        </CreateBoardCard>
+      </CreateBoardPopoverTrigger>
 
-      <Popover.Content
-        className={boardsStyles.createBoardPopoverContent}
+      <CreateBoardPopoverContent
         data-testid="CreateBoardPopoverContent"
         side="bottom"
       >
-        <div
-          className={boardsStyles.createBoardPopoverHeader}
-          data-testid="CreateBoardPopoverHeader"
-        >
+        <CreateBoardPopoverHeader data-testid="CreateBoardPopoverHeader">
           Create Board
-          <Popover.Close
-            className={boardsStyles.popoverClose}
+          <PopoverClose
             data-testid="PopoverClose"
             onClick={() => setCreateOpen(false)}
-            autoFocus
           >
             X
-          </Popover.Close>
-        </div>
+          </PopoverClose>
+        </CreateBoardPopoverHeader>
 
-        <hr
-          className={boardsStyles.createBoardCloseBorder}
-          data-testid="CreateBoardCloseBorder"
-        />
+        <CreateBoardCloseBorder data-testid="CreateBoardCloseBorder" />
 
-        <div
-          className={boardsStyles.createBoardBackgroundText}
-          data-testid="CreateBoardBackgroundText"
-        >
+        <CreateBoardBackgroundText data-testid="CreateBoardBackgroundText">
           Background
-        </div>
+        </CreateBoardBackgroundText>
 
-        <div
-          className={boardsStyles.createBoardBackgroundChoices}
-          data-testid="CreateBoardBackgroundChoices"
-        >
+        <CreateBoardBackgroundChoices data-testid="CreateBoardBackgroundChoices">
           {backgroundChoices.map((color) => (
-            <button
-              type="button"
-              key={color}
+            <CreateBoardBackgroundChoice
               data-testid="CreateBoardBackgroundChoice"
-              className={boardsStyles.createBoardBackgroundChoice({
-                background: color,
-              })}
+              key={color}
+              $background={color}
               onClick={() => setSelectedColor(color)}
             >
               {color === selectedColor && (
-                <div className={pageStyles.center} data-testid="Center">
+                <Center data-testid="Center">
                   <FaCheck />
-                </div>
+                </Center>
               )}
-            </button>
+            </CreateBoardBackgroundChoice>
           ))}
-        </div>
+        </CreateBoardBackgroundChoices>
 
-        <div
-          className={boardsStyles.createBoardBackgroundText}
-          data-testid="CreateBoardBackgroundText"
-        >
+        <CreateBoardBackgroundText data-testid="CreateBoardBackgroundText">
           Board Title
-        </div>
+        </CreateBoardBackgroundText>
 
-        <input
-          className={boardsStyles.createBoardTitleInput}
+        <CreateBoardTitleInput
           data-testid="CreateBoardTitleInput"
           onChange={(event) => setBoardTitle(event.target.value)}
           value={boardTitle}
+          autoFocus
         />
 
-        <button
-          type="button"
-          className={boardsStyles.createBoardButton({ disabled: !boardTitle })}
+        <CreateBoardButton
           data-testid="CreateBoardButton"
           disabled={!boardTitle}
           onClick={onBoardCreate}
         >
           Create
-        </button>
-      </Popover.Content>
+        </CreateBoardButton>
+      </CreateBoardPopoverContent>
     </Popover.Root>
   );
 }

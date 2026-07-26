@@ -1,11 +1,7 @@
-import * as styles from '~/components/Boards/Boards.css';
+import { BoardCardSkeleton } from '~/components/Boards/Boards.styled';
 
 export function BoardListFallback() {
   return (['one', 'two', 'three'] as const).map((id) => (
-    <div
-      className={styles.boardCardSkeleton}
-      data-testid="BoardCardSkeleton"
-      key={id}
-    />
+    <BoardCardSkeleton data-testid="BoardCardSkeleton" key={id} />
   ));
 }

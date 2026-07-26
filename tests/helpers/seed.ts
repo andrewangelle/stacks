@@ -1,5 +1,5 @@
 import type { APIRequestContext } from '@playwright/test';
-import type { BoardBackground } from '~/styles/tokens';
+import type { BoardBackground } from '~/components/Boards/Boards.styled';
 
 type SeededBoard = {
   id: string;
