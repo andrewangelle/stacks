@@ -23,7 +23,8 @@
       "./.vscode/settings.json",
       "!**/netlify",
       "!**/.claude/worktrees",
-      "!**/.netlify"
+      "!**/.netlify",
+      "!**/test-results"
     ]
   },
   "formatter": {
