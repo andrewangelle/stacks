@@ -10,22 +10,21 @@ import {
 
 export function ListSkeleton() {
   return (
-    <ListContainer data-testid="ListContainer" $isMobile={false}>
-      <ListHeaderSkeletonRow data-testid="ListHeaderSkeletonRow">
-        <ListNameSkeleton data-testid="ListNameSkeleton" />
-        <ListCountSkeleton data-testid="ListCountSkeleton" />
+    <ListContainer $isMobile={false}>
+      <ListHeaderSkeletonRow>
+        <ListNameSkeleton />
+        <ListCountSkeleton />
       </ListHeaderSkeletonRow>
 
-      <ListCardsSkeletonRow data-testid="ListCardsSkeletonRow">
+      <ListCardsSkeletonRow>
         <ListCardSkeleton
-          data-testid="ListCardSkeleton"
           style={{
             margin: '2px 0px 8px 8px',
             width: '245px',
             height: '30px',
           }}
         />
-        <AddListButtonSkeleton data-testid="AddListButtonSkeleton" />
+        <AddListButtonSkeleton />
       </ListCardsSkeletonRow>
     </ListContainer>
   );

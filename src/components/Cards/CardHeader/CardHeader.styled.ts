@@ -1,7 +1,9 @@
 import { Dialog } from 'radix-ui';
-import { styled } from 'styled-components';
+import { type DataAttributes, styled } from 'styled-components';
 
-export const CardHeaderContainer = styled.div` 
+export const CardHeaderContainer = styled.div.attrs<DataAttributes>({
+  'data-testid': 'CardHeaderContainer',
+})` 
   display: flex;
   flex-shrink: 0;
   justify-content: space-between;
@@ -27,7 +29,9 @@ export const CardPageClose = styled(CardModalClose)`
   background: transparent;
 `;
 
-export const CardModalCloseSpinnerSlot = styled.div`
+export const CardModalCloseSpinnerSlot = styled.div.attrs<DataAttributes>({
+  'data-testid': 'CardModalCloseSpinner',
+})`
   display: flex;
   align-items: center;
   justify-content: center;

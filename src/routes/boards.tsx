@@ -30,7 +30,7 @@ export const Route = createFileRoute('/boards')({
     return (
       <>
         <NavBarFallback />
-        <BoardsContainer data-testid="BoardsContainer">
+        <BoardsContainer>
           <BoardListFallback />
         </BoardsContainer>
       </>
@@ -41,7 +41,7 @@ export const Route = createFileRoute('/boards')({
     const { BoardsServer, NavBarServer } = Route.useLoaderData();
     return (
       <>
-        <NavBarContainer data-testid="NavBarContainer">
+        <NavBarContainer>
           <CompositeComponent src={NavBarServer.src}>
             <UserNavContent />
           </CompositeComponent>

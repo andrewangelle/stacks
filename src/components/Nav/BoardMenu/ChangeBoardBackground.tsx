@@ -32,16 +32,15 @@ export function ChangeBoardBackground() {
   }
 
   return (
-    <Flex data-testid="Flex" style={{ flexWrap: 'wrap' }}>
+    <Flex style={{ flexWrap: 'wrap' }}>
       {backgroundChoices.map((color) => (
         <ChangeBoardBackgroundChoice
-          data-testid="ChangeBoardBackgroundChoice"
           key={color}
           $background={color}
           onClick={() => onColorChange(color)}
         >
           {color === currentColor && (
-            <Center data-testid="Center">
+            <Center>
               <FaCheck />
             </Center>
           )}

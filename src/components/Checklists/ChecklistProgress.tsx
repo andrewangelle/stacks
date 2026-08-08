@@ -18,17 +18,16 @@ export function ChecklistProgress({ checklistId }: { checklistId: string }) {
     completedItems?.length === data?.length ? '#5B7F24' : 'black';
 
   return (
-    <ChecklistProgressRow data-testid="ChecklistProgressRow">
-      <ChecklistLeadingColumn data-testid="ChecklistLeadingColumn">
-        <ChecklistProgressPercentage data-testid="ChecklistProgressPercentage">
+    <ChecklistProgressRow>
+      <ChecklistLeadingColumn>
+        <ChecklistProgressPercentage>
           {`${progressPercent}%`}
         </ChecklistProgressPercentage>
       </ChecklistLeadingColumn>
 
-      <ChecklistContentColumn data-testid="ChecklistContentColumn">
-        <ChecklistProgressRoot data-testid="ChecklistProgressRoot">
+      <ChecklistContentColumn>
+        <ChecklistProgressRoot>
           <ChecklistProgressIndicator
-            data-testid="ChecklistProgressIndicator"
             style={{
               width: `${progressPercent}%`,
               backgroundColor: progressFill,

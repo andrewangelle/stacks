@@ -35,7 +35,6 @@ export function EditableListName({ listId }: EditableListNameProps) {
     <div data-testid="EditableListName">
       {!isEditingListName && (
         <ListName
-          data-testid="ListName"
           style={{
             margin: '8px 0px 12px 8px',
           }}
@@ -51,7 +50,6 @@ export function EditableListName({ listId }: EditableListNameProps) {
       {isEditingListName && (
         <EditListNameInput
           ref={outsideClickRef}
-          data-testid="EditListNameInput"
           value={editedListTitle}
           autoFocus
           onChange={(event) =>

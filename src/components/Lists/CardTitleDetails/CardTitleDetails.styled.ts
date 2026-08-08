@@ -1,5 +1,5 @@
 import { Accordion, Checkbox } from 'radix-ui';
-import { css, styled } from 'styled-components';
+import { css, type DataAttributes, styled } from 'styled-components';
 import { ListCardSkeleton } from '~/components/Lists/List.styled';
 import { blue, darkGray, focusRingBlue, fontFamily } from '~/styles/tokens';
 
@@ -9,7 +9,9 @@ type IsCompletedProps = {
   $isCompleted: boolean;
 };
 
-export const ListCardTitleDetailsContainer = styled.div<IsCompletedProps>`
+export const ListCardTitleDetailsContainer = styled.div.attrs<DataAttributes>({
+  'data-testid': 'ListCardTitleDetailsContainer',
+})<IsCompletedProps>`
 
   display: inline-flex;
   align-items: center;
@@ -23,7 +25,11 @@ type CardCompletedIndicatorCircleProps = {
   $circleSize?: string;
 };
 
-export const CardCompletedIndicatorCircle = styled.button<CardCompletedIndicatorCircleProps>`
+export const CardCompletedIndicatorCircle = styled.button.attrs<DataAttributes>(
+  {
+    'data-testid': 'CardTitleModalTriggerCircle',
+  },
+)<CardCompletedIndicatorCircleProps>`
   display: inline-flex;
   flex-shrink: 0;
   align-items: center;
@@ -74,7 +80,11 @@ type ChecklistTotalsContainerProps = {
   $isAllCompleted: boolean;
 };
 
-export const CardTitleDetailsChecklistTotalsContainer = styled.div<ChecklistTotalsContainerProps>`
+export const CardTitleDetailsChecklistTotalsContainer = styled.div.attrs<DataAttributes>(
+  {
+    'data-testid': 'CardTitleDetailsChecklistTotalsContainer',
+  },
+)<ChecklistTotalsContainerProps>`
   
   display: inline-flex;
   align-items: center;
@@ -111,31 +121,49 @@ export const CardTitleDetailsChecklistTotalsContainer = styled.div<ChecklistTota
   `}
 `;
 
-export const CardTitleDetailsChecklistDivider = styled.div`
+export const CardTitleDetailsChecklistDivider = styled.div.attrs<DataAttributes>(
+  {
+    'data-testid': 'CardTitleDetailsChecklistDivider',
+  },
+)`
   width: 100%;
   height: 1px;
   margin: 6px 0 4px;
   background: rgba(9, 30, 66, 0.13);
 `;
 
-export const CardTitleDetailsChecklistAccordionRoot = styled(Accordion.Root)`
+export const CardTitleDetailsChecklistAccordionRoot = styled(
+  Accordion.Root,
+).attrs<DataAttributes>({
+  'data-testid': 'CardTitleDetailsChecklistAccordion',
+})`
   width: 100%;
   display: flex;
   flex-direction: column;
   gap: 2px;
 `;
 
-export const CardTitleDetailsChecklistAccordionItem = styled(Accordion.Item)`
+export const CardTitleDetailsChecklistAccordionItem = styled(
+  Accordion.Item,
+).attrs<DataAttributes>({
+  'data-testid': 'CardTitleDetailsChecklistAccordionItem',
+})`
   width: 100%;
 `;
 
 export const CardTitleDetailsChecklistAccordionHeader = styled(
   Accordion.Header,
-)`
+).attrs<DataAttributes>({
+  'data-testid': 'CardTitleDetailsChecklistAccordionHeader',
+})`
   margin: 0;
 `;
 
-export const CardTitleDetailsChecklistAccordionChevron = styled.span`
+export const CardTitleDetailsChecklistAccordionChevron = styled.span.attrs<DataAttributes>(
+  {
+    'data-testid': 'CardTitleDetailsChecklistAccordionChevron',
+  },
+)`
   display: inline-flex;
   flex-shrink: 0;
   color: #44546f;
@@ -144,7 +172,9 @@ export const CardTitleDetailsChecklistAccordionChevron = styled.span`
 
 export const CardTitleDetailsChecklistAccordionTrigger = styled(
   Accordion.Trigger,
-)`
+).attrs<DataAttributes>({
+  'data-testid': 'CardTitleDetailsChecklistAccordionTrigger',
+})`
   all: unset;
   box-sizing: border-box;
   display: flex;
@@ -174,7 +204,11 @@ export const CardTitleDetailsChecklistAccordionTrigger = styled(
   }
 `;
 
-export const CardTitleDetailsChecklistAccordionTitle = styled.span`
+export const CardTitleDetailsChecklistAccordionTitle = styled.span.attrs<DataAttributes>(
+  {
+    'data-testid': 'CardTitleDetailsChecklistAccordionTitle',
+  },
+)`
   flex: 1;
   min-width: 0;
   font-weight: 500;
@@ -185,7 +219,11 @@ export const CardTitleDetailsChecklistAccordionTitle = styled.span`
   font-size: 12px;
 `;
 
-export const CardTitleDetailsChecklistAccordionCount = styled.span`
+export const CardTitleDetailsChecklistAccordionCount = styled.span.attrs<DataAttributes>(
+  {
+    'data-testid': 'CardTitleDetailsChecklistAccordionCount',
+  },
+)`
   flex-shrink: 0;
   color: #44546f;
   font-weight: 400;
@@ -195,7 +233,9 @@ export const CardTitleDetailsChecklistAccordionCount = styled.span`
 
 export const CardTitleDetailsChecklistAccordionContent = styled(
   Accordion.Content,
-)`
+).attrs<DataAttributes>({
+  'data-testid': 'CardTitleDetailsChecklistAccordionContent',
+})`
   overflow: hidden;
 
   &[data-state='open'] {
@@ -227,7 +267,11 @@ export const CardTitleDetailsChecklistAccordionContent = styled(
   }
 `;
 
-export const CardTitleDetailsChecklistContainer = styled.div`
+export const CardTitleDetailsChecklistContainer = styled.div.attrs<DataAttributes>(
+  {
+    'data-testid': 'CardTitleDetailsChecklistContainer',
+  },
+)`
   display: flex;
   flex-direction: column;
   gap: 2px;
@@ -235,7 +279,11 @@ export const CardTitleDetailsChecklistContainer = styled.div`
   width: stretch;
 `;
 
-export const CardTitleDetailsChecklistItemRow = styled.div`
+export const CardTitleDetailsChecklistItemRow = styled.div.attrs<DataAttributes>(
+  {
+    'data-testid': 'CardTitleDetailsChecklistItemRow',
+  },
+)`
   display: flex;
   align-items: flex-start;
   gap: 8px;
@@ -245,7 +293,11 @@ export const CardTitleDetailsChecklistItemRow = styled.div`
   color: #172b4d;
 `;
 
-export const CardTitleDetailsChecklistCheckbox = styled(Checkbox.Root)`
+export const CardTitleDetailsChecklistCheckbox = styled(
+  Checkbox.Root,
+).attrs<DataAttributes>({
+  'data-testid': 'CardTitleDetailsChecklistCheckbox',
+})`
   width: 14px;
   height: 14px;
   flex-shrink: 0;
@@ -269,21 +321,31 @@ export const CardTitleDetailsChecklistCheckbox = styled(Checkbox.Root)`
 
 export const CardTitleDetailsChecklistCheckboxIndicator = styled(
   Checkbox.Indicator,
-)`
+).attrs<DataAttributes>({
+  'data-testid': 'CardTitleDetailsChecklistCheckboxIndicator',
+})`
   color: inherit;
   display: flex;
   align-items: center;
   justify-content: center;
 `;
 
-export const CardTitleDetailsChecklistItemLabel = styled.span`
+export const CardTitleDetailsChecklistItemLabel = styled.span.attrs<DataAttributes>(
+  {
+    'data-testid': 'CardTitleDetailsChecklistItemLabel',
+  },
+)`
   min-width: 0;
   word-break: break-word;
   text-align: left;
   font-size: 12px;
 `;
 
-export const CardTitleDetailsChecklistShowMore = styled.button`
+export const CardTitleDetailsChecklistShowMore = styled.button.attrs<DataAttributes>(
+  {
+    'data-testid': 'CardTitleDetailsChecklistShowMore',
+  },
+)`
   all: unset;
   box-sizing: border-box;
   display: inline-block;
@@ -310,14 +372,22 @@ export const CardTitleDetailsChecklistShowMore = styled.button`
 type CommentsCountProps = {
   $commentsCount: number;
 };
-export const CardTitleDetailsContentIconsContainer = styled.div<CommentsCountProps>`
+export const CardTitleDetailsContentIconsContainer = styled.div.attrs<DataAttributes>(
+  {
+    'data-testid': 'CardTitleDetailsContentIconsContainer',
+  },
+)<CommentsCountProps>`
   display: flex;
   align-items: baseline;
   gap: 8px;
   padding-left: ${({ $commentsCount }) => ($commentsCount > 0 ? '2px' : '0')};
 `;
 
-export const CardTitleDetailsSpinnerContainer = styled.div`
+export const CardTitleDetailsSpinnerContainer = styled.div.attrs<DataAttributes>(
+  {
+    'data-testid': 'CardTitleDetailsSpinnerContainer',
+  },
+)`
   position: absolute;
   inset: 0;
   display: flex;
@@ -348,7 +418,9 @@ export const CardTitleDetailsContentSkeleton = styled(ListCardSkeleton)`
   margin-top: 4px;
 `;
 
-export const AllTasksCompletedContainer = styled.div`
+export const AllTasksCompletedContainer = styled.div.attrs<DataAttributes>({
+  'data-testid': 'AllTasksCompletedContainer',
+})`
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -370,7 +442,9 @@ export const AllTasksCompletedContainer = styled.div`
   }
 `;
 
-export const AllTasksCompletedText = styled.div`
+export const AllTasksCompletedText = styled.div.attrs<DataAttributes>({
+  'data-testid': 'CardTitleDetailsChecklistItemLabel',
+})`
   min-width: 0;
   word-break: break-word;
   text-align: left;

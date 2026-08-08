@@ -1,7 +1,7 @@
 import { Link } from '@tanstack/react-router';
 import { Popover } from 'radix-ui';
 import type { ReactNode } from 'react';
-import { css, styled } from 'styled-components';
+import { css, type DataAttributes, styled } from 'styled-components';
 import { blue, fontFamily } from '~/styles/tokens';
 
 type PaddingProps = {
@@ -13,7 +13,9 @@ export function Padding({ padding, children }: PaddingProps) {
   return <div style={{ padding }}>{children}</div>;
 }
 
-export const Center = styled.div` 
+export const Center = styled.div.attrs<DataAttributes>({
+  'data-testid': 'Center',
+})` 
   position: absolute;
   top: 50%;
   left: 50%;
@@ -26,11 +28,15 @@ export const FlexColumn = styled.div`
   margin: 10px auto;
 `;
 
-export const Flex = styled.div` 
+export const Flex = styled.div.attrs<DataAttributes>({
+  'data-testid': 'Flex',
+})` 
   display: flex;
 `;
 
-export const FlexCenter = styled.div`
+export const FlexCenter = styled.div.attrs<DataAttributes>({
+  'data-testid': 'FlexCenter',
+})`
   display: flex;
   justify-content: center;
   align-items: center;
@@ -57,7 +63,7 @@ export const secondaryButtonStyles = css`
   }
 `;
 
-export const Button = styled('button')<ButtonExtraProps>`
+export const Button = styled.button<ButtonExtraProps>`
   position: relative;
   overflow: hidden;
   border-radius: 8px;
@@ -106,7 +112,9 @@ export const Button = styled('button')<ButtonExtraProps>`
         `}
 `;
 
-export const LogoLink = styled(Link)`
+export const LogoLink = styled(Link).attrs<DataAttributes>({
+  'data-testid': 'LogoLink',
+})`
   text-decoration: none;
   color: white;
   cursor: pointer;
@@ -116,7 +124,9 @@ export const LogoLink = styled(Link)`
   min-height: unset;
 `;
 
-export const LogoIconSlot = styled.span`
+export const LogoIconSlot = styled.span.attrs<DataAttributes>({
+  'data-testid': 'LogoSpinner',
+})`
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -124,7 +134,11 @@ export const LogoIconSlot = styled.span`
   height: 18px;
 `;
 
-export const PopoverOptionsContent = styled(Popover.Content)` 
+export const PopoverOptionsContent = styled(
+  Popover.Content,
+).attrs<DataAttributes>({
+  'data-testid': 'PopoverOptionsContent',
+})` 
   position: relative;
   width: 304px;
   border-radius: 8px; 

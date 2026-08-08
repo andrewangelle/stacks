@@ -1,4 +1,4 @@
-import { styled } from 'styled-components';
+import { type DataAttributes, styled } from 'styled-components';
 import {
   type BoardBackground,
   fontFamily,
@@ -6,7 +6,11 @@ import {
 import { BoardPageBackground } from '~/components/Nav/Nav.styled';
 import { Button } from '~/styles/Page.styled';
 
-export const BoardListsFallback = styled(BoardPageBackground)`
+export const BoardListsFallback = styled(
+  BoardPageBackground,
+).attrs<DataAttributes>({
+  'data-testid': 'BoardListsFallback',
+})`
   position: absolute;
   inset: 0;
   height: auto;
@@ -18,11 +22,15 @@ type BackgroundProps = {
   $background?: BoardBackground;
 };
 
-export const BoardHeaderFallback = styled.div<BackgroundProps>`
+export const BoardHeaderFallback = styled.div.attrs<DataAttributes>({
+  'data-testid': 'BoardHeaderFallback',
+})<BackgroundProps>`
   height: 39.5px;
 `;
 
-export const AddListContainer = styled.div`
+export const AddListContainer = styled.div.attrs<DataAttributes>({
+  'data-testid': 'AddListContainer',
+})`
   position: relative;
   font-family: ${fontFamily};
   background-color: rgba(255, 255, 255, .3);
@@ -43,7 +51,9 @@ export const AddListContainer = styled.div`
   }
 `;
 
-export const AddListInput = styled.input` 
+export const AddListInput = styled.input.attrs<DataAttributes>({
+  'data-testid': 'AddListInput',
+})` 
   border-radius: 8px;
   border: none;
   padding: 9px;
@@ -52,12 +62,16 @@ export const AddListInput = styled.input`
   width: stretch;
 `;
 
-export const CreateListButton = styled(Button)` 
+export const CreateListButton = styled(Button).attrs<DataAttributes>({
+  'data-testid': 'CreateListButton',
+})` 
   margin: 0;
   padding: 8px;
 `;
 
-export const CloseAddListButton = styled(Button)` 
+export const CloseAddListButton = styled(Button).attrs<DataAttributes>({
+  'data-testid': 'CloseAddListButton',
+})` 
   border: none;
   color: black;
   padding: 8px;

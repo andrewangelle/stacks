@@ -22,11 +22,8 @@ export function ActivityList({
   const { scrollRef, list, rows, getTotalSize, measureElement } =
     useActivityList({ showActivity });
   return (
-    <ActivityListViewport ref={scrollRef} data-testid="ActivityListViewport">
-      <ActivityListContainer
-        data-testid="ActivityListContainer"
-        style={{ height: getTotalSize() }}
-      >
+    <ActivityListViewport ref={scrollRef}>
+      <ActivityListContainer style={{ height: getTotalSize() }}>
         {rows.map((row) => {
           const entry = list[row.index];
           return (

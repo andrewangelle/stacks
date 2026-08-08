@@ -15,7 +15,7 @@ export const Route = createFileRoute('/auth/sign-in')({
       <>
         <NavBarClient />
 
-        <FlexCenter data-testid="FlexCenter">
+        <FlexCenter>
           <Show when="signed-in">
             <UserButton />
           </Show>

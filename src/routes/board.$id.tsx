@@ -52,7 +52,7 @@ export const Route = createFileRoute('/board/$id')({
       Route.useLoaderData();
     return (
       <>
-        <NavBarContainer data-testid="NavBarContainer">
+        <NavBarContainer>
           <CompositeComponent src={NavBarServer.src}>
             <UserNavContent />
           </CompositeComponent>
@@ -61,7 +61,6 @@ export const Route = createFileRoute('/board/$id')({
             <Suspense
               fallback={
                 <BoardHeaderFallback
-                  data-testid="BoardHeaderFallback"
                   $background={boardColor as BoardBackground}
                 />
               }

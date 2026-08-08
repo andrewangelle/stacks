@@ -30,9 +30,7 @@ export function EditableComment({ id }: EditableCommentProps) {
 
   return (
     <>
-      <ActivityCommentContent data-testid="ActivityCommentContent">
-        {data.content}
-      </ActivityCommentContent>
+      <ActivityCommentContent>{data.content}</ActivityCommentContent>
 
       <EditCommentActions id={id} setIsEditing={setIsEditing} />
     </>

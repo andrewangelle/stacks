@@ -48,35 +48,26 @@ export function DeleteChecklist({ id }: { id: string }) {
 
   return (
     <Popover.Root open={open} onOpenChange={setOpen}>
-      <DeleteChecklistPopoverTrigger data-testid="DeleteChecklistPopoverTrigger">
-        <DeleteChecklistButton
-          data-testid="DeleteChecklistButton"
-          $isOpen={open}
-        >
-          Delete
-        </DeleteChecklistButton>
+      <DeleteChecklistPopoverTrigger>
+        <DeleteChecklistButton $isOpen={open}>Delete</DeleteChecklistButton>
       </DeleteChecklistPopoverTrigger>
 
       <PopoverOptionsContent
-        data-testid="PopoverOptionsContent"
         side="bottom"
         align="start"
         sideOffset={8}
         alignOffset={4}
       >
-        <ChecklistPopoverHeader data-testid="ChecklistPopoverHeader">
+        <ChecklistPopoverHeader>
           <div
             style={{ fontWeight: 600 }}
           >{`Delete ${checklist.checklistTitle}?`}</div>
-          <PopoverClose data-testid="PopoverClose">X</PopoverClose>
+          <PopoverClose>X</PopoverClose>
         </ChecklistPopoverHeader>
 
         <PopoverOptionsContentContainer>
           Deleting a checklist is permanent and there is no way to get it back.
-          <DeleteChecklistPopoverButton
-            data-testid="DeleteChecklistPopoverButton"
-            onClick={applyDelete}
-          >
+          <DeleteChecklistPopoverButton onClick={applyDelete}>
             Delete checklist
           </DeleteChecklistPopoverButton>
         </PopoverOptionsContentContainer>

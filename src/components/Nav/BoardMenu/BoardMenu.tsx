@@ -31,22 +31,14 @@ export function BoardMenu() {
 
   return (
     <Popover.Root open={open} onOpenChange={closePopover}>
-      <BoardMenuPopoverTrigger data-testid="BoardMenuPopoverTrigger">
-        <BoardMenuPopoverButton
-          data-testid="BoardMenuPopoverButton"
-          $isOpen={open}
-        >
-          <BoardMenuPopoverButtonText data-testid="BoardMenuPopoverButtonText">
-            ...
-          </BoardMenuPopoverButtonText>
+      <BoardMenuPopoverTrigger>
+        <BoardMenuPopoverButton $isOpen={open}>
+          <BoardMenuPopoverButtonText>...</BoardMenuPopoverButtonText>
         </BoardMenuPopoverButton>
       </BoardMenuPopoverTrigger>
 
-      <PopoverOptionsContent
-        data-testid="PopoverOptionsContent"
-        style={{ width: '332px' }}
-      >
-        <BoardMenuPopoverHeader data-testid="BoardMenuPopoverHeader">
+      <PopoverOptionsContent style={{ width: '332px' }}>
+        <BoardMenuPopoverHeader>
           <div>
             <BoardMenuPopoverButtonBack
               tabIndex={view !== 'actions' ? 0 : -1}
@@ -59,17 +51,12 @@ export function BoardMenu() {
 
           <div>{viewTitles[view]}</div>
 
-          <BoardMenuPopoverClose data-testid="BoardMenuPopoverClose">
-            X
-          </BoardMenuPopoverClose>
+          <BoardMenuPopoverClose>X</BoardMenuPopoverClose>
         </BoardMenuPopoverHeader>
 
         {view === 'actions' && (
-          <BoardMenuOptionsContainer data-testid="BoardMenuOptionsContainer">
-            <BoardMenuOption
-              data-testid="BoardMenuOption"
-              onClick={() => setView('changeBackground')}
-            >
+          <BoardMenuOptionsContainer>
+            <BoardMenuOption onClick={() => setView('changeBackground')}>
               Change background
             </BoardMenuOption>
           </BoardMenuOptionsContainer>

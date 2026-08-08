@@ -15,7 +15,7 @@ export function CloseCardButton({
   return (
     <>
       {isNavigating && (
-        <CardModalCloseSpinnerSlot data-testid="CardModalCloseSpinner">
+        <CardModalCloseSpinnerSlot>
           <CardTitleDetailsSpinner />
         </CardModalCloseSpinnerSlot>
       )}

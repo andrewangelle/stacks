@@ -50,7 +50,6 @@ export function CardColumnResize({
 
   return (
     <ResizeableCardColumnHandle
-      data-testid="ResizeableCardColumnHandle"
       onPointerDown={initializePointer}
       onPointerMove={resizeColumnWidth}
       onPointerUp={releasePointer}

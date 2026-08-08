@@ -22,7 +22,8 @@
       "!**/node_modules",
       "./.vscode/settings.json",
       "!**/netlify",
-      "!**/.claude/worktrees"
+      "!**/.claude/worktrees",
+      "!**/.netlify"
     ]
   },
   "formatter": {

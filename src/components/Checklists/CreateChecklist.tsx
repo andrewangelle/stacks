@@ -55,7 +55,7 @@ export function CreateChecklist() {
 
   return (
     <Popover.Root open={open} onOpenChange={setOpen}>
-      <CreateChecklistPopoverTrigger data-testid="CreateChecklistPopoverTrigger">
+      <CreateChecklistPopoverTrigger>
         <Tooltip content="Create checklist">
           <CardModalActionButton
             data-testid="CardModalActionButton"
@@ -64,42 +64,33 @@ export function CreateChecklist() {
             <BsCheck2Square
               style={{ marginRight: '4px', position: 'relative', top: '2px' }}
             />
-            <CardModalSiderButtonText data-testid="CardModalSiderButtonText">
-              Checklist
-            </CardModalSiderButtonText>
+            <CardModalSiderButtonText>Checklist</CardModalSiderButtonText>
           </CardModalActionButton>
         </Tooltip>
       </CreateChecklistPopoverTrigger>
 
       <ChecklistPopoverContent
-        data-testid="ChecklistPopoverContent"
         side="bottom"
         align="start"
         sideOffset={8}
         alignOffset={4}
       >
-        <ChecklistPopoverHeader data-testid="ChecklistPopoverHeader">
+        <ChecklistPopoverHeader>
           Add checklist
-          <PopoverClose data-testid="PopoverClose">X</PopoverClose>
+          <PopoverClose>X</PopoverClose>
         </ChecklistPopoverHeader>
 
-        <CreateBoardCloseBorder data-testid="CreateBoardCloseBorder" />
+        <CreateBoardCloseBorder />
 
-        <CreateChecklistTitle data-testid="CreateChecklistTitle">
-          Title
-        </CreateChecklistTitle>
+        <CreateChecklistTitle>Title</CreateChecklistTitle>
 
         <CreateChecklistInput
-          data-testid="CreateChecklistInput"
           value={checklistTitle}
           autoFocus
           onChange={(event) => setChecklistTitle(event.target.value)}
         />
 
-        <CreateChecklistAddButton
-          data-testid="CreateChecklistAddButton"
-          onClick={addChecklist}
-        >
+        <CreateChecklistAddButton onClick={addChecklist}>
           Add
         </CreateChecklistAddButton>
       </ChecklistPopoverContent>

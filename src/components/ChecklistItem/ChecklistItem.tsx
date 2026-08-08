@@ -74,22 +74,20 @@ export function ChecklistItem({
   }
 
   return (
-    <ChecklistCheckboxContainer data-testid="ChecklistCheckboxContainer">
-      <ChecklistLeadingColumn data-testid="ChecklistLeadingColumn">
+    <ChecklistCheckboxContainer>
+      <ChecklistLeadingColumn>
         <CheckboxRoot
-          data-testid="CheckboxRoot"
           data-editing={isEditingLabel ? '' : undefined}
           checked={checklistItem?.isCompleted}
           onClick={toggleCheckbox}
         >
-          <CheckboxIndicator data-testid="CheckboxIndicator">
+          <CheckboxIndicator>
             <AiOutlineCheck style={checkIconStyles} />
           </CheckboxIndicator>
         </CheckboxRoot>
       </ChecklistLeadingColumn>
 
       <ChecklistCheckboxContentColumn
-        data-testid="ChecklistContentColumn"
         $isHovering={isHovering && !isEditingLabel}
         onMouseOver={() => setHovering(true)}
         onMouseOut={() => setHovering(false)}

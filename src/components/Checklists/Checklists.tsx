@@ -12,7 +12,7 @@ export function CardChecklists() {
   const { data } = useGetChecklists({ cardId });
 
   return (
-    <ChecklistsContainer data-testid="ChecklistsContainer">
+    <ChecklistsContainer>
       {data?.map((checklist, index) => (
         <Draggable
           key={checklist.id}

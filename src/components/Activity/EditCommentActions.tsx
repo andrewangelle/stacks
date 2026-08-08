@@ -16,14 +16,9 @@ export function EditCommentActions({
 }: EditCommentActionsProps) {
   return (
     <EditCommentActionsRow data-testid="EditCommentActionsRow">
-      <EditCommentLink
-        data-testid="EditCommentLink"
-        onClick={() => setIsEditing(true)}
-      >
-        Edit
-      </EditCommentLink>
+      <EditCommentLink onClick={() => setIsEditing(true)}>Edit</EditCommentLink>
 
-      <EditCommentActionsSeperator data-testid="ActivityActionsSeparator" />
+      <EditCommentActionsSeperator />
 
       <DeleteCommentPopover id={id} />
     </EditCommentActionsRow>

@@ -8,12 +8,8 @@ import { UserNavContent } from '~/components/Nav/UserNavContent';
 
 export function NavBarClient() {
   return (
-    <NavBarContainer data-testid="NavBarContainer">
-      <NavBarContent
-        key={'blue'}
-        data-testid="NavBarContent"
-        $background={'blue'}
-      >
+    <NavBarContainer>
+      <NavBarContent key={'blue'} $background={'blue'}>
         <UserNavContent />
       </NavBarContent>
     </NavBarContainer>
@@ -22,15 +18,11 @@ export function NavBarClient() {
 
 export function NavBarFallback() {
   return (
-    <NavBarContainer data-testid="NavBarContainer">
-      <NavBarContent
-        key={'blue'}
-        data-testid="NavBarContent"
-        $background={'blue'}
-      >
-        <NavColumn data-testid="column-placeholder" />
+    <NavBarContainer>
+      <NavBarContent key={'blue'} $background={'blue'}>
+        <NavColumn />
         <Logo />
-        <NavColumn data-testid="column-placeholder" />
+        <NavColumn />
       </NavBarContent>
     </NavBarContainer>
   );

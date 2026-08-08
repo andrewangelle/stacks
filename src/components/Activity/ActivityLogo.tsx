@@ -19,8 +19,8 @@ export function useInitials() {
 export function ActivityLogo() {
   const initials = useInitials();
   return (
-    <ActivityNameCircle data-testid="ActivityNameCircle">
-      <Center data-testid="Center">
+    <ActivityNameCircle>
+      <Center>
         <div style={{ marginTop: '-2px' }}>{initials}</div>
       </Center>
     </ActivityNameCircle>

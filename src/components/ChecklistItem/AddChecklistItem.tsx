@@ -30,11 +30,7 @@ export function AddChecklistItem({ checklistId }: { checklistId: string }) {
   return (
     <>
       {!isEditing && (
-        <AddChecklistItemButton
-          data-testid="AddChecklistItemButton"
-          $secondary
-          onClick={() => setIsEditing(true)}
-        >
+        <AddChecklistItemButton $secondary onClick={() => setIsEditing(true)}>
           Add an item
         </AddChecklistItemButton>
       )}
@@ -42,23 +38,16 @@ export function AddChecklistItem({ checklistId }: { checklistId: string }) {
       {isEditing && (
         <EditChecklistItemContainer>
           <AddChecklistItemInputIndented
-            data-testid="AddChecklistItemInput"
             value={label}
             placeholder={'Add an item'}
             autoFocus
             onChange={(event) => setLabel(event.target.value)}
           />
 
-          <ChecklistItemActionsIndented data-testid="ChecklistItemActions">
-            <AddChecklistButton
-              data-testid="AddChecklistButton"
-              onClick={createItem}
-            >
-              Add
-            </AddChecklistButton>
+          <ChecklistItemActionsIndented>
+            <AddChecklistButton onClick={createItem}>Add</AddChecklistButton>
 
             <CloseDescriptionButton
-              data-testid="CloseDescriptionButton"
               $secondary
               onClick={() => setIsEditing(false)}
             >

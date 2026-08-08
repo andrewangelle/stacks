@@ -32,11 +32,7 @@ export const getNavBarServer = createServerFn()
       }
 
       return (
-        <NavBarContent
-          key={boardColor}
-          data-testid="NavBarContent"
-          $background={boardColor}
-        >
+        <NavBarContent key={boardColor} $background={boardColor}>
           {props.children}
         </NavBarContent>
       );
@@ -57,7 +53,6 @@ export const getBoardHeaderServer = createServerFn()
         <BoardHeaderContainer
           key={response?.boardColor}
           $background={response?.boardColor as BoardBackground}
-          data-testid="BoardHeaderContainer"
         >
           {props.children}
         </BoardHeaderContainer>

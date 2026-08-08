@@ -76,11 +76,11 @@ export function Card({ variant = 'modal' }: CardProps) {
         asPage={isPage}
       />
 
-      <CardModalBody data-testid="CardModalBody" style={cardModalBodyStyle}>
-        <CardMainColumn data-testid="CardMainColumn" ref={mainColumnRef}>
+      <CardModalBody style={cardModalBodyStyle}>
+        <CardMainColumn ref={mainColumnRef}>
           <CardEditableTitle />
 
-          <CardActionsContainer data-testid="CardActionsContainer">
+          <CardActionsContainer>
             <CreateChecklist />
             <DeleteCardPopover />
           </CardActionsContainer>
@@ -89,7 +89,7 @@ export function Card({ variant = 'modal' }: CardProps) {
 
           <Suspense
             fallback={
-              <ChecklistsContainer data-testid="ChecklistsContainer">
+              <ChecklistsContainer>
                 <ChecklistSkeleton />
               </ChecklistsContainer>
             }
@@ -116,14 +116,8 @@ export function Card({ variant = 'modal' }: CardProps) {
 
   if (isPage) {
     return (
-      <CardModalRoot
-        data-testid="CardModalRoot"
-        open
-        modal={false}
-        onOpenChange={handleOpenChange}
-      >
+      <CardModalRoot open modal={false} onOpenChange={handleOpenChange}>
         <CardPageContent
-          data-testid="CardModalContent"
           aria-describedby={undefined}
           onCloseAutoFocus={(event) => {
             event.preventDefault();
@@ -139,15 +133,10 @@ export function Card({ variant = 'modal' }: CardProps) {
   }
 
   return (
-    <CardModalRoot
-      data-testid="CardModalRoot"
-      open
-      onOpenChange={handleOpenChange}
-    >
-      <CardModalPortal data-testid="CardModalPortal">
-        <CardModalOverlay data-testid="CardModalOverlay">
+    <CardModalRoot open onOpenChange={handleOpenChange}>
+      <CardModalPortal>
+        <CardModalOverlay>
           <CardModalContent
-            data-testid="CardModalContent"
             aria-describedby={undefined}
             onCloseAutoFocus={(event) => {
               event.preventDefault();

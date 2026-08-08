@@ -10,7 +10,7 @@ export type CardHeaderProps = {
 
 export function CardHeader({ cardId, isNavigating, asPage }: CardHeaderProps) {
   return (
-    <CardHeaderContainer data-testid="CardHeaderContainer">
+    <CardHeaderContainer>
       <MoveCardMenu id={cardId} />
       <CloseCardButton isNavigating={isNavigating} asPage={asPage} />
     </CardHeaderContainer>

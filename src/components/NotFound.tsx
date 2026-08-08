@@ -12,7 +12,7 @@ export function NotFound(props: NotFoundRouteProps) {
   return (
     <>
       <NavBarClient />
-      <FlexCenter data-testid="FlexCenter">
+      <FlexCenter>
         <h1>Page not found</h1>
       </FlexCenter>
     </>

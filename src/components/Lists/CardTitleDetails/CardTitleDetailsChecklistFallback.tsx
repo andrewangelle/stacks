@@ -6,7 +6,7 @@ import { CardTitleDetailsChecklistContainer } from '~/components/Lists/CardTitle
 
 export function CardTitleDetailsChecklistFallback() {
   return (
-    <CardTitleDetailsChecklistContainer data-testid="CardTitleDetailsChecklistContainer">
+    <CardTitleDetailsChecklistContainer>
       <div
         style={{
           display: 'flex',
@@ -14,11 +14,8 @@ export function CardTitleDetailsChecklistFallback() {
           gap: '8px',
         }}
       >
-        <CheckboxSkeleton data-testid="CheckboxSkeleton" />
-        <ChecklistLabelSkeleton
-          data-testid="ChecklistLabelSkeleton"
-          style={{ width: '83%' }}
-        />
+        <CheckboxSkeleton />
+        <ChecklistLabelSkeleton style={{ width: '83%' }} />
       </div>
     </CardTitleDetailsChecklistContainer>
   );

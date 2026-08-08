@@ -67,7 +67,7 @@ export const Route = createFileRoute('/card/$cardId')({
 
     return (
       <>
-        <NavBarContainer data-testid="NavBarContainer">
+        <NavBarContainer>
           <CompositeComponent src={NavBarServer.src}>
             <UserNavContent />
           </CompositeComponent>
@@ -85,12 +85,7 @@ export const Route = createFileRoute('/card/$cardId')({
           BoardPageServer && (
             <CompositeComponent src={BoardPageServer.src}>
               <Suspense
-                fallback={
-                  <BoardListsFallback
-                    data-testid="BoardListsFallback"
-                    $background={boardColor}
-                  />
-                }
+                fallback={<BoardListsFallback $background={boardColor} />}
               >
                 <BoardLists>
                   <Suspense fallback={<CardFallback />}>

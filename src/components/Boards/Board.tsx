@@ -10,14 +10,11 @@ export function Board({ boardId }: { boardId: string }) {
   const { data: board } = useSuspenseQuery(boardByIdQueryOptions(boardId));
   return (
     <BoardCardLink
-      data-testid="BoardCardContainer"
       key={boardId}
       $background={board?.boardColor as BoardBackground}
       to={`/board/${boardId}`}
     >
-      <BoardCardTitle data-testid="BoardCardTitle">
-        {board?.boardTitle}
-      </BoardCardTitle>
+      <BoardCardTitle>{board?.boardTitle}</BoardCardTitle>
     </BoardCardLink>
   );
 }

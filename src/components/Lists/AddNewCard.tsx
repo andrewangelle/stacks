@@ -51,13 +51,9 @@ export function AddNewCard({ listId }: AddNewCardProps) {
   }, [isSuccess, response, boardId, createActivity, reset]);
 
   return (
-    <AddCardFooter
-      data-testid="AddCardFooter"
-      data-editing={isAddingCard ? '' : undefined}
-    >
+    <AddCardFooter data-editing={isAddingCard ? '' : undefined}>
       {isAddingCard && (
         <AddCardInput
-          data-testid="AddCardInput"
           value={newCardTitle}
           placeholder="Enter a title"
           autoFocus
@@ -67,28 +63,19 @@ export function AddNewCard({ listId }: AddNewCardProps) {
         />
       )}
 
-      <Flex data-testid="Flex">
+      <Flex>
         {!isAddingCard && (
-          <AddCardText
-            data-testid="AddCardText"
-            onClick={() => setIsAddingCard(true)}
-          >
+          <AddCardText onClick={() => setIsAddingCard(true)}>
             + Add a card
           </AddCardText>
         )}
 
         {isAddingCard && (
-          <AddCardButton data-testid="AddCardButton" onClick={onCardCreate}>
-            Add card
-          </AddCardButton>
+          <AddCardButton onClick={onCardCreate}>Add card</AddCardButton>
         )}
 
         {isAddingCard && (
-          <CloseAddCardButton
-            data-testid="CloseAddCardButton"
-            $secondary
-            onClick={() => setIsAddingCard(false)}
-          >
+          <CloseAddCardButton $secondary onClick={() => setIsAddingCard(false)}>
             X
           </CloseAddCardButton>
         )}

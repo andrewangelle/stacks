@@ -36,7 +36,6 @@ export function EditCommentForm({
     <form onSubmit={saveComment}>
       <AddCommentInput
         name="comment"
-        data-testid="AddCommentInput"
         placeholder={content}
         autoFocus
         style={{ margin: '8px 0px' }}
@@ -45,12 +44,9 @@ export function EditCommentForm({
       />
 
       <EditCommentActionsRow data-testid="EditCommentActionsRow">
-        <SaveCommentButton data-testid="SaveCommentButton" type="submit">
-          Save
-        </SaveCommentButton>
+        <SaveCommentButton type="submit">Save</SaveCommentButton>
 
         <CloseAddCardButton
-          data-testid="CloseAddCardButton"
           type="button"
           $secondary
           onClick={() => setIsEditing(false)}

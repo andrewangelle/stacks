@@ -52,8 +52,8 @@ export function ListSelect({
 
   if (isListsLoading) {
     return (
-      <ComboboxWrapper data-testid="ComboboxWrapper">
-        <ComboboxLabel data-testid="ComboboxLabel">List</ComboboxLabel>
+      <ComboboxWrapper>
+        <ComboboxLabel>List</ComboboxLabel>
         <SelectSkeleton style={{ minHeight: '44px' }} />
       </ComboboxWrapper>
     );

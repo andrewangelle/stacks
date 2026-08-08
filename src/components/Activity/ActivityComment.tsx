@@ -38,18 +38,13 @@ export function ActivityComment({
   }
 
   return (
-    <ActivityContainer
-      data-testid="ActivityContainer"
-      key={data?.id}
-      ref={ref}
-      $isSelected={isSelected}
-    >
-      <ActivityRow data-testid="ActivityRow">
+    <ActivityContainer key={data?.id} ref={ref} $isSelected={isSelected}>
+      <ActivityRow>
         <ActivityLogo />
 
-        <ActivityCommentContainer data-testid="ActivityCommentContainer">
-          <ActivityMeta data-testid="ActivityMeta">
-            <ActivityAuthorName data-testid="ActivityAuthorName">
+        <ActivityCommentContainer>
+          <ActivityMeta>
+            <ActivityAuthorName>
               {user?.firstName} {user?.lastName}
             </ActivityAuthorName>
 

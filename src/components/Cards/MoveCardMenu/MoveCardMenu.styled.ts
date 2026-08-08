@@ -1,5 +1,5 @@
 import { Popover, Select } from 'radix-ui';
-import { styled } from 'styled-components';
+import { type DataAttributes, styled } from 'styled-components';
 import { fontFamily } from '~/components/Boards/Boards.styled';
 import { animationStyles } from '~/styles/animations';
 import { Button } from '~/styles/Page.styled';
@@ -15,7 +15,11 @@ export const SelectSkeleton = styled.div`
   ${animationStyles.pulse}
 `;
 
-export const MoveCardMenuTrigger = styled(Popover.Trigger)` 
+export const MoveCardMenuTrigger = styled(
+  Popover.Trigger,
+).attrs<DataAttributes>({
+  'data-testid': 'MoveCardMenuTrigger',
+})` 
   display: flex;
   align-items: center;
   gap: 4px;
@@ -31,7 +35,11 @@ export const MoveCardMenuTrigger = styled(Popover.Trigger)`
   }
 `;
 
-export const MoveCardMenuContent = styled(Popover.Content)` 
+export const MoveCardMenuContent = styled(
+  Popover.Content,
+).attrs<DataAttributes>({
+  'data-testid': 'MoveCardMenuContent',
+})` 
   width: 350px;
   border-radius: 8px; 
   font-family: ${fontFamily};
@@ -43,7 +51,9 @@ export const MoveCardMenuContent = styled(Popover.Content)`
   box-shadow: 0px 8px 12px #1E1F2126, 0px 0px 1px #1E1F214F;
 `;
 
-export const MoveCardMenuHeader = styled.div`
+export const MoveCardMenuHeader = styled.div.attrs<DataAttributes>({
+  'data-testid': 'MoveCardMenuHeader',
+})`
   display: flex;
   justify-content: center;
   padding: 10px;
@@ -60,7 +70,9 @@ export const DropdownLabel = styled.div`
   padding: 10px;
 `;
 
-export const MoveCardButton = styled(Button)` 
+export const MoveCardButton = styled(Button).attrs<DataAttributes>({
+  'data-testid': 'MoveCardButton',
+})` 
   padding: 10px 20px;
   align-self: flex-start;
   margin: 8px;
@@ -154,21 +166,29 @@ export const SelectItemCurrent = styled.span`
   color: ${blue};
 `;
 
-export const MoveCardSelectRow = styled.div`
+export const MoveCardSelectRow = styled.div.attrs<DataAttributes>({
+  'data-testid': 'MoveCardSelectRow',
+})`
   display: flex;
   align-items: flex-start;
 `;
 
-export const MoveCardListColumn = styled.div`
+export const MoveCardListColumn = styled.div.attrs<DataAttributes>({
+  'data-testid': 'MoveCardListColumn',
+})`
   width: 70%;
 `;
 
-export const MoveCardPositionColumn = styled.div`
+export const MoveCardPositionColumn = styled.div.attrs<DataAttributes>({
+  'data-testid': 'MoveCardPositionColumn',
+})`
   width: 30%;
 
 `;
 
-export const MoveCardFieldsContainer = styled.div`
+export const MoveCardFieldsContainer = styled.div.attrs<DataAttributes>({
+  'data-testid': 'MoveCardFieldsContainer',
+})`
   padding-top: 24px;
   display: flex;
   flex-direction: column;

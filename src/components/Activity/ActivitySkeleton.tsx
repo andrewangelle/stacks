@@ -20,20 +20,17 @@ import { AddComment } from './AddComment';
 export function ActivitySkeleton() {
   const [showActivity, setShowActivity] = useState(true);
   return (
-    <ActivityPanelContainer data-testid="ActivityPanelContainer">
-      <ActivityHeader data-testid="ActivityHeader">
-        <ActivityHeaderTitle data-testid="ActivityHeaderTitle">
+    <ActivityPanelContainer>
+      <ActivityHeader>
+        <ActivityHeaderTitle>
           <BiCommentDetail
             size={18}
             style={{ position: 'relative', top: '4px', flexShrink: 0 }}
           />
-          <ActivityTitle data-testid="ActivityTitle">
-            Comments and activity
-          </ActivityTitle>
+          <ActivityTitle>Comments and activity</ActivityTitle>
         </ActivityHeaderTitle>
 
         <HideActivityButton
-          data-testid="HideActivityButton"
           $secondary={true}
           onClick={() => setShowActivity((prev) => !prev)}
         >
@@ -57,17 +54,17 @@ export function ActivitySkeleton() {
 
 export function ActivityEntrySkeleton() {
   return (
-    <ActivityContainer data-testid="ActivityContainer">
-      <ActivityRow data-testid="ActivityRow">
-        <ActivityLogoSkeleton data-testid="ActivityLogoSkeleton" />
+    <ActivityContainer>
+      <ActivityRow>
+        <ActivityLogoSkeleton />
 
-        <ActivityCommentContainer data-testid="ActivityCommentContainer">
-          <ActivityEntryContent data-testid="ActivityEntryContent">
-            <ActivityContentSkeleton data-testid="ActivityContentSkeleton" />
+        <ActivityCommentContainer>
+          <ActivityEntryContent>
+            <ActivityContentSkeleton />
           </ActivityEntryContent>
 
           <ActivityTimestampMeta data-testid="ActivityTimestamp">
-            <ActivityTimestampSkeleton data-testid="ActivityTimestampSkeleton" />
+            <ActivityTimestampSkeleton />
           </ActivityTimestampMeta>
         </ActivityCommentContainer>
       </ActivityRow>

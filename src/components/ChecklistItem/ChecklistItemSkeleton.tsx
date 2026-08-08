@@ -7,7 +7,6 @@ import {
 export function ChecklistItemSkeleton() {
   return (
     <ChecklistCheckboxContainer
-      data-testid="ChecklistCheckboxContainer"
       style={{
         display: 'flex',
         alignItems: 'center',
@@ -15,11 +14,8 @@ export function ChecklistItemSkeleton() {
         margin: '8px 0px',
       }}
     >
-      <CheckboxSkeleton data-testid="CheckboxSkeleton" />
-      <ChecklistLabelSkeleton
-        data-testid="ChecklistLabelSkeleton"
-        style={{ width: '90%', marginLeft: '12px' }}
-      />
+      <CheckboxSkeleton />
+      <ChecklistLabelSkeleton style={{ width: '90%', marginLeft: '12px' }} />
     </ChecklistCheckboxContainer>
   );
 }

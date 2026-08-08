@@ -54,7 +54,6 @@ export function CardCompletedIndicator({
         $circleSize={circleSize}
         aria-label="Mark card complete"
         data-completed={isCompleted ? '' : undefined}
-        data-testid="CardTitleModalTriggerCircle"
         data-visible={visible ? '' : undefined}
         onClick={toggleCardCompletion}
         type="button"

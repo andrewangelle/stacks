@@ -45,22 +45,17 @@ export function ListActions({ id }: ListActionsProps) {
 
   return (
     <Popover.Root open={open} onOpenChange={closePopover}>
-      <ListActionsPopoverTrigger data-testid="ListActionsPopoverTrigger">
+      <ListActionsPopoverTrigger>
         <Tooltip content="List actions">
-          <ListActionsPopoverButton
-            data-testid="ListActionsPopoverButton"
-            $isOpen={open}
-          >
-            <ListActionsPopoverButtonText data-testid="ListActionsPopoverButtonText">
-              ...
-            </ListActionsPopoverButtonText>
+          <ListActionsPopoverButton $isOpen={open}>
+            <ListActionsPopoverButtonText>...</ListActionsPopoverButtonText>
           </ListActionsPopoverButton>
         </Tooltip>
       </ListActionsPopoverTrigger>
 
       <Popover.Portal>
-        <PopoverOptionsContent data-testid="PopoverOptionsContent">
-          <ListActionsPopoverHeader data-testid="ListActionsPopoverHeader">
+        <PopoverOptionsContent>
+          <ListActionsPopoverHeader>
             <div>
               <ListActionsPopoverButtonBack
                 tabIndex={view !== 'actions' ? 0 : -1}
@@ -73,24 +68,16 @@ export function ListActions({ id }: ListActionsProps) {
 
             <div>{viewTitles[view]}</div>
 
-            <ListActionsPopoverClose data-testid="ListActionsPopoverClose">
-              X
-            </ListActionsPopoverClose>
+            <ListActionsPopoverClose>X</ListActionsPopoverClose>
           </ListActionsPopoverHeader>
 
           {view === 'actions' && (
-            <ListActionsOptionsContainer data-testid="ListActionsOptionsContainer">
-              <ListActionsOption
-                data-testid="ListActionsOption"
-                onClick={() => setView('move')}
-              >
+            <ListActionsOptionsContainer>
+              <ListActionsOption onClick={() => setView('move')}>
                 Move list
               </ListActionsOption>
 
-              <ListActionsOption
-                data-testid="ListActionsOption"
-                onClick={() => setView('delete')}
-              >
+              <ListActionsOption onClick={() => setView('delete')}>
                 Archive this list
               </ListActionsOption>
             </ListActionsOptionsContainer>
@@ -104,7 +91,6 @@ export function ListActions({ id }: ListActionsProps) {
             <PopoverOptionsContentContainer>
               This list will be deleted
               <DeleteListButton
-                data-testid="DeleteListButton"
                 onClick={() =>
                   deleteList({
                     listId: id,

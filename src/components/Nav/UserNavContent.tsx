@@ -6,10 +6,10 @@ import { Padding } from '~/styles/Page.styled';
 export function UserNavContent() {
   return (
     <>
-      <NavColumn data-testid="column-placeholder" />
+      <NavColumn />
       <Logo />
 
-      <NavColumn data-testid="column-placeholder">
+      <NavColumn>
         <Show when="signed-in">
           <Padding padding="5px 20px 0px 0px">
             <UserButton />

@@ -13,7 +13,7 @@ export function MoveCardMenu({ id }: { id: string }) {
 
   return (
     <Popover.Root open={open} onOpenChange={setOpen}>
-      <MoveCardMenuTrigger data-testid="MoveCardMenuTrigger">
+      <MoveCardMenuTrigger>
         {list?.listTitle}
         <RxCaretDown size={20} data-testid="RxCaretDown" />
       </MoveCardMenuTrigger>
