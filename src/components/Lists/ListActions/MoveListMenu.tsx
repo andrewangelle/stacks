@@ -49,11 +49,11 @@ export function MoveListMenu({ id, closeMenu }: MoveListMenuProps) {
   }
 
   return (
-    <MoveListFieldsContainer data-testid="MoveListFieldsContainer">
+    <MoveListFieldsContainer>
       <Suspense
         fallback={
-          <ComboboxWrapper data-testid="ComboboxWrapper">
-            <ComboboxLabel data-testid="ComboboxLabel">Board</ComboboxLabel>
+          <ComboboxWrapper>
+            <ComboboxLabel>Board</ComboboxLabel>
             <SelectSkeleton style={{ minHeight: '44px' }} />
           </ComboboxWrapper>
         }
@@ -74,11 +74,7 @@ export function MoveListMenu({ id, closeMenu }: MoveListMenuProps) {
         setSelectedPosition={setSelectedPosition}
       />
 
-      <MoveListButton
-        data-testid="MoveListButton"
-        onClick={handleMove}
-        disabled={!canMove || isMovingList}
-      >
+      <MoveListButton onClick={handleMove} disabled={!canMove || isMovingList}>
         Move
       </MoveListButton>
     </MoveListFieldsContainer>

@@ -34,15 +34,11 @@ export function AddLists() {
 
   return (
     <AddListContainer
-      data-testid="AddListContainer"
       data-editing={isEditing ? '' : undefined}
       ref={outsideClickRef}
     >
       {!isEditing && (
-        <AddListButton
-          data-testid="AddListButton"
-          onClick={() => setEditing(true)}
-        >
+        <AddListButton onClick={() => setEditing(true)}>
           + Add another list
         </AddListButton>
       )}
@@ -50,25 +46,15 @@ export function AddLists() {
       {isEditing && (
         <>
           <AddListInput
-            data-testid="AddListInput"
             value={listName}
             autoFocus
             onChange={(event) => setListName(event.target.value)}
           />
 
-          <Flex data-testid="Flex" style={{ margin: '0' }}>
-            <CreateListButton
-              data-testid="CreateListButton"
-              onClick={onListCreate}
-            >
-              Add list
-            </CreateListButton>
+          <Flex style={{ margin: '0' }}>
+            <CreateListButton onClick={onListCreate}>Add list</CreateListButton>
 
-            <CloseAddListButton
-              data-testid="CloseAddListButton"
-              $secondary
-              onClick={() => setEditing(false)}
-            >
+            <CloseAddListButton $secondary onClick={() => setEditing(false)}>
               X
             </CloseAddListButton>
           </Flex>

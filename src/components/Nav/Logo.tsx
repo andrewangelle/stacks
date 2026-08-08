@@ -10,9 +10,9 @@ export function Logo() {
     routerState.location.pathname !== routerState.resolvedLocation?.pathname &&
     !routerState.location.maskedLocation?.pathname.startsWith('/card/');
   return (
-    <LogoLink to="/boards" data-testid="LogoLink">
+    <LogoLink to="/boards">
       {showLoader && (
-        <LogoIconSlot data-testid="LogoSpinner">
+        <LogoIconSlot>
           <CardTitleDetailsSpinner />
         </LogoIconSlot>
       )}

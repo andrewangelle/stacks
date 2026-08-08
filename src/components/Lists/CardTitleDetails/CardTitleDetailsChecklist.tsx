@@ -81,34 +81,26 @@ export function CardTitleDetailsChecklist({
   }, [completedAllItems, onCompleteAllItems]);
 
   return (
-    <CardTitleDetailsChecklistContainer data-testid="CardTitleDetailsChecklistContainer">
+    <CardTitleDetailsChecklistContainer>
       {visibleItems.map((item) => (
-        <CardTitleDetailsChecklistItemRow
-          data-testid="CardTitleDetailsChecklistItemRow"
-          key={item.id}
-        >
+        <CardTitleDetailsChecklistItemRow key={item.id}>
           <CardTitleDetailsChecklistCheckbox
             checked={false}
-            data-testid="CardTitleDetailsChecklistCheckbox"
             onClick={completeItem({ itemId: item.id, label: item.label })}
           >
-            <CardTitleDetailsChecklistCheckboxIndicator data-testid="CardTitleDetailsChecklistCheckboxIndicator">
+            <CardTitleDetailsChecklistCheckboxIndicator>
               <AiOutlineCheck size={12} />
             </CardTitleDetailsChecklistCheckboxIndicator>
           </CardTitleDetailsChecklistCheckbox>
 
-          <CardTitleDetailsChecklistItemLabel data-testid="CardTitleDetailsChecklistItemLabel">
+          <CardTitleDetailsChecklistItemLabel>
             {item.label}
           </CardTitleDetailsChecklistItemLabel>
         </CardTitleDetailsChecklistItemRow>
       ))}
 
       {hasMore && (
-        <CardTitleDetailsChecklistShowMore
-          data-testid="CardTitleDetailsChecklistShowMore"
-          onClick={showMore}
-          type="button"
-        >
+        <CardTitleDetailsChecklistShowMore onClick={showMore} type="button">
           Show more
         </CardTitleDetailsChecklistShowMore>
       )}

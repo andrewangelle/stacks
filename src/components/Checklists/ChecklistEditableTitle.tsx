@@ -44,14 +44,11 @@ export function ChecklistEditableTitle({ id }: ChecklistEditableTitleProps) {
   }
 
   return (
-    <Flex
-      data-testid="Flex"
-      style={{ alignItems: 'center', minWidth: 0, flex: '1 1 auto' }}
-    >
+    <Flex style={{ alignItems: 'center', minWidth: 0, flex: '1 1 auto' }}>
       <BsCheck2Square size={24} style={{ flexShrink: 0 }} />
 
       {!isEditingTitle && (
-        <ChecklistTitle data-testid="ChecklistTitle" onClick={openEditTitle}>
+        <ChecklistTitle onClick={openEditTitle}>
           {checklist?.checklistTitle}
         </ChecklistTitle>
       )}
@@ -59,7 +56,6 @@ export function ChecklistEditableTitle({ id }: ChecklistEditableTitleProps) {
       {isEditingTitle && (
         <EditChecklistTitleForm ref={outsideClickRef}>
           <EditChecklistTitleInput
-            data-testid="EditCardTitleInput"
             value={editedTitle}
             autoFocus
             onChange={(event) =>

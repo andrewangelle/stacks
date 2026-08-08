@@ -53,7 +53,6 @@ export function BoardHeader() {
       <div>
         {!isEditing && (
           <BoardTitle
-            data-testid="BoardTitle"
             type="button"
             onClick={toggleEditBoardTitleForm}
             aria-label="Edit board title"
@@ -66,7 +65,6 @@ export function BoardHeader() {
           <EditBoardTitleForm ref={outsideClickRef}>
             <EditBoardTitleInput
               name="boardTitle"
-              data-testid="EditBoardTitleInput"
               value={editedBoardTitle}
               placeholder={board.data?.boardTitle}
               autoFocus
@@ -78,7 +76,7 @@ export function BoardHeader() {
       </div>
 
       {loading && (
-        <BoardMenuTriggerLoaderSlot data-testid="BoardMenuTriggerLoaderSlot">
+        <BoardMenuTriggerLoaderSlot>
           <CardTitleDetailsSpinner />
         </BoardMenuTriggerLoaderSlot>
       )}

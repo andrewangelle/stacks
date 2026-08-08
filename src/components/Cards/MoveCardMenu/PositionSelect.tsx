@@ -56,8 +56,8 @@ export function PositionSelect({
 
   if (isListsLoading) {
     return (
-      <ComboboxWrapper data-testid="ComboboxWrapper">
-        <ComboboxLabel data-testid="ComboboxLabel">Position</ComboboxLabel>
+      <ComboboxWrapper>
+        <ComboboxLabel>Position</ComboboxLabel>
         <SelectSkeleton style={{ minHeight: '44px' }} />
       </ComboboxWrapper>
     );

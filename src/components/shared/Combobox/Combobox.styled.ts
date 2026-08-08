@@ -1,14 +1,18 @@
-import { styled } from 'styled-components';
+import { type DataAttributes, styled } from 'styled-components';
 import { fontFamily } from '~/components/Boards/Boards.styled';
 import { blue, focusRingBlue } from '~/styles/tokens';
 
-export const ComboboxWrapper = styled.div`
+export const ComboboxWrapper = styled.div.attrs<DataAttributes>({
+  'data-testid': 'ComboboxWrapper',
+})`
   position: relative;
   display: flex;
   flex-direction: column;
 `;
 
-export const ComboboxLabel = styled.label`
+export const ComboboxLabel = styled.label.attrs<DataAttributes>({
+  'data-testid': 'ComboboxLabel',
+})`
   font-family: ${fontFamily};
   font-size: 12px;
   font-weight: 700;
@@ -16,7 +20,9 @@ export const ComboboxLabel = styled.label`
   padding: 0 10px 6px;
 `;
 
-export const ComboboxTrigger = styled.div`
+export const ComboboxTrigger = styled.div.attrs<DataAttributes>({
+  'data-testid': 'ComboboxTrigger',
+})`
   display: flex;
   align-items: center;
   gap: 4px;
@@ -108,7 +114,9 @@ export const ComboboxItem = styled.li`
   }
 `;
 
-export const ComboboxItemCurrent = styled.div`
+export const ComboboxItemCurrent = styled.div.attrs<DataAttributes>({
+  'data-testid': 'ComboboxItemCurrent',
+})`
   font-size: 13px;
   color: ${blue};
 `;

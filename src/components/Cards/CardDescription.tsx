@@ -40,38 +40,27 @@ export function CardDescription() {
   }
 
   return (
-    <DescriptionContainer data-testid="DescriptionContainer">
-      <DescriptionHeadingRow data-testid="DescriptionHeadingRow">
-        <Flex data-testid="Flex" style={{ alignItems: 'center' }}>
+    <DescriptionContainer>
+      <DescriptionHeadingRow>
+        <Flex style={{ alignItems: 'center' }}>
           <IoMdList size={24} />
 
-          <DescriptionTitle data-testid="DescriptionTitle">
-            Description
-          </DescriptionTitle>
+          <DescriptionTitle>Description</DescriptionTitle>
         </Flex>
 
         {data?.cardDescription && !isEditing && (
-          <EditDescriptionButton
-            data-testid="EditDescriptionButton"
-            $secondary
-            onClick={editDescription}
-          >
+          <EditDescriptionButton $secondary onClick={editDescription}>
             Edit
           </EditDescriptionButton>
         )}
       </DescriptionHeadingRow>
 
       {data?.cardDescription && !isEditing && (
-        <CardDescriptionText data-testid="CardDescriptionText">
-          {data?.cardDescription}
-        </CardDescriptionText>
+        <CardDescriptionText>{data?.cardDescription}</CardDescriptionText>
       )}
 
       {!isEditing && !data?.cardDescription && (
-        <DescriptionPlaceholder
-          data-testid="DescriptionPlaceholder"
-          onClick={editDescription}
-        >
+        <DescriptionPlaceholder onClick={editDescription}>
           {placeHolderText}
         </DescriptionPlaceholder>
       )}
@@ -79,23 +68,18 @@ export function CardDescription() {
       {isEditing && (
         <>
           <DescriptionInput
-            data-testid="DescriptionInput"
             value={description}
             onChange={(event) => setDescription(event.target.value)}
             placeholder={placeHolderText}
             autoFocus
           />
 
-          <Flex data-testid="Flex">
-            <SaveDescriptionButton
-              data-testid="SaveDescriptionButton"
-              onClick={saveDescription}
-            >
+          <Flex>
+            <SaveDescriptionButton onClick={saveDescription}>
               Save
             </SaveDescriptionButton>
 
             <CloseDescriptionButton
-              data-testid="CloseDescriptionButton"
               $secondary
               onClick={() => setEditing(false)}
             >

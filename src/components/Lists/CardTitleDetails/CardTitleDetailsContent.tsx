@@ -89,27 +89,24 @@ export function CardTitleDetailsContent({
       />
 
       {showAllCompleteView && (
-        <AllTasksCompletedContainer data-testid="AllTasksCompletedContainer">
+        <AllTasksCompletedContainer>
           <IoIosCheckmarkCircleOutline
             size={24}
             color="#6A9A23"
             strokeWidth={12}
           />
 
-          <AllTasksCompletedText data-testid="CardTitleDetailsChecklistItemLabel">
-            All tasks completed!
-          </AllTasksCompletedText>
+          <AllTasksCompletedText>All tasks completed!</AllTasksCompletedText>
         </AllTasksCompletedContainer>
       )}
 
       {isOpen && checklists.length > 0 && (
         <>
-          <CardTitleDetailsChecklistDivider data-testid="CardTitleDetailsChecklistDivider" />
+          <CardTitleDetailsChecklistDivider />
 
           {data?.hasMultiple && (
             <CardTitleDetailsChecklistAccordionRoot
               collapsible
-              data-testid="CardTitleDetailsChecklistAccordion"
               onValueChange={(value: string) =>
                 setChecklistExpanded({
                   cardId,
@@ -131,7 +128,6 @@ export function CardTitleDetailsContent({
 
           {data?.hasMultiple && truncatedCount > 0 && (
             <CardTitleDetailsChecklistShowMore
-              data-testid="CardTitleDetailsChecklistShowMore"
               onClick={handleShowMore}
               type="button"
             >

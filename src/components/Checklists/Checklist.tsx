@@ -49,8 +49,8 @@ export function Checklist({ id }: { id: string }) {
   useScrollToHashId(id, headerRef, isSuccess && isItemsSuccess);
 
   return (
-    <ChecklistContainer data-testid="ChecklistContainer">
-      <ChecklistHeader data-testid="ChecklistHeader" key={id} ref={headerRef}>
+    <ChecklistContainer>
+      <ChecklistHeader key={id} ref={headerRef}>
         <ChecklistEditableTitle id={id} />
         <ChecklistHeaderActions>
           <ToggleCheckedItems checklistId={id} />
@@ -61,7 +61,7 @@ export function Checklist({ id }: { id: string }) {
       <ChecklistProgress checklistId={id} />
 
       {showAllItemsCompleteMessage && (
-        <AllItemsCompleteMessage data-testid="AllItemsCompleteMessage">
+        <AllItemsCompleteMessage>
           Everything in this checklist is complete!
         </AllItemsCompleteMessage>
       )}

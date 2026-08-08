@@ -1,4 +1,4 @@
-import { css, styled } from 'styled-components';
+import { css, type DataAttributes, styled } from 'styled-components';
 import { ActivityTimestamp } from '~/components/Activity/ActivityTimestamp';
 import { fontFamily } from '~/components/Boards/Boards.styled';
 import { CardModalTitle } from '~/components/Cards/Card.styled';
@@ -10,7 +10,9 @@ import {
 } from '~/styles/Page.styled';
 import { completedGreen, userNameIconBlue } from '~/styles/tokens';
 
-export const ActivityPanelContainer = styled.div`
+export const ActivityPanelContainer = styled.div.attrs<DataAttributes>({
+  'data-testid': 'ActivityPanelContainer',
+})`
   box-sizing: border-box;
   display: flex;
   flex-direction: column;
@@ -27,7 +29,9 @@ export const ActivityPanelContainer = styled.div`
  * the modal body takes over — it falls back to a viewport-relative height so
  * the list still has a measurable box to virtualize against.
  */
-export const ActivityListViewport = styled.div`
+export const ActivityListViewport = styled.div.attrs<DataAttributes>({
+  'data-testid': 'ActivityListViewport',
+})`
   position: relative;
   box-sizing: border-box;
   flex: 1 1 auto;
@@ -43,7 +47,9 @@ export const ActivityListViewport = styled.div`
   }
 `;
 
-export const ActivityListContainer = styled.div`
+export const ActivityListContainer = styled.div.attrs<DataAttributes>({
+  'data-testid': 'ActivityListContainer',
+})`
   position: relative;
   width: 100%;
 `;
@@ -55,7 +61,9 @@ export const ActivityListRow = styled.div`
   width: 100%;
 `;
 
-export const ActivityHeader = styled.div` 
+export const ActivityHeader = styled.div.attrs<DataAttributes>({
+  'data-testid': 'ActivityHeader',
+})` 
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
@@ -70,7 +78,9 @@ export const ActivityHeader = styled.div`
   }
 `;
 
-export const HideActivityButton = styled(Button)`
+export const HideActivityButton = styled(Button).attrs<DataAttributes>({
+  'data-testid': 'HideActivityButton',
+})`
   ${secondaryButtonStyles}
   padding: 8px 10px;
   margin: 0;
@@ -88,7 +98,9 @@ type ActivityContainerProps = {
   $isSelected?: boolean;
 };
 
-export const AddCommentContainer = styled.div`
+export const AddCommentContainer = styled.div.attrs<DataAttributes>({
+  'data-testid': 'AddCommentContainer',
+})`
   box-sizing: border-box;
   margin: 18px 0;
   padding: 0 12px;
@@ -101,7 +113,9 @@ export const AddCommentContainer = styled.div`
   }
 `;
 
-export const ActivityContainer = styled.div<ActivityContainerProps>`
+export const ActivityContainer = styled.div.attrs<DataAttributes>({
+  'data-testid': 'ActivityContainer',
+})<ActivityContainerProps>`
   box-sizing: border-box;
   padding: 12px;
   min-width: 0;
@@ -115,7 +129,9 @@ export const ActivityContainer = styled.div<ActivityContainerProps>`
   }
 `;
 
-export const ActivityRow = styled.div`
+export const ActivityRow = styled.div.attrs<DataAttributes>({
+  'data-testid': 'ActivityRow',
+})`
   display: flex;
   align-items: flex-start;
   gap: 8px;
@@ -124,14 +140,18 @@ export const ActivityRow = styled.div`
   width: 100%;
 `;
 
-export const ActivityTitle = styled(CardModalTitle)` 
+export const ActivityTitle = styled(CardModalTitle).attrs<DataAttributes>({
+  'data-testid': 'ActivityTitle',
+})` 
   font-size: 14px;
   font-weight: 600;
   margin: 0;
   min-width: 0;
 `;
 
-export const ActivityHeaderTitle = styled.div`
+export const ActivityHeaderTitle = styled.div.attrs<DataAttributes>({
+  'data-testid': 'ActivityHeaderTitle',
+})`
   display: flex;
   align-items: baseline;
   gap: 4px;
@@ -139,7 +159,9 @@ export const ActivityHeaderTitle = styled.div`
   min-width: 0;
 `;
 
-export const ActivityCommentContainer = styled.div` 
+export const ActivityCommentContainer = styled.div.attrs<DataAttributes>({
+  'data-testid': 'ActivityCommentContainer',
+})` 
   display: flex;
   flex-direction: column;
   flex: 1;
@@ -155,12 +177,16 @@ export const AddCommentForm = styled.form`
   font-size: 12px;
 `;
 
-export const ActivityMeta = styled.div`
+export const ActivityMeta = styled.div.attrs<DataAttributes>({
+  'data-testid': 'ActivityMeta',
+})`
   line-height: 1.4;
   overflow-wrap: anywhere;
 `;
 
-export const ActivityAuthorName = styled.span`
+export const ActivityAuthorName = styled.span.attrs<DataAttributes>({
+  'data-testid': 'ActivityAuthorName',
+})`
   font-weight: 700;
   font-size: 14px;
 `;
@@ -172,7 +198,9 @@ export const ActivityMetaTime = styled.span`
   color: #0000EE;
 `;
 
-export const ActivityNameCircle = styled.div` 
+export const ActivityNameCircle = styled.div.attrs<DataAttributes>({
+  'data-testid': 'ActivityNameCircle',
+})` 
   border-radius: 100%;
   background: ${userNameIconBlue};
   color: white;
@@ -191,14 +219,18 @@ export const activityFieldStyles = css`
   box-shadow: 0 1px 0 #091e4240;
 `;
 
-export const AddCommentInput = styled.input`
+export const AddCommentInput = styled.input.attrs<DataAttributes>({
+  'data-testid': 'AddCommentInput',
+})`
   box-sizing: border-box;
   width: 100%;
   max-width: 100%;
   ${activityFieldStyles}
 `;
 
-export const ActivityCommentContent = styled.div` 
+export const ActivityCommentContent = styled.div.attrs<DataAttributes>({
+  'data-testid': 'ActivityCommentContent',
+})` 
   box-sizing: border-box;
   font-family: ${fontFamily};
   font-size: 14px;
@@ -209,7 +241,9 @@ export const ActivityCommentContent = styled.div`
   ${activityFieldStyles}
 `;
 
-export const ActivityEntryContent = styled.div`
+export const ActivityEntryContent = styled.div.attrs<DataAttributes>({
+  'data-testid': 'ActivityEntryContent',
+})`
   line-height: 1.4;
   overflow-wrap: anywhere;
 `;
@@ -222,13 +256,17 @@ export const EditCommentActionsRow = styled.div`
   margin-top: 8px;
 `;
 
-export const SaveCommentButton = styled(Button)` 
+export const SaveCommentButton = styled(Button).attrs<DataAttributes>({
+  'data-testid': 'SaveCommentButton',
+})` 
   padding: 8px 10px;
   margin: 0;
   font-weight: 600;
 `;
 
-export const EditCommentLink = styled.button`
+export const EditCommentLink = styled.button.attrs<DataAttributes>({
+  'data-testid': 'EditCommentLink',
+})`
   border: none;
   background: none;
   text-decoration: underline;
@@ -238,9 +276,13 @@ export const EditCommentLink = styled.button`
   color: inherit;
 `;
 
-export const DeleteCommentLink = styled(EditCommentLink)``;
+export const DeleteCommentLink = styled(EditCommentLink).attrs<DataAttributes>({
+  'data-testid': 'DeleteCommentLink',
+})``;
 
-export const EditCommentActionsSeperator = styled.div`
+export const EditCommentActionsSeperator = styled.div.attrs<DataAttributes>({
+  'data-testid': 'ActivityActionsSeparator',
+})`
   width: 3.5px;
   height: 3.5px;
   background: black;
@@ -269,7 +311,9 @@ export const CommentTimestamp = styled(ActivityTimestamp)`
   margin: 0px 0px 0px 5px;
 `;
 
-export const ActivityLogoSkeleton = styled.div`
+export const ActivityLogoSkeleton = styled.div.attrs<DataAttributes>({
+  'data-testid': 'ActivityLogoSkeleton',
+})`
   background: rgba(9, 30, 66, 0.25);
   cursor: default;
   pointer-events: none;
@@ -282,7 +326,9 @@ export const ActivityLogoSkeleton = styled.div`
   ${animationStyles.pulse}
 `;
 
-export const ActivityContentSkeleton = styled.div`
+export const ActivityContentSkeleton = styled.div.attrs<DataAttributes>({
+  'data-testid': 'ActivityContentSkeleton',
+})`
   background: rgba(9, 30, 66, 0.25);
   cursor: default;
   pointer-events: none;
@@ -294,7 +340,9 @@ export const ActivityContentSkeleton = styled.div`
   ${animationStyles.pulse}
 `;
 
-export const ActivityTimestampSkeleton = styled.div`
+export const ActivityTimestampSkeleton = styled.div.attrs<DataAttributes>({
+  'data-testid': 'ActivityTimestampSkeleton',
+})`
   background: rgba(9, 30, 66, 0.25);
   cursor: default;
   pointer-events: none;
@@ -322,7 +370,9 @@ const paperclipRevealHiddenStyles = css`
   opacity: 0;
 `;
 
-export const PaperclipReveal = styled.span<PaperclipRevealProps>`
+export const PaperclipReveal = styled.span.attrs<DataAttributes>({
+  'data-testid': 'PaperclipReveal',
+})<PaperclipRevealProps>`
   display: inline-flex;
   align-items: center;
   vertical-align: middle;
@@ -332,7 +382,9 @@ export const PaperclipReveal = styled.span<PaperclipRevealProps>`
     $isVisible ? paperclipRevealStyles : paperclipRevealHiddenStyles};
 `;
 
-export const ActivityCopiedCheckmark = styled.span`
+export const ActivityCopiedCheckmark = styled.span.attrs<DataAttributes>({
+  'data-testid': 'ActivityCopiedCheckmark',
+})`
   background-color: transparent;
   border: 1px solid ${completedGreen};
   border-radius: 100%;

@@ -1,5 +1,5 @@
 import { Dialog, Popover } from 'radix-ui';
-import { styled } from 'styled-components';
+import { type DataAttributes, styled } from 'styled-components';
 import { fontFamily } from '~/components/Boards/Boards.styled';
 import {
   Button,
@@ -14,9 +14,15 @@ export const cardModalSectionIconSize = '24px';
 /** Left edge of description body, checklist labels, inputs, and action rows (icon + 16px gap). */
 export const cardModalContentIndent = '40px';
 
-export const CardModalRoot = styled(Dialog.Root)``;
-export const CardModalPortal = styled(Dialog.Portal)``;
-export const CardModalOverlay = styled(Dialog.Overlay)` 
+export const CardModalRoot = styled(Dialog.Root).attrs<DataAttributes>({
+  'data-testid': 'CardModalRoot',
+})``;
+export const CardModalPortal = styled(Dialog.Portal).attrs<DataAttributes>({
+  'data-testid': 'CardModalPortal',
+})``;
+export const CardModalOverlay = styled(Dialog.Overlay).attrs<DataAttributes>({
+  'data-testid': 'CardModalOverlay',
+})` 
   background: rgba(0 0 0 / 0.8);
   position: fixed;
   top: 0;
@@ -29,7 +35,9 @@ export const CardModalOverlay = styled(Dialog.Overlay)`
   z-index: 2;
 `;
 
-export const CardModalBody = styled.div`
+export const CardModalBody = styled.div.attrs<DataAttributes>({
+  'data-testid': 'CardModalBody',
+})`
   display: grid;
   grid-template-columns: minmax(0, 1fr) 8px minmax(200px, 280px);
   grid-template-rows: minmax(0, 1fr);
@@ -48,7 +56,9 @@ export const CardModalBody = styled.div`
   }
 `;
 
-export const CardActionsContainer = styled.div`
+export const CardActionsContainer = styled.div.attrs<DataAttributes>({
+  'data-testid': 'CardActionsContainer',
+})`
   display: flex;
   flex-wrap: wrap;
   gap: 12px;
@@ -103,26 +113,38 @@ export const CardModalActionButton = styled.div<IsOpenProps>`
   background: ${({ $isOpen }) => ($isOpen ? 'rgba(0, 0, 0, 0.8)' : 'transparent')};
 `;
 
-export const CardModalSiderButtonText = styled.span` 
+export const CardModalSiderButtonText = styled.span.attrs<DataAttributes>({
+  'data-testid': 'CardModalSiderButtonText',
+})` 
   font-family: ${fontFamily};
   font-size: 14px;
 `;
 
-export const CreateChecklistPopoverTrigger = styled(Popover.Trigger)` 
+export const CreateChecklistPopoverTrigger = styled(
+  Popover.Trigger,
+).attrs<DataAttributes>({
+  'data-testid': 'CreateChecklistPopoverTrigger',
+})` 
   border: none;
   background: transparent;
   cursor: pointer;
   width: auto;
 `;
 
-export const DeleteCardPopoverTrigger = styled(Popover.Trigger)` 
+export const DeleteCardPopoverTrigger = styled(
+  Popover.Trigger,
+).attrs<DataAttributes>({
+  'data-testid': 'DeleteCardPopoverTrigger',
+})` 
   border: none;
   background: transparent;
   cursor: pointer;
   width: auto;
 `;
 
-export const ResizeableCardColumnHandle = styled.div`
+export const ResizeableCardColumnHandle = styled.div.attrs<DataAttributes>({
+  'data-testid': 'ResizeableCardColumnHandle',
+})`
   height: 100%;
   cursor: ew-resize;
   touch-action: none;
@@ -151,7 +173,9 @@ export const ResizeableCardColumnHandle = styled.div`
   }
 `;
 
-export const CardMainColumn = styled.div`
+export const CardMainColumn = styled.div.attrs<DataAttributes>({
+  'data-testid': 'CardMainColumn',
+})`
   min-width: 0;
   min-height: 0;
   overflow-y: auto;
@@ -188,7 +212,9 @@ export const CardPageActivityColumn = styled(CardActivityColumn)`
   }
 `;
 
-export const CardModalContent = styled(Dialog.Content)`
+export const CardModalContent = styled(Dialog.Content).attrs<DataAttributes>({
+  'data-testid': 'CardModalContent',
+})`
   position: relative;
   font-family: ${fontFamily};
   display: flex;
@@ -209,7 +235,9 @@ export const CardModalContent = styled(Dialog.Content)`
   }
 `;
 
-export const CardPageContent = styled(Dialog.Content)`
+export const CardPageContent = styled(Dialog.Content).attrs<DataAttributes>({
+  'data-testid': 'CardModalContent',
+})`
   position: relative;
   font-family: ${fontFamily};
   display: flex;
@@ -220,7 +248,9 @@ export const CardPageContent = styled(Dialog.Content)`
   background: rgb(248, 248, 248);
 `;
 
-export const CardModalTrigger = styled('div')`
+export const CardModalTrigger = styled.div.attrs<DataAttributes>({
+  'data-testid': 'CardModalTrigger',
+})`
   border: none;
   padding: 0px;
   cursor: pointer;
@@ -236,12 +266,16 @@ export const CardModalTrigger = styled('div')`
   }
 `;
 
-export const CardModalTitleContainer = styled.div`
+export const CardModalTitleContainer = styled.div.attrs<DataAttributes>({
+  'data-testid': 'CardModalTitleContainer',
+})`
   display: flex;
   margin: 12px 12px 0px;
 `;
 
-export const CardModalTitle = styled(Dialog.Title)`
+export const CardModalTitle = styled(Dialog.Title).attrs<DataAttributes>({
+  'data-testid': 'CardModalTitle',
+})`
   margin: 0 16px;
   font-size: 28px;
   color: black;
@@ -268,21 +302,29 @@ export const CardModalListName = styled.div`
   margin: 4px 12px 12px 20px;
  `;
 
-export const DescriptionContainer = styled.div`
+export const DescriptionContainer = styled.div.attrs<DataAttributes>({
+  'data-testid': 'DescriptionContainer',
+})`
   margin: 30px 12px 0px;
 `;
 
-export const DescriptionHeadingRow = styled.div`
+export const DescriptionHeadingRow = styled.div.attrs<DataAttributes>({
+  'data-testid': 'DescriptionHeadingRow',
+})`
   display: flex;
   justify-content: space-between;
   margin-bottom: 12px;
 `;
 
-export const DescriptionTitle = styled(CardModalTitle)`
+export const DescriptionTitle = styled(CardModalTitle).attrs<DataAttributes>({
+  'data-testid': 'DescriptionTitle',
+})`
   font-size: 14px;
 `;
 
-export const DescriptionPlaceholder = styled.div` 
+export const DescriptionPlaceholder = styled.div.attrs<DataAttributes>({
+  'data-testid': 'DescriptionPlaceholder',
+})` 
   border: 1px solid rgba(0,0,0, 0.5);
   height: 30px;
   margin-left: ${cardModalContentIndent};
@@ -298,7 +340,9 @@ export const DescriptionPlaceholder = styled.div`
   }
 `;
 
-export const DescriptionInput = styled.textarea` 
+export const DescriptionInput = styled.textarea.attrs<DataAttributes>({
+  'data-testid': 'DescriptionInput',
+})` 
   height: 60px;
   width: 80%;
   margin-left: ${cardModalContentIndent};
@@ -310,12 +354,16 @@ export const DescriptionInput = styled.textarea`
   font-family: ${fontFamily};
 `;
 
-export const SaveDescriptionButton = styled(Button)` 
+export const SaveDescriptionButton = styled(Button).attrs<DataAttributes>({
+  'data-testid': 'SaveDescriptionButton',
+})` 
   padding: 8px 10px;
   margin: 0 10px 0 ${cardModalContentIndent};
 `;
 
-export const CloseDescriptionButton = styled(Button)`
+export const CloseDescriptionButton = styled(Button).attrs<DataAttributes>({
+  'data-testid': 'CloseDescriptionButton',
+})`
   ${secondaryButtonStyles}
   padding: 8px 10px;
   margin: 0;
@@ -327,14 +375,18 @@ export const CloseDescriptionButton = styled(Button)`
   }
 `;
 
-export const CardDescriptionText = styled.div` 
+export const CardDescriptionText = styled.div.attrs<DataAttributes>({
+  'data-testid': 'CardDescriptionText',
+})` 
   font-family: ${fontFamily};
   margin-left: ${cardModalContentIndent};
   font-size: 14px;
   margin-top: 15px;
 `;
 
-export const EditDescriptionButton = styled(Button)`
+export const EditDescriptionButton = styled(Button).attrs<DataAttributes>({
+  'data-testid': 'EditDescriptionButton',
+})`
   ${secondaryButtonStyles}
   color: rgba(9, 30, 66, 0.725);
   border: 1px solid rgba(9, 30, 66, 0.2);
@@ -354,7 +406,9 @@ export const EditCardTitleForm = styled.form`
   left: -2px;
 `;
 
-export const EditCardTitleInput = styled.input` 
+export const EditCardTitleInput = styled.input.attrs<DataAttributes>({
+  'data-testid': 'EditCardTitleInput',
+})` 
   border: none;
   margin: 0 16px;
   font-size: 28px;

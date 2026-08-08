@@ -40,12 +40,11 @@ export function CardTitleDetails({
   } = useCardModalTrigger(id);
 
   return (
-    <CardModalTrigger data-testid="CardModalTrigger" onClick={open}>
+    <CardModalTrigger onClick={open}>
       <ListCardContainer
         ref={ref}
         role="button"
         tabIndex={0}
-        data-testid="ListCardContainer"
         data-card-id={id}
         onBlur={onBlur}
         onFocus={onFocus}
@@ -54,10 +53,7 @@ export function CardTitleDetails({
         onMouseLeave={onMouseLeave}
         onPointerDown={onPointerDown}
       >
-        <ListCardTitleDetailsContainer
-          data-testid="ListCardTitleDetailsContainer"
-          $isCompleted={isCompleted}
-        >
+        <ListCardTitleDetailsContainer $isCompleted={isCompleted}>
           <CardCompletedIndicator
             cardId={id}
             visible={isHovering || isFocused}
@@ -74,7 +70,7 @@ export function CardTitleDetails({
         </Suspense>
 
         {isLoading && (
-          <CardTitleDetailsSpinnerContainer data-testid="CardTitleDetailsSpinnerContainer">
+          <CardTitleDetailsSpinnerContainer>
             <CardTitleDetailsSpinner data-testid="CardTitleDetailsSpinner" />
           </CardTitleDetailsSpinnerContainer>
         )}

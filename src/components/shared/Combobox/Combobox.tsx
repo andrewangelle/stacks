@@ -123,7 +123,7 @@ export function Combobox({
   });
 
   return (
-    <ComboboxWrapper data-testid="ComboboxWrapper">
+    <ComboboxWrapper>
       <ComboboxLabel
         {...getLabelProps({
           'data-testid': 'ComboboxLabel',
@@ -137,7 +137,7 @@ export function Combobox({
         {label}
       </ComboboxLabel>
 
-      <ComboboxTrigger data-testid="ComboboxTrigger">
+      <ComboboxTrigger>
         <ComboboxInput
           {...getInputProps({
             autoFocus: false,
@@ -186,9 +186,7 @@ export function Combobox({
               {item.label}
 
               {item.current && (
-                <ComboboxItemCurrent data-testid="ComboboxItemCurrent">
-                  (current)
-                </ComboboxItemCurrent>
+                <ComboboxItemCurrent>(current)</ComboboxItemCurrent>
               )}
             </ComboboxItem>
           ))}

@@ -15,25 +15,22 @@ import {
 
 export function ChecklistSkeleton() {
   return (
-    <ChecklistContainer data-testid="ChecklistContainer">
-      <ChecklistHeader data-testid="ChecklistHeader">
-        <ChecklistNameSkeletonContainer data-testid="ChecklistNameSkeletonContainer">
+    <ChecklistContainer>
+      <ChecklistHeader>
+        <ChecklistNameSkeletonContainer>
           <BsCheck2Square size={24} />
-          <ChecklistNameSkeleton data-testid="ChecklistNameSkeleton" />
+          <ChecklistNameSkeleton />
         </ChecklistNameSkeletonContainer>
-        <DeleteChecklistSkeleton data-testid="DeleteChecklistSkeleton" />
+        <DeleteChecklistSkeleton />
       </ChecklistHeader>
 
-      <ChecklistProgressRow data-testid="ChecklistProgressRow">
-        <ChecklistLeadingColumn data-testid="ChecklistLeadingColumn">
-          <ChecklistProgressSkeleton data-testid="ChecklistProgressSkeleton" />
+      <ChecklistProgressRow>
+        <ChecklistLeadingColumn>
+          <ChecklistProgressSkeleton />
         </ChecklistLeadingColumn>
 
-        <ChecklistContentColumn data-testid="ChecklistContentColumn">
-          <ChecklistProgressSkeleton
-            data-testid="ChecklistProgressSkeleton"
-            style={{ marginLeft: '8px' }}
-          />
+        <ChecklistContentColumn>
+          <ChecklistProgressSkeleton style={{ marginLeft: '8px' }} />
         </ChecklistContentColumn>
       </ChecklistProgressRow>
     </ChecklistContainer>

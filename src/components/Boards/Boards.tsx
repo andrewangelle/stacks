@@ -13,9 +13,7 @@ export function Boards() {
       {boards.map((board) => (
         <Suspense
           key={board.id}
-          fallback={
-            <BoardCardSkeleton data-testid="BoardCardSkeleton" key={board.id} />
-          }
+          fallback={<BoardCardSkeleton key={board.id} />}
         >
           <Board key={board.id} boardId={board.id} />
         </Suspense>

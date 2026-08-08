@@ -1,7 +1,7 @@
 import { Link } from '@tanstack/react-router';
 import { Popover } from 'radix-ui';
 import { TiDelete } from 'react-icons/ti';
-import { css, styled } from 'styled-components';
+import { css, type DataAttributes, styled } from 'styled-components';
 import { animationStyles } from '~/styles/animations';
 import {
   blue,
@@ -28,14 +28,18 @@ export type BackgroundProps = {
   $background?: BoardBackground;
 };
 
-export const BoardsContainer = styled.div` 
+export const BoardsContainer = styled.div.attrs<DataAttributes>({
+  'data-testid': 'BoardsContainer',
+})` 
   display: flex;
   flex-wrap: wrap;
   justify-content: flex-start;
   padding: 50px 30px 30px;
 `;
 
-export const BoardCardLink = styled(Link)<BackgroundProps>`
+export const BoardCardLink = styled(Link).attrs<DataAttributes>({
+  'data-testid': 'BoardCardContainer',
+})<BackgroundProps>`
   display: flex;
   flex-direction: column;
   justify-content: flex-end;
@@ -103,7 +107,9 @@ export type BoardCardTitleProps = {
   isCreateBoard?: boolean;
 };
 
-export const BoardCardTitle = styled.div<BoardCardTitleProps>`
+export const BoardCardTitle = styled.div.attrs<DataAttributes>({
+  'data-testid': 'BoardCardTitle',
+})<BoardCardTitleProps>`
   font-size: 14px;
   background: #fff;
   padding: 10px;
@@ -118,14 +124,22 @@ export const BoardCardTitle = styled.div<BoardCardTitleProps>`
   }
 `;
 
-export const BoardCardSkeleton = styled(CreateBoardContainer)`
+export const BoardCardSkeleton = styled(
+  CreateBoardContainer,
+).attrs<DataAttributes>({
+  'data-testid': 'BoardCardSkeleton',
+})`
   background: rgba(9, 30, 66, 0.25);
   cursor: default;
   pointer-events: none;
   ${animationStyles.pulse}
 `;
 
-export const CreateBoardCard = styled(CreateBoardContainer)` 
+export const CreateBoardCard = styled(
+  CreateBoardContainer,
+).attrs<DataAttributes>({
+  'data-testid': 'CreateBoardCard',
+})` 
   background: rgba(9, 30, 66, 0.04);
   max-height: 100px;
   padding-bottom: 10px;
@@ -141,7 +155,11 @@ export const CreateBoardCard = styled(CreateBoardContainer)`
   }
 `;
 
-export const CreateBoardPopoverTrigger = styled(Popover.Trigger)` 
+export const CreateBoardPopoverTrigger = styled(
+  Popover.Trigger,
+).attrs<DataAttributes>({
+  'data-testid': 'CreateBoardPopoverTrigger',
+})` 
   background: transparent;
   border: none;
   color: inherit;
@@ -149,7 +167,9 @@ export const CreateBoardPopoverTrigger = styled(Popover.Trigger)`
   min-width: 125px;
 `;
 
-export const PopoverClose = styled(Popover.Close)` 
+export const PopoverClose = styled(Popover.Close).attrs<DataAttributes>({
+  'data-testid': 'PopoverClose',
+})` 
   background: transparent;
   border: none;
   color: inherit;
@@ -164,7 +184,11 @@ export const PopoverClose = styled(Popover.Close)`
   }
 `;
 
-export const CreateBoardPopoverContent = styled(Popover.Content)` 
+export const CreateBoardPopoverContent = styled(
+  Popover.Content,
+).attrs<DataAttributes>({
+  'data-testid': 'CreateBoardPopoverContent',
+})` 
   height: auto;
   width: 225px;
   border: 2px solid rgba(9, 30, 66, 0.08);
@@ -175,30 +199,40 @@ export const CreateBoardPopoverContent = styled(Popover.Content)`
   padding: 10px 25px 25px 25px;
 `;
 
-export const CreateBoardPopoverHeader = styled.div` 
+export const CreateBoardPopoverHeader = styled.div.attrs<DataAttributes>({
+  'data-testid': 'CreateBoardPopoverHeader',
+})` 
   display: flex;
   justify-content: center;
   color: rgba(9, 30, 66, .75);
   font-weight: 700;
 `;
 
-export const CreateBoardCloseBorder = styled.hr` 
+export const CreateBoardCloseBorder = styled.hr.attrs<DataAttributes>({
+  'data-testid': 'CreateBoardCloseBorder',
+})` 
   margin: 5px;
 `;
 
-export const CreateBoardBackgroundText = styled.div` 
+export const CreateBoardBackgroundText = styled.div.attrs<DataAttributes>({
+  'data-testid': 'CreateBoardBackgroundText',
+})` 
   font-family: ${fontFamily};
   font-size: 12px;
   font-weight: 700;
   color: rgba(9, 30, 66, .75);
 `;
 
-export const CreateBoardBackgroundChoices = styled.div` 
+export const CreateBoardBackgroundChoices = styled.div.attrs<DataAttributes>({
+  'data-testid': 'CreateBoardBackgroundChoices',
+})` 
   display: flex;
   flex-wrap: wrap;
 `;
 
-export const CreateBoardBackgroundChoice = styled('div')<BackgroundProps>`
+export const CreateBoardBackgroundChoice = styled.div.attrs<DataAttributes>({
+  'data-testid': 'CreateBoardBackgroundChoice',
+})<BackgroundProps>`
  width: 40px;
  height: 32px;
  border-radius: 5px;
@@ -212,7 +246,9 @@ export const CreateBoardBackgroundChoice = styled('div')<BackgroundProps>`
   }
 `;
 
-export const CreateBoardTitleInput = styled.input`
+export const CreateBoardTitleInput = styled.input.attrs<DataAttributes>({
+  'data-testid': 'CreateBoardTitleInput',
+})`
   width: 200px;
   margin: 5px;
   height: 20px;
@@ -222,7 +258,9 @@ type CreateBoardButtonProps = {
   disabled: boolean;
 };
 
-export const CreateBoardButton = styled.button<CreateBoardButtonProps>`
+export const CreateBoardButton = styled.button.attrs<DataAttributes>({
+  'data-testid': 'CreateBoardButton',
+})<CreateBoardButtonProps>`
   border: none;
   border-radius: 5px;
   width: 200px;

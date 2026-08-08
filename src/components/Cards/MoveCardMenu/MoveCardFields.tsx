@@ -80,20 +80,19 @@ export function MoveCardFields({ id }: { id: string }) {
 
   return (
     <MoveCardMenuContent
-      data-testid="MoveCardMenuContent"
       side="bottom"
       align="start"
       sideOffset={8}
       alignOffset={4}
     >
-      <MoveCardMenuHeader data-testid="MoveCardMenuHeader">
+      <MoveCardMenuHeader>
         Move card
-        <PopoverClose data-testid="PopoverClose">X</PopoverClose>
+        <PopoverClose>X</PopoverClose>
       </MoveCardMenuHeader>
 
-      <CreateBoardCloseBorder data-testid="CreateBoardCloseBorder" />
+      <CreateBoardCloseBorder />
 
-      <MoveCardFieldsContainer ref={ref} data-testid="MoveCardFieldsContainer">
+      <MoveCardFieldsContainer ref={ref}>
         <Suspense fallback={<SelectSkeleton style={{ minHeight: '44px' }} />}>
           <BoardSelect
             cardId={id}
@@ -103,8 +102,8 @@ export function MoveCardFields({ id }: { id: string }) {
           />
         </Suspense>
 
-        <MoveCardSelectRow data-testid="MoveCardSelectRow">
-          <MoveCardListColumn data-testid="MoveCardListColumn">
+        <MoveCardSelectRow>
+          <MoveCardListColumn>
             <ListSelect
               ref={ref}
               isListsLoading={isListsLoading}
@@ -115,7 +114,7 @@ export function MoveCardFields({ id }: { id: string }) {
             />
           </MoveCardListColumn>
 
-          <MoveCardPositionColumn data-testid="MoveCardPositionColumn">
+          <MoveCardPositionColumn>
             <PositionSelect
               ref={ref}
               selectedList={selectedList}
@@ -128,11 +127,7 @@ export function MoveCardFields({ id }: { id: string }) {
         </MoveCardSelectRow>
       </MoveCardFieldsContainer>
 
-      <MoveCardButton
-        data-testid="MoveCardButton"
-        onClick={handleMove}
-        disabled={!canMove || isMovingCard}
-      >
+      <MoveCardButton onClick={handleMove} disabled={!canMove || isMovingCard}>
         Move
       </MoveCardButton>
     </MoveCardMenuContent>

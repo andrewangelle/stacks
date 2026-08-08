@@ -37,10 +37,7 @@ export function CardTitleDetailsContentIcons({
       : 'Expand checklists';
 
   return (
-    <CardTitleDetailsContentIconsContainer
-      data-testid="CardTitleDetailsContentIconsContainer"
-      $commentsCount={commentsCount}
-    >
+    <CardTitleDetailsContentIconsContainer $commentsCount={commentsCount}>
       {commentsCount > 0 && (
         <Tooltip content="Comments">
           <Flex style={{ fontSize: '12px', lineHeight: '16px', gap: '4px' }}>
@@ -65,7 +62,6 @@ export function CardTitleDetailsContentIcons({
       {hasChecklistDetails && (
         <Tooltip content={checklistTooltipText}>
           <CardTitleDetailsChecklistTotalsContainer
-            data-testid="CardTitleDetailsChecklistTotalsContainer"
             $isAllCompleted={data?.isAllCompleted ?? false}
             $isOpen={isOpen}
             onClick={toggleOpen}

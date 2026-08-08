@@ -1,4 +1,4 @@
-import { styled } from 'styled-components';
+import { type DataAttributes, styled } from 'styled-components';
 import { fontFamily } from '~/components/Boards/Boards.styled';
 import { animationStyles } from '~/styles/animations';
 import { Button } from '~/styles/Page.styled';
@@ -14,7 +14,9 @@ type ListContainerProps = {
   $isMobile: boolean;
 };
 
-export const ListContainer = styled.div<ListContainerProps>`
+export const ListContainer = styled.div.attrs<DataAttributes>({
+  'data-testid': 'ListContainer',
+})<ListContainerProps>`
 
   background-color: ${listBackground};
   border-radius: 8px;
@@ -31,7 +33,9 @@ export const ListContainer = styled.div<ListContainerProps>`
   overflow: auto;
 `;
 
-export const ListContentContainer = styled.div`
+export const ListContentContainer = styled.div.attrs<DataAttributes>({
+  'data-testid': 'ListContentContainer',
+})`
   overscroll-behavior: contain;
   width: 100%;
   min-width: 0;
@@ -42,7 +46,9 @@ export const ListContentContainer = styled.div`
  * carry the list's vertical padding themselves — ListContainer only pads the
  * sides, or the gap would show cards passing through it.
  */
-export const ListHeaderContainer = styled.div`
+export const ListHeaderContainer = styled.div.attrs<DataAttributes>({
+  'data-testid': 'ListHeaderContainer',
+})`
   position: sticky;
   top: 0;
   /* Stays under NavBarContainer's z-index 2: nothing here creates a stacking
@@ -55,7 +61,9 @@ export const ListHeaderContainer = styled.div`
   padding-top: 8px;
 `;
 
-export const AddCardFooter = styled.div`
+export const AddCardFooter = styled.div.attrs<DataAttributes>({
+  'data-testid': 'AddCardFooter',
+})`
   position: sticky;
   bottom: 0;
   /* Below the header: the list actions popover renders inside it, and an equal
@@ -74,14 +82,18 @@ export const AddCardFooter = styled.div`
   }
 `;
 
-export const ListName = styled.div` 
+export const ListName = styled.div.attrs<DataAttributes>({
+  'data-testid': 'ListName',
+})` 
   font-family: ${fontFamily};
   color: black;
   font-weight: 700;
   font-size: 14px;
 `;
 
-export const EditListNameInput = styled.input`
+export const EditListNameInput = styled.input.attrs<DataAttributes>({
+  'data-testid': 'EditListNameInput',
+})`
   border-radius: 8px;
   border: none;
   padding: 9px;
@@ -92,7 +104,9 @@ export const EditListNameInput = styled.input`
   font-size: 14px;
 `;
 
-export const AddListButton = styled.button`
+export const AddListButton = styled.button.attrs<DataAttributes>({
+  'data-testid': 'AddListButton',
+})`
   border: none;
   background: none;
   cursor: pointer;
@@ -102,12 +116,16 @@ export const AddListButton = styled.button`
   letter-spacing: 0.05rem;
 `;
 
-export const AddCardButton = styled(Button)` 
+export const AddCardButton = styled(Button).attrs<DataAttributes>({
+  'data-testid': 'AddCardButton',
+})` 
   margin: 0;
   padding: 8px;
 `;
 
-export const AddCardText = styled.button` 
+export const AddCardText = styled.button.attrs<DataAttributes>({
+  'data-testid': 'AddCardText',
+})` 
   border: none;
   background: none;
   font-family: ${fontFamily};
@@ -124,7 +142,9 @@ export const AddCardText = styled.button`
   }
 `;
 
-export const AddCardInput = styled.input` 
+export const AddCardInput = styled.input.attrs<DataAttributes>({
+  'data-testid': 'AddCardInput',
+})` 
   border-radius: 8px;
   border: none;
   padding: 9px;
@@ -133,7 +153,9 @@ export const AddCardInput = styled.input`
   width: stretch;
 `;
 
-export const CloseAddCardButton = styled(Button)` 
+export const CloseAddCardButton = styled(Button).attrs<DataAttributes>({
+  'data-testid': 'CloseAddCardButton',
+})` 
   border: none;
   color: black;
   padding: 8px;
@@ -146,7 +168,9 @@ export const CloseAddCardButton = styled(Button)`
   }
 `;
 
-export const ListCardContainer = styled.div` 
+export const ListCardContainer = styled.div.attrs<DataAttributes>({
+  'data-testid': 'ListCardContainer',
+})` 
   position: relative;
   border-radius: 8px;
   background: #fff;
@@ -172,7 +196,11 @@ export const ListCardContainer = styled.div`
   }
 `;
 
-export const ListCardSkeleton = styled(ListCardContainer)`
+export const ListCardSkeleton = styled(ListCardContainer).attrs<DataAttributes>(
+  {
+    'data-testid': 'ListCardSkeleton',
+  },
+)`
   background: rgba(9, 30, 66, 0.25);
   cursor: default;
   pointer-events: none;
@@ -180,27 +208,41 @@ export const ListCardSkeleton = styled(ListCardContainer)`
   ${animationStyles.pulse}
 `;
 
-export const ListHeaderSkeletonRow = styled.div`
+export const ListHeaderSkeletonRow = styled.div.attrs<DataAttributes>({
+  'data-testid': 'ListHeaderSkeletonRow',
+})`
   display: flex;
   justify-content: space-between;
 `;
 
-export const ListCardsSkeletonRow = styled.div`
+export const ListCardsSkeletonRow = styled.div.attrs<DataAttributes>({
+  'data-testid': 'ListCardsSkeletonRow',
+})`
   display: flex;
   flex-direction: column;
 `;
 
-export const ListNameSkeleton = styled(ListCardSkeleton)`
+export const ListNameSkeleton = styled(ListCardSkeleton).attrs<DataAttributes>({
+  'data-testid': 'ListNameSkeleton',
+})`
   width: 125px;
    margin: 8px 0px 12px 8px;
 `;
 
-export const ListCountSkeleton = styled(ListCardSkeleton)`
+export const ListCountSkeleton = styled(ListCardSkeleton).attrs<DataAttributes>(
+  {
+    'data-testid': 'ListCountSkeleton',
+  },
+)`
   width: 20px;
    margin: 8px 0px 12px 8px;
 `;
 
-export const AddListButtonSkeleton = styled(ListCardSkeleton)`
+export const AddListButtonSkeleton = styled(
+  ListCardSkeleton,
+).attrs<DataAttributes>({
+  'data-testid': 'AddListButtonSkeleton',
+})`
   margin: 8px 0px 8px 8px;
   width: 75px;
 `;
@@ -221,7 +263,9 @@ export const AddNewCardAtPositionContainer = styled.div`
   cursor: pointer;
 `;
 
-export const AddNewCardAtPositionPlus = styled.div`
+export const AddNewCardAtPositionPlus = styled.div.attrs<DataAttributes>({
+  'data-testid': 'AddNewCardAtPositionPlus',
+})`
   position: absolute;
   top: 50%;
   left: 50%;

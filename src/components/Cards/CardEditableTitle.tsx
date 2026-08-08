@@ -40,12 +40,11 @@ export function CardEditableTitle() {
   }
 
   return (
-    <CardModalTitleContainer data-testid="CardModalTitleContainer">
+    <CardModalTitleContainer>
       <CardCompletedIndicator cardId={id} circleSize="18px" />
 
       {!isEditingTitle && (
         <CardModalTitle
-          data-testid="CardModalTitle"
           data-completed={card?.isCompleted ? '' : undefined}
           onClick={openEditTitle}
         >
@@ -56,7 +55,6 @@ export function CardEditableTitle() {
       {isEditingTitle && (
         <EditCardTitleForm ref={outsideClickRef}>
           <EditCardTitleInput
-            data-testid="EditCardTitleInput"
             value={editedTitle}
             autoFocus
             onChange={(event) =>

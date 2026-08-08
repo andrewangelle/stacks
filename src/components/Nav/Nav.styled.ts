@@ -1,4 +1,4 @@
-import { css, styled } from 'styled-components';
+import { css, type DataAttributes, styled } from 'styled-components';
 import type {
   BackgroundProps,
   BoardBackground,
@@ -16,7 +16,9 @@ const navSolidBackgroundTransition = css`
   animation: nav-background-flash 0.45s ease-out;
 `;
 
-export const NavBarContainer = styled.div`
+export const NavBarContainer = styled.div.attrs<DataAttributes>({
+  'data-testid': 'NavBarContainer',
+})`
   box-sizing: border-box;
   width: 100%;
   z-index: 2;
@@ -26,7 +28,9 @@ export const NavBarContainer = styled.div`
   position: fixed;
 `;
 
-export const NavBarContent = styled.div<BackgroundProps>`
+export const NavBarContent = styled.div.attrs<DataAttributes>({
+  'data-testid': 'NavBarContent',
+})<BackgroundProps>`
   display: flex;
   justify-content: space-between;
   min-height: 46px;
@@ -35,13 +39,19 @@ export const NavBarContent = styled.div<BackgroundProps>`
   background: ${({ $background }) => getBoardNavVars($background)};
 `;
 
-export const NavColumn = styled.div`
+export const NavColumn = styled.div.attrs<DataAttributes>({
+  'data-testid': 'column-placeholder',
+})`
   flex: 1 1 0;
   display: flex;
   justify-content: flex-end;
 `;
 
-export const BoardHeaderContainer = styled(NavBarContainer)<BackgroundProps>`
+export const BoardHeaderContainer = styled(
+  NavBarContainer,
+).attrs<DataAttributes>({
+  'data-testid': 'BoardHeaderContainer',
+})<BackgroundProps>`
   ${navSolidBackgroundTransition}
   padding: 10px;
   z-index: 1;
@@ -53,7 +63,9 @@ type BoardPageBackgroundProps = {
   $background?: string;
 };
 
-export const BoardPageBackground = styled.div<BoardPageBackgroundProps>`
+export const BoardPageBackground = styled.div.attrs<DataAttributes>({
+  'data-testid': 'BoardPageBackground',
+})<BoardPageBackgroundProps>`
   box-sizing: border-box;
   height: 100vh;
   width: 100%;
@@ -71,7 +83,9 @@ export const BoardPageBackground = styled.div<BoardPageBackgroundProps>`
   background:${({ $background }) => getBoardGradientVars($background as BoardBackground)};
 `;
 
-export const BoardTitle = styled.button`
+export const BoardTitle = styled.button.attrs<DataAttributes>({
+  'data-testid': 'BoardTitle',
+})`
   color: inherit;
   background: none;
   border: none;
@@ -96,7 +110,9 @@ export const EditBoardTitleForm = styled.form`
   top: -5px;
 `;
 
-export const EditBoardTitleInput = styled.input` 
+export const EditBoardTitleInput = styled.input.attrs<DataAttributes>({
+  'data-testid': 'EditBoardTitleInput',
+})` 
   font-family: ${fontFamily};
   font-weight: 500;
   font-size: 16px;

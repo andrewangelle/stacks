@@ -12,7 +12,7 @@ export function AppError(props: ErrorComponentProps) {
   return (
     <>
       <NavBarClient />
-      <FlexCenter data-testid="FlexCenter" style={{ flexDirection: 'column' }}>
+      <FlexCenter style={{ flexDirection: 'column' }}>
         <h1>Yikes</h1>
         <p>Something went wrong</p>
       </FlexCenter>

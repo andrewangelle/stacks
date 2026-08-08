@@ -1,6 +1,6 @@
 import { Checkbox, Popover } from 'radix-ui';
 import { AiOutlineEllipsis } from 'react-icons/ai';
-import { css, styled } from 'styled-components';
+import { css, type DataAttributes, styled } from 'styled-components';
 import { fontFamily, red } from '~/components/Boards/Boards.styled';
 import { cardModalContentIndent } from '~/components/Cards/Card.styled';
 import { animationStyles } from '~/styles/animations';
@@ -13,7 +13,9 @@ import { blue } from '~/styles/tokens';
 
 const checklistRowColumns = `${cardModalContentIndent} minmax(0, 1fr)`;
 
-export const AddChecklistItemButton = styled(Button)`
+export const AddChecklistItemButton = styled(Button).attrs<DataAttributes>({
+  'data-testid': 'AddChecklistItemButton',
+})`
   ${secondaryButtonStyles}
   padding: 8px 10px;
   margin: 12px 0px 0px ${cardModalContentIndent};
@@ -26,7 +28,9 @@ export const AddChecklistItemButton = styled(Button)`
   }
 `;
 
-export const AddChecklistItemInput = styled.textarea` 
+export const AddChecklistItemInput = styled.textarea.attrs<DataAttributes>({
+  'data-testid': 'AddChecklistItemInput',
+})` 
   height: 30px;
   width: 100%;
   font-size: 14px;
@@ -42,19 +46,33 @@ export const AddChecklistItemInput = styled.textarea`
   }
 `;
 
-export const AddChecklistItemInputIndented = styled(AddChecklistItemInput)` 
+export const AddChecklistItemInputIndented = styled(
+  AddChecklistItemInput,
+).attrs<DataAttributes>({
+  'data-testid': 'AddChecklistItemInput',
+})` 
   margin: 8px 0px 8px ${cardModalContentIndent};
 `;
 
-export const ChecklistItemActions = styled.div`
+export const ChecklistItemActions = styled.div.attrs<DataAttributes>({
+  'data-testid': 'ChecklistItemActions',
+})`
   display: flex;
 `;
 
-export const ChecklistItemActionsIndented = styled(ChecklistItemActions)`
+export const ChecklistItemActionsIndented = styled(
+  ChecklistItemActions,
+).attrs<DataAttributes>({
+  'data-testid': 'ChecklistItemActions',
+})`
   margin-left: ${cardModalContentIndent};
 `;
 
-export const CheckboxIndicator = styled(Checkbox.Indicator)` 
+export const CheckboxIndicator = styled(
+  Checkbox.Indicator,
+).attrs<DataAttributes>({
+  'data-testid': 'CheckboxIndicator',
+})` 
   color: white;
 `;
 
@@ -62,7 +80,9 @@ type CheckboxLabelProps = {
   checked: boolean;
 };
 
-export const CheckboxLabel = styled('label')<CheckboxLabelProps>`
+export const CheckboxLabel = styled.label.attrs<DataAttributes>({
+  'data-testid': 'CheckboxLabel',
+})<CheckboxLabelProps>`
   margin: 0;
   font-family: ${fontFamily};
   font-size: 14px;
@@ -78,30 +98,42 @@ export const EditChecklistItemContainer = styled.div`
   width: 85%;
 `;
 
-export const AddChecklistButton = styled(Button)` 
+export const AddChecklistButton = styled(Button).attrs<DataAttributes>({
+  'data-testid': 'AddChecklistButton',
+})` 
   padding: 8px 10px;
   margin: 0 10px 0 0px;
 `;
 
-export const DeleteChecklistPopoverButton = styled(Button)` 
+export const DeleteChecklistPopoverButton = styled(
+  Button,
+).attrs<DataAttributes>({
+  'data-testid': 'DeleteChecklistPopoverButton',
+})` 
   background: ${red};
   width: 100%;
   margin: 15px 0px 0px;
   padding: 8px 10px;
 `;
 
-export const ChecklistLeadingColumn = styled.div`
+export const ChecklistLeadingColumn = styled.div.attrs<DataAttributes>({
+  'data-testid': 'ChecklistLeadingColumn',
+})`
   display: flex;
   justify-content: flex-start;
 `;
 
-export const ChecklistContentColumn = styled.div`
+export const ChecklistContentColumn = styled.div.attrs<DataAttributes>({
+  'data-testid': 'ChecklistContentColumn',
+})`
   min-width: 0;
 `;
 
 export const ChecklistCheckboxContentColumn = styled(
   ChecklistContentColumn,
-)<ChecklistCheckboxContainerProps>`
+).attrs<DataAttributes>({
+  'data-testid': 'ChecklistContentColumn',
+})<ChecklistCheckboxContainerProps>`
   position: relative;
   display: flex;
   justify-content: space-between;
@@ -121,14 +153,18 @@ type ChecklistCheckboxContainerProps = {
   $isHovering: boolean;
 };
 
-export const ChecklistCheckboxContainer = styled('div')`
+export const ChecklistCheckboxContainer = styled.div.attrs<DataAttributes>({
+  'data-testid': 'ChecklistCheckboxContainer',
+})`
   display: grid;
   grid-template-columns: ${checklistRowColumns};
   position: relative;
   cursor: pointer;
 `;
 
-export const CheckboxRoot = styled(Checkbox.Root)`
+export const CheckboxRoot = styled(Checkbox.Root).attrs<DataAttributes>({
+  'data-testid': 'CheckboxRoot',
+})`
   width: 16px;
   height: 16px;
   vertical-align: top;
@@ -154,7 +190,11 @@ export const CheckboxRoot = styled(Checkbox.Root)`
   }
 `;
 
-export const ChecklistItemOptionsPopoverTrigger = styled(Popover.Trigger)` 
+export const ChecklistItemOptionsPopoverTrigger = styled(
+  Popover.Trigger,
+).attrs<DataAttributes>({
+  'data-testid': 'ChecklistItemOptionsPopoverTrigger',
+})` 
   border: none;
   background: transparent;
   cursor: pointer;
@@ -171,21 +211,29 @@ export const ChecklistItemOptionsPopoverTrigger = styled(Popover.Trigger)`
   }
 `;
 
-export const DeleteChecklistPopoverTrigger = styled(Popover.Trigger)`
+export const DeleteChecklistPopoverTrigger = styled(
+  Popover.Trigger,
+).attrs<DataAttributes>({
+  'data-testid': 'DeleteChecklistPopoverTrigger',
+})`
   border: none;
   background: transparent;
   cursor: pointer;
   height: 100%;
 `;
 
-export const ChecklistItemOptionsEllipsis = styled(AiOutlineEllipsis)`
+export const ChecklistItemOptionsEllipsis = styled(AiOutlineEllipsis).attrs({
+  'data-testid': 'ChecklistItemOptionsEllipsis',
+} as DataAttributes)`
   position: relative;
   top: 1px;
 `;
 
 export const ChecklistItemSkeletonContainer = styled.div``;
 
-export const CheckboxSkeleton = styled.div`
+export const CheckboxSkeleton = styled.div.attrs<DataAttributes>({
+  'data-testid': 'CheckboxSkeleton',
+})`
   background: rgba(9, 30, 66, 0.25);
   cursor: default;
   pointer-events: none;
@@ -198,7 +246,9 @@ export const CheckboxSkeleton = styled.div`
   ${animationStyles.pulse}
 `;
 
-export const ChecklistLabelSkeleton = styled.div`
+export const ChecklistLabelSkeleton = styled.div.attrs<DataAttributes>({
+  'data-testid': 'ChecklistLabelSkeleton',
+})`
   background: rgba(9, 30, 66, 0.25);
   cursor: default;
   pointer-events: none;
@@ -225,7 +275,11 @@ export const AddChecklistButtonSkeleton = styled.div`
   ${animationStyles.pulse}
 `;
 
-export const ChecklistItemOptionsListContainer = styled.div`
+export const ChecklistItemOptionsListContainer = styled.div.attrs<DataAttributes>(
+  {
+    'data-testid': 'ChecklistItemOptionsListContainer',
+  },
+)`
   display: flex;
   flex-direction: column;
 `;

@@ -78,7 +78,6 @@ export function AddNewCardAtPosition({
       {isAddingCard && (
         <div style={{ marginTop: '8px' }}>
           <AddCardInput
-            data-testid="AddCardInput"
             value={newCardTitle}
             placeholder="Enter a title"
             autoFocus
@@ -89,13 +88,10 @@ export function AddNewCardAtPosition({
         </div>
       )}
 
-      <Flex data-testid="Flex" style={{ marginBottom: '8px' }}>
+      <Flex style={{ marginBottom: '8px' }}>
         {!isAddingCard && isHovering && (
           <>
-            <AddNewCardAtPositionPlus
-              data-testid="AddNewCardAtPositionPlus"
-              onClick={() => setIsAddingCard(true)}
-            >
+            <AddNewCardAtPositionPlus onClick={() => setIsAddingCard(true)}>
               <FaPlus size={12} />
             </AddNewCardAtPositionPlus>
 
@@ -104,17 +100,11 @@ export function AddNewCardAtPosition({
         )}
 
         {isAddingCard && (
-          <AddCardButton data-testid="AddCardButton" onClick={onCardCreate}>
-            Add card
-          </AddCardButton>
+          <AddCardButton onClick={onCardCreate}>Add card</AddCardButton>
         )}
 
         {isAddingCard && (
-          <CloseAddCardButton
-            data-testid="CloseAddCardButton"
-            $secondary
-            onClick={() => setIsAddingCard(false)}
-          >
+          <CloseAddCardButton $secondary onClick={() => setIsAddingCard(false)}>
             X
           </CloseAddCardButton>
         )}

@@ -32,12 +32,8 @@ export function ChecklistItemOptions({
     <div ref={clickOutsidePopoverRef} data-testid="ChecklistItemOptions">
       <Popover.Root open={isOpen} onOpenChange={setOpen}>
         {(isHovering || isOpen) && (
-          <ChecklistItemOptionsPopoverTrigger
-            data-testid="ChecklistItemOptionsPopoverTrigger"
-            asChild
-          >
+          <ChecklistItemOptionsPopoverTrigger asChild>
             <ChecklistItemOptionsEllipsis
-              data-testid="ChecklistItemOptionsEllipsis"
               onClick={() => setOpen((prev) => !prev)}
               style={{ fill: isOpen ? 'white' : 'black' }}
             />
@@ -45,24 +41,18 @@ export function ChecklistItemOptions({
         )}
 
         <PopoverOptionsContent
-          data-testid="PopoverOptionsContent"
           side="bottom"
           align="start"
           sideOffset={8}
           alignOffset={4}
         >
-          <ChecklistPopoverHeader data-testid="ChecklistPopoverHeader">
+          <ChecklistPopoverHeader>
             <div style={{ fontWeight: 600 }}>Item actions</div>
 
-            <PopoverClose
-              data-testid="PopoverClose"
-              onClick={() => setOpen(false)}
-            >
-              X
-            </PopoverClose>
+            <PopoverClose onClick={() => setOpen(false)}>X</PopoverClose>
           </ChecklistPopoverHeader>
 
-          <ChecklistItemOptionsListContainer data-testid="ChecklistItemOptionsListContainer">
+          <ChecklistItemOptionsListContainer>
             <ConvertChecklistItemToCardButton
               id={id}
               checklistId={checklistId}

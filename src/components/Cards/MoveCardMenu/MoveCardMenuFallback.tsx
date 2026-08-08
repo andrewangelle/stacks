@@ -16,18 +16,17 @@ import {
 export function MoveCardMenuFallback() {
   return (
     <MoveCardMenuContent
-      data-testid="MoveCardMenuContent"
       side="bottom"
       align="start"
       sideOffset={8}
       alignOffset={4}
     >
-      <MoveCardMenuHeader data-testid="MoveCardMenuHeader">
+      <MoveCardMenuHeader>
         Move card
-        <PopoverClose data-testid="PopoverClose">X</PopoverClose>
+        <PopoverClose>X</PopoverClose>
       </MoveCardMenuHeader>
 
-      <CreateBoardCloseBorder data-testid="CreateBoardCloseBorder" />
+      <CreateBoardCloseBorder />
 
       <div>
         <DropdownLabel data-testid="BoardSelectTitle">Board</DropdownLabel>
@@ -50,11 +49,7 @@ export function MoveCardMenuFallback() {
         </MoveCardSelectRow>
       </div>
 
-      <MoveCardButton
-        data-testid="MoveCardButton"
-        onClick={() => null}
-        disabled={true}
-      >
+      <MoveCardButton onClick={() => null} disabled={true}>
         Move
       </MoveCardButton>
     </MoveCardMenuContent>

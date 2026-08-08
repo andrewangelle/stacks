@@ -46,45 +46,33 @@ export function CreateBoard() {
 
   return (
     <Popover.Root open={isCreateOpen}>
-      <CreateBoardPopoverTrigger data-testid="CreateBoardPopoverTrigger">
+      <CreateBoardPopoverTrigger>
         <CreateBoardCard
-          data-testid="CreateBoardCard"
           onClick={() => setCreateOpen((prevState) => !prevState)}
         >
           Create new board
         </CreateBoardCard>
       </CreateBoardPopoverTrigger>
 
-      <CreateBoardPopoverContent
-        data-testid="CreateBoardPopoverContent"
-        side="bottom"
-      >
-        <CreateBoardPopoverHeader data-testid="CreateBoardPopoverHeader">
+      <CreateBoardPopoverContent side="bottom">
+        <CreateBoardPopoverHeader>
           Create Board
-          <PopoverClose
-            data-testid="PopoverClose"
-            onClick={() => setCreateOpen(false)}
-          >
-            X
-          </PopoverClose>
+          <PopoverClose onClick={() => setCreateOpen(false)}>X</PopoverClose>
         </CreateBoardPopoverHeader>
 
-        <CreateBoardCloseBorder data-testid="CreateBoardCloseBorder" />
+        <CreateBoardCloseBorder />
 
-        <CreateBoardBackgroundText data-testid="CreateBoardBackgroundText">
-          Background
-        </CreateBoardBackgroundText>
+        <CreateBoardBackgroundText>Background</CreateBoardBackgroundText>
 
-        <CreateBoardBackgroundChoices data-testid="CreateBoardBackgroundChoices">
+        <CreateBoardBackgroundChoices>
           {backgroundChoices.map((color) => (
             <CreateBoardBackgroundChoice
-              data-testid="CreateBoardBackgroundChoice"
               key={color}
               $background={color}
               onClick={() => setSelectedColor(color)}
             >
               {color === selectedColor && (
-                <Center data-testid="Center">
+                <Center>
                   <FaCheck />
                 </Center>
               )}
@@ -92,22 +80,15 @@ export function CreateBoard() {
           ))}
         </CreateBoardBackgroundChoices>
 
-        <CreateBoardBackgroundText data-testid="CreateBoardBackgroundText">
-          Board Title
-        </CreateBoardBackgroundText>
+        <CreateBoardBackgroundText>Board Title</CreateBoardBackgroundText>
 
         <CreateBoardTitleInput
-          data-testid="CreateBoardTitleInput"
           onChange={(event) => setBoardTitle(event.target.value)}
           value={boardTitle}
           autoFocus
         />
 
-        <CreateBoardButton
-          data-testid="CreateBoardButton"
-          disabled={!boardTitle}
-          onClick={onBoardCreate}
-        >
+        <CreateBoardButton disabled={!boardTitle} onClick={onBoardCreate}>
           Create
         </CreateBoardButton>
       </CreateBoardPopoverContent>

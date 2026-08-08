@@ -76,7 +76,7 @@ export function ActivityTimestamp({
   if (isLoading || !data) {
     return (
       <ActivityTimestampMeta data-testid="ActivityTimestamp">
-        <ActivityTimestampSkeleton data-testid="ActivityTimestampSkeleton" />
+        <ActivityTimestampSkeleton />
       </ActivityTimestampMeta>
     );
   }
@@ -92,7 +92,6 @@ export function ActivityTimestamp({
       {formatActivityTime(data?.createdAt)}
 
       <PaperclipReveal
-        data-testid="PaperclipReveal"
         $isVisible={showPaperclipIcon}
         aria-hidden={!showPaperclipIcon}
       >
@@ -104,7 +103,7 @@ export function ActivityTimestamp({
       </PaperclipReveal>
 
       {showCheckmark && (
-        <ActivityCopiedCheckmark data-testid="ActivityCopiedCheckmark">
+        <ActivityCopiedCheckmark>
           <AiOutlineCheck
             size={8}
             data-testid="CardCompletedIndicatorCheckmark"

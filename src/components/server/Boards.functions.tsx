@@ -12,10 +12,6 @@ export const getBoardsServer = createServerFn()
   .middleware([authMiddleware])
   .handler(async () => ({
     src: await createCompositeComponent((props: BoardsServerProps) => {
-      return (
-        <BoardsContainer data-testid="BoardsContainer">
-          {props.children}
-        </BoardsContainer>
-      );
+      return <BoardsContainer>{props.children}</BoardsContainer>;
     }),
   }));

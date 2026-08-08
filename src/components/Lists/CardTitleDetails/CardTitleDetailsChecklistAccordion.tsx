@@ -32,31 +32,28 @@ export function CardTitleDetailsChecklistAccordion({
   if (!checklist) return null;
   return (
     <CardTitleDetailsChecklistAccordionItem
-      data-testid="CardTitleDetailsChecklistAccordionItem"
       key={checklist.id}
       value={checklist.id}
     >
-      <CardTitleDetailsChecklistAccordionHeader data-testid="CardTitleDetailsChecklistAccordionHeader">
+      <CardTitleDetailsChecklistAccordionHeader>
         <CardTitleDetailsChecklistAccordionTrigger
-          data-testid="CardTitleDetailsChecklistAccordionTrigger"
           onClick={(event) => event.stopPropagation()}
         >
-          <CardTitleDetailsChecklistAccordionChevron data-testid="CardTitleDetailsChecklistAccordionChevron">
+          <CardTitleDetailsChecklistAccordionChevron>
             <RiArrowRightSLine size={16} />
           </CardTitleDetailsChecklistAccordionChevron>
 
-          <CardTitleDetailsChecklistAccordionTitle data-testid="CardTitleDetailsChecklistAccordionTitle">
+          <CardTitleDetailsChecklistAccordionTitle>
             {checklist.checklistTitle}
           </CardTitleDetailsChecklistAccordionTitle>
 
-          <CardTitleDetailsChecklistAccordionCount data-testid="CardTitleDetailsChecklistAccordionCount">
+          <CardTitleDetailsChecklistAccordionCount>
             {checklist.completedItems}/{checklist.totalItems}
           </CardTitleDetailsChecklistAccordionCount>
         </CardTitleDetailsChecklistAccordionTrigger>
       </CardTitleDetailsChecklistAccordionHeader>
 
       <CardTitleDetailsChecklistAccordionContent
-        data-testid="CardTitleDetailsChecklistAccordionContent"
         onPointerDown={(event) => event.stopPropagation()}
       >
         <Suspense fallback={<CardTitleDetailsChecklistFallback />}>

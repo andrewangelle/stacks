@@ -27,20 +27,17 @@ export function ActivityPanel() {
   }, [location.hash]);
 
   return (
-    <ActivityPanelContainer data-testid="ActivityPanelContainer">
-      <ActivityHeader data-testid="ActivityHeader">
-        <ActivityHeaderTitle data-testid="ActivityHeaderTitle">
+    <ActivityPanelContainer>
+      <ActivityHeader>
+        <ActivityHeaderTitle>
           <BiCommentDetail
             size={18}
             style={{ position: 'relative', top: '4px', flexShrink: 0 }}
           />
-          <ActivityTitle data-testid="ActivityTitle">
-            Comments and activity
-          </ActivityTitle>
+          <ActivityTitle>Comments and activity</ActivityTitle>
         </ActivityHeaderTitle>
 
         <HideActivityButton
-          data-testid="HideActivityButton"
           $secondary={true}
           onClick={() => setShowActivity((prev) => !prev)}
         >

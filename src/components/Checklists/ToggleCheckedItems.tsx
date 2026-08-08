@@ -23,7 +23,6 @@ export function ToggleCheckedItems({ checklistId }: { checklistId: string }) {
 
   return (
     <ToggleCheckedItemsButton
-      data-testid="ToggleCheckedItemsButton"
       disabled={isPending}
       onClick={() =>
         updateChecklist({

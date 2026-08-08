@@ -20,7 +20,6 @@ export const getBoardPageServer = createServerFn()
       return (
         <BoardPageBackground
           key={response?.boardColor}
-          data-testid="BoardPageBackground"
           $background={response?.boardColor as BoardBackground}
         >
           {props.children}

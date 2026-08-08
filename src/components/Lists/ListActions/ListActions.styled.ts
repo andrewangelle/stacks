@@ -1,10 +1,14 @@
 import { Popover } from 'radix-ui';
-import { css, styled } from 'styled-components';
+import { css, type DataAttributes, styled } from 'styled-components';
 import { fontFamily, PopoverClose } from '~/components/Boards/Boards.styled';
 import { Button } from '~/styles/Page.styled';
 import { red } from '~/styles/tokens';
 
-export const ListActionsPopoverTrigger = styled(Popover.Trigger)` 
+export const ListActionsPopoverTrigger = styled(
+  Popover.Trigger,
+).attrs<DataAttributes>({
+  'data-testid': 'ListActionsPopoverTrigger',
+})` 
   border: none;
   background: transparent;
   cursor: pointer;
@@ -16,7 +20,9 @@ type IsOpenProps = {
   $isOpen: boolean;
 };
 
-export const ListActionsPopoverButton = styled.div<IsOpenProps>`
+export const ListActionsPopoverButton = styled.div.attrs<DataAttributes>({
+  'data-testid': 'ListActionsPopoverButton',
+})<IsOpenProps>`
   cursor: pointer;
   text-align: center;
   white-space: nowrap;
@@ -117,12 +123,16 @@ export const ListActionsPopoverButtonBack = styled.button<IsActiveProps>`
   
 `;
 
-export const ListActionsPopoverButtonText = styled.span`
+export const ListActionsPopoverButtonText = styled.span.attrs<DataAttributes>({
+  'data-testid': 'ListActionsPopoverButtonText',
+})`
   font-family: ${fontFamily};
   font-size: 14px;
 `;
 
-export const ListActionsPopoverHeader = styled.div`
+export const ListActionsPopoverHeader = styled.div.attrs<DataAttributes>({
+  'data-testid': 'ListActionsPopoverHeader',
+})`
   font-weight: 600;
   display: flex;
   justify-content: space-between;
@@ -131,7 +141,11 @@ export const ListActionsPopoverHeader = styled.div`
   padding: 5px 0px 10px 5px;
 `;
 
-export const ListActionsPopoverClose = styled(PopoverClose)`
+export const ListActionsPopoverClose = styled(
+  PopoverClose,
+).attrs<DataAttributes>({
+  'data-testid': 'ListActionsPopoverClose',
+})`
   && {
     font-weight: 600;
     margin: 4px;
@@ -143,12 +157,16 @@ export const ListActionsPopoverClose = styled(PopoverClose)`
   }
 `;
 
-export const ListActionsOptionsContainer = styled.div`
+export const ListActionsOptionsContainer = styled.div.attrs<DataAttributes>({
+  'data-testid': 'ListActionsOptionsContainer',
+})`
   display: flex;
   flex-direction: column;
 `;
 
-export const ListActionsOption = styled.button`
+export const ListActionsOption = styled.button.attrs<DataAttributes>({
+  'data-testid': 'ListActionsOption',
+})`
   padding: 8px 10px;
   cursor: pointer;
   border: none;
@@ -166,20 +184,26 @@ export const ListActionsOption = styled.button`
   }
 `;
 
-export const DeleteListButton = styled(Button)`
+export const DeleteListButton = styled(Button).attrs<DataAttributes>({
+  'data-testid': 'DeleteListButton',
+})`
   background: ${red};
   width: 100%;
   margin: 15px 0px 0px;
   padding: 8px 10px;
 `;
 
-export const MoveListFieldsContainer = styled.div`
+export const MoveListFieldsContainer = styled.div.attrs<DataAttributes>({
+  'data-testid': 'MoveListFieldsContainer',
+})`
   display: flex;
   flex-direction: column;
   padding-top: 8px;
 `;
 
-export const MoveListButton = styled(Button)`
+export const MoveListButton = styled(Button).attrs<DataAttributes>({
+  'data-testid': 'MoveListButton',
+})`
   width: calc(100% - 20px);
   margin: 8px 10px 0px;
   padding: 10px 20px;

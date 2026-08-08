@@ -53,7 +53,6 @@ export function EditableChecklistLabel({
     return (
       <CheckboxLabel
         tabIndex={0}
-        data-testid="CheckboxLabel"
         checked={checklistItem?.isCompleted ?? false}
         onClick={openEditLabel}
         onKeyDown={(event) => {
@@ -70,23 +69,16 @@ export function EditableChecklistLabel({
   return (
     <EditChecklistItemContainer data-testid="EditChecklistItemContainer">
       <AddChecklistItemInput
-        data-testid="AddChecklistItemInput"
         value={editedLabel}
         placeholder={editedLabel}
         autoFocus
         onChange={(event) => setEditedLabel(event.target.value)}
       />
 
-      <ChecklistItemActions data-testid="ChecklistItemActions">
-        <AddChecklistButton
-          data-testid="AddChecklistButton"
-          onClick={addChecklistItem}
-        >
-          Save
-        </AddChecklistButton>
+      <ChecklistItemActions>
+        <AddChecklistButton onClick={addChecklistItem}>Save</AddChecklistButton>
 
         <CloseDescriptionButton
-          data-testid="CloseDescriptionButton"
           $secondary
           onClick={() => setIsEditingLabel(false)}
         >

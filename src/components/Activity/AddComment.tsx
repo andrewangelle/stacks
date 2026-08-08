@@ -31,22 +31,17 @@ export function AddComment() {
   }
 
   return (
-    <AddCommentContainer data-testid="AddCommentContainer">
-      <ActivityRow data-testid="ActivityRow">
+    <AddCommentContainer>
+      <ActivityRow>
         <AddCommentForm onSubmit={(event) => event.preventDefault()}>
           <AddCommentInput
-            data-testid="AddCommentInput"
             value={comment}
             onChange={(event) => setComment(event.target.value)}
             placeholder="Write a comment..."
           />
 
           <EditCommentActionsRow data-testid="EditCommentActions">
-            <SaveCommentButton
-              data-testid="SaveCommentButton"
-              onClick={createComment}
-              disabled={!comment}
-            >
+            <SaveCommentButton onClick={createComment} disabled={!comment}>
               Save
             </SaveCommentButton>
           </EditCommentActionsRow>

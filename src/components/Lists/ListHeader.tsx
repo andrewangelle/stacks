@@ -6,10 +6,10 @@ import { Flex } from '~/styles/Page.styled';
 
 export function ListHeader({ id: listId }: { id: string }) {
   return (
-    <ListHeaderContainer data-testid="ListHeaderContainer">
+    <ListHeaderContainer>
       <EditableListName listId={listId} />
 
-      <Flex data-testid="Flex" style={{ gap: '8px', alignItems: 'center' }}>
+      <Flex style={{ gap: '8px', alignItems: 'center' }}>
         <ListHeaderCardCount listId={listId} />
         <ListActions id={listId} />
       </Flex>

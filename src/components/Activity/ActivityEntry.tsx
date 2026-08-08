@@ -38,18 +38,13 @@ export function ActivityEntry({
   }
 
   return (
-    <ActivityContainer
-      data-testid="ActivityContainer"
-      key={data.id}
-      $isSelected={isSelected}
-      ref={ref}
-    >
-      <ActivityRow data-testid="ActivityRow">
+    <ActivityContainer key={data.id} $isSelected={isSelected} ref={ref}>
+      <ActivityRow>
         <ActivityLogo />
 
-        <ActivityCommentContainer data-testid="ActivityCommentContainer">
-          <ActivityEntryContent data-testid="ActivityEntryContent">
-            <ActivityAuthorName data-testid="ActivityAuthorName">
+        <ActivityCommentContainer>
+          <ActivityEntryContent>
+            <ActivityAuthorName>
               {user?.firstName} {user?.lastName}
             </ActivityAuthorName>{' '}
             <span style={{ fontSize: '14px' }}>

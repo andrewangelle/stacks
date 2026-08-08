@@ -1,12 +1,16 @@
 import { Popover } from 'radix-ui';
-import { styled } from 'styled-components';
+import { type DataAttributes, styled } from 'styled-components';
 import {
   CreateBoardBackgroundChoice,
   fontFamily,
   PopoverClose,
 } from '~/components/Boards/Boards.styled';
 
-export const BoardMenuPopoverTrigger = styled(Popover.Trigger)` 
+export const BoardMenuPopoverTrigger = styled(
+  Popover.Trigger,
+).attrs<DataAttributes>({
+  'data-testid': 'BoardMenuPopoverTrigger',
+})` 
   border: none;
   background: transparent;
   cursor: pointer;
@@ -18,7 +22,9 @@ type IsOpenProps = {
   $isOpen: boolean;
 };
 
-export const BoardMenuPopoverButton = styled.div<IsOpenProps>`
+export const BoardMenuPopoverButton = styled.div.attrs<DataAttributes>({
+  'data-testid': 'BoardMenuPopoverButton',
+})<IsOpenProps>`
   border: none;
   cursor: pointer;
   position: relative;
@@ -108,13 +114,17 @@ export const BoardMenuPopoverButtonBack = styled.button<IsActiveProps>`
 
 `;
 
-export const BoardMenuPopoverButtonText = styled.span`
+export const BoardMenuPopoverButtonText = styled.span.attrs<DataAttributes>({
+  'data-testid': 'BoardMenuPopoverButtonText',
+})`
   font-family: ${fontFamily};
   font-size: 14px;
   color: white;
 `;
 
-export const BoardMenuPopoverHeader = styled.div`
+export const BoardMenuPopoverHeader = styled.div.attrs<DataAttributes>({
+  'data-testid': 'BoardMenuPopoverHeader',
+})`
   font-weight: 600;
   display: flex;
   justify-content: space-between;
@@ -123,7 +133,11 @@ export const BoardMenuPopoverHeader = styled.div`
   padding: 5px 0px 10px 5px;
 `;
 
-export const BoardMenuPopoverClose = styled(PopoverClose)`
+export const BoardMenuPopoverClose = styled(PopoverClose).attrs<DataAttributes>(
+  {
+    'data-testid': 'BoardMenuPopoverClose',
+  },
+)`
   && {
     font-weight: 600;
     margin: 4px;
@@ -136,12 +150,16 @@ export const BoardMenuPopoverClose = styled(PopoverClose)`
   }
 `;
 
-export const BoardMenuOptionsContainer = styled.div`
+export const BoardMenuOptionsContainer = styled.div.attrs<DataAttributes>({
+  'data-testid': 'BoardMenuOptionsContainer',
+})`
   display: flex;
   flex-direction: column;
 `;
 
-export const BoardMenuOption = styled.button`
+export const BoardMenuOption = styled.button.attrs<DataAttributes>({
+  'data-testid': 'BoardMenuOption',
+})`
   padding: 8px 10px;
   cursor: pointer;
   border: none;
@@ -159,7 +177,11 @@ export const BoardMenuOption = styled.button`
   }
 `;
 
-export const ChangeBoardBackgroundChoice = styled(CreateBoardBackgroundChoice)`
+export const ChangeBoardBackgroundChoice = styled(
+  CreateBoardBackgroundChoice,
+).attrs<DataAttributes>({
+  'data-testid': 'ChangeBoardBackgroundChoice',
+})`
   && {
     height: 86px;
     width: 91px;
@@ -167,7 +189,9 @@ export const ChangeBoardBackgroundChoice = styled(CreateBoardBackgroundChoice)`
   }
 `;
 
-export const BoardMenuTriggerLoaderSlot = styled.span`
+export const BoardMenuTriggerLoaderSlot = styled.span.attrs<DataAttributes>({
+  'data-testid': 'BoardMenuTriggerLoaderSlot',
+})`
   display: inline-flex;
   align-items: center;
   justify-content: center;
