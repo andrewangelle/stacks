@@ -22,7 +22,7 @@ export function BoardHeader() {
   const updateBoard = useUpdateBoard();
   const routerState = useRouterState();
 
-  const loading = routerState.isLoading || routerState.isTransitioning;
+  const loading = routerState.isLoading;
 
   function toggleEditBoardTitleForm() {
     setEditing(true);
