@@ -18,12 +18,16 @@ export const Route = createFileRoute('/boards')({
       throw redirect({ to: '/auth/sign-in' });
     }
 
-    context.queryClient.prefetchQuery(boardsQueryOptions);
+    const boards = context.queryClient.prefetchQuery(boardsQueryOptions);
 
-    return {
+    const loaderData = {
       BoardsServer: await getBoardsServer(),
       NavBarServer: await getNavBarServer(),
     };
+
+    await boards;
+
+    return loaderData;
   },
 
   pendingComponent() {
