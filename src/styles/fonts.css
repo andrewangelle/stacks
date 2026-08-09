@@ -1,0 +1,30 @@
+/*
+ * The font face and document defaults live in a real stylesheet, not in a
+ * `createGlobalStyle`. styled-components re-renders every global style it owns
+ * whenever the component holding it re-renders, and re-inserting an @font-face
+ * rule makes the browser re-register the face: text falls back for a frame and
+ * the whole page reflows. Drag start re-renders the tree, so that showed up as
+ * a layout jump the moment you grabbed anything.
+ */
+@font-face {
+  font-family: "App Sans";
+  src: url("/AppSans-latin.woff2") format("woff2");
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+html {
+  scroll-snap-type: both mandatory;
+  margin: 0;
+  padding: 0;
+  overscroll-behavior: none;
+}
+
+body {
+  font-family: "App Sans", sans-serif;
+  font-weight: 400;
+  font-style: normal;
+  padding: 0;
+  margin: 0;
+}
