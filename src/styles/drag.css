@@ -3,6 +3,12 @@
  * layer as the drag preview (keeping its real content) and leaves a cloned
  * placeholder in its original spot. By default that placeholder is hidden;
  * we render it as a subtle shadow so the drop target is still visible.
+ *
+ * Nothing here may change the placeholder's box. @dnd-kit keeps a
+ * ResizeObserver on it and re-projects the dragged element from its size:
+ * `top += (originalHeight - placeholderHeight) * grabPointWithinElement`. Give
+ * the placeholder a different height and the item visibly jumps away from the
+ * cursor the moment you grab it.
  */
 [data-dnd-placeholder] {
   /* biome-ignore lint/complexity/noImportantStyles: <> */
@@ -13,17 +19,37 @@
   border-radius: 5px !important;
   /* biome-ignore lint/complexity/noImportantStyles: <> */
   box-shadow: none !important;
-
-  /* Lists sit in a flex row with align-items: stretch, so their wrapper would
-     otherwise stretch to the full board height. A content-based height keeps
-     the shadow the same size as the dragged item. 
-    biome-ignore lint/complexity/noImportantStyles: <> 
-  */
-  height: fit-content !important;
 }
 
 /* Hide the cloned content inside the placeholder; only the shadow box shows. */
 [data-dnd-placeholder] * {
+  /* biome-ignore lint/complexity/noImportantStyles: <> */
+  visibility: hidden !important;
+}
+
+/*
+ * Lists sit in a flex row with align-items: stretch, so their wrapper is as
+ * tall as the board and painting it would leave a full-height shadow. Paint the
+ * cloned ListContainer instead — it is already content-height and inset by the
+ * list's side margins, so the shadow lands exactly where the list was.
+ */
+[data-dnd-placeholder]:has(> [data-testid="ListContainer"]) {
+  /* biome-ignore lint/complexity/noImportantStyles: <> */
+  background: transparent !important;
+}
+
+[data-dnd-placeholder] > [data-testid="ListContainer"] {
+  /* biome-ignore lint/complexity/noImportantStyles: <> */
+  visibility: visible !important;
+  /* biome-ignore lint/complexity/noImportantStyles: <> */
+  background: rgba(0, 0, 0, 0.1) !important;
+  /* biome-ignore lint/complexity/noImportantStyles: <> */
+  border-radius: 8px !important;
+  /* biome-ignore lint/complexity/noImportantStyles: <> */
+  box-shadow: none !important;
+}
+
+[data-dnd-placeholder] > [data-testid="ListContainer"] * {
   /* biome-ignore lint/complexity/noImportantStyles: <> */
   visibility: hidden !important;
 }

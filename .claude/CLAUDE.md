@@ -24,9 +24,9 @@ Why it is needed:
 
 How the fix works:
 
-- A per-request `ServerStyleSheet` is passed to `StyleSheetManager sheet=`. This
-  is also why `createGlobalStyle` (`GlobalFonts`) works — the default main sheet
-  has `server === false` on the server and silently drops global styles.
+- A per-request `ServerStyleSheet` is passed to `StyleSheetManager sheet=`. The
+  default main sheet has `server === false` on the server and silently drops
+  anything registered there, `createGlobalStyle` included.
 - `<ServerStyles>` renders as the **last** child of the manager so every styled
   component above it has already registered. It tags the `<style>` with React 19
   `href`/`precedence` so React hoists it into `<head>` while building the shell.
@@ -51,3 +51,35 @@ inside `<head>`:
 ```sh
 curl -sL http://localhost:3000/ | grep -o '<style[^>]*>' | head
 ```
+
+## Drag and drop: never change the placeholder's box
+
+`src/styles/drag.css` styles @dnd-kit's `[data-dnd-placeholder]` clone as the
+drop shadow. **Only paint it — do not give it a height, width, margin or
+padding of its own.** @dnd-kit keeps a `ResizeObserver` on the placeholder and
+re-projects the dragged element from its size:
+
+```
+top += (originalHeight - placeholderHeight) * grabPointWithinElement
+```
+
+A `height: fit-content` on the placeholder used to shrink a list wrapper from
+the stretched board height (754px) down to content height (132px), which moved
+the dragged list 12px away from the cursor the instant you grabbed it.
+
+Lists are the awkward case: their wrapper is a stretched flex item, so painting
+it leaves a full-height shadow. Paint the cloned `ListContainer` inside it
+instead — it is already content-height and inset by the list's side margins.
+
+To check a change, start a drag and compare the dragged element's `--dnd-top`
+against the element's pre-drag `getBoundingClientRect().top`; they should differ
+by 0.
+
+## Global styles re-register the font face
+
+Keep `@font-face` in `src/styles/fonts.css`, not in a `createGlobalStyle`.
+styled-components re-inserts a global style's rules whenever the component
+holding it re-renders, and re-registering an `@font-face` makes the browser
+re-load the face — text falls back for a frame and the whole page reflows.
+`GlobalFonts` used to sit inside `DragDropProvider`, so every drag start and
+drag end reflowed the page.

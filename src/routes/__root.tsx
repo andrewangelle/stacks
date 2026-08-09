@@ -1,4 +1,5 @@
 import '~/styles/animations.css';
+import '~/styles/fonts.css';
 import '~/styles/board-gradient.css';
 import '~/styles/drag.css';
 import { ClerkProvider } from '@clerk/tanstack-react-start';
@@ -15,7 +16,6 @@ import { rscPlugin } from 'styled-components/plugins';
 import { DevTools } from '~/components/DevTools';
 import { fetchUserId } from '~/middleware/auth';
 import type { queryClient } from '~/query';
-import GlobalFonts from '~/styles/GlobalFonts';
 import { ServerStyles, useServerStyleSheet } from '~/styles/ServerStyles';
 import { detectMobile } from '~/utils/detectMobile';
 
@@ -85,7 +85,6 @@ export const Route = createRootRouteWithContext<RouterContext>()({
           <Providers>
             <Outlet />
             <Scripts />
-            <GlobalFonts />
             <DevTools />
           </Providers>
         </body>
