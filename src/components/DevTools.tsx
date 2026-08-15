@@ -20,6 +20,10 @@ export function usePreventModalCloseOnDevToolsEvent() {
 }
 
 export function DevTools() {
+  if (import.meta.env.PROD || import.meta.env.VITE_E2E) {
+    return null;
+  }
+
   return (
     <div style={{ pointerEvents: 'auto' }}>
       <TanStackDevtools
