@@ -1,10 +1,12 @@
-import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
-import { TanStackRouterDevtools } from '@tanstack/react-router-devtools';
+import { TanStackDevtools } from '@tanstack/react-devtools';
+import { ReactQueryDevtoolsPanel } from '@tanstack/react-query-devtools';
+import { TanStackRouterDevtoolsPanel } from '@tanstack/react-router-devtools';
 import { useCallback } from 'react';
 
 type PointerDownOutsideEvent = CustomEvent<{
   originalEvent: PointerEvent;
 }>;
+
 export function usePreventModalCloseOnDevToolsEvent() {
   return useCallback((event: PointerDownOutsideEvent) => {
     if (
@@ -18,14 +20,23 @@ export function usePreventModalCloseOnDevToolsEvent() {
 }
 
 export function DevTools() {
-  if (import.meta.env.PROD || import.meta.env.VITE_E2E) {
-    return null;
-  }
-
   return (
     <div style={{ pointerEvents: 'auto' }}>
-      <ReactQueryDevtools />
-      <TanStackRouterDevtools />
+      <TanStackDevtools
+        config={{
+          position: 'bottom-left',
+        }}
+        plugins={[
+          {
+            name: 'Tanstack Router',
+            render: <TanStackRouterDevtoolsPanel />,
+          },
+          {
+            name: 'React Query',
+            render: <ReactQueryDevtoolsPanel />,
+          },
+        ]}
+      />
     </div>
   );
 }

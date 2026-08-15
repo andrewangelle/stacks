@@ -9,4 +9,5 @@ pnpm add @tanstack/react-start@latest \
  @tanstack/react-virtual@latest \
  @sentry/tanstackstart-react@latest \
  @netlify/vite-plugin-tanstack-start@latest \
- @clerk/tanstack-react-start@latest
+ @clerk/tanstack-react-start@latest \
+ @tanstack/react-devtools
