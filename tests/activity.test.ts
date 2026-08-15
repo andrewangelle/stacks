@@ -63,6 +63,112 @@ test.describe('Activity', () => {
   });
 });
 
+test.describe('Activity details toggle', () => {
+  test.describe.configure({ timeout: 60_000 });
+
+  test('persists hidden details across a reload', async ({ page, request }) => {
+    await resetDb(request);
+    const board = await seedBoard(request, 'Sprint Board');
+    const { list, card } = await seedCard(request, {
+      boardId: board.id,
+      listTitle: 'To Do',
+      cardTitle: 'Ship feature',
+    });
+
+    // Two feed entries, staggered oldest-last. The older one is the card's
+    // first entry, which the panel pins in both views, so the newer one is what
+    // hiding details actually takes away.
+    await seedActivities(request, {
+      boardId: board.id,
+      listId: list.id,
+      cardId: card.id,
+      count: 2,
+      type: 'feed',
+    });
+
+    await page.goto(`/board/${board.id}/card/${card.id}`);
+
+    const activityColumn = page.getByTestId('CardActivityColumn');
+    const toggleButton = activityColumn.getByTestId('HideActivityButton');
+    const newerEntry = activityEntry(page, 'seeded activity 1');
+    const firstEntry = activityEntry(page, 'seeded activity 2');
+
+    await expect(toggleButton).toHaveText('Hide details');
+    await expect(newerEntry).toBeVisible();
+
+    await hideDetails(page);
+
+    // The toggle is written to the card, so let the mutation reach the server
+    // before dropping the optimistic cache on the floor with a reload.
+    await page.waitForLoadState('networkidle');
+    await page.reload();
+
+    await expect(toggleButton).toHaveText('Show details');
+    await expect(newerEntry).toHaveCount(0);
+    await expect(firstEntry).toBeVisible();
+  });
+
+  test('always shows the card creation entry', async ({ page, request }) => {
+    await resetDb(request);
+    const board = await seedBoard(request, 'Sprint Board');
+    // Seed the list only. The "added this card" entry is written by the client
+    // when a card is created, so the card under test has to be added through
+    // the UI to have one at all.
+    await seedCard(request, {
+      boardId: board.id,
+      listTitle: 'To Do',
+      cardTitle: 'Ship feature',
+    });
+
+    await page.goto(`/board/${board.id}`);
+
+    await waitForInteractiveTrigger(
+      page,
+      '[data-testid="AddCardInput"]',
+      '[data-testid="AddCardText"]',
+    );
+    await page.getByTestId('AddCardInput').fill('Write E2E tests');
+    await page.getByTestId('AddCardButton').click();
+
+    const newCard = page
+      .getByTestId('ListCardContainer')
+      .filter({ hasText: 'Write E2E tests' });
+
+    await expect(newCard).toBeVisible();
+    // The creation entry is written by an effect after the card lands, so let
+    // it reach the server before the card modal fetches the feed.
+    await page.waitForLoadState('networkidle');
+
+    await waitForHydratedAction(
+      () => newCard.click(),
+      () => page.getByTestId('CardModalContent').isVisible(),
+    );
+
+    // A second feed entry, newer than the creation entry, to show that hiding
+    // details takes the rest of the feed away and keeps only the pinned one.
+    const completionCircle = page
+      .getByTestId('CardModalTitleContainer')
+      .getByTestId('CardTitleModalTriggerCircle');
+
+    await waitForHydratedAction(
+      () => completionCircle.click(),
+      async () =>
+        (await completionCircle.getAttribute('data-completed')) === '',
+    );
+
+    const creationEntry = activityEntry(page, 'added this card');
+    const completionEntry = activityEntry(page, 'marked this card complete');
+
+    await expect(creationEntry).toBeVisible();
+    await expect(completionEntry).toBeVisible();
+
+    await hideDetails(page);
+
+    await expect(completionEntry).toHaveCount(0);
+    await expect(creationEntry).toBeVisible();
+  });
+});
+
 test.describe('Activity copy link', () => {
   // openCard + addComment on a cold run can exceed the default 30s budget.
   test.describe.configure({ timeout: 60_000 });
@@ -204,6 +310,24 @@ async function openCard(page: Page, request: APIRequestContext) {
   }).toPass();
 
   return { board, card };
+}
+
+function activityEntry(page: Page, text: string) {
+  return page
+    .getByTestId('CardActivityColumn')
+    .getByTestId('ActivityContainer')
+    .filter({ hasText: text });
+}
+
+async function hideDetails(page: Page) {
+  const toggleButton = page
+    .getByTestId('CardActivityColumn')
+    .getByTestId('HideActivityButton');
+
+  return waitForHydratedAction(
+    () => toggleButton.click(),
+    async () => (await toggleButton.textContent()) === 'Show details',
+  );
 }
 
 async function addComment(page: Page, text: string) {

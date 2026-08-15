@@ -10,10 +10,17 @@ import {
 } from '~/components/Activity/Activity.styled';
 import { ActivityList } from '~/components/Activity/ActivityList';
 import { AddComment } from '~/components/Activity/AddComment';
+import {
+  useGetShowActivityDetails,
+  useSetShowActivityDetails,
+} from '~/db/activity/activity.query';
+import { useCurrentCardId } from '~/utils/useCurrentCardId';
 
 export function ActivityPanel() {
   const location = useLocation();
-  const [showActivity, setShowActivity] = useState(true);
+  const cardId = useCurrentCardId();
+  const { data: showActivity } = useGetShowActivityDetails({ cardId });
+  const setShowActivityDetails = useSetShowActivityDetails();
   const [selectedActivityId, setSelectedActivityId] = useState<string | null>(
     null,
   );
@@ -39,7 +46,12 @@ export function ActivityPanel() {
 
         <HideActivityButton
           $secondary={true}
-          onClick={() => setShowActivity((prev) => !prev)}
+          onClick={() =>
+            setShowActivityDetails({
+              cardId,
+              showActivityDetails: !showActivity,
+            })
+          }
         >
           {showActivity ? 'Hide details' : 'Show details'}
         </HideActivityButton>

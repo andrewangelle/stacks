@@ -1,40 +1,111 @@
 ---
 name: add-get-by-id-query
 description: >-
-  Add a get-by-id read query across the stacks data layer (Zod schema, Prisma
-  server query, TanStack Start server function, React Query hook, and test mock).
-  Use when the user asks to add get X by id, fetch a single record, or wire up a
-  detail query for cards, lists, checklists, activity, or similar entities.
+  Add a get-by-id read to the stacks data layer. In this codebase that is a
+  selector over an already-cached tree, not a new server round-trip. Use when the
+  user asks to add get X by id, fetch a single record, or wire up a detail query
+  for cards, lists, checklists, activity, or similar entities.
 ---
 
 # Add a Get-By-Id Query
 
-Add a single-record read endpoint by touching five layers in order. Copy an existing entity that already has a list query and a by-id query (e.g. `activity`, `cards`, `checklists`).
+**A by-id read is a `select` over a cache that is already loaded.** It is not a
+new endpoint. `src/db/boards/boards.cache.ts` holds the user's entire workspace
+under `['boards']` — boards, lists, cards, checklists, items — fetched once by
+the route loader. Every detail hook narrows that tree with a `find` helper.
+Adding a server function for a record already in the tree means a second copy of
+that record that can drift from it.
 
-**Name mapping** — derive every name from the entity. For `activity`: folder `src/db/activity/`, Prisma model `prisma.activity` (singular), and in-memory store collection `getStore().activities` (plural). Match the casing/pluralization the existing entity already uses.
+Card activity is the one exception: it grows with a card's history rather than
+its current state, so it lives in its own paginated cache under
+`['activities', cardId]` (see `src/db/activity/activity.cache.ts`). By-id reads
+there still select out of that cache rather than fetching the record on its own.
 
 ## Checklist
 
 ```
-- [ ] 1. Schema — `src/db/<entity>/<entity>.schemas.ts`
-- [ ] 2. Server query — `src/db/<entity>/<entity>.server.ts`
-- [ ] 3. Server function — `src/db/<entity>/<entity>.functions.ts`
-- [ ] 4. React Query hook — `src/query/<entity>.ts`
-- [ ] 5. Test mock — `tests/mocks/db/<entity>.ts`
-- [ ] 6. Verify — `pnpm test:types`
+- [ ] 1. Find helper — `src/db/boards/boards.cache.ts` (skip if one exists)
+- [ ] 2. Query options + hook — `src/db/<entity>/<entity>.query.ts`
+- [ ] 3. Verify — `pnpm test:types`
 ```
 
-## 1. Schema
+## 1. Find helper
 
-Add a Zod schema and exported type. Name the id field after the entity:
-
-| Entity | Schema | Id field |
-|--------|--------|----------|
-| card | `GetCardByIdSchema` | `cardId` |
-| checklist | `GetChecklistByIdSchema` | `checklistId` |
-| activity | `GetActivityByIdSchema` | `activityId` |
+`boards.cache.ts` already exports `findBoard`, `findList`, `findCard`, and
+`findChecklist`. Add one only for a level that has none, and walk the tree the
+same way the neighbors do:
 
 ```typescript
+export function findChecklistItem(boards: BoardsPayload, itemId: string) {
+  for (const board of boards) {
+    for (const list of board.lists) {
+      for (const card of list.cards) {
+        for (const checklist of card.checklists) {
+          const item = checklist.items.find(
+            (candidate) => candidate.id === itemId,
+          );
+
+          if (item) {
+            return item;
+          }
+        }
+      }
+    }
+  }
+
+  return undefined;
+}
+```
+
+Board ids in route params may be the 8-char masked prefix from a shared URL, so
+board lookups go through `boardIdMatches`, not `===`.
+
+## 2. Query options and hook
+
+In `src/db/<entity>/<entity>.query.ts`, spread `boardsQueryOptions` and add a
+`select`. Export the options separately so a route loader can prefetch with the
+same shape, then wrap them in `useSuspenseQuery`:
+
+```typescript
+export function cardByIdQueryOptions(cardId: string) {
+  return {
+    ...boardsQueryOptions,
+    select(boards: BoardsPayload) {
+      return findCard(boards, cardId);
+    },
+  };
+}
+
+export function useGetCardById(args: { id: string }) {
+  return useSuspenseQuery(cardByIdQueryOptions(args.id));
+}
+```
+
+There is no new query key, so **there is no cache to invalidate**. Mutations
+patch the tree through the `patch*` helpers in `boards.cache.ts` and every
+selector over it re-derives; `setQueryData`'s structural sharing keeps untouched
+branches referentially stable. Never blanket-invalidate `['boards']` to refresh
+a detail view.
+
+Reads over the activity cache follow the same shape against
+`activitiesQueryOptions(cardId)` — see `useGetActivityById` in
+`src/db/activity/activity.query.ts`, which searches the flattened pages.
+
+## When a server function really is needed
+
+Only when the answer is not in a loaded cache. The live examples are both route
+concerns rather than detail views:
+
+- `getBoardIdByCardId` (`src/db/cards/cards.server.ts`) resolves a masked 8-char
+  card id to the full id and its board before the tree exists.
+- `getBoardColor` (`src/db/boards/boards.server.ts`) paints the shell for a
+  board the loader has not fetched yet.
+
+If you do need one, the layers are Zod schema → `<entity>.server.ts` query →
+`<entity>.functions.ts` server function:
+
+```typescript
+// <entity>.schemas.ts — name the id field after the entity
 export const GetActivityByIdSchema = z.object({
   activityId: z.string(),
 });
@@ -42,21 +113,10 @@ export const GetActivityByIdSchema = z.object({
 export type GetActivityByIdArgs = z.infer<typeof GetActivityByIdSchema>;
 ```
 
-## 2. Server query
-
-In `<entity>.server.ts`, add `<entity>ByIdQuery` using `prisma.<model>.findFirst`.
-
-**Auth:** match the existing list query for the same entity so list and detail use the same ownership rules.
-
-- **Board-owned records** (activity on a card): filter through nested relations.
-  ```typescript
-  card: { list: { board: { userId: data.userId } } }
-  ```
-- **User-owned records** (checklist, checklist item): filter on `userId: data.userId`.
-
-**Board-owned example** (`activity` — ownership is reached through relations):
-
 ```typescript
+// <entity>.server.ts — match the ownership filter the entity's list query uses.
+// Board-owned records reach the user through relations; user-owned records
+// (checklist, checklist item) have their own `userId` column.
 export function getActivityByIdQuery(data: WithUserId<GetActivityByIdArgs>) {
   return prisma.activity.findFirst({
     where: {
@@ -67,26 +127,8 @@ export function getActivityByIdQuery(data: WithUserId<GetActivityByIdArgs>) {
 }
 ```
 
-**User-owned example** (`checklist` — the row has its own `userId` column):
-
 ```typescript
-export function getChecklistByIdQuery(data: WithUserId<GetChecklistByIdArgs>) {
-  return prisma.checklist.findFirst({
-    where: {
-      id: data.checklistId,
-      userId: data.userId,
-    },
-  });
-}
-```
-
-Return `null` when not found (`findFirst`), not an error.
-
-## 3. Server function
-
-In `<entity>.functions.ts`, export a GET `createServerFn` wired through `authMiddleware`:
-
-```typescript
+// <entity>.functions.ts — always through authMiddleware
 export const getActivityById = createServerFn({ method: 'GET' })
   .validator(GetActivityByIdSchema)
   .middleware([authMiddleware])
@@ -95,93 +137,18 @@ export const getActivityById = createServerFn({ method: 'GET' })
   );
 ```
 
-## 4. React Query hook
-
-In `src/query/<entity>.ts`:
-
-1. Add a `detail` query key alongside any existing `list` key. The `detail` key is keyed by the record's own id; the `list` key may be keyed by a parent id (activity's list is keyed by `cardId`) — keep whatever the existing list key uses.
-2. Export `<entity>ByIdQueryOptions` for prefetching.
-3. Export `useGet<Entity>ById` wrapping `useQuery`.
-
-```typescript
-const queryKeys = {
-  list: (cardId: string) => ['activity', cardId] as const,
-  detail: (activityId: string) => ['activity', 'detail', activityId] as const,
-};
-
-export function activityByIdQueryOptions(data: GetActivityByIdArgs) {
-  return {
-    queryKey: queryKeys.detail(data.activityId),
-    enabled: !!data.activityId,
-    queryFn() {
-      return getActivityById({ data });
-    },
-  };
-}
-
-export function useGetActivityById(data: GetActivityByIdArgs) {
-  return useQuery(activityByIdQueryOptions(data));
-}
-```
-
-**Mutation cache updates:** if create/update/delete mutations exist for the list query, also update or invalidate the `detail` key when a single record changes.
-
-## 5. Test mock
-
-Add `findFirst` to `tests/mocks/db/<entity>.ts` in the matching model object. Mirror the Prisma `where` shape from step 2 and reuse the same ownership logic the `findMany` mock already uses for that entity.
-
-**Board-owned example** (`activity` — walk relations and reuse `cardBelongsToUser`):
-
-```typescript
-async findFirst(args: {
-  where: {
-    id: string;
-    card: { list: { board: { userId: string } } };
-  };
-}) {
-  const userId = args.where.card.list.board.userId;
-  return (
-    getStore().activities.find((activity) => {
-      const cardInStore = getStore().cards.find(
-        (card) => card.id === activity.cardId,
-      );
-      return (
-        activity.id === args.where.id &&
-        cardInStore &&
-        cardBelongsToUser(cardInStore, userId)
-      );
-    }) ?? null
-  );
-}
-```
-
-**User-owned example** (`checklist` — match directly on `userId`):
-
-```typescript
-async findFirst(args: {
-  where: { id: string; userId?: string };
-}) {
-  return (
-    getStore().checklists.find(
-      (checklist) =>
-        checklist.id === args.where.id &&
-        (!args.where.userId || checklist.userId === args.where.userId),
-    ) ?? null
-  );
-}
-```
+Return `null` when not found (`findFirst`), not an error.
 
 ## Reference files
 
 | Layer | Example |
 |-------|---------|
+| Cache + find helpers | `src/db/boards/boards.cache.ts` |
+| Select-based by-id hook | `src/db/cards/cards.query.ts`, `src/db/checklists/checklists.query.ts` |
+| By-id over the activity cache | `src/db/activity/activity.query.ts` |
 | Schema | `src/db/activity/activity.schemas.ts` |
-| Server query | `src/db/activity/activity.server.ts` |
-| Server function | `src/db/activity/activity.functions.ts` |
-| React Query | `src/query/activity.ts` |
-| Test mock | `tests/mocks/db/activity.ts` |
-
-Other good references: `cards`, `checklists`, `checklistItems`, `lists`, `boards`.
+| Server query | `src/db/cards/cards.server.ts` (`getBoardIdByCardIdQuery`) |
+| Server function | `src/db/cards/cards.functions.ts` |
 
 ## Verify
 
@@ -189,4 +156,6 @@ Other good references: `cards`, `checklists`, `checklistItems`, `lists`, `boards
 pnpm test:types
 ```
 
-Only add tests when the user asks or when mutation cache behavior is non-trivial.
+There are no database mocks to extend: the e2e suite runs against a real
+Postgres (see `tests/README.md`). Only add tests when the user asks or when
+mutation cache behavior is non-trivial.

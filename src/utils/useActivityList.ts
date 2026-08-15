@@ -1,7 +1,12 @@
 import { useLocation } from '@tanstack/react-router';
 import { useVirtualizer } from '@tanstack/react-virtual';
 import { useEffect, useRef } from 'react';
-import { useGetActivity, useGetComments } from '~/db/activity/activity.query';
+import type { ActivityPayload } from '~/db/activity/activity.cache';
+import {
+  useGetActivity,
+  useGetComments,
+  useGetFirstActivity,
+} from '~/db/activity/activity.query';
 import { useCurrentCardId } from '~/utils/useCurrentCardId';
 import { getHashId } from '~/utils/useScrollToHashId';
 
@@ -13,22 +18,51 @@ const ESTIMATED_ROW_HEIGHT = 72;
 const OVERSCAN = 6;
 const LOADER_KEY = 'activity-list-loader';
 
+/**
+ * The rows the list renders, oldest last: the entries for the current view,
+ * then the skeleton row (`null`) while more pages remain, then the card's very
+ * first entry.
+ *
+ * That first entry records the card's creation and is pinned in every view —
+ * the comments-only view filters it out, and the full feed has not necessarily
+ * paginated back far enough to have loaded it. It is dropped when it is already
+ * among the entries, which is the steady state once every page is loaded.
+ */
+function withPinnedFirstEntry(
+  entries: ActivityPayload[],
+  firstEntry: ActivityPayload | null | undefined,
+  hasNextPage: boolean,
+) {
+  const rows: (ActivityPayload | null)[] = [...entries];
+
+  if (hasNextPage) {
+    rows.push(null);
+  }
+
+  if (firstEntry && !entries.some((entry) => entry.id === firstEntry.id)) {
+    rows.push(firstEntry);
+  }
+
+  return rows;
+}
+
 export function useActivityList({ showActivity }: { showActivity: boolean }) {
   const cardId = useCurrentCardId();
   const { data, hasNextPage, isFetchingNextPage, fetchNextPage } =
     useGetActivity({ cardId });
   const { data: comments } = useGetComments({ cardId });
+  const { data: firstEntry } = useGetFirstActivity({ cardId });
   const scrollRef = useRef<HTMLDivElement>(null);
   const location = useLocation();
   const entries = showActivity ? data : (comments ?? []);
+  const rows = withPinnedFirstEntry(entries, firstEntry, hasNextPage);
 
   const { getVirtualItems, scrollToIndex, getTotalSize, measureElement } =
     useVirtualizer({
-      // One trailing skeleton row is the + 1
-      count: hasNextPage ? entries.length + 1 : entries.length,
+      count: rows.length,
       getScrollElement: () => scrollRef.current,
       estimateSize: () => ESTIMATED_ROW_HEIGHT,
-      getItemKey: (index) => entries[index]?.id ?? LOADER_KEY,
+      getItemKey: (index) => rows[index]?.id ?? LOADER_KEY,
       overscan: OVERSCAN,
     });
 
@@ -42,7 +76,7 @@ export function useActivityList({ showActivity }: { showActivity: boolean }) {
   // the element was never mounted. Bring it into the window first.
   const deepLinkedId = getHashId(location.hash);
   const deepLinkedIndex = deepLinkedId
-    ? entries.findIndex((entry) => entry.id === deepLinkedId)
+    ? rows.findIndex((entry) => entry?.id === deepLinkedId)
     : -1;
 
   // The link can also point past the loaded pages entirely,
@@ -69,7 +103,7 @@ export function useActivityList({ showActivity }: { showActivity: boolean }) {
   }, [deepLinkedIndex, scrollToIndex]);
 
   return {
-    list: entries,
+    list: rows,
     rows: virtualRows,
     scrollRef,
     getTotalSize,

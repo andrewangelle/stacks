@@ -24,6 +24,11 @@ export const SetCardChecklistExpandedSchema = z.object({
   expandedChecklistId: z.string().nullable().optional(),
 });
 
+export const SetCardActivityDetailsSchema = z.object({
+  cardId: z.string(),
+  showActivityDetails: z.boolean(),
+});
+
 export const DeleteCardSchema = z.object({
   cardId: z.string(),
   listId: z.string(),
@@ -49,4 +54,7 @@ export type ReorderCardsArgs = z.infer<typeof ReorderCardsSchema>;
 export type MoveCardArgs = z.infer<typeof MoveCardSchema>;
 export type SetCardChecklistExpandedArgs = z.infer<
   typeof SetCardChecklistExpandedSchema
+>;
+export type SetCardActivityDetailsArgs = z.infer<
+  typeof SetCardActivityDetailsSchema
 >;

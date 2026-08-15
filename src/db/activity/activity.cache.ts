@@ -33,6 +33,23 @@ export function flattenActivities(data: ActivitiesPayload | undefined) {
   return data?.pages.flatMap((page) => page.items) ?? [];
 }
 
+/**
+ * The card's oldest entry — the one recording that the card was created. Once
+ * the final page is loaded its last item is the entry itself, which keeps this
+ * correct for a card whose first entry was written after the page it would have
+ * been read from. Otherwise fall back to the copy the first page carries.
+ */
+export function selectFirstActivity(data: ActivitiesPayload | undefined) {
+  const pages = data?.pages ?? [];
+  const lastPage = pages[pages.length - 1];
+  const oldestLoaded =
+    lastPage?.nextCursor === null
+      ? lastPage.items[lastPage.items.length - 1]
+      : undefined;
+
+  return oldestLoaded ?? pages[0]?.firstEntry ?? null;
+}
+
 export function getActivitiesCache(cardId: string) {
   return queryClient.getQueryData<ActivitiesPayload>(
     activitiesQueryKey(cardId),

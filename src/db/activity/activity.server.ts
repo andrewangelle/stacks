@@ -16,17 +16,33 @@ export const ACTIVITY_PAGE_SIZE = 10;
  * entry gets skipped or served twice.
  */
 export async function getActivitiesQuery(data: WithUserId<GetActivityArgs>) {
-  const items = await prisma.activity.findMany({
-    where: { cardId: data.cardId, userId: data.userId },
+  const where = { cardId: data.cardId, userId: data.userId };
+
+  const list = prisma.activity.findMany({
+    where,
     orderBy: [{ createdAt: 'desc' }, { id: 'desc' }],
     take: ACTIVITY_PAGE_SIZE,
     ...(data.cursor ? { cursor: { id: data.cursor }, skip: 1 } : {}),
   });
 
+  // The panel pins the card's oldest entry — the one recording its creation —
+  // to the bottom of the list in every view, so it has to arrive before the
+  // pages have been scrolled all the way back to it. Only the first page
+  // carries it; later pages inherit it from the cache.
+  const initialEntry = data.cursor
+    ? null
+    : prisma.activity.findFirst({
+        where,
+        orderBy: [{ createdAt: 'asc' }, { id: 'asc' }],
+      });
+
+  const [items, firstEntry] = await Promise.all([list, initialEntry]);
+
   const lastItem = items[items.length - 1];
 
   return {
     items,
+    firstEntry,
     nextCursor: items.length === ACTIVITY_PAGE_SIZE ? lastItem.id : null,
   };
 }
