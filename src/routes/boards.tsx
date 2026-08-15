@@ -10,6 +10,7 @@ import { UserNavContent } from '~/components/Nav/UserNavContent';
 import { getBoardsServer } from '~/components/server/Boards.functions';
 import { getNavBarServer } from '~/components/server/Nav.functions';
 import { boardsQueryOptions } from '~/db/boards/boards.query';
+import { useIsMobile } from '~/utils/useIsMobile';
 
 export const Route = createFileRoute('/boards')({
   async loader({ context }) {
@@ -21,7 +22,9 @@ export const Route = createFileRoute('/boards')({
     const boards = context.queryClient.prefetchQuery(boardsQueryOptions);
 
     const loaderData = {
-      BoardsServer: await getBoardsServer(),
+      BoardsServer: await getBoardsServer({
+        data: { isMobile: context.isMobile },
+      }),
       NavBarServer: await getNavBarServer(),
     };
 
@@ -31,10 +34,11 @@ export const Route = createFileRoute('/boards')({
   },
 
   pendingComponent() {
+    const isMobile = useIsMobile();
     return (
       <>
         <NavBarFallback />
-        <BoardsContainer>
+        <BoardsContainer $isMobile={isMobile}>
           <BoardListFallback />
         </BoardsContainer>
       </>

@@ -28,18 +28,54 @@ export type BackgroundProps = {
   $background?: BoardBackground;
 };
 
+export type MobileProps = {
+  $isMobile?: boolean;
+};
+
+const mobileBoardRow = css`
+  box-sizing: border-box;
+  justify-content: flex-start;
+  flex-direction: row;
+  align-items: center;
+  gap: 20px;
+  width: 100%;
+  max-width: none;
+  min-width: 0;
+  height: auto;
+  margin: 0;
+  padding: 18px;
+  border-radius: 0;
+  box-shadow: none;
+  border-bottom: 1px solid rgba(9, 30, 66, 0.13);
+  background: #fff;
+
+  &:hover,
+  &:focus {
+    background: #fff;
+  }
+`;
+
 export const BoardsContainer = styled.div.attrs<DataAttributes>({
   'data-testid': 'BoardsContainer',
-})` 
+})<MobileProps>`
   display: flex;
   flex-wrap: wrap;
   justify-content: flex-start;
   padding: 50px 30px 30px;
+
+  ${({ $isMobile }) =>
+    $isMobile &&
+    css`
+      flex-direction: column;
+      flex-wrap: nowrap;
+      padding: 56px 0 0;
+      background: #fff;
+    `}
 `;
 
 export const BoardCardLink = styled(Link).attrs<DataAttributes>({
   'data-testid': 'BoardCardContainer',
-})<BackgroundProps>`
+})<BackgroundProps & MobileProps>`
   display: flex;
   flex-direction: column;
   justify-content: flex-end;
@@ -69,9 +105,21 @@ export const BoardCardLink = styled(Link).attrs<DataAttributes>({
   &:focus {
     background: ${({ $background }) => getBoardGradientHoverVars($background)};
   }
+
+  ${({ $isMobile }) => $isMobile && mobileBoardRow}
 `;
 
-export const CreateBoardContainer = styled.div<BackgroundProps>`
+export const BoardColorSwatch = styled.div.attrs<DataAttributes>({
+  'data-testid': 'BoardColorSwatch',
+})<BackgroundProps>`
+  flex-shrink: 0;
+  width: 60px;
+  height: 55px;
+  border-radius: 6px;
+  background: ${({ $background }) => getBoardGradientVars($background)};
+`;
+
+export const CreateBoardContainer = styled.div<BackgroundProps & MobileProps>`
   display: flex;
   flex-direction: column;
   justify-content: flex-end;
@@ -101,6 +149,8 @@ export const CreateBoardContainer = styled.div<BackgroundProps>`
   &:focus {
     background: ${({ $background }) => getBoardGradientHoverVars($background)};
   }
+
+  ${({ $isMobile }) => $isMobile && mobileBoardRow}
 `;
 
 export type BoardCardTitleProps = {
@@ -109,7 +159,7 @@ export type BoardCardTitleProps = {
 
 export const BoardCardTitle = styled.div.attrs<DataAttributes>({
   'data-testid': 'BoardCardTitle',
-})<BoardCardTitleProps>`
+})<BoardCardTitleProps & MobileProps>`
   font-size: 14px;
   background: #fff;
   padding: 10px;
@@ -122,6 +172,16 @@ export const BoardCardTitle = styled.div.attrs<DataAttributes>({
     border-bottom-left-radius: 4px;
     border-bottom-right-radius: 4px;
   }
+
+  ${({ $isMobile }) =>
+    $isMobile &&
+    css`
+      font-size: 18px;
+      background: none;
+      padding: 0;
+      text-align: left;
+      border-radius: 0;
+    `}
 `;
 
 export const BoardCardSkeleton = styled(
@@ -133,6 +193,13 @@ export const BoardCardSkeleton = styled(
   cursor: default;
   pointer-events: none;
   ${animationStyles.pulse}
+
+  ${({ $isMobile }) =>
+    $isMobile &&
+    css`
+      height: 105px;
+      background: rgba(9, 30, 66, 0.08);
+    `}
 `;
 
 export const CreateBoardCard = styled(
@@ -146,7 +213,7 @@ export const CreateBoardCard = styled(
   justify-content: center;
   text-align: center;
   &:hover {
-    background: rgba(9, 30, 66, 0.08); 
+    background: rgba(9, 30, 66, 0.08);
   }
 
   &:active {
@@ -159,11 +226,11 @@ export const CreateBoardPopoverTrigger = styled(
   Popover.Trigger,
 ).attrs<DataAttributes>({
   'data-testid': 'CreateBoardPopoverTrigger',
-})` 
+})`
   background: transparent;
   border: none;
   color: inherit;
-  width: max-content; 
+  width: max-content;
   min-width: 125px;
 `;
 
