@@ -14,7 +14,7 @@
 
 ## Testing
 
-E2E tests use [Playwright](https://playwright.dev/) against a dedicated dev server with mocked database and auth—no Clerk or Postgres credentials needed.
+E2E tests use [Playwright](https://playwright.dev/) against a dedicated dev server on port 3100 with mocked auth and a local Postgres in Docker—no Clerk or cloud database credentials needed.
 
 ```bash
 pnpm test                  # all browsers

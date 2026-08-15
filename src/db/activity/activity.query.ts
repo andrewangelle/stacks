@@ -2,6 +2,7 @@ import {
   useInfiniteQuery,
   useMutation,
   useSuspenseInfiniteQuery,
+  useSuspenseQuery,
 } from '@tanstack/react-query';
 import {
   type ActivitiesPage,
@@ -13,6 +14,7 @@ import {
   patchActivities,
   prependActivity,
   restoreActivitiesCache,
+  selectFirstActivity,
 } from '~/db/activity/activity.cache';
 import {
   createActivity,
@@ -28,10 +30,16 @@ import type {
   UpdateActivityArgs,
 } from '~/db/activity/activity.schemas';
 import {
+  type BoardsPayload,
+  findCard,
   getBoardsCache,
+  patchCard,
   patchCardCommentsCount,
   restoreBoardsCache,
 } from '~/db/boards/boards.cache';
+import { boardsQueryOptions } from '~/db/boards/boards.query';
+import { setCardActivityDetails } from '~/db/cards/cards.functions';
+import type { SetCardActivityDetailsArgs } from '~/db/cards/cards.schemas';
 
 /**
  * One paginated cache entry per card backs every read below. The type filters
@@ -82,17 +90,74 @@ export function useGetComments(data: GetActivityArgs) {
   });
 }
 
+/** The card's oldest entry, which the panel pins in both details views. */
+export function useGetFirstActivity(data: GetActivityArgs) {
+  return useInfiniteQuery({
+    ...activitiesQueryOptions(data.cardId),
+    select: selectFirstActivity,
+  });
+}
+
 export function useGetActivityById(
   data: GetActivityByIdArgs & GetActivityArgs,
 ) {
   return useInfiniteQuery({
     ...activitiesQueryOptions(data.cardId),
     select(activities: ActivitiesPayload) {
-      return flattenActivities(activities).find(
+      const entry = flattenActivities(activities).find(
         (item) => item.id === data.activityId,
       );
+
+      if (entry) {
+        return entry;
+      }
+
+      // The pinned first entry renders before the pages have been scrolled back
+      // to the page that holds it, so it has to be findable on its own.
+      const firstEntry = selectFirstActivity(activities);
+
+      return firstEntry?.id === data.activityId ? firstEntry : undefined;
     },
   });
+}
+
+/**
+ * Whether the panel lists the whole feed or comments only. It is a property of
+ * the card rather than of the session, so it lives on the card in the boards
+ * tree and survives a reload — see `useSetShowActivityDetails`.
+ */
+export function useGetShowActivityDetails(data: GetActivityArgs) {
+  return useSuspenseQuery({
+    ...boardsQueryOptions,
+    select(boards: BoardsPayload) {
+      return findCard(boards, data.cardId)?.showActivityDetails ?? true;
+    },
+  });
+}
+
+export function useSetShowActivityDetails() {
+  const mutation = useMutation({
+    mutationFn(data: SetCardActivityDetailsArgs) {
+      return setCardActivityDetails({ data });
+    },
+
+    onMutate(variables) {
+      const snapshot = getBoardsCache();
+
+      patchCard(variables.cardId, (card) => ({
+        ...card,
+        showActivityDetails: variables.showActivityDetails,
+      }));
+
+      return { snapshot };
+    },
+
+    onError(_error, _variables, context) {
+      restoreBoardsCache(context?.snapshot);
+    },
+  });
+
+  return mutation.mutate;
 }
 
 export function useCreateActivity() {

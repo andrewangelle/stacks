@@ -59,6 +59,7 @@ model Card {
   id                   String          @id @default(uuid())
   isCompleted          Boolean         @default(false) @map("is_completed")
   isChecklistsExpanded Boolean         @default(false) @map("is_checklists_expanded")
+  showActivityDetails  Boolean         @default(true) @map("show_activity_details")
   expandedChecklistId  String?         @map("expanded_checklist_id")
   cardTitle            String          @map("card_title")
   cardDescription      String          @default("") @map("card_description")
