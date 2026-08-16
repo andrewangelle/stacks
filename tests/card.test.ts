@@ -75,6 +75,51 @@ test.describe('Card', () => {
     );
   });
 
+  test('formats a description with the rich text toolbar', async ({
+    page,
+    request,
+  }) => {
+    await resetDb(request);
+    const board = await seedBoard(request, 'Sprint Board');
+    const { card } = await seedCard(request, {
+      boardId: board.id,
+      listTitle: 'To Do',
+      cardTitle: 'Write docs',
+    });
+
+    await page.goto(`/board/${board.id}/card/${card.id}`);
+    await waitForCardModal(page);
+
+    await waitForInteractiveTrigger(
+      page,
+      '[data-testid="DescriptionInput"]',
+      '[data-testid="DescriptionPlaceholder"]',
+    );
+
+    const editor = page.getByTestId('DescriptionInput');
+
+    await editor.pressSequentially('Release checklist');
+    await selectBlockType(page, 'Heading 2');
+
+    await editor.press('End');
+    await editor.press('Enter');
+    await selectBlockType(page, 'Bulleted list');
+    await editor.pressSequentially('Ship it');
+
+    await page.getByTestId('SaveDescriptionButton').click();
+
+    const description = page.getByTestId('CardDescriptionText');
+    await expect(description.locator('h2')).toHaveText('Release checklist');
+    await expect(description.locator('ul li')).toHaveText('Ship it');
+
+    // The formatting has to survive the round trip through the database, not
+    // just the editor session that applied it.
+    await page.reload();
+    await waitForCardModal(page);
+    await expect(description.locator('h2')).toHaveText('Release checklist');
+    await expect(description.locator('ul li')).toHaveText('Ship it');
+  });
+
   test('marks a card complete in the card modal', async ({ page, request }) => {
     await resetDb(request);
     const board = await seedBoard(request, 'Sprint Board');
@@ -568,6 +613,14 @@ async function sampleWhile(page: Page, act: () => Promise<void>) {
 function midSlideFrames(heights: number[], openHeight: number) {
   return heights.filter((height) => height > 1 && height < openHeight - 1)
     .length;
+}
+
+async function selectBlockType(page: Page, label: string) {
+  await page.getByTestId('RichTextBlockSelect').click();
+  await page
+    .getByTestId('RichTextBlockSelectMenu')
+    .getByRole('option', { name: label })
+    .click();
 }
 
 async function waitForCardModal(page: Page) {

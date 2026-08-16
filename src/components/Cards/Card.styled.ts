@@ -444,7 +444,9 @@ export const DescriptionBodyInner = styled.div.attrs<DataAttributes>({
   transition: visibility 150ms ease-out;
 `;
 
-export const DescriptionEditorContainer = styled.div`
+export const DescriptionEditorContainer = styled.div.attrs<DataAttributes>({
+  'data-testid': 'DescriptionEditorContainer',
+})`
   margin: 0 12px 12px ${cardModalContentIndent};
 `;
 

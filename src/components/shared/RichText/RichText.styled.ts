@@ -1,3 +1,4 @@
+import { Select } from 'radix-ui';
 import { css, type DataAttributes, styled } from 'styled-components';
 import { blue, focusRingBlue, fontFamily } from '~/styles/tokens';
 
@@ -96,7 +97,9 @@ export const richTextStyles = css`
   }
 `;
 
-export const RichTextSurface = styled.div`
+export const RichTextSurface = styled.div.attrs<DataAttributes>({
+  'data-testid': 'RichTextSurface',
+})`
   box-sizing: border-box;
   width: 100%;
   border: 1px solid rgba(9, 30, 66, 0.2);
@@ -122,20 +125,26 @@ export const RichTextToolbarRow = styled.div.attrs<DataAttributes>({
 `;
 
 /** Keeps a set of related controls on one line when the toolbar wraps. */
-export const RichTextToolbarGroup = styled.div`
+export const RichTextToolbarGroup = styled.div.attrs<DataAttributes>({
+  'data-testid': 'RichTextToolbarGroup',
+})`
   display: flex;
   align-items: center;
   gap: 2px;
 `;
 
-export const RichTextToolbarDivider = styled.span`
+export const RichTextToolbarDivider = styled.span.attrs<DataAttributes>({
+  'data-testid': 'RichTextToolbarDivider',
+})`
   width: 1px;
   align-self: stretch;
   margin: 2px 6px;
   background: rgba(9, 30, 66, 0.15);
 `;
 
-export const RichTextToolbarButton = styled.button<{ $active?: boolean }>`
+export const RichTextToolbarButton = styled.button.attrs<DataAttributes>({
+  'data-testid': 'RichTextToolbarButton',
+})<{ $active?: boolean }>`
   display: flex;
   align-items: center;
   justify-content: center;
@@ -159,24 +168,158 @@ export const RichTextToolbarButton = styled.button<{ $active?: boolean }>`
   }
 `;
 
-export const RichTextBlockSelect = styled.select`
-  max-width: 100%;
+/**
+ * A `Tt` glyph rather than the selected label, so the control keeps a toolbar
+ * button's footprint. The menu it opens follows the move card menu's selects.
+ */
+export const RichTextBlockSelectTrigger = styled(
+  Select.Trigger,
+).attrs<DataAttributes>({
+  'data-testid': 'RichTextBlockSelect',
+})`
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  box-sizing: border-box;
   height: 28px;
   padding: 0 4px;
   border: none;
   border-radius: 4px;
   background: transparent;
   font-family: ${fontFamily};
-  font-size: 14px;
-  color: rgba(9, 30, 66, 0.9);
+  font-size: 17px;
+  color: rgba(9, 30, 66, 0.7);
   cursor: pointer;
+  outline: none;
 
   &:hover {
     background: rgba(9, 30, 66, 0.08);
   }
+
+  &:focus-visible {
+    outline: 2px solid ${focusRingBlue};
+    outline-offset: -2px;
+  }
+
+  &[data-state='open'] {
+    background: #e9f2ff;
+    color: ${blue};
+  }
+
+  svg {
+    flex-shrink: 0;
+    transition: transform 0.15s ease;
+  }
+
+  &[data-state='open'] svg {
+    transform: rotate(180deg);
+  }
 `;
 
-export const RichTextBody = styled.div<{ $minHeight: string }>`
+/** Names the trigger for assistive tech without showing the label. */
+export const RichTextBlockSelectValue = styled.span.attrs<DataAttributes>({
+  'data-testid': 'RichTextBlockSelectValue',
+})`
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+`;
+
+export const RichTextBlockSelectContent = styled(
+  Select.Content,
+).attrs<DataAttributes>({
+  'data-testid': 'RichTextBlockSelectMenu',
+})`
+  box-sizing: border-box;
+  min-width: 200px;
+  max-height: var(--radix-select-content-available-height);
+  border-radius: 8px;
+  background: #fff;
+  box-shadow: 0px 8px 12px #1e1f2126, 0px 0px 1px #1e1f214f;
+  overflow: hidden;
+  z-index: 1001;
+`;
+
+export const RichTextBlockSelectViewport = styled(
+  Select.Viewport,
+).attrs<DataAttributes>({
+  'data-testid': 'RichTextBlockSelectViewport',
+})`
+  padding: 4px 0;
+`;
+
+/**
+ * Each row previews the block it inserts, so the sizes here track the heading
+ * and list rules in `richTextStyles`.
+ */
+export const RichTextBlockSelectItem = styled(
+  Select.Item,
+).attrs<DataAttributes>({
+  'data-testid': 'RichTextBlockSelectItem',
+})`
+  position: relative;
+  display: flex;
+  align-items: center;
+  padding: 10px 14px;
+  font-family: ${fontFamily};
+  font-size: 14px;
+  line-height: 1.3;
+  color: rgba(9, 30, 66, 0.9);
+  cursor: pointer;
+  outline: none;
+  user-select: none;
+
+  &[data-block-type='h1'] {
+    font-size: 20px;
+    font-weight: 700;
+  }
+
+  &[data-block-type='h2'] {
+    font-size: 17px;
+    font-weight: 700;
+  }
+
+  &[data-block-type='h3'] {
+    font-size: 15px;
+    font-weight: 700;
+  }
+
+  &[data-block-type='bullet']::before {
+    content: '•';
+    margin-right: 8px;
+  }
+
+  &[data-block-type='number']::before {
+    content: '1.';
+    margin-right: 8px;
+  }
+
+  &[data-block-type='quote'] {
+    color: rgba(9, 30, 66, 0.65);
+    box-shadow: inset 3px 0 0 rgba(9, 30, 66, 0.2);
+  }
+
+  &[data-highlighted] {
+    background: rgb(244, 245, 247);
+  }
+
+  &[data-state='checked'],
+  &[data-state='checked'][data-highlighted] {
+    background: #e9f2ff;
+    color: ${blue};
+    box-shadow: inset 3px 0 0 ${blue};
+  }
+`;
+
+export const RichTextBody = styled.div.attrs<DataAttributes>({
+  'data-testid': 'RichTextBody',
+})<{ $minHeight: string }>`
   ${richTextStyles}
   position: relative;
 
@@ -188,7 +331,9 @@ export const RichTextBody = styled.div<{ $minHeight: string }>`
   }
 `;
 
-export const RichTextPlaceholder = styled.div`
+export const RichTextPlaceholder = styled.div.attrs<DataAttributes>({
+  'data-testid': 'RichTextPlaceholder',
+})`
   position: absolute;
   top: 12px;
   left: 12px;

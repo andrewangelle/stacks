@@ -240,7 +240,9 @@ export const AddCommentTrigger = styled.button.attrs<DataAttributes>({
   }
 `;
 
-export const CommentEditorContainer = styled.div`
+export const CommentEditorContainer = styled.div.attrs<DataAttributes>({
+  'data-testid': 'CommentEditorContainer',
+})`
   box-sizing: border-box;
   width: 100%;
   max-width: 100%;

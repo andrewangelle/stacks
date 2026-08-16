@@ -31,6 +31,7 @@ import {
   SELECTION_CHANGE_COMMAND,
   UNDO_COMMAND,
 } from 'lexical';
+import { Select } from 'radix-ui';
 import { type MouseEvent, useCallback, useEffect, useState } from 'react';
 import type { IconType } from 'react-icons';
 import {
@@ -44,8 +45,13 @@ import {
   FaUnderline,
   FaUndo,
 } from 'react-icons/fa';
+import { RxCaretDown } from 'react-icons/rx';
 import {
-  RichTextBlockSelect,
+  RichTextBlockSelectContent,
+  RichTextBlockSelectItem,
+  RichTextBlockSelectTrigger,
+  RichTextBlockSelectValue,
+  RichTextBlockSelectViewport,
   RichTextToolbarButton,
   RichTextToolbarDivider,
   RichTextToolbarGroup,
@@ -198,12 +204,11 @@ export function RichTextToolbar() {
 
   return (
     <RichTextToolbarRow>
-      <RichTextBlockSelect
-        aria-label="Text style"
+      <Select.Root
         value={toolbar.blockType}
-        onChange={(event) => {
+        onValueChange={(value) => {
           const option = BLOCK_TYPE_OPTIONS.find(
-            (blockType) => blockType.value === event.target.value,
+            (blockType) => blockType.value === value,
           );
 
           if (option) {
@@ -211,12 +216,32 @@ export function RichTextToolbar() {
           }
         }}
       >
-        {BLOCK_TYPE_OPTIONS.map((option) => (
-          <option key={option.value} value={option.value}>
-            {option.label}
-          </option>
-        ))}
-      </RichTextBlockSelect>
+        <RichTextBlockSelectTrigger aria-label="Text style">
+          Tt
+          <RichTextBlockSelectValue>
+            <Select.Value />
+          </RichTextBlockSelectValue>
+          <Select.Icon asChild>
+            <RxCaretDown size={18} />
+          </Select.Icon>
+        </RichTextBlockSelectTrigger>
+
+        <Select.Portal>
+          <RichTextBlockSelectContent position="popper" sideOffset={4}>
+            <RichTextBlockSelectViewport>
+              {BLOCK_TYPE_OPTIONS.map((option) => (
+                <RichTextBlockSelectItem
+                  key={option.value}
+                  value={option.value}
+                  data-block-type={option.value}
+                >
+                  <Select.ItemText>{option.label}</Select.ItemText>
+                </RichTextBlockSelectItem>
+              ))}
+            </RichTextBlockSelectViewport>
+          </RichTextBlockSelectContent>
+        </Select.Portal>
+      </Select.Root>
 
       <RichTextToolbarDivider />
 
