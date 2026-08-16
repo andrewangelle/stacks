@@ -1,6 +1,7 @@
 import { Dialog, Popover } from 'radix-ui';
 import { type DataAttributes, styled } from 'styled-components';
 import { fontFamily } from '~/components/Boards/Boards.styled';
+import { richTextStyles } from '~/components/shared/RichText/RichText.styled';
 import {
   Button,
   secondaryButtonColor,
@@ -340,18 +341,8 @@ export const DescriptionPlaceholder = styled.div.attrs<DataAttributes>({
   }
 `;
 
-export const DescriptionInput = styled.textarea.attrs<DataAttributes>({
-  'data-testid': 'DescriptionInput',
-})` 
-  height: 60px;
-  width: 80%;
-  margin-left: ${cardModalContentIndent};
-  margin-bottom: 12px;
-  font-size: 14px;
-  padding: 15px;
-  border-radius: 8px;
-  border: none;
-  font-family: ${fontFamily};
+export const DescriptionEditorContainer = styled.div`
+  margin: 0 12px 12px ${cardModalContentIndent};
 `;
 
 export const SaveDescriptionButton = styled(Button).attrs<DataAttributes>({
@@ -377,11 +368,11 @@ export const CloseDescriptionButton = styled(Button).attrs<DataAttributes>({
 
 export const CardDescriptionText = styled.div.attrs<DataAttributes>({
   'data-testid': 'CardDescriptionText',
-})` 
-  font-family: ${fontFamily};
+})`
+  ${richTextStyles}
   margin-left: ${cardModalContentIndent};
-  font-size: 14px;
   margin-top: 15px;
+  cursor: pointer;
 `;
 
 export const EditDescriptionButton = styled(Button).attrs<DataAttributes>({

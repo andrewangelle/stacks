@@ -4,13 +4,16 @@ import {
   CardDescriptionText,
   CloseDescriptionButton,
   DescriptionContainer,
+  DescriptionEditorContainer,
   DescriptionHeadingRow,
-  DescriptionInput,
   DescriptionPlaceholder,
   DescriptionTitle,
   EditDescriptionButton,
   SaveDescriptionButton,
 } from '~/components/Cards/Card.styled';
+import { RichTextContent } from '~/components/shared/RichText/RichTextContent';
+import { RichTextEditor } from '~/components/shared/RichText/RichTextEditor';
+import { isEmptyRichText } from '~/components/shared/RichText/richText';
 import { useGetCardById, useUpdateCard } from '~/db/cards/cards.query';
 import { Flex } from '~/styles/Page.styled';
 import { useCurrentCardId } from '~/utils/useCurrentCardId';
@@ -19,21 +22,23 @@ export function CardDescription() {
   const cardId = useCurrentCardId();
   const { data } = useGetCardById({ id: cardId });
   const [isEditing, setEditing] = useState(false);
-  const [description, setDescription] = useState('');
+  const [editedDescription, setEditedDescription] = useState('');
   const updateCard = useUpdateCard();
 
   const placeHolderText = 'Add a more detailed description...';
+  const description = data?.cardDescription ?? '';
+  const hasDescription = !isEmptyRichText(description);
 
   function editDescription() {
+    setEditedDescription(description);
     setEditing(true);
-    setDescription(data?.cardDescription ?? '');
   }
 
   function saveDescription() {
     updateCard({
       cardId,
       cardTitle: data?.cardTitle ?? '',
-      cardDescription: description ?? undefined,
+      cardDescription: editedDescription,
       listId: data?.listId ?? '',
     });
     setEditing(false);
@@ -48,18 +53,20 @@ export function CardDescription() {
           <DescriptionTitle>Description</DescriptionTitle>
         </Flex>
 
-        {data?.cardDescription && !isEditing && (
+        {hasDescription && !isEditing && (
           <EditDescriptionButton $secondary onClick={editDescription}>
             Edit
           </EditDescriptionButton>
         )}
       </DescriptionHeadingRow>
 
-      {data?.cardDescription && !isEditing && (
-        <CardDescriptionText>{data?.cardDescription}</CardDescriptionText>
+      {hasDescription && !isEditing && (
+        <CardDescriptionText onClick={() => setEditing(true)}>
+          <RichTextContent value={description} />
+        </CardDescriptionText>
       )}
 
-      {!isEditing && !data?.cardDescription && (
+      {!isEditing && !hasDescription && (
         <DescriptionPlaceholder onClick={editDescription}>
           {placeHolderText}
         </DescriptionPlaceholder>
@@ -67,12 +74,16 @@ export function CardDescription() {
 
       {isEditing && (
         <>
-          <DescriptionInput
-            value={description}
-            onChange={(event) => setDescription(event.target.value)}
-            placeholder={placeHolderText}
-            autoFocus
-          />
+          <DescriptionEditorContainer>
+            <RichTextEditor
+              initialValue={description}
+              placeholder={placeHolderText}
+              ariaLabel="Card description"
+              testId="DescriptionInput"
+              autoFocus
+              onChange={setEditedDescription}
+            />
+          </DescriptionEditorContainer>
 
           <Flex>
             <SaveDescriptionButton onClick={saveDescription}>

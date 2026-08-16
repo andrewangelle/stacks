@@ -3,10 +3,13 @@ import {
   ActivityRow,
   AddCommentContainer,
   AddCommentForm,
-  AddCommentInput,
+  AddCommentTrigger,
+  CommentEditorContainer,
   EditCommentActionsRow,
   SaveCommentButton,
 } from '~/components/Activity/Activity.styled';
+import { CloseAddCardButton } from '~/components/Lists/List.styled';
+import { RichTextEditor } from '~/components/shared/RichText/RichTextEditor';
 import { useCreateActivity } from '~/db/activity/activity.query';
 import { useGetCardById } from '~/db/cards/cards.query';
 import { useCurrentBoardId } from '~/utils/useCurrentBoardId';
@@ -16,8 +19,11 @@ export function AddComment() {
   const cardId = useCurrentCardId();
   const { data: cardData } = useGetCardById({ id: cardId });
   const boardId = useCurrentBoardId();
+  const [isEditing, setEditing] = useState(false);
   const [comment, setComment] = useState<string>('');
   const createActivity = useCreateActivity();
+
+  const placeHolderText = 'Write a comment...';
 
   function createComment() {
     createActivity({
@@ -27,25 +33,53 @@ export function AddComment() {
       type: 'comment',
       content: comment,
     });
+    closeEditor();
+  }
+
+  // Collapsing unmounts the editor, which is also what empties the draft: the
+  // editor owns its document once mounted.
+  function closeEditor() {
     setComment('');
+    setEditing(false);
   }
 
   return (
     <AddCommentContainer>
       <ActivityRow>
-        <AddCommentForm onSubmit={(event) => event.preventDefault()}>
-          <AddCommentInput
-            value={comment}
-            onChange={(event) => setComment(event.target.value)}
-            placeholder="Write a comment..."
-          />
+        {!isEditing && (
+          <AddCommentTrigger onClick={() => setEditing(true)}>
+            {placeHolderText}
+          </AddCommentTrigger>
+        )}
 
-          <EditCommentActionsRow data-testid="EditCommentActions">
-            <SaveCommentButton onClick={createComment} disabled={!comment}>
-              Save
-            </SaveCommentButton>
-          </EditCommentActionsRow>
-        </AddCommentForm>
+        {isEditing && (
+          <AddCommentForm onSubmit={(event) => event.preventDefault()}>
+            <CommentEditorContainer>
+              <RichTextEditor
+                placeholder={placeHolderText}
+                ariaLabel="Write a comment"
+                testId="AddCommentInput"
+                autoFocus
+                minHeight="60px"
+                onChange={setComment}
+              />
+            </CommentEditorContainer>
+
+            <EditCommentActionsRow data-testid="EditCommentActions">
+              <SaveCommentButton onClick={createComment} disabled={!comment}>
+                Save
+              </SaveCommentButton>
+
+              <CloseAddCardButton
+                type="button"
+                $secondary
+                onClick={closeEditor}
+              >
+                Cancel
+              </CloseAddCardButton>
+            </EditCommentActionsRow>
+          </AddCommentForm>
+        )}
       </ActivityRow>
     </AddCommentContainer>
   );

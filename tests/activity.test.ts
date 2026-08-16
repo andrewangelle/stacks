@@ -340,6 +340,12 @@ async function addComment(page: Page, text: string) {
     .getByTestId('ActivityCommentContent')
     .filter({ hasText: text });
 
+  await waitForInteractiveTrigger(
+    page,
+    '[data-testid="AddCommentInput"]',
+    '[data-testid="AddCommentTrigger"]',
+  );
+
   await expect(input).toBeVisible();
 
   await waitForHydratedAction(

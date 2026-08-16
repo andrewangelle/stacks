@@ -1,10 +1,11 @@
 import { type SubmitEvent, useState } from 'react';
 import {
-  AddCommentInput,
+  CommentEditorContainer,
   EditCommentActionsRow,
   SaveCommentButton,
 } from '~/components/Activity/Activity.styled';
 import { CloseAddCardButton } from '~/components/Lists/List.styled';
+import { RichTextEditor } from '~/components/shared/RichText/RichTextEditor';
 import { useUpdateActivity } from '~/db/activity/activity.query';
 import type { Activity } from '~/generated/prisma/client';
 import { useCurrentCardId } from '~/utils/useCurrentCardId';
@@ -34,14 +35,17 @@ export function EditCommentForm({
 
   return (
     <form onSubmit={saveComment}>
-      <AddCommentInput
-        name="comment"
-        placeholder={content}
-        autoFocus
-        style={{ margin: '8px 0px' }}
-        value={editedComment}
-        onChange={(event) => setEditedComment(event.target.value)}
-      />
+      <CommentEditorContainer>
+        <RichTextEditor
+          initialValue={content}
+          placeholder="Write a comment..."
+          ariaLabel="Edit comment"
+          testId="AddCommentInput"
+          autoFocus
+          minHeight="60px"
+          onChange={setEditedComment}
+        />
+      </CommentEditorContainer>
 
       <EditCommentActionsRow data-testid="EditCommentActionsRow">
         <SaveCommentButton type="submit">Save</SaveCommentButton>
