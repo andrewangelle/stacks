@@ -135,6 +135,33 @@ export function RichTextToolbar() {
     setToolbar((currentToolbar) => ({ ...currentToolbar, ...selectionState }));
   }, []);
 
+  function changeBlockType(nextBlockType: BlockType) {
+    if (nextBlockType === 'bullet' || nextBlockType === 'number') {
+      editor.dispatchCommand(
+        nextBlockType === 'bullet'
+          ? INSERT_UNORDERED_LIST_COMMAND
+          : INSERT_ORDERED_LIST_COMMAND,
+        undefined,
+      );
+      editor.focus();
+      return;
+    }
+
+    if (toolbar.blockType === 'bullet' || toolbar.blockType === 'number') {
+      editor.dispatchCommand(REMOVE_LIST_COMMAND, undefined);
+    }
+
+    editor.update(() => {
+      const selection = $getSelection();
+
+      if ($isRangeSelection(selection)) {
+        $setBlocksType(selection, () => createBlockNode(nextBlockType));
+      }
+    });
+
+    editor.focus();
+  }
+
   useEffect(
     () =>
       mergeRegister(
@@ -168,33 +195,6 @@ export function RichTextToolbar() {
       ),
     [editor, syncToolbar],
   );
-
-  function changeBlockType(nextBlockType: BlockType) {
-    if (nextBlockType === 'bullet' || nextBlockType === 'number') {
-      editor.dispatchCommand(
-        nextBlockType === 'bullet'
-          ? INSERT_UNORDERED_LIST_COMMAND
-          : INSERT_ORDERED_LIST_COMMAND,
-        undefined,
-      );
-      editor.focus();
-      return;
-    }
-
-    if (toolbar.blockType === 'bullet' || toolbar.blockType === 'number') {
-      editor.dispatchCommand(REMOVE_LIST_COMMAND, undefined);
-    }
-
-    editor.update(() => {
-      const selection = $getSelection();
-
-      if ($isRangeSelection(selection)) {
-        $setBlocksType(selection, () => createBlockNode(nextBlockType));
-      }
-    });
-
-    editor.focus();
-  }
 
   return (
     <RichTextToolbarRow>

@@ -160,6 +160,142 @@ test.describe('Card', () => {
   });
 });
 
+test.describe('Description collapse', () => {
+  // Cold Vite compile on the first navigation of a run can exceed 30s.
+  test.describe.configure({ timeout: 60_000 });
+
+  test('swaps the section icon for a caret on hover', async ({
+    page,
+    request,
+  }) => {
+    await openCardWithDescription(page, request);
+
+    await expect(page.getByTestId('DescriptionListIcon')).toBeVisible();
+    await expect(page.getByTestId('DescriptionCaretIcon')).toBeHidden();
+
+    await page.getByTestId('DescriptionToggleButton').hover();
+
+    await expect(page.getByTestId('DescriptionCaretIcon')).toBeVisible();
+    await expect(page.getByTestId('DescriptionListIcon')).toBeHidden();
+
+    await page.mouse.move(0, 0);
+
+    await expect(page.getByTestId('DescriptionListIcon')).toBeVisible();
+    await expect(page.getByTestId('DescriptionCaretIcon')).toBeHidden();
+  });
+
+  test('hides the body and the edit button without moving the heading', async ({
+    page,
+    request,
+  }) => {
+    await openCardWithDescription(page, request);
+
+    const expandedTitle = await descriptionTitleBox(page);
+
+    await page.getByTestId('DescriptionToggleButton').click();
+
+    await expect(page.getByTestId('CardDescriptionText')).toBeHidden();
+    await expect(page.getByTestId('EditDescriptionButton')).toBeHidden();
+
+    // The caret is the resting face while collapsed, so it survives the pointer
+    // leaving the button.
+    await page.mouse.move(0, 0);
+    await expect(page.getByTestId('DescriptionCaretIcon')).toBeVisible();
+    await expect(page.getByTestId('DescriptionListIcon')).toBeHidden();
+
+    // The edit button is hidden in place rather than dropped, which is what
+    // keeps the heading row the same box in both states.
+    expect(await descriptionTitleBox(page)).toEqual(expandedTitle);
+  });
+
+  test('slides the body closed and open', async ({ page, request }) => {
+    await openCardWithDescription(page, request);
+
+    const openHeight = await descriptionBodyHeight(page);
+    expect(openHeight).toBeGreaterThan(0);
+
+    const collapseHeights = await sampleWhile(page, () =>
+      page.getByTestId('DescriptionToggleButton').click(),
+    );
+    expect(midSlideFrames(collapseHeights, openHeight)).toBeGreaterThan(2);
+    expect(collapseHeights.at(-1)).toBe(0);
+
+    const expandHeights = await sampleWhile(page, () =>
+      page.getByTestId('DescriptionToggleButton').click(),
+    );
+    expect(midSlideFrames(expandHeights, openHeight)).toBeGreaterThan(2);
+    expect(expandHeights.at(-1)).toBe(openHeight);
+  });
+
+  test('keeps the open editor and its draft across a collapse', async ({
+    page,
+    request,
+  }) => {
+    await openCard(page, request);
+
+    await waitForInteractiveTrigger(
+      page,
+      '[data-testid="DescriptionInput"]',
+      '[data-testid="DescriptionPlaceholder"]',
+    );
+    await page.getByTestId('DescriptionInput').pressSequentially('Draft text');
+    await expect(page.getByTestId('DescriptionInput')).toHaveText('Draft text');
+
+    await page.getByTestId('DescriptionToggleButton').click();
+    await expect(page.getByTestId('DescriptionInput')).toBeHidden();
+    await expect(page.getByTestId('SaveDescriptionButton')).toBeHidden();
+
+    // Lexical seeds itself from `initialValue` on mount, so a collapse that
+    // unmounted the editor would silently drop the draft.
+    await page.getByTestId('DescriptionToggleButton').click();
+    await expect(page.getByTestId('DescriptionInput')).toBeVisible();
+    await expect(page.getByTestId('DescriptionInput')).toHaveText('Draft text');
+
+    // Firefox clears the caret when the region is hidden, so re-place it
+    // before typing the rest.
+    await page.getByTestId('DescriptionInput').click();
+    await page.keyboard.press('End');
+    await page.getByTestId('DescriptionInput').pressSequentially(' plus more');
+
+    await waitForInteractiveTrigger(
+      page,
+      '[data-testid="CardDescriptionText"]',
+      '[data-testid="SaveDescriptionButton"]',
+    );
+    await expect(page.getByTestId('CardDescriptionText')).toHaveText(
+      'Draft text plus more',
+    );
+  });
+
+  test('persists the collapsed state across a reload', async ({
+    page,
+    request,
+  }) => {
+    await openCardWithDescription(page, request);
+
+    await page.getByTestId('DescriptionToggleButton').click();
+    await expect(page.getByTestId('CardDescriptionText')).toBeHidden();
+
+    // The toggle is written to the card, so let the mutation reach the server
+    // before dropping the optimistic cache on the floor with a reload.
+    await page.waitForLoadState('networkidle');
+    await page.reload();
+    await waitForCardModal(page);
+
+    await expect(page.getByTestId('CardDescriptionText')).toBeHidden();
+    await expect(page.getByTestId('EditDescriptionButton')).toBeHidden();
+
+    await page.getByTestId('DescriptionToggleButton').click();
+    await expect(page.getByTestId('CardDescriptionText')).toBeVisible();
+
+    await page.waitForLoadState('networkidle');
+    await page.reload();
+    await waitForCardModal(page);
+
+    await expect(page.getByTestId('CardDescriptionText')).toBeVisible();
+  });
+});
+
 test.describe('Move card', () => {
   // Cold Vite compile on the first navigation of a run can exceed 30s.
   test.describe.configure({ timeout: 60_000 });
@@ -347,6 +483,91 @@ async function waitForCardTitleToBeUpdated(page: Page) {
     (await cardTitle.textContent())?.trim() === 'Write E2E docs';
 
   return waitForHydratedAction(trigger, isDone);
+}
+
+async function openCard(page: Page, request: APIRequestContext) {
+  await resetDb(request);
+  const board = await seedBoard(request, 'Sprint Board');
+  const { card } = await seedCard(request, {
+    boardId: board.id,
+    listTitle: 'To Do',
+    cardTitle: 'Write docs',
+  });
+
+  await page.goto(`/board/${board.id}/card/${card.id}`);
+  await waitForCardModal(page);
+
+  return { board, card };
+}
+
+/** A card whose description is saved, so the section rests expanded with its
+ * edit button and body on screen. */
+async function openCardWithDescription(page: Page, request: APIRequestContext) {
+  const seeded = await openCard(page, request);
+
+  await waitForInteractiveTrigger(
+    page,
+    '[data-testid="DescriptionInput"]',
+    '[data-testid="DescriptionPlaceholder"]',
+  );
+  await page
+    .getByTestId('DescriptionInput')
+    .pressSequentially('Add acceptance criteria.');
+
+  await waitForInteractiveTrigger(
+    page,
+    '[data-testid="CardDescriptionText"]',
+    '[data-testid="SaveDescriptionButton"]',
+  );
+
+  return seeded;
+}
+
+function descriptionTitleBox(page: Page) {
+  return page.getByTestId('DescriptionTitle').boundingBox();
+}
+
+async function descriptionBodyHeight(page: Page) {
+  const box = await page.getByTestId('DescriptionBodyInner').boundingBox();
+  return box?.height ?? 0;
+}
+
+/**
+ * The body slides on `grid-template-rows`, which no event reports, so read its
+ * height every frame while `act` runs and prove the height was interpolated
+ * rather than snapped.
+ */
+async function sampleWhile(page: Page, act: () => Promise<void>) {
+  const sampling = page.evaluate(() => {
+    const element = document.querySelector(
+      '[data-testid="DescriptionBodyInner"]',
+    );
+    const samples: number[] = [];
+    const start = performance.now();
+
+    return new Promise<number[]>((resolve) => {
+      function readFrame() {
+        samples.push(element?.getBoundingClientRect().height ?? -1);
+
+        if (performance.now() - start < 400) {
+          requestAnimationFrame(readFrame);
+        } else {
+          resolve(samples);
+        }
+      }
+
+      readFrame();
+    });
+  });
+
+  await act();
+
+  return sampling;
+}
+
+function midSlideFrames(heights: number[], openHeight: number) {
+  return heights.filter((height) => height > 1 && height < openHeight - 1)
+    .length;
 }
 
 async function waitForCardModal(page: Page) {
