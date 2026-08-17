@@ -60,12 +60,6 @@ export function ActivityPanel() {
 
       <AddComment />
 
-      {/*
-       * The entries load on their own boundary. Under the panel's boundary
-       * alone, `useGetActivity` resolving a beat after the panel committed
-       * re-suspended the whole panel: React tore down the committed subtree
-       * and rebuilt it, silently emptying a comment already being written.
-       */}
       <Suspense fallback={<ActivityListSkeleton showActivity={showActivity} />}>
         <ActivityList
           showActivity={showActivity}
