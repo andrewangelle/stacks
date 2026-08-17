@@ -20,6 +20,12 @@ importers:
       '@dnd-kit/react':
         specifier: ^0.4.0
         version: 0.4.0(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
+      '@lexical/code-core':
+        specifier: ^0.49.0
+        version: 0.49.0(typescript@7.0.2)
+      '@lexical/extension':
+        specifier: ^0.49.0
+        version: 0.49.0(typescript@7.0.2)
       '@lexical/link':
         specifier: ^0.49.0
         version: 0.49.0(typescript@7.0.2)

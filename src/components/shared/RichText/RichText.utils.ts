@@ -5,10 +5,12 @@ import {
   $isHeadingNode,
   $isQuoteNode,
 } from '@lexical/rich-text';
+import { $dfs } from '@lexical/utils';
 import {
   $createParagraphNode,
   $createTextNode,
   $getRoot,
+  $isDecoratorNode,
   type LexicalNode,
 } from 'lexical';
 import type { MouseEvent } from 'react';
@@ -40,15 +42,53 @@ export function isEmptyRichText(value: string) {
     return value.trim() === '';
   }
 
-  return !hasText(parsed.root);
+  return !hasContent(parsed.root);
 }
 
-function hasText(node: SerializedRichTextNode): boolean {
+/** A divider or an image carries no text but is still worth saving. */
+const CONTENT_NODE_TYPES = new Set(['image', 'horizontalrule']);
+
+function hasContent(node: SerializedRichTextNode): boolean {
   if (typeof node.text === 'string' && node.text.trim() !== '') {
     return true;
   }
 
-  return (node.children ?? []).some(hasText);
+  if (node.type !== undefined && CONTENT_NODE_TYPES.has(node.type)) {
+    return true;
+  }
+
+  return (node.children ?? []).some(hasContent);
+}
+
+/** The editor-side counterpart of `isEmptyRichText`, read inside an update. */
+export function $isBlankDocument() {
+  const root = $getRoot();
+
+  if (root.getTextContent().trim() !== '') {
+    return false;
+  }
+
+  return !$dfs(root).some(({ node }) => $isDecoratorNode(node));
+}
+
+const SAFE_URL_PROTOCOLS = new Set(['http:', 'https:', 'mailto:', 'tel:']);
+
+/**
+ * A saved document is user input that `RichTextContent` renders straight into
+ * `href` and `src`, so every URL read back out of it clears a scheme
+ * allowlist first. Anything that fails to parse — a relative path included —
+ * is treated as unverifiable and blanked rather than trusted.
+ */
+export function toSafeUrl(url: string | undefined) {
+  if (!url) {
+    return 'about:blank';
+  }
+
+  try {
+    return SAFE_URL_PROTOCOLS.has(new URL(url).protocol) ? url : 'about:blank';
+  } catch {
+    return 'about:blank';
+  }
 }
 
 export function toInitialEditorState(value: string) {

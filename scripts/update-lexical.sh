@@ -8,3 +8,5 @@ pnpm add lexical \
  @lexical/rich-text \
  @lexical/markdown \
  @lexical/utils \
+ @lexical/code-core \
+ @lexical/extension

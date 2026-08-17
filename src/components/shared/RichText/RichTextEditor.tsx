@@ -6,23 +6,27 @@ import {
 import { ContentEditable } from '@lexical/react/LexicalContentEditable';
 import { LexicalErrorBoundary } from '@lexical/react/LexicalErrorBoundary';
 import { HistoryPlugin } from '@lexical/react/LexicalHistoryPlugin';
+import { LinkPlugin } from '@lexical/react/LexicalLinkPlugin';
 import { ListPlugin } from '@lexical/react/LexicalListPlugin';
 import { MarkdownShortcutPlugin } from '@lexical/react/LexicalMarkdownShortcutPlugin';
 import { OnChangePlugin } from '@lexical/react/LexicalOnChangePlugin';
 import { RichTextPlugin } from '@lexical/react/LexicalRichTextPlugin';
-import { $getRoot } from 'lexical';
-import { useMemo } from 'react';
-import {
-  richTextNodes,
-  richTextTheme,
-  richTextTransformers,
-} from '~/components/shared/RichText/RichText.constants';
+import { useMemo, useState } from 'react';
+import { richTextTheme } from '~/components/shared/RichText/RichText.constants';
 import {
   RichTextBody,
   RichTextPlaceholder,
   RichTextSurface,
 } from '~/components/shared/RichText/RichText.styled';
-import { toInitialEditorState } from '~/components/shared/RichText/RichText.utils';
+import {
+  richTextNodes,
+  richTextTransformers,
+} from '~/components/shared/RichText/RichText.transformers';
+import {
+  $isBlankDocument,
+  toInitialEditorState,
+} from '~/components/shared/RichText/RichText.utils';
+import { RichTextMarkdownPreview } from '~/components/shared/RichText/RichTextMarkdownPreview';
 import { RichTextToolbar } from '~/components/shared/RichText/RichTextToolbar';
 
 /**
@@ -49,6 +53,8 @@ export function RichTextEditor({
   minHeight = '90px',
   onChange,
 }: RichTextEditorProps) {
+  const [isMarkdownVisible, setMarkdownVisible] = useState(false);
+
   const initialConfig = useMemo<InitialConfigType>(
     () => ({
       namespace: 'RichTextEditor',
@@ -65,9 +71,12 @@ export function RichTextEditor({
   return (
     <LexicalComposer initialConfig={initialConfig}>
       <RichTextSurface>
-        <RichTextToolbar />
+        <RichTextToolbar
+          isMarkdownVisible={isMarkdownVisible}
+          onToggleMarkdown={() => setMarkdownVisible(!isMarkdownVisible)}
+        />
 
-        <RichTextBody $minHeight={minHeight}>
+        <RichTextBody $minHeight={minHeight} $hidden={isMarkdownVisible}>
           <RichTextPlugin
             contentEditable={
               <ContentEditable
@@ -82,18 +91,24 @@ export function RichTextEditor({
             ErrorBoundary={LexicalErrorBoundary}
           />
         </RichTextBody>
+
+        {isMarkdownVisible && (
+          <RichTextMarkdownPreview
+            minHeight={minHeight}
+            onClose={() => setMarkdownVisible(false)}
+          />
+        )}
       </RichTextSurface>
 
       {autoFocus && <AutoFocusPlugin />}
       <HistoryPlugin />
       <ListPlugin />
+      <LinkPlugin />
       <MarkdownShortcutPlugin transformers={richTextTransformers} />
       <OnChangePlugin
         ignoreSelectionChange
         onChange={(editorState) => {
-          const isEmpty = editorState.read(
-            () => $getRoot().getTextContent().trim() === '',
-          );
+          const isEmpty = editorState.read($isBlankDocument);
 
           onChange(isEmpty ? '' : JSON.stringify(editorState));
         }}

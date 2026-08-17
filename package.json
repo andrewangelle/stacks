@@ -41,6 +41,8 @@
     "@clerk/tanstack-react-start": "^1.5.2",
     "@dnd-kit/dom": "^0.4.0",
     "@dnd-kit/react": "^0.4.0",
+    "@lexical/code-core": "^0.49.0",
+    "@lexical/extension": "^0.49.0",
     "@lexical/link": "^0.49.0",
     "@lexical/list": "^0.49.0",
     "@lexical/markdown": "^0.49.0",

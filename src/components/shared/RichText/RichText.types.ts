@@ -16,6 +16,9 @@ export type SerializedRichTextNode = {
   format?: number | string;
   tag?: string;
   listType?: string;
+  url?: string;
+  src?: string;
+  altText?: string;
 };
 
 export type SerializedRichText = {
@@ -46,6 +49,12 @@ export type AlignmentButton = {
   alignment: ElementFormatType;
   label: string;
   Icon: IconType;
+};
+
+/** One row of the help dialog's markdown cheat sheet. */
+export type MarkdownShortcut = {
+  label: string;
+  keys: string[];
 };
 
 /**

@@ -23,6 +23,7 @@ import {
 } from 'lexical';
 import { Select } from 'radix-ui';
 import { useCallback, useEffect, useState } from 'react';
+import { BsMarkdown, BsQuestionCircle } from 'react-icons/bs';
 import { FaRedo, FaUndo } from 'react-icons/fa';
 import { RxCaretDown } from 'react-icons/rx';
 import {
@@ -41,6 +42,7 @@ import {
   RichTextToolbarDivider,
   RichTextToolbarGroup,
   RichTextToolbarRow,
+  RichTextToolbarSpacer,
 } from '~/components/shared/RichText/RichText.styled';
 import type { BlockType } from '~/components/shared/RichText/RichText.types';
 import {
@@ -48,10 +50,20 @@ import {
   keepSelection,
   toBlockType,
 } from '~/components/shared/RichText/RichText.utils';
+import { RichTextHelpDialog } from '~/components/shared/RichText/RichTextHelpDialog';
 
-export function RichTextToolbar() {
+type RichTextToolbarProps = {
+  isMarkdownVisible: boolean;
+  onToggleMarkdown: () => void;
+};
+
+export function RichTextToolbar({
+  isMarkdownVisible,
+  onToggleMarkdown,
+}: RichTextToolbarProps) {
   const [editor] = useLexicalComposerContext();
   const [toolbar, setToolbar] = useState(initialToolbarState);
+  const [isHelpOpen, setHelpOpen] = useState(false);
 
   const syncToolbar = useCallback(() => {
     const selection = $getSelection();
@@ -243,6 +255,32 @@ export function RichTextToolbar() {
           </RichTextToolbarButton>
         ))}
       </RichTextToolbarGroup>
+
+      <RichTextToolbarSpacer />
+
+      <RichTextToolbarGroup>
+        <RichTextToolbarButton
+          type="button"
+          aria-label="Show markdown"
+          aria-pressed={isMarkdownVisible}
+          $active={isMarkdownVisible}
+          onMouseDown={keepSelection}
+          onClick={onToggleMarkdown}
+        >
+          <BsMarkdown size={16} />
+        </RichTextToolbarButton>
+
+        <RichTextToolbarButton
+          type="button"
+          aria-label="Editor help"
+          onMouseDown={keepSelection}
+          onClick={() => setHelpOpen(true)}
+        >
+          <BsQuestionCircle size={15} />
+        </RichTextToolbarButton>
+      </RichTextToolbarGroup>
+
+      <RichTextHelpDialog open={isHelpOpen} onOpenChange={setHelpOpen} />
     </RichTextToolbarRow>
   );
 }

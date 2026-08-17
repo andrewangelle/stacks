@@ -2,6 +2,7 @@ import { Fragment, type ReactNode } from 'react';
 import {
   BLOCK_ALIGNMENTS,
   HEADING_TAGS,
+  RICH_TEXT_CLASS,
   TEXT_FORMAT,
 } from '~/components/shared/RichText/RichText.constants';
 import type {
@@ -9,7 +10,10 @@ import type {
   RichTextContentProps,
   SerializedRichTextNode,
 } from '~/components/shared/RichText/RichText.types';
-import { parseRichText } from '~/components/shared/RichText/RichText.utils';
+import {
+  parseRichText,
+  toSafeUrl,
+} from '~/components/shared/RichText/RichText.utils';
 
 export function RichTextContent({ value }: RichTextContentProps) {
   const parsed = parseRichText(value);
@@ -42,6 +46,21 @@ function renderNode(node: SerializedRichTextNode, key: string): ReactNode {
 
   if (node.type === 'linebreak') {
     return <br key={key} />;
+  }
+
+  if (node.type === 'horizontalrule') {
+    return <hr key={key} className={RICH_TEXT_CLASS.horizontalRule} />;
+  }
+
+  if (node.type === 'image') {
+    return (
+      <img
+        key={key}
+        className={RICH_TEXT_CLASS.image}
+        src={toSafeUrl(node.src)}
+        alt={node.altText ?? ''}
+      />
+    );
   }
 
   const children = renderChildren(node, key);
@@ -85,6 +104,24 @@ function renderNode(node: SerializedRichTextNode, key: string): ReactNode {
           {children}
         </li>
       );
+    case 'code':
+      return (
+        <code key={key} className={RICH_TEXT_CLASS.code} style={style}>
+          {children}
+        </code>
+      );
+    case 'link':
+      return (
+        <a
+          key={key}
+          className={RICH_TEXT_CLASS.link}
+          href={toSafeUrl(node.url)}
+          target="_blank"
+          rel="noreferrer noopener"
+        >
+          {children}
+        </a>
+      );
     default:
       return <Fragment key={key}>{children}</Fragment>;
   }
@@ -108,6 +145,10 @@ function renderText(node: SerializedRichTextNode, key: string): ReactNode {
 
   if ((format & TEXT_FORMAT.strikethrough) !== 0) {
     content = <s>{content}</s>;
+  }
+
+  if ((format & TEXT_FORMAT.code) !== 0) {
+    content = <code className={RICH_TEXT_CLASS.inlineCode}>{content}</code>;
   }
 
   return <Fragment key={key}>{content}</Fragment>;

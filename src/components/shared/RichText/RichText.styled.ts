@@ -1,9 +1,13 @@
-import { Select } from 'radix-ui';
+import { Dialog, Select } from 'radix-ui';
 import { css, type DataAttributes, styled } from 'styled-components';
 import { blue, focusRingBlue, fontFamily } from '~/styles/tokens';
 
 type ActiveProps = { $active?: boolean };
 type MinHeightProps = { $minHeight: string };
+type HiddenProps = { $hidden?: boolean };
+
+const monoFontFamily =
+  "ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas, monospace";
 
 /**
  * Rich text is authored in Lexical and read back through `RichTextContent`, so
@@ -89,6 +93,46 @@ export const richTextStyles = css`
 
   .rich-text-underline-strikethrough {
     text-decoration: underline line-through;
+  }
+
+  .rich-text-inline-code {
+    padding: 1px 4px;
+    border-radius: 3px;
+    background: rgba(9, 30, 66, 0.06);
+    font-family: ${monoFontFamily};
+    font-size: 0.9em;
+  }
+
+  /* Lexical renders a code block as a bare <code>, so it carries its own box. */
+  .rich-text-code {
+    display: block;
+    margin: 0 0 8px;
+    padding: 8px 12px;
+    border-radius: 4px;
+    background: rgba(9, 30, 66, 0.06);
+    font-family: ${monoFontFamily};
+    font-size: 13px;
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+    tab-size: 2;
+  }
+
+  .rich-text-link {
+    color: ${blue};
+    text-decoration: underline;
+  }
+
+  .rich-text-image {
+    display: inline-block;
+    max-width: 100%;
+    vertical-align: bottom;
+  }
+
+  .rich-text-hr {
+    height: 1px;
+    margin: 12px 0;
+    border: none;
+    background: rgba(9, 30, 66, 0.2);
   }
 
   .rich-text-nested-listitem {
@@ -320,18 +364,190 @@ export const RichTextBlockSelectItem = styled(
   }
 `;
 
+/** Keeps the trailing toolbar controls against the right edge as the row wraps. */
+export const RichTextToolbarSpacer = styled.span.attrs<DataAttributes>({
+  'data-testid': 'RichTextToolbarSpacer',
+})`
+  flex: 1 1 auto;
+`;
+
+/**
+ * The markdown preview hides the editor rather than replacing it: unmounting
+ * the content editable would tear down Lexical's DOM binding and take the
+ * selection with it.
+ */
 export const RichTextBody = styled.div.attrs<DataAttributes>({
   'data-testid': 'RichTextBody',
-})<MinHeightProps>`
+})<MinHeightProps & HiddenProps>`
   ${richTextStyles}
   position: relative;
+  display: ${({ $hidden }) => ($hidden ? 'none' : 'block')};
 
-  [contenteditable] {
+  /*
+   * Decorator nodes — the divider, images — carry contenteditable="false", so
+   * this has to name the editable root explicitly or they inherit its box.
+   */
+  [contenteditable='true'] {
     min-height: ${({ $minHeight }) => $minHeight};
     padding: 12px;
     outline: none;
     overflow-wrap: anywhere;
   }
+`;
+
+export const RichTextMarkdownPanel = styled.div.attrs<DataAttributes>({
+  'data-testid': 'RichTextMarkdownPanel',
+})<MinHeightProps>`
+  box-sizing: border-box;
+  min-height: ${({ $minHeight }) => $minHeight};
+  padding: 8px;
+  background: rgb(240, 241, 243);
+`;
+
+export const RichTextMarkdownPanelHeader = styled.div.attrs<DataAttributes>({
+  'data-testid': 'RichTextMarkdownPanelHeader',
+})`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+`;
+
+export const RichTextMarkdownPanelButton = styled.button.attrs<DataAttributes>({
+  'data-testid': 'RichTextMarkdownPanelButton',
+})`
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 6px;
+  border: none;
+  border-radius: 4px;
+  background: transparent;
+  font-family: ${fontFamily};
+  font-size: 14px;
+  color: rgba(9, 30, 66, 0.9);
+  cursor: pointer;
+
+  &:hover {
+    background: rgba(9, 30, 66, 0.08);
+  }
+
+  &:focus-visible {
+    outline: 2px solid ${focusRingBlue};
+    outline-offset: -2px;
+  }
+`;
+
+export const RichTextMarkdownSource = styled.pre.attrs<DataAttributes>({
+  'data-testid': 'RichTextMarkdownSource',
+})`
+  margin: 8px 0 0;
+  padding: 0 6px;
+  font-family: ${monoFontFamily};
+  font-size: 14px;
+  line-height: 1.6;
+  color: rgba(9, 30, 66, 0.9);
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+`;
+
+export const RichTextHelpOverlay = styled(Dialog.Overlay).attrs<DataAttributes>(
+  { 'data-testid': 'RichTextHelpOverlay' },
+)`
+  position: fixed;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  overflow-y: auto;
+  background: rgba(0 0 0 / 0.5);
+  z-index: 1002;
+`;
+
+export const RichTextHelpContent = styled(Dialog.Content).attrs<DataAttributes>(
+  { 'data-testid': 'RichTextHelpContent' },
+)`
+  box-sizing: border-box;
+  position: relative;
+  width: min(560px, calc(100vw - 32px));
+  max-height: calc(100vh - 64px);
+  margin: 32px 0;
+  padding: 32px;
+  border-radius: 8px;
+  background: #fff;
+  font-family: ${fontFamily};
+  overflow-y: auto;
+`;
+
+export const RichTextHelpTitle = styled(Dialog.Title).attrs<DataAttributes>({
+  'data-testid': 'RichTextHelpTitle',
+})`
+  margin: 0 32px 0 0;
+  font-size: 24px;
+  color: rgba(9, 30, 66, 0.95);
+`;
+
+export const RichTextHelpClose = styled(Dialog.Close).attrs<DataAttributes>({
+  'data-testid': 'RichTextHelpClose',
+})`
+  position: absolute;
+  top: 24px;
+  right: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  border: none;
+  border-radius: 4px;
+  background: transparent;
+  color: rgba(9, 30, 66, 0.8);
+  cursor: pointer;
+
+  &:hover {
+    background: rgba(9, 30, 66, 0.08);
+  }
+`;
+
+export const RichTextHelpSectionTitle = styled.h3.attrs<DataAttributes>({
+  'data-testid': 'RichTextHelpSectionTitle',
+})`
+  margin: 28px 0 4px;
+  font-size: 17px;
+  color: rgba(9, 30, 66, 0.95);
+`;
+
+export const RichTextHelpRow = styled.div.attrs<DataAttributes>({
+  'data-testid': 'RichTextHelpRow',
+})`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 8px 0;
+  font-size: 14px;
+  color: rgba(9, 30, 66, 0.9);
+`;
+
+export const RichTextHelpKeys = styled.div.attrs<DataAttributes>({
+  'data-testid': 'RichTextHelpKeys',
+})`
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+`;
+
+export const RichTextHelpKey = styled.span.attrs<DataAttributes>({
+  'data-testid': 'RichTextHelpKey',
+})`
+  padding: 4px 8px;
+  border-radius: 4px;
+  background: rgb(240, 241, 243);
+  font-family: ${monoFontFamily};
+  font-size: 13px;
+  white-space: nowrap;
 `;
 
 export const RichTextPlaceholder = styled.div.attrs<DataAttributes>({

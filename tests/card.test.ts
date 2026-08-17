@@ -341,6 +341,92 @@ test.describe('Description collapse', () => {
   });
 });
 
+test.describe('Description drafts', () => {
+  // Cold Vite compile on the first navigation of a run can exceed 30s.
+  test.describe.configure({ timeout: 60_000 });
+
+  test('selects description text without opening the editor', async ({
+    page,
+    request,
+  }) => {
+    await openCardWithDescription(page, request);
+
+    const description = page.getByTestId('CardDescriptionText');
+    const box = await description.boundingBox();
+
+    if (!box) {
+      throw new Error('Description has no box to drag across');
+    }
+
+    // Drag across the text the way a user selecting it would. The browser
+    // fires a click on mouse up regardless, so the editor has to tell the two
+    // gestures apart.
+    await page.mouse.move(box.x + 4, box.y + box.height / 2);
+    await page.mouse.down();
+    await page.mouse.move(box.x + box.width - 4, box.y + box.height / 2, {
+      steps: 10,
+    });
+    await page.mouse.up();
+
+    await expect(page.getByTestId('DescriptionInput')).toHaveCount(0);
+    expect(await selectedText(page)).not.toBe('');
+
+    // The next click is the one that clears the selection, so it still must
+    // not open the editor.
+    await description.click();
+
+    await expect(page.getByTestId('DescriptionInput')).toHaveCount(0);
+    expect(await selectedText(page)).toBe('');
+
+    // With nothing selected, a plain click is a deliberate one.
+    await description.click();
+
+    await expect(page.getByTestId('DescriptionInput')).toBeVisible();
+  });
+
+  test('flags unsaved changes and discards them', async ({ page, request }) => {
+    await openCardWithDescription(page, request);
+
+    await page.getByTestId('EditDescriptionButton').click();
+
+    const editor = page.getByTestId('DescriptionInput');
+    await expect(editor).toHaveText('Add acceptance criteria.');
+
+    // An untouched editor is not a draft, so the escape hatch is still Cancel.
+    await expect(page.getByTestId('UnsavedChangesBadge')).toHaveCount(0);
+    await expect(page.getByTestId('CloseDescriptionButton')).toHaveText(
+      'Cancel',
+    );
+
+    await editor.click();
+    await page.keyboard.press('End');
+    await editor.pressSequentially(' And a demo.');
+
+    await expect(page.getByTestId('UnsavedChangesBadge')).toHaveText(
+      'Unsaved changes',
+    );
+    await expect(page.getByTestId('CloseDescriptionButton')).toHaveText(
+      'Discard changes',
+    );
+
+    await page.getByTestId('CloseDescriptionButton').click();
+
+    // Discarding restores the content the editor opened with and leaves the
+    // editor up, so the button falls back to Cancel.
+    await expect(editor).toHaveText('Add acceptance criteria.');
+    await expect(page.getByTestId('UnsavedChangesBadge')).toHaveCount(0);
+    await expect(page.getByTestId('CloseDescriptionButton')).toHaveText(
+      'Cancel',
+    );
+
+    await page.getByTestId('CloseDescriptionButton').click();
+
+    await expect(page.getByTestId('CardDescriptionText')).toHaveText(
+      'Add acceptance criteria.',
+    );
+  });
+});
+
 test.describe('Move card', () => {
   // Cold Vite compile on the first navigation of a run can exceed 30s.
   test.describe.configure({ timeout: 60_000 });
@@ -566,6 +652,10 @@ async function openCardWithDescription(page: Page, request: APIRequestContext) {
   );
 
   return seeded;
+}
+
+function selectedText(page: Page) {
+  return page.evaluate(() => window.getSelection()?.toString() ?? '');
 }
 
 function descriptionTitleBox(page: Page) {
