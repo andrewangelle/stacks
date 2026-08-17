@@ -113,6 +113,7 @@ export function useUpdateChecklist() {
         checklistTitle: variables.checklistTitle ?? checklist.checklistTitle,
         hideCheckedItems:
           variables.hideCheckedItems ?? checklist.hideCheckedItems,
+        isExpanded: variables.isExpanded ?? checklist.isExpanded,
       }));
 
       return { snapshot };

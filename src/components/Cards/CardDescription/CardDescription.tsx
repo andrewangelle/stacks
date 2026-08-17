@@ -91,7 +91,7 @@ export function CardDescription() {
               <IoMdList size={24} />
             </CardDescriptionListIcon>
 
-            <CardDescriptionCaretIcon $expanded={isExpanded}>
+            <CardDescriptionCaretIcon>
               <RiArrowRightSLine size={24} />
             </CardDescriptionCaretIcon>
           </CardDescriptionToggleButton>

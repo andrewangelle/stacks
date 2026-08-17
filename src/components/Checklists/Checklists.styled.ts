@@ -1,10 +1,13 @@
-import { Popover, Progress } from 'radix-ui';
-import { type DataAttributes, styled } from 'styled-components';
+import { Collapsible, Popover, Progress } from 'radix-ui';
+import { type DataAttributes, keyframes, styled } from 'styled-components';
 import { fontFamily } from '~/components/Boards/Boards.styled';
 import {
   CardModalActionButton,
+  type CardModalSectionExpandedProps,
   CardModalTitle,
   cardModalContentIndent,
+  cardModalSectionIconStyles,
+  cardModalSectionToggleStyles,
   EditCardTitleForm,
   EditCardTitleInput,
 } from '~/components/Cards/Card.styled';
@@ -14,6 +17,7 @@ import {
   secondaryButtonColor,
   secondaryButtonStyles,
 } from '~/styles/Page.styled';
+import { focusRingBlue } from '~/styles/tokens';
 
 const checklistRowColumns = `${cardModalContentIndent} minmax(0, 1fr)`;
 
@@ -27,6 +31,76 @@ export const ChecklistContainer = styled.div.attrs<DataAttributes>({
   'data-testid': 'ChecklistContainer',
 })`
   margin: 30px 0px;
+`;
+
+export const ChecklistToggleButton = styled(
+  Collapsible.Trigger,
+).attrs<DataAttributes>({
+  'data-testid': 'ChecklistToggleButton',
+})<CardModalSectionExpandedProps>`
+  ${cardModalSectionToggleStyles}
+`;
+
+export const ChecklistCheckIcon = styled.span.attrs<DataAttributes>({
+  'data-testid': 'ChecklistCheckIcon',
+  'data-section-icon': 'resting',
+})`
+  ${cardModalSectionIconStyles}
+`;
+
+export const ChecklistCaretIcon = styled.span.attrs<DataAttributes>({
+  'data-testid': 'ChecklistCaretIcon',
+  'data-section-icon': 'caret',
+})`
+  ${cardModalSectionIconStyles}
+`;
+
+const checklistSlideDownFrames = keyframes`
+  from {
+    height: 0;
+  }
+  to {
+    height: var(--radix-collapsible-content-height);
+  }
+`;
+
+const checklistSlideUpFrames = keyframes`
+  from {
+    height: var(--radix-collapsible-content-height);
+  }
+  to {
+    height: 0;
+  }
+`;
+
+/**
+ * Radix measures the closed height into `--radix-collapsible-content-height`
+ * and keeps the subtree mounted for the duration of the exit animation, so the
+ * slide only needs keyframes; nothing here may set a height of its own.
+ */
+export const ChecklistCollapsibleContent = styled(
+  Collapsible.Content,
+).attrs<DataAttributes>({
+  'data-testid': 'ChecklistCollapsibleContent',
+})`
+  overflow: hidden;
+
+  &[data-state='open'] {
+    animation: ${checklistSlideDownFrames} 150ms ease-out;
+  }
+
+  &[data-state='closed'] {
+    animation: ${checklistSlideUpFrames} 150ms ease-out;
+  }
+`;
+
+export const ChecklistHeaderLeading = styled.div.attrs<DataAttributes>({
+  'data-testid': 'ChecklistHeaderLeading',
+})`
+  display: flex;
+  align-items: center;
+  min-width: 0;
+  flex: 1 1 auto;
 `;
 
 export const ChecklistPopoverContent = styled(
@@ -98,10 +172,17 @@ export const DeleteChecklistButton = styled(
   }
 `;
 
-export const ChecklistHeaderActions = styled.div`
+/**
+ * Collapsed hides the actions in place rather than dropping them, so the header
+ * keeps the exact box — and the title the exact baseline — either way.
+ */
+export const ChecklistHeaderActions = styled.div.attrs<DataAttributes>({
+  'data-testid': 'ChecklistHeaderActions',
+})<CardModalSectionExpandedProps>`
   display: flex;
   gap: 8px;
   flex-shrink: 0;
+  visibility: ${({ $expanded }) => ($expanded ? 'visible' : 'hidden')};
 `;
 
 export const ToggleCheckedItemsButton = styled(Button).attrs<DataAttributes>({
@@ -185,6 +266,31 @@ export const ChecklistTitle = styled(CardModalTitle).attrs<DataAttributes>({
   font-size: 14px;
   min-width: 0;
   overflow-wrap: anywhere;
+`;
+
+/**
+ * The heading opens the rename editor, so the control itself is a button rather
+ * than a click handler on the `h2` — that is what puts it in the tab order and
+ * makes Enter and Space work without hand-rolled key handling. It fills the
+ * heading so a click anywhere along the title still lands on it.
+ */
+export const ChecklistTitleButton = styled.button.attrs<DataAttributes>({
+  'data-testid': 'ChecklistTitleButton',
+  type: 'button',
+})`
+  all: unset;
+  box-sizing: border-box;
+  display: block;
+  width: 100%;
+  text-align: left;
+  overflow-wrap: anywhere;
+  cursor: pointer;
+
+  &:focus-visible {
+    outline: 2px solid ${focusRingBlue};
+    outline-offset: 2px;
+    border-radius: 3px;
+  }
 `;
 export const EditChecklistTitleForm = styled(EditCardTitleForm)``;
 export const EditChecklistTitleInput = styled(

@@ -1,7 +1,7 @@
 import { useState } from 'react';
-import { BsCheck2Square } from 'react-icons/bs';
 import {
   ChecklistTitle,
+  ChecklistTitleButton,
   EditChecklistTitleForm,
   EditChecklistTitleInput,
 } from '~/components/Checklists/Checklists.styled';
@@ -45,11 +45,14 @@ export function ChecklistEditableTitle({ id }: ChecklistEditableTitleProps) {
 
   return (
     <Flex style={{ alignItems: 'center', minWidth: 0, flex: '1 1 auto' }}>
-      <BsCheck2Square size={24} style={{ flexShrink: 0 }} />
-
       {!isEditingTitle && (
-        <ChecklistTitle onClick={openEditTitle}>
-          {checklist?.checklistTitle}
+        <ChecklistTitle>
+          <ChecklistTitleButton
+            aria-label={`Rename ${checklist?.checklistTitle ?? 'checklist'}`}
+            onClick={openEditTitle}
+          >
+            {checklist?.checklistTitle}
+          </ChecklistTitleButton>
         </ChecklistTitle>
       )}
 

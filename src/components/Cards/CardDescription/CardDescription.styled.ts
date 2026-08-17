@@ -1,9 +1,11 @@
-import { css, type DataAttributes, styled } from 'styled-components';
+import { type DataAttributes, styled } from 'styled-components';
 import { fontFamily } from '~/components/Boards/Boards.styled';
 import {
+  type CardModalSectionExpandedProps,
   CardModalTitle,
   cardModalContentIndent,
-  cardModalSectionIconSize,
+  cardModalSectionIconStyles,
+  cardModalSectionToggleStyles,
 } from '~/components/Cards/Card.styled';
 import { richTextStyles } from '~/components/shared/RichText/RichText.styled';
 import {
@@ -27,78 +29,27 @@ export const CardDescriptionHeadingRow = styled.div.attrs<DataAttributes>({
   margin-bottom: 12px;
 `;
 
-const descriptionIconReveal = css`
-  grid-area: 1 / 1;
-  display: inline-flex;
-  transition:
-    opacity 150ms ease,
-    transform 150ms ease,
-    visibility 150ms;
-`;
-
-type ExpandedProps = {
-  $expanded: boolean;
-};
+type ExpandedProps = CardModalSectionExpandedProps;
 
 export const CardDescriptionListIcon = styled.span.attrs<DataAttributes>({
   'data-testid': 'DescriptionListIcon',
+  'data-section-icon': 'resting',
 })`
-  ${descriptionIconReveal}
+  ${cardModalSectionIconStyles}
 `;
 
 export const CardDescriptionCaretIcon = styled.span.attrs<DataAttributes>({
   'data-testid': 'DescriptionCaretIcon',
-})<ExpandedProps>`
-  ${descriptionIconReveal}
-  --description-caret-rotation: ${({ $expanded }) =>
-    $expanded ? '90deg' : '0deg'};
+  'data-section-icon': 'caret',
+})`
+  ${cardModalSectionIconStyles}
 `;
 
-/**
- * The two icons are stacked in one grid cell and cross-faded: the list icon is
- * the resting face while expanded, the caret takes over on hover and stays put
- * while collapsed so the state is readable without hovering.
- */
 export const CardDescriptionToggleButton = styled.button.attrs<DataAttributes>({
   'data-testid': 'DescriptionToggleButton',
   type: 'button',
 })<ExpandedProps>`
-  all: unset;
-  box-sizing: border-box;
-  display: grid;
-  place-items: center;
-  flex-shrink: 0;
-  width: ${cardModalSectionIconSize};
-  height: ${cardModalSectionIconSize};
-  cursor: pointer;
-
-  ${CardDescriptionListIcon} {
-    visibility: ${({ $expanded }) => ($expanded ? 'visible' : 'hidden')};
-    opacity: ${({ $expanded }) => ($expanded ? 1 : 0)};
-    transform: scale(${({ $expanded }) => ($expanded ? 1 : 0.7)});
-  }
-
-  ${CardDescriptionCaretIcon} {
-    visibility: ${({ $expanded }) => ($expanded ? 'hidden' : 'visible')};
-    opacity: ${({ $expanded }) => ($expanded ? 0 : 1)};
-    transform: rotate(var(--description-caret-rotation))
-      scale(${({ $expanded }) => ($expanded ? 0.7 : 1)});
-  }
-
-  &:hover,
-  &:focus-visible {
-    ${CardDescriptionListIcon} {
-      visibility: hidden;
-      opacity: 0;
-      transform: scale(0.7);
-    }
-
-    ${CardDescriptionCaretIcon} {
-      visibility: visible;
-      opacity: 1;
-      transform: rotate(var(--description-caret-rotation)) scale(1);
-    }
-  }
+  ${cardModalSectionToggleStyles}
 `;
 
 export const CardDescriptionTitle = styled(

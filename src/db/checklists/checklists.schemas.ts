@@ -24,6 +24,7 @@ export const UpdateChecklistSchema = z.object({
   cardId: z.string(),
   checklistTitle: z.string().optional(),
   hideCheckedItems: z.boolean().optional(),
+  isExpanded: z.boolean().optional(),
 });
 
 export const ReorderChecklistsSchema = z.object({

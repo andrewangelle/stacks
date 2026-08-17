@@ -1,5 +1,5 @@
 import { Dialog, Popover } from 'radix-ui';
-import { type DataAttributes, styled } from 'styled-components';
+import { css, type DataAttributes, styled } from 'styled-components';
 import { fontFamily } from '~/components/Boards/Boards.styled';
 import { focusRingBlue } from '~/styles/tokens';
 
@@ -8,6 +8,77 @@ export const cardModalSectionIconSize = '24px';
 
 /** Left edge of description body, checklist labels, inputs, and action rows (icon + 16px gap). */
 export const cardModalContentIndent = '40px';
+
+export type CardModalSectionExpandedProps = {
+  $expanded: boolean;
+};
+
+/**
+ * Both faces of a section toggle sit in the same grid cell so they can
+ * cross-fade in place. Tag the resting face `data-section-icon="resting"` and
+ * the caret `data-section-icon="caret"`.
+ */
+export const cardModalSectionIconStyles = css`
+  grid-area: 1 / 1;
+  display: inline-flex;
+  transition:
+    opacity 150ms ease,
+    transform 150ms ease,
+    visibility 150ms;
+`;
+
+/**
+ * The collapse toggle every card modal section header leads with: the section's
+ * own icon is the resting face while expanded, the caret takes over on hover
+ * and stays put while collapsed so the state is readable without hovering.
+ */
+export const cardModalSectionToggleStyles = css<CardModalSectionExpandedProps>`
+  all: unset;
+  box-sizing: border-box;
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+  width: ${cardModalSectionIconSize};
+  height: ${cardModalSectionIconSize};
+  cursor: pointer;
+  --card-modal-caret-rotation: ${({ $expanded }) =>
+    $expanded ? '90deg' : '0deg'};
+
+  [data-section-icon='resting'] {
+    visibility: ${({ $expanded }) => ($expanded ? 'visible' : 'hidden')};
+    opacity: ${({ $expanded }) => ($expanded ? 1 : 0)};
+    transform: scale(${({ $expanded }) => ($expanded ? 1 : 0.7)});
+  }
+
+  [data-section-icon='caret'] {
+    visibility: ${({ $expanded }) => ($expanded ? 'hidden' : 'visible')};
+    opacity: ${({ $expanded }) => ($expanded ? 0 : 1)};
+    transform: rotate(var(--card-modal-caret-rotation))
+      scale(${({ $expanded }) => ($expanded ? 0.7 : 1)});
+  }
+
+  &:hover,
+  &:focus-visible {
+    [data-section-icon='resting'] {
+      visibility: hidden;
+      opacity: 0;
+      transform: scale(0.7);
+    }
+
+    [data-section-icon='caret'] {
+      visibility: visible;
+      opacity: 1;
+      transform: rotate(var(--card-modal-caret-rotation)) scale(1);
+    }
+  }
+
+  /* all: unset drops the UA focus ring, so put one back. */
+  &:focus-visible {
+    outline: 2px solid ${focusRingBlue};
+    outline-offset: 2px;
+    border-radius: 3px;
+  }
+`;
 
 export const CardModalRoot = styled(Dialog.Root).attrs<DataAttributes>({
   'data-testid': 'CardModalRoot',
