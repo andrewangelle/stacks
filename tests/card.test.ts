@@ -235,7 +235,7 @@ test.describe('Description collapse', () => {
   }) => {
     await openCardWithDescription(page, request);
 
-    const expandedTitle = await descriptionTitleBox(page);
+    const expandedTitle = await descriptionTitlePlacement(page);
 
     await page.getByTestId('DescriptionToggleButton').click();
 
@@ -250,7 +250,7 @@ test.describe('Description collapse', () => {
 
     // The edit button is hidden in place rather than dropped, which is what
     // keeps the heading row the same box in both states.
-    expect(await descriptionTitleBox(page)).toEqual(expandedTitle);
+    expect(await descriptionTitlePlacement(page)).toEqual(expandedTitle);
   });
 
   test('slides the body closed and open', async ({ page, request }) => {
@@ -658,8 +658,29 @@ function selectedText(page: Page) {
   return page.evaluate(() => window.getSelection()?.toString() ?? '');
 }
 
-function descriptionTitleBox(page: Page) {
-  return page.getByTestId('DescriptionTitle').boundingBox();
+/**
+ * The title's box measured against its heading row, not the viewport: under
+ * 850px the modal is `height: auto` inside a `place-items: center` overlay, so
+ * collapsing the body shrinks the modal and re-centers everything in it. The
+ * claim under test is that the row keeps its box and the title keeps its place
+ * in that row.
+ */
+async function descriptionTitlePlacement(page: Page) {
+  const title = await page.getByTestId('DescriptionTitle').boundingBox();
+  const row = await page.getByTestId('DescriptionHeadingRow').boundingBox();
+
+  if (!title || !row) {
+    throw new Error('Description heading is not on screen');
+  }
+
+  return {
+    offsetX: title.x - row.x,
+    offsetY: title.y - row.y,
+    width: title.width,
+    height: title.height,
+    rowWidth: row.width,
+    rowHeight: row.height,
+  };
 }
 
 async function descriptionBodyHeight(page: Page) {
@@ -671,6 +692,11 @@ async function descriptionBodyHeight(page: Page) {
  * The body slides on `grid-template-rows`, which no event reports, so read its
  * height every frame while `act` runs and prove the height was interpolated
  * rather than snapped.
+ *
+ * Sampling stops once the height has moved and then held still, rather than
+ * after a fixed window: the click that starts the slide is dispatched over the
+ * wire and can land hundreds of milliseconds in, which used to leave the last
+ * sample mid-slide on the slower browsers.
  */
 async function sampleWhile(page: Page, act: () => Promise<void>) {
   const sampling = page.evaluate(() => {
@@ -679,15 +705,31 @@ async function sampleWhile(page: Page, act: () => Promise<void>) {
     );
     const samples: number[] = [];
     const start = performance.now();
+    const readHeight = () => element?.getBoundingClientRect().height ?? -1;
 
     return new Promise<number[]>((resolve) => {
-      function readFrame() {
-        samples.push(element?.getBoundingClientRect().height ?? -1);
+      let previous = readHeight();
+      let hasMoved = false;
+      let stillFrames = 0;
 
-        if (performance.now() - start < 400) {
-          requestAnimationFrame(readFrame);
+      function readFrame() {
+        const height = readHeight();
+        samples.push(height);
+
+        if (Math.abs(height - previous) > 0.5) {
+          hasMoved = true;
+          stillFrames = 0;
         } else {
+          stillFrames += 1;
+        }
+        previous = height;
+
+        const settled = hasMoved && stillFrames >= 5;
+
+        if (settled || performance.now() - start > 5_000) {
           resolve(samples);
+        } else {
+          requestAnimationFrame(readFrame);
         }
       }
 
