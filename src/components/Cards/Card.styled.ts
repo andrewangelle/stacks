@@ -1,11 +1,6 @@
 import { Dialog, Popover } from 'radix-ui';
 import { type DataAttributes, styled } from 'styled-components';
 import { fontFamily } from '~/components/Boards/Boards.styled';
-import {
-  Button,
-  secondaryButtonColor,
-  secondaryButtonStyles,
-} from '~/styles/Page.styled';
 import { focusRingBlue } from '~/styles/tokens';
 
 /** Section icon width (description list icon, checklist icon, etc.). */
@@ -301,104 +296,6 @@ export const CardModalListName = styled.div`
   font-size: 14px;
   margin: 4px 12px 12px 20px;
  `;
-
-export const DescriptionContainer = styled.div.attrs<DataAttributes>({
-  'data-testid': 'DescriptionContainer',
-})`
-  margin: 30px 12px 0px;
-`;
-
-export const DescriptionHeadingRow = styled.div.attrs<DataAttributes>({
-  'data-testid': 'DescriptionHeadingRow',
-})`
-  display: flex;
-  justify-content: space-between;
-  margin-bottom: 12px;
-`;
-
-export const DescriptionTitle = styled(CardModalTitle).attrs<DataAttributes>({
-  'data-testid': 'DescriptionTitle',
-})`
-  font-size: 14px;
-`;
-
-export const DescriptionPlaceholder = styled.div.attrs<DataAttributes>({
-  'data-testid': 'DescriptionPlaceholder',
-})` 
-  border: 1px solid rgba(0,0,0, 0.5);
-  height: 30px;
-  margin-left: ${cardModalContentIndent};
-  font-size: 14px;
-  padding: 15px;
-  border-radius: 4px;
-  cursor: pointer;
-  color: rgba(0,0,0, 0.5);
-  font-weight: 500;
-
-  &:hover {
-    background: rgba(0,0,0, 0.1);
-  }
-`;
-
-export const DescriptionInput = styled.textarea.attrs<DataAttributes>({
-  'data-testid': 'DescriptionInput',
-})` 
-  height: 60px;
-  width: 80%;
-  margin-left: ${cardModalContentIndent};
-  margin-bottom: 12px;
-  font-size: 14px;
-  padding: 15px;
-  border-radius: 8px;
-  border: none;
-  font-family: ${fontFamily};
-`;
-
-export const SaveDescriptionButton = styled(Button).attrs<DataAttributes>({
-  'data-testid': 'SaveDescriptionButton',
-})` 
-  padding: 8px 10px;
-  margin: 0 10px 0 ${cardModalContentIndent};
-`;
-
-export const CloseDescriptionButton = styled(Button).attrs<DataAttributes>({
-  'data-testid': 'CloseDescriptionButton',
-})`
-  ${secondaryButtonStyles}
-  padding: 8px 10px;
-  margin: 0;
-  color: black;
-  border: none;
-
-  &:hover:not(:disabled) {
-    color: ${secondaryButtonColor};
-  }
-`;
-
-export const CardDescriptionText = styled.div.attrs<DataAttributes>({
-  'data-testid': 'CardDescriptionText',
-})` 
-  font-family: ${fontFamily};
-  margin-left: ${cardModalContentIndent};
-  font-size: 14px;
-  margin-top: 15px;
-`;
-
-export const EditDescriptionButton = styled(Button).attrs<DataAttributes>({
-  'data-testid': 'EditDescriptionButton',
-})`
-  ${secondaryButtonStyles}
-  color: rgba(9, 30, 66, 0.725);
-  border: 1px solid rgba(9, 30, 66, 0.2);
-  padding: 8px 10px;
-  margin: 0;
-  font-size: 14px;
-  flex-shrink: 0;
-
-  &:hover:not(:disabled) {
-    color: ${secondaryButtonColor};
-  }
-`;
 
 export const EditCardTitleForm = styled.form`
   position: relative;

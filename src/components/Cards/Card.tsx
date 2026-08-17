@@ -15,7 +15,7 @@ import {
   CardPageContent,
 } from '~/components/Cards/Card.styled';
 import { CardColumnResize } from '~/components/Cards/CardColumnResize';
-import { CardDescription } from '~/components/Cards/CardDescription';
+import { CardDescription } from '~/components/Cards/CardDescription/CardDescription';
 import { CardEditableTitle } from '~/components/Cards/CardEditableTitle';
 import { CardHeader } from '~/components/Cards/CardHeader/CardHeader';
 import { DeleteCardPopover } from '~/components/Cards/DeleteCardPopover';

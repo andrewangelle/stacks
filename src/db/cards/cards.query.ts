@@ -14,12 +14,14 @@ import {
   createCard,
   deleteCard,
   moveCard,
+  setCardDescriptionExpanded,
   updateCard,
 } from '~/db/cards/cards.functions';
 import type {
   CreateCardArgs,
   DeleteCardArgs,
   MoveCardArgs,
+  SetCardDescriptionExpandedArgs,
   UpdateCardArgs,
 } from '~/db/cards/cards.schemas';
 import { toListCardItem } from '~/db/lists/lists.query';
@@ -48,6 +50,36 @@ export function useGetCard(args: { id: string }) {
         : undefined;
     },
   });
+}
+
+/**
+ * Whether the card modal's description section is open. Like the activity
+ * panel's details toggle, it is a property of the card rather than of the
+ * session, so it lives on the card in the boards tree and survives a reload.
+ */
+export function useSetDescriptionExpanded() {
+  const mutation = useMutation({
+    mutationFn(data: SetCardDescriptionExpandedArgs) {
+      return setCardDescriptionExpanded({ data });
+    },
+
+    onMutate(variables) {
+      const snapshot = getBoardsCache();
+
+      patchCard(variables.cardId, (card) => ({
+        ...card,
+        isDescriptionExpanded: variables.isDescriptionExpanded,
+      }));
+
+      return { snapshot };
+    },
+
+    onError(_error, _variables, context) {
+      restoreBoardsCache(context?.snapshot);
+    },
+  });
+
+  return mutation.mutate;
 }
 
 export function useCreateCard() {

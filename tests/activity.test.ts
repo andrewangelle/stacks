@@ -14,6 +14,42 @@ test.describe('Activity', () => {
     await addComment(page, 'Looks good');
   });
 
+  test('keeps a comment being written while the entries load', async ({
+    page,
+    request,
+  }) => {
+    await resetDb(request);
+
+    const board = await seedBoard(request, 'Sprint Board');
+    const { card } = await seedCard(request, {
+      boardId: board.id,
+      listTitle: 'To Do',
+      cardTitle: 'Ship feature',
+    });
+
+    await page.goto(`/board/${board.id}/card/${card.id}`);
+
+    // Deliberately no settling: the entries are still loading, and the panel
+    // used to re-suspend once they arrived, tearing down the composer and the
+    // draft in it.
+    await waitForInteractiveTrigger(
+      page,
+      '[data-testid="AddCommentInput"]',
+      '[data-testid="AddCommentTrigger"]',
+    );
+
+    const input = page.getByTestId('AddCommentInput');
+    await input.fill('Half-written thought');
+
+    await expect(page.getByTestId('ActivityCommentContent')).toHaveCount(0);
+    await page.waitForLoadState('networkidle');
+
+    await expect(input).toHaveText('Half-written thought');
+    await expect(
+      page.locator('[data-testid="SaveCommentButton"]:not([disabled])'),
+    ).toBeVisible();
+  });
+
   test('edits a comment in the activity column', async ({ page, request }) => {
     await openCard(page, request);
 
@@ -339,6 +375,12 @@ async function addComment(page: Page, text: string) {
   const commentContent = activityColumn
     .getByTestId('ActivityCommentContent')
     .filter({ hasText: text });
+
+  await waitForInteractiveTrigger(
+    page,
+    '[data-testid="AddCommentInput"]',
+    '[data-testid="AddCommentTrigger"]',
+  );
 
   await expect(input).toBeVisible();
 

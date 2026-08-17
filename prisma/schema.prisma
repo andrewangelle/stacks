@@ -1,6 +1,6 @@
 generator client {
-  provider = "prisma-client"
-  output   = "../src/generated/prisma"
+  provider        = "prisma-client"
+  output          = "../src/generated/prisma"
   previewFeatures = ["relationJoins"]
 }
 
@@ -56,24 +56,25 @@ model List {
 }
 
 model Card {
-  id                   String          @id @default(uuid())
-  isCompleted          Boolean         @default(false) @map("is_completed")
-  isChecklistsExpanded Boolean         @default(false) @map("is_checklists_expanded")
-  showActivityDetails  Boolean         @default(true) @map("show_activity_details")
-  expandedChecklistId  String?         @map("expanded_checklist_id")
-  cardTitle            String          @map("card_title")
-  cardDescription      String          @default("") @map("card_description")
-  listId               String          @map("list_id")
-  userId               String          @map("user_id")
-  position             Int             @default(0) @map("position")
-  createdAt            DateTime        @default(now()) @map("created_at")
-  updatedAt            DateTime        @updatedAt @map("updated_at")
-  list                 List            @relation(fields: [listId], references: [id], onDelete: Cascade)
-  user                 User            @relation(fields: [userId], references: [id], onDelete: Cascade)
-  checklists           Checklist[]     @relation("CardChecklists")
-  expandedChecklist    Checklist?      @relation("CardExpandedChecklist", fields: [expandedChecklistId], references: [id], onDelete: SetNull)
-  checklistItems       ChecklistItem[]
-  activities           Activity[]
+  id                    String          @id @default(uuid())
+  isCompleted           Boolean         @default(false) @map("is_completed")
+  isChecklistsExpanded  Boolean         @default(false) @map("is_checklists_expanded")
+  showActivityDetails   Boolean         @default(true) @map("show_activity_details")
+  isDescriptionExpanded Boolean         @default(true) @map("is_description_expanded")
+  expandedChecklistId   String?         @map("expanded_checklist_id")
+  cardTitle             String          @map("card_title")
+  cardDescription       String          @default("") @map("card_description")
+  listId                String          @map("list_id")
+  userId                String          @map("user_id")
+  position              Int             @default(0) @map("position")
+  createdAt             DateTime        @default(now()) @map("created_at")
+  updatedAt             DateTime        @updatedAt @map("updated_at")
+  list                  List            @relation(fields: [listId], references: [id], onDelete: Cascade)
+  user                  User            @relation(fields: [userId], references: [id], onDelete: Cascade)
+  checklists            Checklist[]     @relation("CardChecklists")
+  expandedChecklist     Checklist?      @relation("CardExpandedChecklist", fields: [expandedChecklistId], references: [id], onDelete: SetNull)
+  checklistItems        ChecklistItem[]
+  activities            Activity[]
 
   @@index([listId])
   @@index([userId])
@@ -134,7 +135,7 @@ model Activity {
   board     Stack    @relation(fields: [boardId], references: [id], onDelete: Cascade)
   user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-  @@index([cardId, createdAt]) 
+  @@index([cardId, createdAt])
   @@index([userId])
   @@map("activities")
 }

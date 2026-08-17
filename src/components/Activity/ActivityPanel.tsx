@@ -1,5 +1,5 @@
 import { useLocation } from '@tanstack/react-router';
-import { useEffect, useState } from 'react';
+import { Suspense, useEffect, useState } from 'react';
 import { BiCommentDetail } from 'react-icons/bi';
 import {
   ActivityHeader,
@@ -9,6 +9,7 @@ import {
   HideActivityButton,
 } from '~/components/Activity/Activity.styled';
 import { ActivityList } from '~/components/Activity/ActivityList';
+import { ActivityListSkeleton } from '~/components/Activity/ActivitySkeleton';
 import { AddComment } from '~/components/Activity/AddComment';
 import {
   useGetShowActivityDetails,
@@ -59,11 +60,13 @@ export function ActivityPanel() {
 
       <AddComment />
 
-      <ActivityList
-        showActivity={showActivity}
-        selectedActivityId={selectedActivityId}
-        onSelect={setSelectedActivityId}
-      />
+      <Suspense fallback={<ActivityListSkeleton showActivity={showActivity} />}>
+        <ActivityList
+          showActivity={showActivity}
+          selectedActivityId={selectedActivityId}
+          onSelect={setSelectedActivityId}
+        />
+      </Suspense>
     </ActivityPanelContainer>
   );
 }

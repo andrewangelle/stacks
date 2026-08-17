@@ -6,6 +6,7 @@ import type {
   ReorderCardsArgs,
   SetCardActivityDetailsArgs,
   SetCardChecklistExpandedArgs,
+  SetCardDescriptionExpandedArgs,
   UpdateCardArgs,
 } from '~/db/cards/cards.schemas';
 import { prisma } from '~/db/prisma';
@@ -234,6 +235,20 @@ export async function setCardActivityDetailsQuery(
   return prisma.card.findFirst({
     where: { id: data.cardId, userId: data.userId },
     select: { id: true, showActivityDetails: true },
+  });
+}
+
+export async function setCardDescriptionExpandedQuery(
+  data: WithUserId<SetCardDescriptionExpandedArgs>,
+) {
+  await prisma.card.updateMany({
+    where: { id: data.cardId, userId: data.userId },
+    data: { isDescriptionExpanded: data.isDescriptionExpanded },
+  });
+
+  return prisma.card.findFirst({
+    where: { id: data.cardId, userId: data.userId },
+    select: { id: true, isDescriptionExpanded: true },
   });
 }
 

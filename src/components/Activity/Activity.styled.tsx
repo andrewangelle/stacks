@@ -2,6 +2,7 @@ import { css, type DataAttributes, styled } from 'styled-components';
 import { ActivityTimestamp } from '~/components/Activity/ActivityTimestamp';
 import { fontFamily } from '~/components/Boards/Boards.styled';
 import { CardModalTitle } from '~/components/Cards/Card.styled';
+import { richTextStyles } from '~/components/shared/RichText/RichText.styled';
 import { animationStyles } from '~/styles/animations';
 import {
   Button,
@@ -219,25 +220,44 @@ export const activityFieldStyles = css`
   box-shadow: 0 1px 0 #091e4240;
 `;
 
-export const AddCommentInput = styled.input.attrs<DataAttributes>({
-  'data-testid': 'AddCommentInput',
+export const AddCommentTrigger = styled.button.attrs<DataAttributes>({
+  'data-testid': 'AddCommentTrigger',
+  type: 'button',
 })`
   box-sizing: border-box;
   width: 100%;
   max-width: 100%;
+  background: white; 
+  font-family: ${fontFamily};
+  font-size: 14px;
+  text-align: left;
+  color: rgba(9, 30, 66, 0.6);
+  cursor: pointer;
   ${activityFieldStyles}
+
+  &:hover {
+    background: rgba(9, 30, 66, 0.04);
+  }
+`;
+
+export const CommentEditorContainer = styled.div.attrs<DataAttributes>({
+  'data-testid': 'CommentEditorContainer',
+})`
+  box-sizing: border-box;
+  width: 100%;
+  max-width: 100%;
+  margin: 8px 0;
 `;
 
 export const ActivityCommentContent = styled.div.attrs<DataAttributes>({
   'data-testid': 'ActivityCommentContent',
-})` 
+})`
+  ${richTextStyles}
   box-sizing: border-box;
-  font-family: ${fontFamily};
-  font-size: 14px;
   margin-top: 8px;
   max-width: 100%;
   overflow-wrap: anywhere;
-  background: white; 
+  background: white;
   ${activityFieldStyles}
 `;
 
