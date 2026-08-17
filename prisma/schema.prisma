@@ -85,6 +85,7 @@ model Checklist {
   id               String          @id @default(uuid())
   checklistTitle   String          @map("checklist_title")
   hideCheckedItems Boolean         @default(false) @map("hide_checked_items")
+  isExpanded       Boolean         @default(true) @map("is_expanded")
   cardId           String          @map("card_id")
   listId           String          @map("list_id")
   userId           String          @map("user_id")

@@ -1,4 +1,4 @@
-import type { APIRequestContext, Page } from '@playwright/test';
+import type { APIRequestContext, Locator, Page } from '@playwright/test';
 import { expect, test } from '~test/fixtures';
 import { expectListCardCount } from '~test/helpers/expectListHeaderCardCount';
 import { resetDb } from '~test/helpers/resetDb';
@@ -242,6 +242,156 @@ test.describe('Checklist', () => {
   });
 });
 
+test.describe('Checklist collapse', () => {
+  test.describe.configure({ timeout: 60_000 });
+
+  test('swaps the checklist icon for a caret on hover', async ({
+    page,
+    request,
+  }) => {
+    await openCardWithChecklists(page, request, [
+      { title: 'Launch checklist', items: ['Deploy to staging'] },
+    ]);
+
+    const checklist = firstChecklist(page);
+
+    await expect(checklist.getByTestId('ChecklistCheckIcon')).toBeVisible();
+    await expect(checklist.getByTestId('ChecklistCaretIcon')).toBeHidden();
+
+    await checklist.getByTestId('ChecklistToggleButton').hover();
+
+    await expect(checklist.getByTestId('ChecklistCaretIcon')).toBeVisible();
+    await expect(checklist.getByTestId('ChecklistCheckIcon')).toBeHidden();
+
+    await page.mouse.move(0, 0);
+
+    await expect(checklist.getByTestId('ChecklistCheckIcon')).toBeVisible();
+    await expect(checklist.getByTestId('ChecklistCaretIcon')).toBeHidden();
+  });
+
+  test('hides the items and the header actions without moving the title', async ({
+    page,
+    request,
+  }) => {
+    await openCardWithChecklists(page, request, [
+      { title: 'Launch checklist', items: ['Deploy to staging'] },
+    ]);
+
+    const checklist = firstChecklist(page);
+    const expandedTitle = await checklistTitlePlacement(checklist);
+
+    await waitForChecklistCollapsed(checklist, true);
+
+    await expect(checklist.getByTestId('CheckboxLabel')).toHaveCount(0);
+    await expect(
+      checklist.getByTestId('ChecklistProgressPercentage'),
+    ).toBeHidden();
+    await expect(checklist.getByTestId('ChecklistHeaderActions')).toBeHidden();
+
+    // The caret is the resting face while collapsed, so it survives the pointer
+    // leaving the button.
+    await page.mouse.move(0, 0);
+    await expect(checklist.getByTestId('ChecklistCaretIcon')).toBeVisible();
+    await expect(checklist.getByTestId('ChecklistCheckIcon')).toBeHidden();
+
+    // The actions are hidden in place rather than dropped, which is what keeps
+    // the header the same box in both states.
+    expect(await checklistTitlePlacement(checklist)).toEqual(expandedTitle);
+
+    await waitForChecklistCollapsed(checklist, false);
+    await expect(checklist.getByTestId('CheckboxLabel')).toHaveText(
+      'Deploy to staging',
+    );
+  });
+
+  test('collapses one checklist without touching its neighbor', async ({
+    page,
+    request,
+  }) => {
+    await openCardWithChecklists(page, request, [
+      { title: 'Launch checklist', items: ['Deploy to staging'] },
+      { title: 'QA checklist', items: ['Run tests'] },
+    ]);
+
+    const launch = firstChecklist(page);
+    const qa = page.getByTestId('ChecklistContainer').nth(1);
+
+    await waitForChecklistCollapsed(launch, true);
+
+    await expect(launch.getByTestId('CheckboxLabel')).toHaveCount(0);
+    await expect(qa.getByTestId('CheckboxLabel')).toHaveText('Run tests');
+  });
+
+  test('collapses from the keyboard behind a visible focus ring', async ({
+    page,
+    request,
+  }) => {
+    await openCardWithChecklists(page, request, [
+      { title: 'Launch checklist', items: ['Deploy to staging'] },
+    ]);
+
+    const checklist = firstChecklist(page);
+    const toggle = checklist.getByTestId('ChecklistToggleButton');
+
+    await tabTo(page, toggle);
+
+    // `all: unset` on the toggle drops the UA focus ring, so the section
+    // supplies its own.
+    await expect(toggle).toHaveCSS('outline-style', 'solid');
+    await expect(toggle).toHaveCSS('outline-color', 'rgb(47, 128, 237)');
+    await expect(toggle).toHaveCSS('outline-width', '2px');
+
+    await page.keyboard.press('Enter');
+
+    await expect(checklist.getByTestId('CheckboxLabel')).toHaveCount(0);
+  });
+
+  test('opens the rename editor from the keyboard', async ({
+    page,
+    request,
+  }) => {
+    await openCardWithChecklists(page, request, [
+      { title: 'Launch checklist', items: ['Deploy to staging'] },
+    ]);
+
+    const checklist = firstChecklist(page);
+    const title = checklist.getByTestId('ChecklistTitleButton');
+
+    await tabTo(page, title);
+
+    await expect(title).toHaveCSS('outline-style', 'solid');
+    await expect(title).toHaveCSS('outline-color', 'rgb(47, 128, 237)');
+
+    await page.keyboard.press('Enter');
+
+    await expect(checklist.getByTestId('EditCardTitleInput')).toBeFocused();
+  });
+
+  test('persists the collapsed state across a reload', async ({
+    page,
+    request,
+  }) => {
+    await openCardWithChecklists(page, request, [
+      { title: 'Launch checklist', items: ['Deploy to staging'] },
+    ]);
+
+    await waitForChecklistCollapsed(firstChecklist(page), true);
+
+    // The toggle is written to the checklist, so let the mutation reach the
+    // server before dropping the optimistic cache on the floor with a reload.
+    await page.waitForLoadState('networkidle');
+    await page.reload();
+    await expect(page.getByTestId('CardModalContent')).toBeVisible();
+
+    const checklist = firstChecklist(page);
+    await expect(checklist.getByTestId('ChecklistTitle')).toHaveText(
+      'Launch checklist',
+    );
+    await expect(checklist.getByTestId('CheckboxLabel')).toHaveCount(0);
+    await expect(checklist.getByTestId('ChecklistCaretIcon')).toBeVisible();
+  });
+});
+
 /**
  * Helpers for this test file
  */
@@ -264,6 +414,55 @@ async function openCardWithChecklists(
   await expect(page.getByTestId('ChecklistContainer').first()).toBeVisible();
 
   return { board, card };
+}
+
+function firstChecklist(page: Page) {
+  return page.getByTestId('ChecklistContainer').first();
+}
+
+/**
+ * Walk the real tab order to the control: `:focus-visible` only lights up for
+ * keyboard focus, so a programmatic `focus()` would not prove the ring renders.
+ */
+async function tabTo(page: Page, target: Locator) {
+  await expect(async () => {
+    for (let press = 0; press < 30; press += 1) {
+      if (await target.evaluate((node) => node === document.activeElement)) {
+        return;
+      }
+      await page.keyboard.press('Tab');
+    }
+    throw new Error('Control is not reachable from the keyboard');
+  }).toPass();
+}
+
+function waitForChecklistCollapsed(checklist: Locator, collapsed: boolean) {
+  const trigger = () =>
+    checklist.getByTestId('ChecklistToggleButton').click({ force: true });
+
+  const isDone = async () =>
+    (await checklist.getByTestId('ChecklistCollapsibleContent').isHidden()) ===
+    collapsed;
+
+  return waitForHydratedAction(trigger, isDone);
+}
+
+async function checklistTitlePlacement(checklist: Locator) {
+  const title = await checklist.getByTestId('ChecklistTitle').boundingBox();
+  const header = await checklist.getByTestId('ChecklistHeader').boundingBox();
+
+  if (!title || !header) {
+    throw new Error('Checklist header is not on screen');
+  }
+
+  return {
+    offsetX: title.x - header.x,
+    offsetY: title.y - header.y,
+    width: title.width,
+    height: title.height,
+    headerWidth: header.width,
+    headerHeight: header.height,
+  };
 }
 
 function waitForChecked(page: Page) {
