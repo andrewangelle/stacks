@@ -1,6 +1,6 @@
 import { useLocation } from '@tanstack/react-router';
 import { useVirtualizer } from '@tanstack/react-virtual';
-import { useEffect, useRef } from 'react';
+import { startTransition, useEffect, useRef } from 'react';
 import type { ActivityPayload } from '~/db/activity/activity.cache';
 import {
   useGetActivity,
@@ -86,7 +86,12 @@ export function useActivityList({ showActivity }: { showActivity: boolean }) {
     const shouldFetch = hasScrolledToLoader || isDeepLinkedAndMissing;
 
     if (shouldFetch && hasNextPage && !isFetchingNextPage) {
-      fetchNextPage();
+      // A suspense query re-suspends while it fetches, so outside a transition
+      // this would drop the loaded entries for a screen of skeletons on every
+      // page. In a transition React keeps them up until the page arrives.
+      startTransition(() => {
+        fetchNextPage();
+      });
     }
   }, [
     hasScrolledToLoader,

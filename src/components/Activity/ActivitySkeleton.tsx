@@ -40,15 +40,33 @@ export function ActivitySkeleton() {
 
       <AddComment />
 
-      {showActivity &&
-        Array.from({ length: 10 }).map(() => (
-          <ActivityEntrySkeleton
-            key={`activity-entry-skeleton-${Math.random()}`}
-          />
-        ))}
-
-      {!showActivity && <ActivityEntrySkeleton />}
+      <ActivityListSkeleton showActivity={showActivity} />
     </ActivityPanelContainer>
+  );
+}
+
+const SKELETON_ROW_KEYS = Array.from(
+  { length: 10 },
+  (_, index) => `activity-entry-skeleton-${index}`,
+);
+
+/**
+ * The fallback for the list's own boundary, so entries can load without
+ * taking the panel — and the comment being written in it — down with them.
+ */
+export function ActivityListSkeleton({
+  showActivity,
+}: {
+  showActivity: boolean;
+}) {
+  const keys = showActivity ? SKELETON_ROW_KEYS : SKELETON_ROW_KEYS.slice(0, 1);
+
+  return (
+    <>
+      {keys.map((key) => (
+        <ActivityEntrySkeleton key={key} />
+      ))}
+    </>
   );
 }
 
