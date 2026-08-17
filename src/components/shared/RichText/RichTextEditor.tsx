@@ -1,16 +1,3 @@
-import { ListItemNode, ListNode } from '@lexical/list';
-import {
-  BOLD_ITALIC_STAR,
-  BOLD_ITALIC_UNDERSCORE,
-  BOLD_STAR,
-  BOLD_UNDERSCORE,
-  HEADING,
-  ITALIC_STAR,
-  ITALIC_UNDERSCORE,
-  ORDERED_LIST,
-  QUOTE,
-  UNORDERED_LIST,
-} from '@lexical/markdown';
 import { AutoFocusPlugin } from '@lexical/react/LexicalAutoFocusPlugin';
 import {
   type InitialConfigType,
@@ -23,16 +10,20 @@ import { ListPlugin } from '@lexical/react/LexicalListPlugin';
 import { MarkdownShortcutPlugin } from '@lexical/react/LexicalMarkdownShortcutPlugin';
 import { OnChangePlugin } from '@lexical/react/LexicalOnChangePlugin';
 import { RichTextPlugin } from '@lexical/react/LexicalRichTextPlugin';
-import { HeadingNode, QuoteNode } from '@lexical/rich-text';
 import { $getRoot } from 'lexical';
 import { useMemo } from 'react';
+import {
+  richTextNodes,
+  richTextTheme,
+  richTextTransformers,
+} from '~/components/shared/RichText/RichText.constants';
 import {
   RichTextBody,
   RichTextPlaceholder,
   RichTextSurface,
 } from '~/components/shared/RichText/RichText.styled';
+import { toInitialEditorState } from '~/components/shared/RichText/RichText.utils';
 import { RichTextToolbar } from '~/components/shared/RichText/RichTextToolbar';
-import { toInitialEditorState } from '~/components/shared/RichText/richText';
 
 /**
  * `initialValue` seeds the editor once, on mount: Lexical owns the document
@@ -47,39 +38,6 @@ type RichTextEditorProps = {
   autoFocus?: boolean;
   minHeight?: string;
   onChange: (value: string) => void;
-};
-
-const richTextNodes = [HeadingNode, QuoteNode, ListNode, ListItemNode];
-
-const richTextTransformers = [
-  HEADING,
-  QUOTE,
-  UNORDERED_LIST,
-  ORDERED_LIST,
-  BOLD_ITALIC_STAR,
-  BOLD_ITALIC_UNDERSCORE,
-  BOLD_STAR,
-  BOLD_UNDERSCORE,
-  ITALIC_STAR,
-  ITALIC_UNDERSCORE,
-];
-
-/**
- * Lexical tags bold and italic with elements of their own but leaves the
- * remaining text formats to theme classes, which `richTextStyles` paints for
- * both the editor and the saved value.
- */
-const richTextTheme = {
-  text: {
-    underline: 'rich-text-underline',
-    strikethrough: 'rich-text-strikethrough',
-    underlineStrikethrough: 'rich-text-underline-strikethrough',
-  },
-  list: {
-    nested: {
-      listitem: 'rich-text-nested-listitem',
-    },
-  },
 };
 
 export function RichTextEditor({

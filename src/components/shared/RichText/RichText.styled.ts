@@ -2,6 +2,9 @@ import { Select } from 'radix-ui';
 import { css, type DataAttributes, styled } from 'styled-components';
 import { blue, focusRingBlue, fontFamily } from '~/styles/tokens';
 
+type ActiveProps = { $active?: boolean };
+type MinHeightProps = { $minHeight: string };
+
 /**
  * Rich text is authored in Lexical and read back through `RichTextContent`, so
  * the editor surface and the saved value share one set of typography rules.
@@ -144,7 +147,7 @@ export const RichTextToolbarDivider = styled.span.attrs<DataAttributes>({
 
 export const RichTextToolbarButton = styled.button.attrs<DataAttributes>({
   'data-testid': 'RichTextToolbarButton',
-})<{ $active?: boolean }>`
+})<ActiveProps>`
   display: flex;
   align-items: center;
   justify-content: center;
@@ -319,7 +322,7 @@ export const RichTextBlockSelectItem = styled(
 
 export const RichTextBody = styled.div.attrs<DataAttributes>({
   'data-testid': 'RichTextBody',
-})<{ $minHeight: string }>`
+})<MinHeightProps>`
   ${richTextStyles}
   position: relative;
 

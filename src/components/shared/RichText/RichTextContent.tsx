@@ -1,30 +1,15 @@
 import { Fragment, type ReactNode } from 'react';
 import {
-  parseRichText,
-  type SerializedRichTextNode,
-} from '~/components/shared/RichText/richText';
-
-/**
- * Saved rich text renders as plain React rather than through a read-only
- * Lexical instance: the card modal is server rendered, and stored state is user
- * input that never reaches `innerHTML` this way.
- */
-type RichTextContentProps = {
-  value: string;
-};
-
-/** Lexical serializes text formatting as a bitmask on each text node. */
-const TEXT_FORMAT = {
-  bold: 1,
-  italic: 2,
-  strikethrough: 4,
-  underline: 8,
-} as const;
-
-const HEADING_TAGS = ['h1', 'h2', 'h3', 'h4', 'h5', 'h6'] as const;
-const BLOCK_ALIGNMENTS = ['left', 'center', 'right', 'justify'] as const;
-
-type HeadingTag = (typeof HEADING_TAGS)[number];
+  BLOCK_ALIGNMENTS,
+  HEADING_TAGS,
+  TEXT_FORMAT,
+} from '~/components/shared/RichText/RichText.constants';
+import type {
+  HeadingTag,
+  RichTextContentProps,
+  SerializedRichTextNode,
+} from '~/components/shared/RichText/RichText.types';
+import { parseRichText } from '~/components/shared/RichText/RichText.utils';
 
 export function RichTextContent({ value }: RichTextContentProps) {
   const parsed = parseRichText(value);

@@ -17,9 +17,9 @@ import {
   EditDescriptionButton,
   SaveDescriptionButton,
 } from '~/components/Cards/Card.styled';
+import { isEmptyRichText } from '~/components/shared/RichText/RichText.utils';
 import { RichTextContent } from '~/components/shared/RichText/RichTextContent';
 import { RichTextEditor } from '~/components/shared/RichText/RichTextEditor';
-import { isEmptyRichText } from '~/components/shared/RichText/richText';
 import {
   useGetCardById,
   useSetDescriptionExpanded,

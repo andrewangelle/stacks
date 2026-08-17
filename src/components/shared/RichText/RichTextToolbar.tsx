@@ -1,21 +1,13 @@
 import {
-  $isListNode,
   INSERT_ORDERED_LIST_COMMAND,
   INSERT_UNORDERED_LIST_COMMAND,
   REMOVE_LIST_COMMAND,
 } from '@lexical/list';
 import { useLexicalComposerContext } from '@lexical/react/LexicalComposerContext';
-import {
-  $createHeadingNode,
-  $createQuoteNode,
-  $isHeadingNode,
-  $isQuoteNode,
-  type HeadingTagType,
-} from '@lexical/rich-text';
+
 import { $setBlocksType } from '@lexical/selection';
 import { mergeRegister } from '@lexical/utils';
 import {
-  $createParagraphNode,
   $getSelection,
   $isElementNode,
   $isRangeSelection,
@@ -23,29 +15,22 @@ import {
   CAN_REDO_COMMAND,
   CAN_UNDO_COMMAND,
   COMMAND_PRIORITY_LOW,
-  type ElementFormatType,
   FORMAT_ELEMENT_COMMAND,
   FORMAT_TEXT_COMMAND,
-  type LexicalNode,
   REDO_COMMAND,
   SELECTION_CHANGE_COMMAND,
   UNDO_COMMAND,
 } from 'lexical';
 import { Select } from 'radix-ui';
-import { type MouseEvent, useCallback, useEffect, useState } from 'react';
-import type { IconType } from 'react-icons';
-import {
-  FaAlignCenter,
-  FaAlignJustify,
-  FaAlignLeft,
-  FaAlignRight,
-  FaBold,
-  FaItalic,
-  FaRedo,
-  FaUnderline,
-  FaUndo,
-} from 'react-icons/fa';
+import { useCallback, useEffect, useState } from 'react';
+import { FaRedo, FaUndo } from 'react-icons/fa';
 import { RxCaretDown } from 'react-icons/rx';
+import {
+  ALIGNMENT_BUTTONS,
+  BLOCK_TYPE_OPTIONS,
+  initialToolbarState,
+  TEXT_FORMAT_BUTTONS,
+} from '~/components/shared/RichText/RichText.constants';
 import {
   RichTextBlockSelectContent,
   RichTextBlockSelectItem,
@@ -57,58 +42,12 @@ import {
   RichTextToolbarGroup,
   RichTextToolbarRow,
 } from '~/components/shared/RichText/RichText.styled';
-
-type BlockType = 'paragraph' | 'quote' | 'bullet' | 'number' | HeadingTagType;
-
-type TextFormat = 'bold' | 'italic' | 'underline';
-
-type BlockTypeOption = {
-  value: BlockType;
-  label: string;
-};
-
-type TextFormatButton = {
-  format: TextFormat;
-  label: string;
-  Icon: IconType;
-};
-
-type AlignmentButton = {
-  alignment: ElementFormatType;
-  label: string;
-  Icon: IconType;
-};
-
-const BLOCK_TYPE_OPTIONS: BlockTypeOption[] = [
-  { value: 'paragraph', label: 'Normal' },
-  { value: 'h1', label: 'Heading 1' },
-  { value: 'h2', label: 'Heading 2' },
-  { value: 'h3', label: 'Heading 3' },
-  { value: 'bullet', label: 'Bulleted list' },
-  { value: 'number', label: 'Numbered list' },
-  { value: 'quote', label: 'Quote' },
-];
-
-const TEXT_FORMAT_BUTTONS: TextFormatButton[] = [
-  { format: 'bold', label: 'Bold', Icon: FaBold },
-  { format: 'italic', label: 'Italic', Icon: FaItalic },
-  { format: 'underline', label: 'Underline', Icon: FaUnderline },
-];
-
-const ALIGNMENT_BUTTONS: AlignmentButton[] = [
-  { alignment: 'left', label: 'Align left', Icon: FaAlignLeft },
-  { alignment: 'center', label: 'Align center', Icon: FaAlignCenter },
-  { alignment: 'right', label: 'Align right', Icon: FaAlignRight },
-  { alignment: 'justify', label: 'Justify', Icon: FaAlignJustify },
-];
-
-const initialToolbarState = {
-  blockType: 'paragraph' as BlockType,
-  alignment: '' as ElementFormatType,
-  formats: { bold: false, italic: false, underline: false },
-  canUndo: false,
-  canRedo: false,
-};
+import type { BlockType } from '~/components/shared/RichText/RichText.types';
+import {
+  createBlockNode,
+  keepSelection,
+  toBlockType,
+} from '~/components/shared/RichText/RichText.utils';
 
 export function RichTextToolbar() {
   const [editor] = useLexicalComposerContext();
@@ -306,41 +245,4 @@ export function RichTextToolbar() {
       </RichTextToolbarGroup>
     </RichTextToolbarRow>
   );
-}
-
-function toBlockType(element: LexicalNode): BlockType {
-  if ($isListNode(element)) {
-    return element.getListType() === 'number' ? 'number' : 'bullet';
-  }
-
-  if ($isQuoteNode(element)) {
-    return 'quote';
-  }
-
-  if ($isHeadingNode(element)) {
-    const tag = element.getTag();
-
-    return BLOCK_TYPE_OPTIONS.some((option) => option.value === tag)
-      ? tag
-      : 'paragraph';
-  }
-
-  return 'paragraph';
-}
-
-function createBlockNode(blockType: Exclude<BlockType, 'bullet' | 'number'>) {
-  if (blockType === 'quote') {
-    return $createQuoteNode();
-  }
-
-  if (blockType === 'paragraph') {
-    return $createParagraphNode();
-  }
-
-  return $createHeadingNode(blockType);
-}
-
-/** Toolbar clicks must not pull focus, or the selection they act on is gone. */
-function keepSelection(event: MouseEvent<HTMLButtonElement>) {
-  event.preventDefault();
 }
