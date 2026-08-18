@@ -83,3 +83,32 @@ holding it re-renders, and re-registering an `@font-face` makes the browser
 re-load the face — text falls back for a frame and the whole page reflows.
 `GlobalFonts` used to sit inside `DragDropProvider`, so every drag start and
 drag end reflowed the page.
+
+## e2e: never assert on animation frames
+
+CI's headless WebKit on Linux has a **median `requestAnimationFrame` gap of
+~354ms** — about 3 frames per second (measured in the Playwright v1.60.0 image,
+WebKit 26.4). A 150ms CSS transition usually falls entirely between two frames
+there, so a test that samples height per frame finds no mid-animation frames and
+fails on `webkit` and `Mobile Safari` in CI while passing on all five local
+browsers.
+
+Drive the transition instead of watching it: take it off the element with
+`getAnimations()`, `pause()`, set `currentTime` to fractions of
+`effect.getComputedTiming().duration`, and read layout at each point. No frame
+budget is involved, and catching the transition late is harmless because it gets
+rewound first. `driveSlide` / `expectSlide` in `tests/card.test.ts` do this for
+the description collapse.
+
+Local CPU load does **not** stand in for this: 16 busy loops (load average 44 on
+8 cores) left the frame-sampling version passing on macOS WebKit. It is the Linux
+headless build, not machine contention.
+
+To check anything against the browser CI actually runs, use the matching image —
+a `page.setContent` probe of just the CSS involved needs no dev server or DB:
+
+```sh
+docker run --rm -v "$PWD":/probe -w /probe -e PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD=1 \
+  mcr.microsoft.com/playwright:v1.60.0-noble \
+  bash -lc 'npm i --silent playwright@1.60.0 >/dev/null 2>&1 && node probe.mjs'
+```

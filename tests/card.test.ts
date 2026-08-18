@@ -259,17 +259,15 @@ test.describe('Description collapse', () => {
     const openHeight = await descriptionBodyHeight(page);
     expect(openHeight).toBeGreaterThan(0);
 
-    const collapseHeights = await sampleWhile(page, () =>
+    const collapse = await driveSlide(page, () =>
       page.getByTestId('DescriptionToggleButton').click(),
     );
-    expect(midSlideFrames(collapseHeights, openHeight)).toBeGreaterThan(2);
-    expect(collapseHeights.at(-1)).toBe(0);
+    expectSlide(collapse, { from: openHeight, to: 0 });
 
-    const expandHeights = await sampleWhile(page, () =>
+    const expand = await driveSlide(page, () =>
       page.getByTestId('DescriptionToggleButton').click(),
     );
-    expect(midSlideFrames(expandHeights, openHeight)).toBeGreaterThan(2);
-    expect(expandHeights.at(-1)).toBe(openHeight);
+    expectSlide(expand, { from: 0, to: openHeight });
   });
 
   test('keeps the open editor and its draft across a collapse', async ({
@@ -688,63 +686,119 @@ async function descriptionBodyHeight(page: Page) {
   return box?.height ?? 0;
 }
 
+/** Fractions of the slide's duration the body height is read at. */
+const slideProgress = [0, 0.25, 0.5];
+
+type Slide = {
+  /** Body heights at `slideProgress`, in order. */
+  heights: number[];
+  /** Body height once the transition has run to its end. */
+  end: number;
+};
+
 /**
- * The body slides on `grid-template-rows`, which no event reports, so read its
- * height every frame while `act` runs and prove the height was interpolated
- * rather than snapped.
+ * Runs `act` and reads the body height at fixed points along the resulting
+ * slide: take hold of the `grid-template-rows` transition, pause it, and seek
+ * its timeline by hand.
  *
- * Sampling stops once the height has moved and then held still, rather than
- * after a fixed window: the click that starts the slide is dispatched over the
- * wire and can land hundreds of milliseconds in, which used to leave the last
- * sample mid-slide on the slower browsers.
+ * Sampling the height once per animation frame instead is what this replaced.
+ * It reads as the more natural test, but it measures the runner as much as the
+ * page — CI's headless WebKit paints about one frame across the whole 150ms
+ * transition, so there were no mid-slide frames to find and the test failed
+ * there while passing on every local browser. Seeking the animation asks the
+ * question frame sampling was trying to ask, with no frame budget to lose.
  */
-async function sampleWhile(page: Page, act: () => Promise<void>) {
-  const sampling = page.evaluate(() => {
-    const element = document.querySelector(
+async function driveSlide(
+  page: Page,
+  act: () => Promise<void>,
+): Promise<Slide> {
+  const sliding = page.evaluate((progress) => {
+    const body = document.querySelector('[data-testid="DescriptionBody"]');
+    const inner = document.querySelector(
       '[data-testid="DescriptionBodyInner"]',
     );
-    const samples: number[] = [];
-    const start = performance.now();
-    const readHeight = () => element?.getBoundingClientRect().height ?? -1;
 
-    return new Promise<number[]>((resolve) => {
-      let previous = readHeight();
-      let hasMoved = false;
-      let stillFrames = 0;
+    if (!body || !inner) {
+      throw new Error('Description body is not mounted');
+    }
 
-      function readFrame() {
-        const height = readHeight();
-        samples.push(height);
+    const readHeight = () => inner.getBoundingClientRect().height;
 
-        if (Math.abs(height - previous) > 0.5) {
-          hasMoved = true;
-          stillFrames = 0;
-        } else {
-          stillFrames += 1;
+    // Polled rather than driven off `transitionrun`, so the measurement leans
+    // on one API instead of two. Catching the slide late costs nothing: it is
+    // paused and rewound before anything is read.
+    const findSlide = () =>
+      body
+        .getAnimations()
+        .find(
+          (candidate) =>
+            (candidate as Animation & { transitionProperty?: string })
+              .transitionProperty === 'grid-template-rows',
+        );
+
+    return new Promise<Slide>((resolve, reject) => {
+      const start = performance.now();
+
+      function pollForSlide() {
+        const animation = findSlide();
+
+        if (!animation) {
+          if (performance.now() - start > 5_000) {
+            reject(new Error('grid-template-rows never started transitioning'));
+          } else {
+            setTimeout(pollForSlide);
+          }
+          return;
         }
-        previous = height;
 
-        const settled = hasMoved && stillFrames >= 5;
+        animation.pause();
 
-        if (settled || performance.now() - start > 5_000) {
-          resolve(samples);
-        } else {
-          requestAnimationFrame(readFrame);
+        const duration = Number(animation.effect?.getComputedTiming().duration);
+
+        if (!Number.isFinite(duration) || duration <= 0) {
+          reject(new Error(`Slide has no duration: ${duration}`));
+          return;
         }
+
+        const heights = progress.map((fraction) => {
+          animation.currentTime = duration * fraction;
+          return readHeight();
+        });
+
+        animation.finish();
+
+        resolve({ heights, end: readHeight() });
       }
 
-      readFrame();
+      pollForSlide();
     });
-  });
+  }, slideProgress);
 
   await act();
 
-  return sampling;
+  return sliding;
 }
 
-function midSlideFrames(heights: number[], openHeight: number) {
-  return heights.filter((height) => height > 1 && height < openHeight - 1)
-    .length;
+/**
+ * The body leaves `from`, is somewhere strictly between the two resting heights
+ * at every point sampled after that, and is still moving the same way each
+ * time. A snap would sit on `to` from the first sample on.
+ */
+function expectSlide(slide: Slide, { from, to }: { from: number; to: number }) {
+  expect(slide.heights[0]).toBeCloseTo(from, 0);
+
+  const [low, high] = from < to ? [from, to] : [to, from];
+
+  for (const height of slide.heights.slice(1)) {
+    expect(height).toBeGreaterThan(low);
+    expect(height).toBeLessThan(high);
+  }
+
+  for (const [index, height] of slide.heights.slice(1).entries()) {
+    expect(Math.sign(height - slide.heights[index])).toBe(Math.sign(to - from));
+  }
+
+  expect(slide.end).toBeCloseTo(to, 0);
 }
 
 async function selectBlockType(page: Page, label: string) {
