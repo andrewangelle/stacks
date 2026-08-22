@@ -1,6 +1,7 @@
 import { useMutation, useSuspenseQuery } from '@tanstack/react-query';
 import {
   type BoardsPayload,
+  boardIdMatches,
   boardsQueryKey,
   findBoard,
   getBoardsCache,
@@ -10,11 +11,13 @@ import {
 } from '~/db/boards/boards.cache';
 import {
   createBoard,
+  deleteBoard,
   getBoards,
   updateBoard,
 } from '~/db/boards/boards.functions';
 import type {
   CreateBoardArgs,
+  DeleteBoardArgs,
   UpdateBoardArgs,
 } from '~/db/boards/boards.schemas';
 import { useCurrentBoardId } from '~/utils/useCurrentBoardId';
@@ -82,6 +85,30 @@ export function useUpdateBoard() {
         boardTitle: variables.boardTitle,
         boardColor: variables.boardColor ?? board.boardColor,
       }));
+
+      return { snapshot };
+    },
+
+    onError(_error, _variables, context) {
+      restoreBoardsCache(context?.snapshot);
+    },
+  });
+
+  return mutation.mutate;
+}
+
+export function useDeleteBoard() {
+  const mutation = useMutation({
+    mutationFn(data: DeleteBoardArgs) {
+      return deleteBoard({ data });
+    },
+
+    onMutate(variables) {
+      const snapshot = getBoardsCache();
+
+      setBoardsCache((boards) =>
+        boards.filter((board) => !boardIdMatches(board, variables.boardId)),
+      );
 
       return { snapshot };
     },
