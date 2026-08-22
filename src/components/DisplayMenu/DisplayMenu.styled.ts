@@ -48,6 +48,7 @@ export const DisplayMenuBoardButton = styled.button.attrs<DataAttributes>({
   ${displayMenuItemStyles}
   background: #e9f2fe;
   color: ${blue};
+  cursor: not-allowed;
 
   &:hover {
     background: #cfe1fd;

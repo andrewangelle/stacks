@@ -17,6 +17,7 @@ import {
   SwitchBoardsTrigger,
 } from '~/components/DisplayMenu/SwitchBoards.styled';
 import { SwitchBoardsIcon } from '~/components/DisplayMenu/SwitchBoardsIcon';
+import { Tooltip } from '~/components/shared/Tooltip/Tooltip';
 import { boardsQueryOptions } from '~/db/boards/boards.query';
 import { useCurrentBoardId } from '~/utils/useCurrentBoardId';
 import { usePrevious } from '~/utils/usePrevious';
@@ -62,10 +63,12 @@ export function SwitchBoards() {
       open={open}
       onOpenChange={onOpenChange}
     >
-      <SwitchBoardsTrigger>
-        <SwitchBoardsIcon />
-        Switch boards
-      </SwitchBoardsTrigger>
+      <Tooltip content="Switch Boards">
+        <SwitchBoardsTrigger>
+          <SwitchBoardsIcon />
+          Switch boards
+        </SwitchBoardsTrigger>
+      </Tooltip>
 
       <Dialog.Portal data-testid="SwitchBoardsPortal">
         <SwitchBoardsOverlay>
