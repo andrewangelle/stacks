@@ -35,11 +35,15 @@ export const SwitchBoardsTrigger = styled(Dialog.Trigger).attrs<DataAttributes>(
   }
 `;
 
+type IsMobileProps = {
+  $isMobile: boolean;
+};
+
 export const SwitchBoardsContent = styled(Dialog.Content).attrs<DataAttributes>(
   {
     'data-testid': 'SwitchBoardsContent',
   },
-)`
+)<IsMobileProps>`
   box-sizing: border-box;
   display: flex;
   flex-direction: column;
@@ -48,7 +52,7 @@ export const SwitchBoardsContent = styled(Dialog.Content).attrs<DataAttributes>(
   height: 75%;
   width: 50%;
   min-width: 320px;
-  padding: 24px;
+  padding: ${({ $isMobile }) => ($isMobile ? '24px 0px' : '24px')};
   border-radius: 8px;
   font-family: ${fontFamily};
   overflow-y: auto;
@@ -71,13 +75,13 @@ export const SwitchBoardsTitle = styled(Dialog.Title).attrs<DataAttributes>({
 
 export const SwitchBoardsSearchField = styled.div.attrs<DataAttributes>({
   'data-testid': 'SwitchBoardsSearchField',
-})`
+})<IsMobileProps>`
   position: relative;
   display: flex;
   align-items: center;
   flex: 0 0 auto;
   color: rgba(9, 30, 66, 0.7);
-
+  ${({ $isMobile }) => ($isMobile ? 'margin: 0px 24px;' : '')}
   > svg {
     position: absolute;
     left: 12px;
@@ -142,7 +146,7 @@ export const SwitchBoardsGrid = styled.div.attrs<DataAttributes>({
   'data-testid': 'SwitchBoardsGrid',
 })`
   display: grid;
-  grid-template-columns: repeat(auto-fill, 140px);
+  grid-template-columns: repeat(auto-fill, 100%);
   gap: 12px;
   align-content: start;
 

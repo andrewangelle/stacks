@@ -20,6 +20,7 @@ import { SwitchBoardsIcon } from '~/components/DisplayMenu/SwitchBoardsIcon';
 import { Tooltip } from '~/components/shared/Tooltip/Tooltip';
 import { boardsQueryOptions } from '~/db/boards/boards.query';
 import { useCurrentBoardId } from '~/utils/useCurrentBoardId';
+import { useIsMobile } from '~/utils/useIsMobile';
 import { usePrevious } from '~/utils/usePrevious';
 
 export function SwitchBoards() {
@@ -31,6 +32,7 @@ export function SwitchBoards() {
   const { data: boards } = useSuspenseQuery(boardsQueryOptions);
   const router = useRouterState();
   const previousLoad = usePrevious(isLoading);
+  const isMobile = useIsMobile();
 
   const query = search.trim().toLowerCase();
   const matchingBoards = boards
@@ -72,10 +74,13 @@ export function SwitchBoards() {
 
       <Dialog.Portal data-testid="SwitchBoardsPortal">
         <SwitchBoardsOverlay>
-          <SwitchBoardsContent aria-describedby={undefined}>
+          <SwitchBoardsContent
+            $isMobile={isMobile}
+            aria-describedby={undefined}
+          >
             <SwitchBoardsTitle>Switch boards</SwitchBoardsTitle>
 
-            <SwitchBoardsSearchField>
+            <SwitchBoardsSearchField $isMobile={isMobile}>
               <FiSearch />
               <SwitchBoardsSearchInput
                 ref={searchInput}
