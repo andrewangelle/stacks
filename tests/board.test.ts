@@ -1,4 +1,4 @@
-import { expect, test } from '@playwright/test';
+import { expect, type Page, test } from '@playwright/test';
 import { expectListCardCount } from '~test/helpers/expectListHeaderCardCount';
 import { resetDb } from '~test/helpers/resetDb';
 import { seedBoard } from '~test/helpers/seed';
@@ -52,5 +52,81 @@ test.describe('Board', () => {
     await page.getByTestId('AddListContainer').click();
 
     await expect(page.getByTestId('BoardTitle')).toHaveText('Q3 Roadmap');
+  });
+});
+
+async function openSwitchBoards(page: Page) {
+  await waitForInteractiveTrigger(
+    page,
+    '[data-testid="SwitchBoardsContent"]',
+    '[data-testid="SwitchBoardsTrigger"]',
+  );
+
+  await expect(page.getByTestId('SwitchBoardsContent')).toBeVisible();
+}
+
+test.describe('Display menu', () => {
+  test('lists every board except the current one', async ({
+    page,
+    request,
+  }) => {
+    await resetDb(request);
+    const current = await seedBoard(request, 'Experian');
+    await seedBoard(request, 'Open Source');
+    await seedBoard(request, 'Interview Prep');
+    await page.goto(`/board/${current.id}`);
+
+    await expect(page.getByTestId('DisplayMenuBoardButton')).toHaveText(
+      'Board',
+    );
+
+    await openSwitchBoards(page);
+
+    const titles = page
+      .getByTestId('SwitchBoardsGrid')
+      .getByTestId('BoardCardTitle');
+
+    await expect(titles).toHaveText(['Open Source', 'Interview Prep']);
+  });
+
+  test('filters the boards by the search text', async ({ page, request }) => {
+    await resetDb(request);
+    const current = await seedBoard(request, 'Experian');
+    await seedBoard(request, 'Open Source');
+    await seedBoard(request, 'Interview Prep');
+    await page.goto(`/board/${current.id}`);
+
+    await openSwitchBoards(page);
+
+    const titles = page
+      .getByTestId('SwitchBoardsGrid')
+      .getByTestId('BoardCardTitle');
+
+    await page.getByTestId('SwitchBoardsSearchInput').fill('open');
+    await expect(titles).toHaveText(['Open Source']);
+
+    await page.getByTestId('SwitchBoardsSearchInput').fill('nothing matches');
+    await expect(page.getByTestId('SwitchBoardsGrid')).toHaveCount(0);
+    await expect(page.getByTestId('SwitchBoardsEmpty')).toBeVisible();
+
+    await page.getByTestId('SwitchBoardsSearchClear').click();
+    await expect(page.getByTestId('SwitchBoardsSearchInput')).toHaveValue('');
+    await expect(titles).toHaveText(['Open Source', 'Interview Prep']);
+  });
+
+  test('switches to the board that was picked', async ({ page, request }) => {
+    await resetDb(request);
+    const current = await seedBoard(request, 'Experian');
+    const target = await seedBoard(request, 'Open Source');
+    await page.goto(`/board/${current.id}`);
+
+    await openSwitchBoards(page);
+
+    await page.getByTestId('SwitchBoardsSearchInput').fill('open');
+    await page.getByTestId('SwitchBoardsGrid').getByRole('link').click();
+
+    await expect(page).toHaveURL(`/board/${target.id.slice(0, 8)}`);
+    await expect(page.getByTestId('BoardTitle')).toHaveText('Open Source');
+    await expect(page.getByTestId('SwitchBoardsContent')).toHaveCount(0);
   });
 });

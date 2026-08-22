@@ -4,6 +4,7 @@ import { Suspense } from 'react';
 import { BoardHeaderFallback } from '~/components/Boards/Board.styled';
 import { BoardLists } from '~/components/Boards/BoardLists';
 import type { BoardBackground } from '~/components/Boards/Boards.styled';
+import { DisplayMenu } from '~/components/DisplayMenu/DisplayMenu';
 import { ListSkeleton } from '~/components/Lists/ListSkeleton';
 import { BoardHeader } from '~/components/Nav/BoardHeader';
 import { NavBarContainer } from '~/components/Nav/Nav.styled';
@@ -81,6 +82,8 @@ export const Route = createFileRoute('/board/$id')({
             </BoardLists>
           </Suspense>
         </CompositeComponent>
+
+        <DisplayMenu />
       </>
     );
   },
