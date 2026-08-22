@@ -1,5 +1,6 @@
 import type {
   CreateBoardArgs,
+  DeleteBoardArgs,
   GetBoardByIdArgs,
   UpdateBoardArgs,
 } from '~/db/boards/boards.schemas';
@@ -69,4 +70,24 @@ export function updateBoardQuery(data: WithUserId<UpdateBoardArgs>) {
     where: { id: data.boardId, userId: data.userId },
     data: { boardTitle: data.boardTitle, boardColor: data.boardColor },
   });
+}
+
+export async function deleteBoardQuery(data: WithUserId<DeleteBoardArgs>) {
+  const board = await prisma.stack.findFirst({
+    where: { id: { startsWith: data.boardId }, userId: data.userId },
+  });
+
+  if (!board) {
+    throw new Error('Board Not found');
+  }
+
+  await prisma.stack.delete({
+    where: { id: board.id },
+  });
+
+  return {
+    code: 'boards:delete:success',
+    message: 'success',
+    data: [board],
+  };
 }

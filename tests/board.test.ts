@@ -1,7 +1,8 @@
 import { expect, type Page, test } from '@playwright/test';
 import { expectListCardCount } from '~test/helpers/expectListHeaderCardCount';
 import { resetDb } from '~test/helpers/resetDb';
-import { seedBoard } from '~test/helpers/seed';
+import { seedBoard, seedListCard } from '~test/helpers/seed';
+import { waitForHydratedAction } from '~test/helpers/waitForHydratedAction';
 import { waitForInteractiveTrigger } from '~test/helpers/waitForInteractiveTrigger';
 
 test.describe('Board', () => {
@@ -52,6 +53,48 @@ test.describe('Board', () => {
     await page.getByTestId('AddListContainer').click();
 
     await expect(page.getByTestId('BoardTitle')).toHaveText('Q3 Roadmap');
+  });
+
+  test('archives a board and its lists and cards', async ({
+    page,
+    request,
+  }) => {
+    await resetDb(request);
+    const board = await seedBoard(request, 'Product Roadmap');
+    await seedBoard(request, 'Open Source');
+
+    await seedListCard(request, {
+      boardId: board.id,
+      listTitle: 'In Progress',
+      cardTitle: 'Launch feature',
+      checklists: [],
+    });
+
+    await page.goto(`/board/${board.id}`);
+    await expect(page.getByTestId('ListContainer')).toBeVisible();
+
+    await waitForInteractiveTrigger(
+      page,
+      '[data-testid="BoardMenuOptionsContainer"]',
+      '[data-testid="BoardMenuPopoverButton"]',
+    );
+
+    await waitForHydratedAction(
+      async () => {
+        await page
+          .getByTestId('BoardMenuOption')
+          .filter({ hasText: 'Archive this board' })
+          .click();
+        await page.getByTestId('DeleteBoardButton').click();
+      },
+      async () => page.url().endsWith('/boards'),
+    );
+
+    await expect(page.getByTestId('BoardCardTitle')).toHaveText('Open Source');
+
+    // The board is gone from the database, not just from the cache.
+    await page.reload();
+    await expect(page.getByTestId('BoardCardTitle')).toHaveText('Open Source');
   });
 });
 

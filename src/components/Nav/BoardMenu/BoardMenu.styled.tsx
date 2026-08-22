@@ -5,6 +5,8 @@ import {
   fontFamily,
   PopoverClose,
 } from '~/components/Boards/Boards.styled';
+import { Button } from '~/styles/Page.styled';
+import { red } from '~/styles/tokens';
 
 export const BoardMenuPopoverTrigger = styled(
   Popover.Trigger,
@@ -175,6 +177,15 @@ export const BoardMenuOption = styled.button.attrs<DataAttributes>({
   &:active {
     background: rgba(0,0,0,0.1);
   }
+`;
+
+export const DeleteBoardButton = styled(Button).attrs<DataAttributes>({
+  'data-testid': 'DeleteBoardButton',
+})`
+  background: ${red};
+  width: 100%;
+  margin: 15px 0px 0px;
+  padding: 8px 10px;
 `;
 
 export const ChangeBoardBackgroundChoice = styled(

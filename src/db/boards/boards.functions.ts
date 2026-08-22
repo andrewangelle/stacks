@@ -1,11 +1,13 @@
 import { createServerFn } from '@tanstack/react-start';
 import {
   CreateBoardSchema,
+  DeleteBoardSchema,
   GetBoardByIdSchema,
   UpdateBoardSchema,
 } from '~/db/boards/boards.schemas';
 import {
   createBoardQuery,
+  deleteBoardQuery,
   getBoardColorQuery,
   getBoardsQuery,
   updateBoardQuery,
@@ -35,4 +37,11 @@ export const updateBoard = createServerFn({ method: 'POST' })
   .middleware([authMiddleware])
   .handler(async ({ data, context }) =>
     updateBoardQuery({ ...data, userId: context.uid }),
+  );
+
+export const deleteBoard = createServerFn({ method: 'POST' })
+  .validator(DeleteBoardSchema)
+  .middleware([authMiddleware])
+  .handler(async ({ data, context }) =>
+    deleteBoardQuery({ ...data, userId: context.uid }),
   );
