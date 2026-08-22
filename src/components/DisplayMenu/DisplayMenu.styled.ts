@@ -21,9 +21,12 @@ export const displayMenuItemStyles = css`
   }
 `;
 
+type IsMobileProps = {
+  $isMobile: boolean;
+};
 export const DisplayMenuContainer = styled.div.attrs<DataAttributes>({
   'data-testid': 'DisplayMenuContainer',
-})`
+})<IsMobileProps>`
   position: fixed;
   left: 50%;
   bottom: 24px;
@@ -39,6 +42,14 @@ export const DisplayMenuContainer = styled.div.attrs<DataAttributes>({
   color: black;
   font-weight: 500;
   font-size: 14px;
+  width: ${({ $isMobile }) => ($isMobile ? '65%' : 'auto')};
+
+  ${({ $isMobile }) => {
+    if ($isMobile) {
+      return 'justify-content: center';
+    }
+    return '';
+  }}
 `;
 
 export const DisplayMenuBoardButton = styled.button.attrs<DataAttributes>({

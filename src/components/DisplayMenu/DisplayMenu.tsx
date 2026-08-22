@@ -7,10 +7,12 @@ import {
 } from '~/components/DisplayMenu/DisplayMenu.styled';
 import { SwitchBoards } from '~/components/DisplayMenu/SwitchBoards';
 import { Tooltip } from '~/components/shared/Tooltip/Tooltip';
+import { useIsMobile } from '~/utils/useIsMobile';
 
 export function DisplayMenu() {
+  const isMobile = useIsMobile();
   return (
-    <DisplayMenuContainer>
+    <DisplayMenuContainer $isMobile={isMobile}>
       <Tooltip content="Board">
         <DisplayMenuBoardButton aria-current="page">
           <BoardIcon />
