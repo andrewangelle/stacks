@@ -144,9 +144,9 @@ export const SwitchBoardsSearchClear = styled.button.attrs<DataAttributes>({
 
 export const SwitchBoardsGrid = styled.div.attrs<DataAttributes>({
   'data-testid': 'SwitchBoardsGrid',
-})`
+})<IsMobileProps>`
   display: grid;
-  grid-template-columns: repeat(auto-fill, 100%);
+  grid-template-columns: ${({ $isMobile }) => ($isMobile ? 'repeat(auto-fill, 100%)' : 'repeat(auto-fill, 145px)')};
   gap: 12px;
   align-content: start;
 
@@ -162,8 +162,8 @@ export const SwitchBoardsGrid = styled.div.attrs<DataAttributes>({
 
 export const SwitchBoardsEmpty = styled.p.attrs<DataAttributes>({
   'data-testid': 'SwitchBoardsEmpty',
-})`
-  margin: 0;
+})<IsMobileProps>`
+  margin: ${({ $isMobile }) => ($isMobile ? '0px 24px' : '0')}; 
   font-size: 14px;
   color: rgba(9, 30, 66, 0.7);
 `;
