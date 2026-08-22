@@ -4,19 +4,12 @@ import { type MouseEvent, type PointerEvent, useRef } from 'react';
 const DRAG_THRESHOLD = 4;
 
 /**
- * Read-only text that doubles as an edit trigger has to tell a click apart
- * from a selection gesture: the browser fires `click` on mouse up either way,
- * so a drag that selects a paragraph would otherwise open the editor and throw
- * the selection away.
+ * Text in a container that doubles as an edit trigger has to tell a click apart
+ * from a selection gesture.
  *
- * Two gestures are held back:
- *
- * - a press that travelled, which is the drag that made the selection;
- * - a press that started while text was already selected, which is the click
- *   that clears it. `pointerdown` runs before the browser collapses the
- *   selection, so the old selection is still readable here.
- *
- * Spread the returned handlers onto the element the click should open.
+ * Two things are determined:
+ * - a drag that made the selection;
+ * - a click that started while text was already selected, in order to clear that selection.
  */
 export function useDeliberateClick(onClick: () => void) {
   const pressOrigin = useRef<{ x: number; y: number } | null>(null);
