@@ -74,13 +74,17 @@ export const BoardPageBackground = styled.div.attrs<DataAttributes>({
   display: flex;
   overflow-x: auto;
   overflow-y: hidden;
-  padding: ${fixedChromeOffset} 30px 30px;
+  padding: ${fixedChromeOffset} 30px 84px;
 
   & > * {
     flex-shrink: 0;
   };
 
   background:${({ $background }) => getBoardGradientVars($background as BoardBackground)};
+
+  @media (max-width: 460px) {
+    padding: ${fixedChromeOffset} 30px 100px;
+  }
 `;
 
 export const BoardTitle = styled.button.attrs<DataAttributes>({
