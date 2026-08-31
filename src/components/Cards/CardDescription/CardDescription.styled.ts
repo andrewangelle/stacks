@@ -29,6 +29,14 @@ export const CardDescriptionHeadingRow = styled.div.attrs<DataAttributes>({
   margin-bottom: 12px;
 `;
 
+export const CardDescriptionHeadingActions = styled.div.attrs<DataAttributes>({
+  'data-testid': 'DescriptionHeadingActions',
+})`
+  display: flex;
+  align-items: center;
+  gap: 8px;
+`;
+
 type ExpandedProps = CardModalSectionExpandedProps;
 
 export const CardDescriptionListIcon = styled.span.attrs<DataAttributes>({
@@ -133,10 +141,6 @@ export const CloseDescriptionButton = styled(Button).attrs<DataAttributes>({
   }
 `;
 
-/**
- * Sits in the heading row's trailing slot, which the edit button vacates for
- * the duration of an edit, so the two never compete for the space.
- */
 export const UnsavedChangesBadge = styled.span.attrs<DataAttributes>({
   'data-testid': 'UnsavedChangesBadge',
 })`

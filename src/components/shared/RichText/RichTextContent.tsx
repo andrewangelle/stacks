@@ -100,7 +100,7 @@ function renderNode(node: SerializedRichTextNode, key: string): ReactNode {
       );
     case 'listitem':
       return (
-        <li key={key} style={style}>
+        <li key={key} className={toListItemClass(node)} style={style}>
           {children}
         </li>
       );
@@ -167,6 +167,19 @@ function renderPlainText(value: string): ReactNode[] {
 
 function toHeadingTag(tag: string | undefined): HeadingTag {
   return HEADING_TAGS.find((heading) => heading === tag) ?? 'h2';
+}
+
+/**
+ * Tab nests a bullet by moving it into a list of its own, held by an otherwise
+ * empty item. That item carries no text and must not carry a marker either,
+ * which is the same class Lexical's theme gives it inside the editor.
+ */
+function toListItemClass(node: SerializedRichTextNode) {
+  const holdsNestedList = (node.children ?? []).some(
+    (child) => child.type === 'list',
+  );
+
+  return holdsNestedList ? RICH_TEXT_CLASS.nestedListItem : undefined;
 }
 
 function toBlockStyle(node: SerializedRichTextNode) {

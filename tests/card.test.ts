@@ -423,6 +423,54 @@ test.describe('Description drafts', () => {
       'Add acceptance criteria.',
     );
   });
+
+  test('closes the editor on escape and keeps the draft', async ({
+    page,
+    request,
+  }) => {
+    await openCardWithDescription(page, request);
+
+    await page.getByTestId('EditDescriptionButton').click();
+
+    const editor = page.getByTestId('DescriptionInput');
+    await expect(editor).toHaveText('Add acceptance criteria.');
+
+    await editor.click();
+    await page.keyboard.press('End');
+    await editor.pressSequentially(' And a demo.');
+    await expect(page.getByTestId('UnsavedChangesBadge')).toBeVisible();
+
+    await page.keyboard.press('Escape');
+
+    // Escape closes the editor it was pressed in, not the modal around it, and
+    // hands focus back to the control that reopens the description.
+    await expect(editor).toHaveCount(0);
+    await expect(page.getByTestId('CardModalContent')).toBeVisible();
+    await expect(page.getByTestId('DescriptionToggleButton')).toBeFocused();
+
+    // The draft outlives the editor: the badge stays up over the still-saved
+    // description, and reopening picks the draft back up.
+    await expect(page.getByTestId('UnsavedChangesBadge')).toBeVisible();
+    await expect(page.getByTestId('CardDescriptionText')).toHaveText(
+      'Add acceptance criteria.',
+    );
+
+    await page.getByTestId('EditDescriptionButton').click();
+    await expect(page.getByTestId('DescriptionInput')).toHaveText(
+      'Add acceptance criteria. And a demo.',
+    );
+
+    await page.getByTestId('SaveDescriptionButton').click();
+
+    await expect(page.getByTestId('CardDescriptionText')).toHaveText(
+      'Add acceptance criteria. And a demo.',
+    );
+    await expect(page.getByTestId('UnsavedChangesBadge')).toHaveCount(0);
+
+    // With no editor left to claim it, Escape is the modal's again.
+    await page.keyboard.press('Escape');
+    await expect(page.getByTestId('CardModalContent')).toBeHidden();
+  });
 });
 
 test.describe('Move card', () => {

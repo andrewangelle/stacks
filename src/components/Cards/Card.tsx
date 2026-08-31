@@ -45,12 +45,6 @@ export function Card({ variant = 'modal' }: CardProps) {
   const gridTemplateColumns = `minmax(0, 1fr) 8px ${columnWidth}px`;
   const cardModalBodyStyle = isWideLayout ? { gridTemplateColumns } : undefined;
 
-  useEffect(() => {
-    if (!isRouteLoading) {
-      setIsClosingCard(false);
-    }
-  }, [isRouteLoading]);
-
   function handleOpenChange(open: boolean) {
     if (open) {
       return;
@@ -65,8 +59,22 @@ export function Card({ variant = 'modal' }: CardProps) {
     });
   }
 
+  function keepOpenOnBoundaryEscape(event: KeyboardEvent) {
+    const { target } = event;
+
+    if (target instanceof Element && target.closest('[data-escape-boundary]')) {
+      event.preventDefault();
+    }
+  }
+
   const isPage = variant === 'page';
   const ActivityColumn = isPage ? CardPageActivityColumn : CardActivityColumn;
+
+  useEffect(() => {
+    if (!isRouteLoading) {
+      setIsClosingCard(false);
+    }
+  }, [isRouteLoading]);
 
   const cardBody = (
     <>
@@ -119,6 +127,7 @@ export function Card({ variant = 'modal' }: CardProps) {
       <CardModalRoot open modal={false} onOpenChange={handleOpenChange}>
         <CardPageContent
           aria-describedby={undefined}
+          onEscapeKeyDown={keepOpenOnBoundaryEscape}
           onCloseAutoFocus={(event) => {
             event.preventDefault();
           }}
@@ -138,6 +147,7 @@ export function Card({ variant = 'modal' }: CardProps) {
         <CardModalOverlay>
           <CardModalContent
             aria-describedby={undefined}
+            onEscapeKeyDown={keepOpenOnBoundaryEscape}
             onCloseAutoFocus={(event) => {
               event.preventDefault();
             }}

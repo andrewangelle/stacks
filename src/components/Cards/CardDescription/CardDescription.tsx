@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useCallback, useRef, useState } from 'react';
 import { IoMdList } from 'react-icons/io';
 import { RiArrowRightSLine } from 'react-icons/ri';
 import {
@@ -7,6 +7,7 @@ import {
   CardDescriptionCaretIcon,
   CardDescriptionContainer,
   CardDescriptionEditorContainer,
+  CardDescriptionHeadingActions,
   CardDescriptionHeadingRow,
   CardDescriptionListIcon,
   CardDescriptionPlaceholder,
@@ -35,25 +36,32 @@ export function CardDescription() {
   const { data } = useGetCardById({ id: cardId });
   const setDescriptionExpanded = useSetDescriptionExpanded();
   const [isEditing, setEditing] = useState(false);
-  const [editedDescription, setEditedDescription] = useState('');
+  // A draft outlives the editor: closing it leaves the badge up, and opening it
+  // again seeds Lexical from the draft rather than the saved description.
+  const [draft, setDraft] = useState<string | null>(null);
   // Lexical seeds itself from `initialValue` once, on mount, so discarding a
   // draft means remounting the editor rather than handing it a new value.
   const [editorSession, setEditorSession] = useState(0);
+  const toggleButtonRef = useRef<HTMLButtonElement>(null);
   const updateCard = useUpdateCard();
 
   const placeHolderText = 'Add a more detailed description...';
   const description = data?.cardDescription ?? '';
   const isExpanded = data?.isDescriptionExpanded ?? true;
   const hasDescription = !isEmptyRichText(description);
-  const hasUnsavedChanges = isEditing && editedDescription !== description;
+  const hasUnsavedChanges = draft !== null && draft !== description;
 
   function editDescription() {
-    setEditedDescription(description);
     setEditing(true);
   }
 
+  const closeEditor = useCallback(() => {
+    setEditing(false);
+    toggleButtonRef.current?.focus();
+  }, []);
+
   function discardChanges() {
-    setEditedDescription(description);
+    setDraft(null);
     setEditorSession(editorSession + 1);
   }
 
@@ -69,9 +77,10 @@ export function CardDescription() {
     updateCard({
       cardId,
       cardTitle: data?.cardTitle ?? '',
-      cardDescription: editedDescription,
+      cardDescription: draft ?? description,
       listId: data?.listId ?? '',
     });
+    setDraft(null);
     setEditing(false);
   }
 
@@ -80,6 +89,7 @@ export function CardDescription() {
       <CardDescriptionHeadingRow>
         <Flex style={{ alignItems: 'center' }}>
           <CardDescriptionToggleButton
+            ref={toggleButtonRef}
             $expanded={isExpanded}
             aria-expanded={isExpanded}
             aria-label={
@@ -99,19 +109,21 @@ export function CardDescription() {
           <CardDescriptionTitle>Description</CardDescriptionTitle>
         </Flex>
 
-        {hasUnsavedChanges && (
-          <UnsavedChangesBadge>Unsaved changes</UnsavedChangesBadge>
-        )}
+        <CardDescriptionHeadingActions>
+          {hasUnsavedChanges && (
+            <UnsavedChangesBadge>Unsaved changes</UnsavedChangesBadge>
+          )}
 
-        {hasDescription && !isEditing && (
-          <EditDescriptionButton
-            $secondary
-            $expanded={isExpanded}
-            onClick={editDescription}
-          >
-            Edit
-          </EditDescriptionButton>
-        )}
+          {hasDescription && !isEditing && (
+            <EditDescriptionButton
+              $secondary
+              $expanded={isExpanded}
+              onClick={editDescription}
+            >
+              Edit
+            </EditDescriptionButton>
+          )}
+        </CardDescriptionHeadingActions>
       </CardDescriptionHeadingRow>
 
       <CardDescriptionBody $expanded={isExpanded}>
@@ -133,12 +145,13 @@ export function CardDescription() {
               <CardDescriptionEditorContainer>
                 <RichTextEditor
                   key={editorSession}
-                  initialValue={description}
+                  initialValue={draft ?? description}
                   placeholder={placeHolderText}
                   ariaLabel="Card description"
                   testId="DescriptionInput"
                   autoFocus
-                  onChange={setEditedDescription}
+                  onChange={setDraft}
+                  onEscape={closeEditor}
                 />
               </CardDescriptionEditorContainer>
 
@@ -149,9 +162,7 @@ export function CardDescription() {
 
                 <CloseDescriptionButton
                   $secondary
-                  onClick={
-                    hasUnsavedChanges ? discardChanges : () => setEditing(false)
-                  }
+                  onClick={hasUnsavedChanges ? discardChanges : closeEditor}
                 >
                   {hasUnsavedChanges ? 'Discard changes' : 'Cancel'}
                 </CloseDescriptionButton>

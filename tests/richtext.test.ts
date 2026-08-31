@@ -63,6 +63,32 @@ test.describe('Rich text markdown', () => {
     );
   });
 
+  test('nests a list item with tab instead of leaving the editor', async ({
+    page,
+    request,
+  }) => {
+    const editor = await openDescriptionEditor(page, request);
+
+    await editor.pressSequentially('* Parent');
+    await editor.press('Enter');
+    await editor.press('Tab');
+    await editor.pressSequentially('Child');
+
+    // Tab is the editor's own, so it indents rather than moving focus on.
+    await expect(editor).toBeFocused();
+    await expect(editor.locator('ul ul li')).toHaveText('Child');
+
+    await saveDescription(page);
+
+    // The item holding the nested list carries no text of its own, so it must
+    // not carry a marker either.
+    const description = page.getByTestId('CardDescriptionText');
+
+    await expect(
+      description.locator('li.rich-text-nested-listitem ul li'),
+    ).toHaveText('Child');
+  });
+
   test('turns link and image markdown into elements', async ({
     page,
     request,
