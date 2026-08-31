@@ -32,15 +32,6 @@ import {
 import { RichTextMarkdownPreview } from '~/components/shared/RichText/RichTextMarkdownPreview';
 import { RichTextToolbar } from '~/components/shared/RichText/RichTextToolbar';
 
-/**
- * `initialValue` seeds the editor once, on mount: Lexical owns the document
- * from there. Remount with a `key` to load a different value, the way
- * `AddComment` empties itself after posting.
- *
- * Tab indents rather than leaving the editor, so `onEscape` is the way out for
- * a keyboard user. Passing it also marks the editable area as an escape
- * boundary, which is what keeps the surrounding dialog open on the way out.
- */
 type RichTextEditorProps = {
   initialValue?: string;
   placeholder: string;
@@ -129,10 +120,6 @@ export function RichTextEditor({
   );
 }
 
-/**
- * Lexical dispatches this from its own keydown listener on the editable area,
- * so a toolbar popover that is open over the editor keeps its own Escape.
- */
 function EscapePlugin({ onEscape }: { onEscape: () => void }) {
   const [editor] = useLexicalComposerContext();
 

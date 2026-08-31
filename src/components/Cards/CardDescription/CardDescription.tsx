@@ -36,11 +36,7 @@ export function CardDescription() {
   const { data } = useGetCardById({ id: cardId });
   const setDescriptionExpanded = useSetDescriptionExpanded();
   const [isEditing, setEditing] = useState(false);
-  // A draft outlives the editor: closing it leaves the badge up, and opening it
-  // again seeds Lexical from the draft rather than the saved description.
   const [draft, setDraft] = useState<string | null>(null);
-  // Lexical seeds itself from `initialValue` once, on mount, so discarding a
-  // draft means remounting the editor rather than handing it a new value.
   const [editorSession, setEditorSession] = useState(0);
   const toggleButtonRef = useRef<HTMLButtonElement>(null);
   const updateCard = useUpdateCard();
