@@ -169,11 +169,6 @@ function toHeadingTag(tag: string | undefined): HeadingTag {
   return HEADING_TAGS.find((heading) => heading === tag) ?? 'h2';
 }
 
-/**
- * Tab nests a bullet by moving it into a list of its own, held by an otherwise
- * empty item. That item carries no text and must not carry a marker either,
- * which is the same class Lexical's theme gives it inside the editor.
- */
 function toListItemClass(node: SerializedRichTextNode) {
   const holdsNestedList = (node.children ?? []).some(
     (child) => child.type === 'list',
