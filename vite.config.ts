@@ -65,7 +65,18 @@ export default defineConfig({
         enabled: true
       }
     }),
-    netlify(),
+    netlify({
+      dev: {
+        // Nothing here is an edge function: `netlify.toml` declares none and
+        // SSR ships as a Netlify Function. Standing the emulator up anyway is
+        // fatal — @netlify/edge-functions-dev spawns Deno with `--allow-scripts`,
+        // which Deno rejects (2.9.6 does, 2.5.6 does not), and the unhandled
+        // rejection takes the whole dev server down before it listens. CI has no
+        // Deno of its own so it downloads the newest one and always hits this.
+        // Re-enable once that package stops passing the flag.
+        edgeFunctions: { enabled: false },
+      },
+    }),
     rsc(),
     viteReact(),
     sentryTanstackStart({
