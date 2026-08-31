@@ -3,6 +3,7 @@ import {
   type InitialConfigType,
   LexicalComposer,
 } from '@lexical/react/LexicalComposer';
+import { useLexicalComposerContext } from '@lexical/react/LexicalComposerContext';
 import { ContentEditable } from '@lexical/react/LexicalContentEditable';
 import { LexicalErrorBoundary } from '@lexical/react/LexicalErrorBoundary';
 import { HistoryPlugin } from '@lexical/react/LexicalHistoryPlugin';
@@ -11,7 +12,9 @@ import { ListPlugin } from '@lexical/react/LexicalListPlugin';
 import { MarkdownShortcutPlugin } from '@lexical/react/LexicalMarkdownShortcutPlugin';
 import { OnChangePlugin } from '@lexical/react/LexicalOnChangePlugin';
 import { RichTextPlugin } from '@lexical/react/LexicalRichTextPlugin';
-import { useMemo, useState } from 'react';
+import { TabIndentationPlugin } from '@lexical/react/LexicalTabIndentationPlugin';
+import { COMMAND_PRIORITY_LOW, KEY_ESCAPE_COMMAND } from 'lexical';
+import { useEffect, useMemo, useState } from 'react';
 import { richTextTheme } from '~/components/shared/RichText/RichText.constants';
 import {
   RichTextBody,
@@ -33,6 +36,10 @@ import { RichTextToolbar } from '~/components/shared/RichText/RichTextToolbar';
  * `initialValue` seeds the editor once, on mount: Lexical owns the document
  * from there. Remount with a `key` to load a different value, the way
  * `AddComment` empties itself after posting.
+ *
+ * Tab indents rather than leaving the editor, so `onEscape` is the way out for
+ * a keyboard user. Passing it also marks the editable area as an escape
+ * boundary, which is what keeps the surrounding dialog open on the way out.
  */
 type RichTextEditorProps = {
   initialValue?: string;
@@ -42,6 +49,7 @@ type RichTextEditorProps = {
   autoFocus?: boolean;
   minHeight?: string;
   onChange: (value: string) => void;
+  onEscape?: () => void;
 };
 
 export function RichTextEditor({
@@ -52,6 +60,7 @@ export function RichTextEditor({
   autoFocus = false,
   minHeight = '90px',
   onChange,
+  onEscape,
 }: RichTextEditorProps) {
   const [isMarkdownVisible, setMarkdownVisible] = useState(false);
 
@@ -81,6 +90,7 @@ export function RichTextEditor({
             contentEditable={
               <ContentEditable
                 data-testid={testId}
+                data-escape-boundary={onEscape ? true : undefined}
                 aria-label={ariaLabel}
                 aria-placeholder={placeholder}
                 placeholder={
@@ -101,10 +111,12 @@ export function RichTextEditor({
       </RichTextSurface>
 
       {autoFocus && <AutoFocusPlugin />}
+      {onEscape && <EscapePlugin onEscape={onEscape} />}
       <HistoryPlugin />
       <ListPlugin />
       <LinkPlugin />
       <MarkdownShortcutPlugin transformers={richTextTransformers} />
+      <TabIndentationPlugin />
       <OnChangePlugin
         ignoreSelectionChange
         onChange={(editorState) => {
@@ -115,4 +127,27 @@ export function RichTextEditor({
       />
     </LexicalComposer>
   );
+}
+
+/**
+ * Lexical dispatches this from its own keydown listener on the editable area,
+ * so a toolbar popover that is open over the editor keeps its own Escape.
+ */
+function EscapePlugin({ onEscape }: { onEscape: () => void }) {
+  const [editor] = useLexicalComposerContext();
+
+  useEffect(
+    () =>
+      editor.registerCommand(
+        KEY_ESCAPE_COMMAND,
+        () => {
+          onEscape();
+          return true;
+        },
+        COMMAND_PRIORITY_LOW,
+      ),
+    [editor, onEscape],
+  );
+
+  return null;
 }
