@@ -150,7 +150,7 @@ export function useCreateList() {
     onSuccess(result, variables) {
       patchBoardLists(variables.boardId, (lists) => [
         ...lists,
-        { ...result.data[0], cards: [] },
+        { ...result, cards: [] },
       ]);
     },
   });

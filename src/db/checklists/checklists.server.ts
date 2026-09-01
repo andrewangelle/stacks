@@ -39,11 +39,7 @@ export async function createChecklistQuery(
     },
   });
 
-  return {
-    code: 'checklists:create:success',
-    message: 'success',
-    data: [result],
-  };
+  return result;
 }
 
 export async function deleteChecklistQuery(
@@ -64,11 +60,7 @@ export async function deleteChecklistQuery(
     where: { id: result.id },
   });
 
-  return {
-    code: 'checklists:delete:success',
-    message: 'success',
-    data: [result],
-  };
+  return result;
 }
 
 export async function updateChecklistQuery(
@@ -129,9 +121,4 @@ export async function reorderChecklistsQuery(
       }),
     ),
   );
-
-  return {
-    code: 'checklists:reorder:success',
-    message: 'success',
-  };
 }

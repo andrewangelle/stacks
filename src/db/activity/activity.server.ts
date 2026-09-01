@@ -9,12 +9,6 @@ import type { WithUserId } from '~/db/withUserId';
 
 export const ACTIVITY_PAGE_SIZE = 10;
 
-/**
- * Keyset pagination: `createdAt` alone is not unique, so the sort is broken by
- * `id` to give the rows a total order. That total order is what makes the
- * cursor stable — without it, ties can be re-shuffled between pages and an
- * entry gets skipped or served twice.
- */
 export async function getActivitiesQuery(data: WithUserId<GetActivityArgs>) {
   const where = { cardId: data.cardId, userId: data.userId };
 

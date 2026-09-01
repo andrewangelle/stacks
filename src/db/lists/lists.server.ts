@@ -31,11 +31,7 @@ export async function createListQuery(data: WithUserId<CreateListArgs>) {
     },
   });
 
-  return {
-    code: 'lists:create:success',
-    message: 'success',
-    data: [result],
-  };
+  return result;
 }
 
 export async function updateListQuery(data: WithUserId<UpdateListArgs>) {
@@ -71,11 +67,7 @@ export async function deleteListQuery(data: WithUserId<DeleteListArgs>) {
     where: { id: result.id },
   });
 
-  return {
-    code: 'lists:delete:success',
-    message: 'success',
-    data: [result],
-  };
+  return result;
 }
 
 export async function reorderListsQuery(data: WithUserId<ReorderListsArgs>) {
@@ -105,11 +97,6 @@ export async function reorderListsQuery(data: WithUserId<ReorderListsArgs>) {
       }),
     ),
   );
-
-  return {
-    code: 'lists:reorder:success',
-    message: 'success',
-  };
 }
 
 /**
@@ -154,8 +141,6 @@ export async function moveListQuery(data: WithUserId<MoveListArgs>) {
     );
     await renumberLists(tx, data.userId, targetIds);
   });
-
-  return { code: 'lists:move:success', message: 'success' };
 }
 
 /** A board's list ids in display order. */

@@ -1,3 +1,4 @@
+import type { CardPayload } from '~/db/boards/boards.cache';
 import type {
   CreateCardArgs,
   DeleteCardArgs,
@@ -12,7 +13,6 @@ import type {
 import { prisma } from '~/db/prisma';
 import type { WithUserId } from '~/db/withUserId';
 import type { Prisma } from '~/generated/prisma/client';
-
 export async function getBoardIdByCardIdQuery(
   data: WithUserId<GetCardByIdArgs>,
 ) {
@@ -73,7 +73,9 @@ export async function getBoardIdByCardIdQuery(
   };
 }
 
-export async function createCardQuery(data: WithUserId<CreateCardArgs>) {
+export async function createCardQuery(
+  data: WithUserId<CreateCardArgs>,
+): Promise<CardPayload> {
   const list = await prisma.list.findFirst({
     where: { id: data.listId, board: { userId: data.userId } },
   });
@@ -101,11 +103,7 @@ export async function createCardQuery(data: WithUserId<CreateCardArgs>) {
       },
     });
 
-    return {
-      code: 'cards:create:success',
-      message: 'success',
-      data: [result],
-    };
+    return result as CardPayload;
   }
 
   const insertPosition = data.position;
@@ -144,11 +142,7 @@ export async function createCardQuery(data: WithUserId<CreateCardArgs>) {
     return { ...newCard, position: clampedPosition };
   });
 
-  return {
-    code: 'cards:create:success',
-    message: 'success',
-    data: [result],
-  };
+  return result as CardPayload;
 }
 
 export async function updateCardQuery(data: WithUserId<UpdateCardArgs>) {
@@ -194,7 +188,6 @@ export async function setCardChecklistExpandedQuery(
 
   if (data.expandedChecklistId !== undefined) {
     if (data.expandedChecklistId) {
-      // Only point at a checklist that actually belongs to this card.
       const checklist = await prisma.checklist.findFirst({
         where: {
           id: data.expandedChecklistId,
@@ -268,11 +261,7 @@ export async function deleteCardQuery(data: WithUserId<DeleteCardArgs>) {
     where: { id: result.id },
   });
 
-  return {
-    code: 'cards:delete:success',
-    message: 'success',
-    cardData: [result],
-  };
+  return result;
 }
 
 export async function reorderCardsQuery(data: WithUserId<ReorderCardsArgs>) {
@@ -302,19 +291,8 @@ export async function reorderCardsQuery(data: WithUserId<ReorderCardsArgs>) {
       }),
     ),
   );
-
-  return {
-    code: 'cards:reorder:success',
-    message: 'success',
-  };
 }
 
-/**
- * Move a card to a position within any list the user owns — same list, another list on the
- * same board, or a list on a different board. Rewrites positions so order stays contiguous
- * and records the transfer in the card's activity feed: board links when the board changes,
- * list links when only the list changes, and nothing for a same-list reposition.
- */
 export async function moveCardQuery(data: WithUserId<MoveCardArgs>) {
   const card = await prisma.card.findFirst({
     where: {
@@ -366,8 +344,6 @@ export async function moveCardQuery(data: WithUserId<MoveCardArgs>) {
     sourceBoardId: card.list.boardId,
     targetBoardId: targetList.boardId,
   });
-
-  return { code: 'cards:move:success', message: 'success' };
 }
 
 /** A list's card ids in display order. */

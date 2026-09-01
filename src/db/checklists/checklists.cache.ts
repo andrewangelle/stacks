@@ -34,12 +34,6 @@ export function reorderChecklistsByIndex(
   });
 }
 
-/**
- * The card checklist "view" is the rollup the card front renders: per-checklist
- * completion stats plus card-level totals, derived from a card in the boards
- * tree. Pure and structural, so it accepts any card shape carrying checklists
- * with their items.
- */
 export type CardChecklistViewSource = {
   isChecklistsExpanded: boolean;
   expandedChecklistId: string | null;
