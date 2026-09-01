@@ -2,6 +2,7 @@ import { useMutation, useSuspenseQuery } from '@tanstack/react-query';
 import { invalidateActivitiesCache } from '~/db/activity/activity.cache';
 import {
   type BoardsPayload,
+  type CardPayload,
   findCard,
   getBoardsCache,
   invalidateBoardsCache,
@@ -39,7 +40,6 @@ export function useGetCardById(args: { id: string }) {
   return useSuspenseQuery(cardByIdQueryOptions(args.id));
 }
 
-/** The card front the board page renders, plus the id of its owning list. */
 export function useGetCard(args: { id: string }) {
   return useSuspenseQuery({
     ...boardsQueryOptions,
@@ -52,11 +52,6 @@ export function useGetCard(args: { id: string }) {
   });
 }
 
-/**
- * Whether the card modal's description section is open. Like the activity
- * panel's details toggle, it is a property of the card rather than of the
- * session, so it lives on the card in the boards tree and survives a reload.
- */
 export function useSetDescriptionExpanded() {
   const mutation = useMutation({
     mutationFn(data: SetCardDescriptionExpandedArgs) {
@@ -90,10 +85,10 @@ export function useCreateCard() {
 
     onSuccess(result, variables) {
       const newCard = {
-        ...result.data[0],
+        ...result,
         checklists: [],
         _count: { activities: 0 },
-      };
+      } as CardPayload;
 
       patchListCards(variables.listId, (cards) => {
         if (variables.position === undefined) {
@@ -138,19 +133,18 @@ export function useUpdateCard() {
   return mutation.mutate;
 }
 
-/**
- * Move a card to another list, possibly on another board. The server rewrites
- * positions and records board transfers in the card's activity feed, so one
- * refetch of the boards tree picks up everything it changed, except the new
- * feed entries, which live in the card's own activity cache.
- */
+type MoveCardMutationArgs = MoveCardArgs & {
+  sourceBoardId: string;
+  targetBoardId: string;
+};
+
 export function useMoveCardMutation() {
   return useMutation({
     mutationFn({
       sourceBoardId: _sourceBoardId,
       targetBoardId: _targetBoardId,
       ...data
-    }: MoveCardArgs & { sourceBoardId: string; targetBoardId: string }) {
+    }: MoveCardMutationArgs) {
       return moveCard({ data });
     },
     onSuccess(_result, variables) {

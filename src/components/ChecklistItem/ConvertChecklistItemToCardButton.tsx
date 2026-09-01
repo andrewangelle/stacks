@@ -40,9 +40,9 @@ export function ConvertChecklistItemToCardButton({
   }
 
   useEffect(() => {
-    if (isCardCreated && response.data[0].id && checklistItem) {
+    if (isCardCreated && response?.id && checklistItem) {
       createActivity({
-        cardId: response.data[0].id,
+        cardId: response?.id,
         listId: checklistItem.listId,
         boardId,
         type: 'feed',

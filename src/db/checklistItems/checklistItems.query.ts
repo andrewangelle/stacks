@@ -61,10 +61,8 @@ export function useCreateChecklistItem() {
     },
 
     onSuccess(result, variables) {
-      const [created] = result.data;
-
       patchChecklistItems(variables.checklistId, (items) =>
-        items.map((item) => (item.id === 'placeholder' ? created : item)),
+        items.map((item) => (item.id === 'placeholder' ? result : item)),
       );
     },
 

@@ -49,11 +49,10 @@ export function AddNewCardAtPosition({
 
   useEffect(() => {
     if (isSuccess) {
-      const card = response.data[0];
       createActivity({
         boardId,
-        cardId: card.id,
-        listId: card.listId,
+        cardId: response.id,
+        listId: response.listId,
         type: 'feed',
         content: 'added this card',
       });

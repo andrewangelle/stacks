@@ -45,11 +45,7 @@ export async function createChecklistItemQuery(
     },
   });
 
-  return {
-    code: 'checklist-item:create:success',
-    message: 'success',
-    data: [result],
-  };
+  return result;
 }
 
 export async function updateChecklistItemQuery(
@@ -96,11 +92,7 @@ export async function deleteChecklistItemQuery(
     where: { id: result.id },
   });
 
-  return {
-    code: 'checklists:delete:success',
-    message: 'success',
-    data: [result],
-  };
+  return result;
 }
 
 export async function reorderChecklistItemsQuery(
@@ -134,11 +126,6 @@ export async function reorderChecklistItemsQuery(
       }),
     ),
   );
-
-  return {
-    code: 'checklist-items:reorder:success',
-    message: 'success',
-  };
 }
 
 /**
@@ -225,9 +212,4 @@ export async function moveChecklistItemQuery(
       });
     }
   });
-
-  return {
-    code: 'checklist-items:move:success',
-    message: 'success',
-  };
 }

@@ -69,7 +69,7 @@ export function useCreateChecklist() {
     onSuccess(result, variables) {
       patchCardChecklists(variables.cardId, (checklists) => [
         ...checklists,
-        { ...result.data[0], items: [] },
+        { ...result, items: [] },
       ]);
     },
   });
@@ -125,10 +125,6 @@ export function useUpdateChecklist() {
   });
 }
 
-/**
- * The card-front checklist rollup, derived straight from the card's checklists
- * in the boards tree — item mutations update it with no extra bookkeeping.
- */
 export function useGetCardTitleDetailsChecklists(data: GetChecklistsArgs) {
   return useSuspenseQuery({
     ...boardsQueryOptions,
@@ -154,12 +150,6 @@ export function useGetCardTitleDetailsChecklists(data: GetChecklistsArgs) {
   });
 }
 
-/**
- * Persist the card-title-details checklist expansion to the server: whether the
- * whole checklist view is expanded (`isChecklistsExpanded`) and which single
- * checklist accordion is open (`expandedChecklistId`). Optimistically patches
- * the card in the boards tree so the UI updates instantly.
- */
 export function useSetCardChecklistExpanded() {
   return useMutation({
     mutationFn(data: SetCardChecklistExpandedArgs) {

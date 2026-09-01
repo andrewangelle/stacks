@@ -85,9 +85,5 @@ export async function deleteBoardQuery(data: WithUserId<DeleteBoardArgs>) {
     where: { id: board.id },
   });
 
-  return {
-    code: 'boards:delete:success',
-    message: 'success',
-    data: [board],
-  };
+  return board;
 }
