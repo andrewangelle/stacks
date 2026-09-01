@@ -413,6 +413,13 @@ async function openCardWithChecklists(
   await expect(page.getByTestId('CardModalContent')).toBeVisible();
   await expect(page.getByTestId('ChecklistContainer').first()).toBeVisible();
 
+  // The activity list's Suspense fallback is taller than the resolved list, so
+  // the centered modal shrinks — and everything in it slides down ~33px — when
+  // the list arrives. On mobile the columns stack, so that lands on the
+  // checklist and can drop a hover that was placed before it. Let it settle.
+  // Attached rather than visible: an empty activity list is a zero-height box.
+  await expect(page.getByTestId('ActivityListViewport')).toBeAttached();
+
   return { board, card };
 }
 
