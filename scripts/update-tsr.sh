@@ -1,6 +1,6 @@
 #!/bin/bash
 
-pnpm add @tanstack/react-start@latest \
+pnpm install @tanstack/react-start@latest \
  @tanstack/react-router@latest \
  @tanstack/react-router-devtools@latest \
  @tanstack/react-router-ssr-query@latest \
@@ -10,4 +10,4 @@ pnpm add @tanstack/react-start@latest \
  @sentry/tanstackstart-react@latest \
  @netlify/vite-plugin-tanstack-start@latest \
  @clerk/tanstack-react-start@latest \
- @tanstack/react-devtools
+ @tanstack/react-devtools@latest
