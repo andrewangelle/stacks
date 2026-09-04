@@ -9,4 +9,5 @@ pnpm install lexical@latest \
  @lexical/markdown@latest \
  @lexical/utils@latest \
  @lexical/code-core@latest \
- @lexical/extension@latest
+ @lexical/extension@latest \
+ @lexical/selection@latest
