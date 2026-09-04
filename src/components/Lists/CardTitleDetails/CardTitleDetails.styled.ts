@@ -49,7 +49,7 @@ export const CardCompletedIndicatorCircle = styled.button.attrs<DataAttributes>(
   transition: opacity 250ms ease, width 250ms ease, margin-right 250ms ease, background-color 250ms ease, border-color 250ms ease;
   align-self: center;
 
-  ${({ $circleSize = circleSizeDefault }) =>
+  ${({ $circleSize }) =>
     $circleSize &&
     css`
     width: ${$circleSize};

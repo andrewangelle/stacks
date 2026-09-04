@@ -50,6 +50,7 @@ export function List({ id: listId }: { id: string }) {
 
               <CardTitleDetails
                 id={card.id}
+                listId={listId}
                 description={card.cardDescription}
                 isCompleted={card.isCompleted}
                 title={card.cardTitle}
