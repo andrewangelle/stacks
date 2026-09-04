@@ -19,3 +19,14 @@ export function buildBoard(overrides?: {
       overrides?.boardColor ?? faker.helpers.arrayElement(BOARD_COLORS),
   };
 }
+
+export function buildList(title?: string) {
+  return { listTitle: title ?? faker.word.words(2) };
+}
+
+export function buildCard(title?: string) {
+  return {
+    cardTitle: title ?? faker.hacker.phrase(),
+    cardDescription: faker.lorem.sentence(),
+  };
+}

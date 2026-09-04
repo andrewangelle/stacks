@@ -1,6 +1,5 @@
 import { prisma } from '~/db/prisma';
-import { buildCard } from '~test/factories/card';
-import { buildList } from '~test/factories/list';
+import { buildCard, buildList } from '~test/factories';
 import { TEST_USER_ID } from '~test/mocks/constants';
 
 export async function seedCard(data: {
