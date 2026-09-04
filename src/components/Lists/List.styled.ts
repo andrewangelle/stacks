@@ -176,7 +176,7 @@ export const ListCardContainer = styled.div.attrs<DataAttributes>({
   background: #fff;
   font-family: ${fontFamily};
   font-size: 14px;
-  padding: 8px;
+  padding: 10px 34px 10px 8px;
   box-shadow: 0 1px 0 #091e4240;
   display: flex;
   flex-direction: column;
@@ -193,6 +193,10 @@ export const ListCardContainer = styled.div.attrs<DataAttributes>({
       outline: 2px solid ${focusRingBlue};
       outline-offset: -2px;
     }
+  }
+
+  &[data-edit-open] {
+    z-index: 3;
   }
 `;
 

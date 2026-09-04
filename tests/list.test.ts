@@ -1,6 +1,15 @@
-import { expect, type Locator, type Page, test } from '@playwright/test';
+import {
+  type APIRequestContext,
+  expect,
+  type Locator,
+  type Page,
+  test,
+} from '@playwright/test';
 import { expectCardCompletionActivity } from '~test/helpers/expectCardCompletionActivity';
-import { expectListCardCount } from '~test/helpers/expectListHeaderCardCount';
+import {
+  expectListCardCount,
+  listByTitle,
+} from '~test/helpers/expectListHeaderCardCount';
 import { resetDb } from '~test/helpers/resetDb';
 import { seedBoard, seedCard, seedListCard } from '~test/helpers/seed';
 import { waitForHydratedAction } from '~test/helpers/waitForHydratedAction';
@@ -435,9 +444,383 @@ test.describe('Move list', () => {
   });
 });
 
+test.describe('Edit card popover', () => {
+  test.describe.configure({ timeout: 60_000 });
+
+  test('shows the edit trigger on hover and hides it on mouse leave', async ({
+    page,
+    request,
+  }) => {
+    const { board } = await seedEditCardBoard(request);
+
+    await page.goto(`/board/${board.id}`);
+    await waitForListCard(page, 'Edit me');
+
+    const card = page.getByTestId('ListCardContainer');
+    const trigger = card.getByTestId('EditCardPopoverTrigger');
+
+    await expect(trigger).not.toHaveAttribute('data-visible', '');
+
+    await waitForHydratedAction(
+      () => card.hover(),
+      async () => (await trigger.getAttribute('data-visible')) !== null,
+    );
+
+    await page.mouse.move(0, 0);
+    await expect(trigger).not.toHaveAttribute('data-visible', '');
+  });
+
+  test('opens the popover and shows the title textarea and action options', async ({
+    page,
+    request,
+  }) => {
+    const { board } = await seedEditCardBoard(request);
+
+    await page.goto(`/board/${board.id}`);
+    await waitForListCard(page, 'Edit me');
+
+    await openEditCardPopover(page);
+
+    await expect(page.getByTestId('EditCardTitleTextarea')).toBeVisible();
+    await expect(page.getByTestId('EditCardTitleTextarea')).toHaveValue(
+      'Edit me',
+    );
+    await expect(page.getByTestId('EditCardSaveButton')).toBeVisible();
+    await expect(page.getByTestId('EditCardPopoverOverlay')).toBeVisible();
+
+    await expect(
+      page.getByTestId('EditCardActionOption').filter({ hasText: 'Open card' }),
+    ).toBeVisible();
+    await expect(
+      page.getByTestId('EditCardActionOption').filter({ hasText: 'Move' }),
+    ).toBeVisible();
+    await expect(
+      page.getByTestId('EditCardActionOption').filter({ hasText: 'Copy link' }),
+    ).toBeVisible();
+    await expect(
+      page.getByTestId('EditCardActionOption').filter({ hasText: 'Archive' }),
+    ).toBeVisible();
+  });
+
+  test('does not open the card modal when clicking the edit trigger', async ({
+    page,
+    request,
+  }) => {
+    const { board } = await seedEditCardBoard(request);
+
+    await page.goto(`/board/${board.id}`);
+    await waitForListCard(page, 'Edit me');
+
+    await openEditCardPopover(page);
+
+    await expect(page.getByTestId('EditCardPopoverContent')).toBeVisible();
+    await expect(page.getByTestId('CardModalContent')).toHaveCount(0);
+  });
+
+  test('renames a card via the edit popover', async ({ page, request }) => {
+    const { board } = await seedEditCardBoard(request);
+
+    await page.goto(`/board/${board.id}`);
+    await waitForListCard(page, 'Edit me');
+
+    await openEditCardPopover(page);
+
+    const textarea = page.getByTestId('EditCardTitleTextarea');
+    await textarea.fill('Renamed card');
+    await page.getByTestId('EditCardSaveButton').click();
+
+    await expect(page.getByTestId('EditCardPopoverContent')).toHaveCount(0);
+
+    await expect(
+      page.getByTestId('ListCardContainer').filter({ hasText: 'Renamed card' }),
+    ).toBeVisible();
+
+    await waitForRenamedCardAfterReload(page, 'Renamed card');
+  });
+
+  test('renames a card via Enter key', async ({ page, request }) => {
+    const { board } = await seedEditCardBoard(request);
+
+    await page.goto(`/board/${board.id}`);
+    await waitForListCard(page, 'Edit me');
+
+    await openEditCardPopover(page);
+
+    const textarea = page.getByTestId('EditCardTitleTextarea');
+    await textarea.fill('Enter rename');
+    await textarea.press('Enter');
+
+    await expect(page.getByTestId('EditCardPopoverContent')).toHaveCount(0);
+
+    await expect(
+      page.getByTestId('ListCardContainer').filter({ hasText: 'Enter rename' }),
+    ).toBeVisible();
+  });
+
+  test('opens the card modal via Open Card action', async ({
+    page,
+    request,
+  }) => {
+    const { board } = await seedEditCardBoard(request);
+
+    await page.goto(`/board/${board.id}`);
+    await waitForListCard(page, 'Edit me');
+
+    await openEditCardPopover(page);
+
+    await page
+      .getByTestId('EditCardActionOption')
+      .filter({ hasText: 'Open card' })
+      .click();
+
+    await expect(page.getByTestId('EditCardPopoverContent')).toHaveCount(0);
+    await waitForCardModal(page);
+  });
+
+  test('archives a card via the edit popover', async ({ page, request }) => {
+    const { board } = await seedEditCardBoard(request);
+
+    await page.goto(`/board/${board.id}`);
+    await waitForListCard(page, 'Edit me');
+
+    await openEditCardPopover(page);
+
+    const archived = waitForServerFnResponse(page);
+    await page
+      .getByTestId('EditCardActionOption')
+      .filter({ hasText: 'Archive' })
+      .click();
+    await archived;
+
+    await expect(page.getByTestId('EditCardPopoverContent')).toHaveCount(0);
+    await expectListCardCount(page.getByTestId('ListContainer'), 0);
+  });
+
+  test('copies the card link and shows a checkmark', async ({
+    page,
+    request,
+    context,
+  }) => {
+    const { board } = await seedEditCardBoard(request);
+
+    await context.grantPermissions(['clipboard-read', 'clipboard-write']);
+
+    await page.goto(`/board/${board.id}`);
+    await waitForListCard(page, 'Edit me');
+
+    await openEditCardPopover(page);
+
+    await page
+      .getByTestId('EditCardActionOption')
+      .filter({ hasText: 'Copy link' })
+      .click();
+
+    await expect(page.getByTestId('EditCardPopoverContent')).toBeVisible();
+
+    const clipboardText = await page.evaluate(() =>
+      navigator.clipboard.readText(),
+    );
+    expect(clipboardText).toMatch(/\/card\/[a-f0-9]{8}$/);
+  });
+
+  test('closes the popover when clicking the overlay', async ({
+    page,
+    request,
+  }) => {
+    const { board } = await seedEditCardBoard(request);
+
+    await page.goto(`/board/${board.id}`);
+    await waitForListCard(page, 'Edit me');
+
+    await openEditCardPopover(page);
+    await expect(page.getByTestId('EditCardPopoverContent')).toBeVisible();
+
+    await page.getByTestId('EditCardPopoverOverlay').click({ force: true });
+
+    await expect(page.getByTestId('EditCardPopoverContent')).toHaveCount(0);
+    await expect(page.getByTestId('EditCardPopoverOverlay')).toHaveCount(0);
+  });
+
+  test('elevates the card above the overlay when the popover is open', async ({
+    page,
+    request,
+  }) => {
+    const { board } = await seedEditCardBoard(request);
+
+    await page.goto(`/board/${board.id}`);
+    await waitForListCard(page, 'Edit me');
+
+    const card = page.getByTestId('ListCardContainer');
+    await expect(card).not.toHaveAttribute('data-edit-open', '');
+
+    await openEditCardPopover(page);
+
+    await expect(card).toHaveAttribute('data-edit-open', '');
+
+    await page.getByTestId('EditCardPopoverOverlay').click({ force: true });
+    await expect(card).not.toHaveAttribute('data-edit-open', '');
+  });
+
+  test('toggles the move panel open and closed via the Move button', async ({
+    page,
+    request,
+  }) => {
+    const { board } = await seedEditCardBoard(request);
+
+    await page.goto(`/board/${board.id}`);
+    await waitForListCard(page, 'Edit me');
+
+    await openEditCardPopover(page);
+
+    await page
+      .getByTestId('EditCardActionOption')
+      .filter({ hasText: 'Move' })
+      .click();
+
+    await expect(page.getByTestId('MoveCardFieldsContainer')).toBeVisible();
+    await expect(page.getByTestId('EditCardActionsContainer')).toBeVisible();
+
+    await page
+      .getByTestId('EditCardActionOption')
+      .filter({ hasText: 'Move' })
+      .click();
+
+    await expect(page.getByTestId('MoveCardFieldsContainer')).toHaveCount(0);
+  });
+
+  test('moves a card to another list via the edit popover', async ({
+    page,
+    request,
+  }) => {
+    await resetDb(request);
+
+    const board = await seedBoard(request, 'Sprint Board');
+    await seedCard(request, {
+      boardId: board.id,
+      listTitle: 'To Do',
+      cardTitle: 'Movable card',
+    });
+    await seedCard(request, {
+      boardId: board.id,
+      listTitle: 'Doing',
+      cardTitle: 'Existing',
+    });
+
+    await page.goto(`/board/${board.id}`);
+
+    const todoList = listByTitle(page, 'To Do');
+    await expect(async () => {
+      await expect(
+        todoList
+          .getByTestId('ListCardContainer')
+          .filter({ hasText: 'Movable card' }),
+      ).toBeVisible();
+    }).toPass();
+    const card = todoList.getByTestId('ListCardContainer');
+
+    await card.hover();
+    await waitForHydratedAction(
+      () => card.getByTestId('EditCardPopoverTrigger').click(),
+      async () =>
+        (await page.getByTestId('EditCardPopoverContent').count()) > 0,
+    );
+
+    await page
+      .getByTestId('EditCardActionOption')
+      .filter({ hasText: 'Move' })
+      .click();
+
+    await expect(page.getByTestId('MoveCardFieldsContainer')).toBeVisible();
+
+    await openEditPopoverMoveSelect(page, 'List-ComboboxToggleButton');
+    await page.getByTestId('ComboboxItem-Doing').click();
+
+    const moved = waitForServerFnResponse(page);
+    await page.getByTestId('MoveCardButton').click();
+    await moved;
+
+    await expect(page.getByTestId('EditCardPopoverContent')).toHaveCount(0);
+
+    const doingList = listByTitle(page, 'Doing');
+    await expect(
+      doingList
+        .getByTestId('ListCardContainer')
+        .filter({ hasText: 'Movable card' }),
+    ).toBeVisible();
+  });
+
+  test('resets the move panel when the popover is closed and reopened', async ({
+    page,
+    request,
+  }) => {
+    const { board } = await seedEditCardBoard(request);
+
+    await page.goto(`/board/${board.id}`);
+    await waitForListCard(page, 'Edit me');
+
+    await openEditCardPopover(page);
+
+    await page
+      .getByTestId('EditCardActionOption')
+      .filter({ hasText: 'Move' })
+      .click();
+    await expect(page.getByTestId('MoveCardFieldsContainer')).toBeVisible();
+
+    await page.getByTestId('EditCardPopoverOverlay').click({ force: true });
+    await expect(page.getByTestId('EditCardPopoverContent')).toHaveCount(0);
+
+    await openEditCardPopover(page);
+    await expect(page.getByTestId('EditCardTitleTextarea')).toBeVisible();
+    await expect(page.getByTestId('MoveCardFieldsContainer')).toHaveCount(0);
+  });
+});
+
 /**
  * Local utils
  */
+async function seedEditCardBoard(request: APIRequestContext) {
+  await resetDb(request);
+
+  const board = await seedBoard(request, 'Edit Board');
+  const { card } = await seedCard(request, {
+    boardId: board.id,
+    listTitle: 'To Do',
+    cardTitle: 'Edit me',
+  });
+
+  return { board, card };
+}
+
+async function openEditCardPopover(page: Page) {
+  const card = page.getByTestId('ListCardContainer');
+  await card.hover();
+
+  await waitForHydratedAction(
+    () => card.getByTestId('EditCardPopoverTrigger').click(),
+    async () => (await page.getByTestId('EditCardPopoverContent').count()) > 0,
+  );
+}
+
+async function openEditPopoverMoveSelect(page: Page, triggerTestId: string) {
+  const trigger = page.getByTestId(triggerTestId);
+  await expect(async () => {
+    if ((await trigger.getAttribute('aria-expanded')) !== 'true') {
+      await trigger.focus();
+      await trigger.press('Space');
+    }
+    await expect(trigger).toHaveAttribute('aria-expanded', 'true', {
+      timeout: 1000,
+    });
+  }).toPass();
+}
+
+async function waitForRenamedCardAfterReload(page: Page, newTitle: string) {
+  await expect(async () => {
+    await page.reload();
+    await waitForListCard(page, newTitle);
+  }).toPass();
+}
+
 async function addCardAtEnd(page: Page, cardTitle: string) {
   await waitForInteractiveTrigger(
     page,
