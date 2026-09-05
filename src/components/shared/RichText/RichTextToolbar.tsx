@@ -22,7 +22,7 @@ import {
   UNDO_COMMAND,
 } from 'lexical';
 import { Select } from 'radix-ui';
-import { useCallback, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { BsMarkdown, BsQuestionCircle } from 'react-icons/bs';
 import { FaRedo, FaUndo } from 'react-icons/fa';
 import { RxCaretDown } from 'react-icons/rx';
@@ -65,7 +65,7 @@ export function RichTextToolbar({
   const [toolbar, setToolbar] = useState(initialToolbarState);
   const [isHelpOpen, setHelpOpen] = useState(false);
 
-  const syncToolbar = useCallback(() => {
+  function syncToolbar() {
     const selection = $getSelection();
 
     if (!$isRangeSelection(selection)) {
@@ -77,8 +77,6 @@ export function RichTextToolbar({
       ? anchorNode
       : anchorNode.getTopLevelElementOrThrow();
 
-    // Read every node off the active editor state here: React runs the state
-    // updater later, once that state is no longer the active one.
     const selectionState = {
       blockType: toBlockType(element),
       alignment: $isElementNode(element) ? element.getFormatType() : '',
@@ -90,7 +88,7 @@ export function RichTextToolbar({
     };
 
     setToolbar((currentToolbar) => ({ ...currentToolbar, ...selectionState }));
-  }, []);
+  }
 
   function changeBlockType(nextBlockType: BlockType) {
     if (nextBlockType === 'bullet' || nextBlockType === 'number') {
@@ -150,6 +148,7 @@ export function RichTextToolbar({
           COMMAND_PRIORITY_LOW,
         ),
       ),
+    // biome-ignore lint/correctness/useExhaustiveDependencies:<react compiler>
     [editor, syncToolbar],
   );
 

@@ -14,7 +14,7 @@ import { OnChangePlugin } from '@lexical/react/LexicalOnChangePlugin';
 import { RichTextPlugin } from '@lexical/react/LexicalRichTextPlugin';
 import { TabIndentationPlugin } from '@lexical/react/LexicalTabIndentationPlugin';
 import { COMMAND_PRIORITY_LOW, KEY_ESCAPE_COMMAND } from 'lexical';
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { richTextTheme } from '~/components/shared/RichText/RichText.constants';
 import {
   RichTextBody,
@@ -55,18 +55,15 @@ export function RichTextEditor({
 }: RichTextEditorProps) {
   const [isMarkdownVisible, setMarkdownVisible] = useState(false);
 
-  const initialConfig = useMemo<InitialConfigType>(
-    () => ({
-      namespace: 'RichTextEditor',
-      nodes: richTextNodes,
-      theme: richTextTheme,
-      editorState: toInitialEditorState(initialValue),
-      onError(error: Error) {
-        console.error(error);
-      },
-    }),
-    [initialValue],
-  );
+  const initialConfig: InitialConfigType = {
+    namespace: 'RichTextEditor',
+    nodes: richTextNodes,
+    theme: richTextTheme,
+    editorState: toInitialEditorState(initialValue),
+    onError(error: Error) {
+      console.error(error);
+    },
+  };
 
   return (
     <LexicalComposer initialConfig={initialConfig}>

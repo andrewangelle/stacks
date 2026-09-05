@@ -1,4 +1,4 @@
-import { useCallback, useRef, useState } from 'react';
+import { useRef, useState } from 'react';
 import { IoMdList } from 'react-icons/io';
 import { RiArrowRightSLine } from 'react-icons/ri';
 import {
@@ -51,10 +51,10 @@ export function CardDescription() {
     setEditing(true);
   }
 
-  const closeEditor = useCallback(() => {
+  function closeEditor() {
     setEditing(false);
     toggleButtonRef.current?.focus();
-  }, []);
+  }
 
   function discardChanges() {
     setDraft(null);

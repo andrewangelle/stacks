@@ -1,4 +1,3 @@
-import { useCallback, useMemo } from 'react';
 import {
   Combobox,
   type ComboboxItemType,
@@ -18,33 +17,24 @@ export function MoveListBoardSelect({
 }: MoveListBoardSelectProps) {
   const { data: boards } = useGetBoards();
 
-  const items = useMemo(
-    () =>
-      boards?.map((board) => ({
-        id: board.id,
-        label: board.boardTitle,
-        current: board.id === currentBoardId,
-      })) ?? [],
-    [boards, currentBoardId],
-  );
+  const items =
+    boards?.map((board) => ({
+      id: board.id,
+      label: board.boardTitle,
+      current: board.id === currentBoardId,
+    })) ?? [];
 
-  const selectedItem = useMemo(
-    () =>
-      items.find((item) => item.id === selectedBoardId) ??
-      // The board url masks the id to 8 chars, so match on the prefix too.
-      items.find((item) => item.id.startsWith(selectedBoardId)) ??
-      null,
-    [items, selectedBoardId],
-  );
+  const selectedItem =
+    items.find((item) => item.id === selectedBoardId) ??
+    // The board url masks the id to 8 chars, so match on the prefix too.
+    items.find((item) => item.id.startsWith(selectedBoardId)) ??
+    null;
 
-  const onSelectedItemChange = useCallback(
-    (item: ComboboxItemType | null) => {
-      if (item) {
-        setSelectedBoardId(item.id);
-      }
-    },
-    [setSelectedBoardId],
-  );
+  function onSelectedItemChange(item: ComboboxItemType | null) {
+    if (item) {
+      setSelectedBoardId(item.id);
+    }
+  }
 
   return (
     <Combobox

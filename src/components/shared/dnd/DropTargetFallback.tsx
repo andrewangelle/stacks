@@ -1,6 +1,6 @@
 import { useDragDropMonitor, useDroppable } from '@dnd-kit/react';
 import type { CSSProperties } from 'react';
-import { useMemo, useState } from 'react';
+import { useState } from 'react';
 
 type DropTargetFallbackProps = {
   id: string;
@@ -35,7 +35,6 @@ export function DropTargetFallback({ id, type }: DropTargetFallbackProps) {
   });
 
   const [styles, setStyles] = useState<CSSProperties>(baseStyles);
-  const stylesMemod = useMemo(() => styles, [styles]);
 
   useDragDropMonitor({
     onDragOver(event) {
@@ -65,5 +64,5 @@ export function DropTargetFallback({ id, type }: DropTargetFallbackProps) {
     },
   });
 
-  return <div ref={ref} aria-hidden style={stylesMemod} />;
+  return <div ref={ref} aria-hidden style={styles} />;
 }

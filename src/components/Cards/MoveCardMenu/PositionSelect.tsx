@@ -1,4 +1,4 @@
-import { type RefObject, useCallback, useMemo } from 'react';
+import type { RefObject } from 'react';
 import { SelectSkeleton } from '~/components/Cards/MoveCardMenu/MoveCardMenu.styled';
 import {
   Combobox,
@@ -39,20 +39,14 @@ export function PositionSelect({
     }),
   );
 
-  const selectedItem = useMemo(
-    () =>
-      items.find((item) => item.id === selectedPosition?.toString()) ?? null,
-    [items, selectedPosition],
-  );
+  const selectedItem =
+    items.find((item) => item.id === selectedPosition?.toString()) ?? null;
 
-  const onSelectedItemChange = useCallback(
-    (item: ComboboxItemType | null) => {
-      if (item) {
-        setSelectedPosition(Number(item.id));
-      }
-    },
-    [setSelectedPosition],
-  );
+  function onSelectedItemChange(item: ComboboxItemType | null) {
+    if (item) {
+      setSelectedPosition(Number(item.id));
+    }
+  }
 
   if (isListsLoading) {
     return (
