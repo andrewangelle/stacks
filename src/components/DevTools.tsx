@@ -1,14 +1,13 @@
 import { TanStackDevtools } from '@tanstack/react-devtools';
 import { ReactQueryDevtoolsPanel } from '@tanstack/react-query-devtools';
 import { TanStackRouterDevtoolsPanel } from '@tanstack/react-router-devtools';
-import { useCallback } from 'react';
 
 type PointerDownOutsideEvent = CustomEvent<{
   originalEvent: PointerEvent;
 }>;
 
 export function usePreventModalCloseOnDevToolsEvent() {
-  return useCallback((event: PointerDownOutsideEvent) => {
+  return (event: PointerDownOutsideEvent) => {
     if (
       import.meta.env.DEV &&
       event.target instanceof Element &&
@@ -16,7 +15,7 @@ export function usePreventModalCloseOnDevToolsEvent() {
     ) {
       event.preventDefault();
     }
-  }, []);
+  };
 }
 
 export function DevTools() {

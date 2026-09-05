@@ -3,7 +3,7 @@ import { isSortable } from '@dnd-kit/dom/sortable';
 import { useDragDropMonitor } from '@dnd-kit/react';
 import { useSortable } from '@dnd-kit/react/sortable';
 import type { ReactNode } from 'react';
-import { useCallback, useMemo, useRef } from 'react';
+import { useRef } from 'react';
 import {
   getDraggableTestId,
   getSensors,
@@ -44,10 +44,7 @@ export function Draggable({
 }: DraggableProps) {
   const elementRef = useRef<HTMLDivElement>(null);
 
-  const itemData = useMemo(
-    (): DraggableSource => ({ id, name, parentId }),
-    [id, name, parentId],
-  );
+  const itemData: DraggableSource = { id, name, parentId };
 
   const { ref: sortableRef } = useSortable({
     id,
@@ -62,13 +59,10 @@ export function Draggable({
     },
   });
 
-  const setRef = useCallback(
-    (node: HTMLDivElement | null) => {
-      assignRef(sortableRef, node);
-      elementRef.current = node;
-    },
-    [sortableRef],
-  );
+  function setRef(node: HTMLDivElement | null) {
+    assignRef(sortableRef, node);
+    elementRef.current = node;
+  }
 
   useDragDropMonitor({
     onDragEnd(event) {

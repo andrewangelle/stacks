@@ -1,4 +1,4 @@
-import { type RefObject, useCallback, useMemo } from 'react';
+import type { RefObject } from 'react';
 import {
   Combobox,
   type ComboboxItemType,
@@ -24,29 +24,21 @@ export function BoardSelect({
     ? boards?.find((board) => board.id.startsWith(selectedBoardId))
     : undefined;
 
-  const items = useMemo(
-    () =>
-      boards?.map((board) => ({
-        id: board.id,
-        label: board.boardTitle,
-        current: board.id.startsWith(boardId),
-      })) ?? [],
-    [boards, boardId],
-  );
+  const items =
+    boards?.map((board) => ({
+      id: board.id,
+      label: board.boardTitle,
+      current: board.id.startsWith(boardId),
+    })) ?? [];
 
-  const selectedItem = useMemo(
-    () => items.find((item) => item.id === selectedBoard?.id) ?? null,
-    [items, selectedBoard],
-  );
+  const selectedItem =
+    items.find((item) => item.id === selectedBoard?.id) ?? null;
 
-  const onSelectedItemChange = useCallback(
-    (item: ComboboxItemType | null) => {
-      if (item) {
-        setSelectedBoardId(item.id);
-      }
-    },
-    [setSelectedBoardId],
-  );
+  function onSelectedItemChange(item: ComboboxItemType | null) {
+    if (item) {
+      setSelectedBoardId(item.id);
+    }
+  }
 
   return (
     <Combobox

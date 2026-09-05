@@ -1,10 +1,4 @@
-import {
-  type MouseEvent,
-  useCallback,
-  useEffect,
-  useRef,
-  useState,
-} from 'react';
+import { type MouseEvent, useEffect, useRef, useState } from 'react';
 
 export function useOutsideClick<ElementType = HTMLDivElement>(
   handler: (e: MouseEvent<ElementType>) => void,
@@ -14,22 +8,19 @@ export function useOutsideClick<ElementType = HTMLDivElement>(
 
   const [node, setNode] = useState<Element | null>(null);
 
-  const memoizedCallback = useCallback(
-    (e: globalThis.MouseEvent) => {
-      if (node && !node.contains(e.target as Element)) {
-        savedHandler.current(e as unknown as MouseEvent<ElementType>);
-      }
-    },
-    [node],
-  );
+  function memoizedCallback(e: globalThis.MouseEvent) {
+    if (node && !node.contains(e.target as Element)) {
+      savedHandler.current(e as unknown as MouseEvent<ElementType>);
+    }
+  }
 
   useEffect(() => {
     savedHandler.current = handler;
   });
 
-  const ref = useCallback((node: HTMLElement | null) => {
+  function ref(node: HTMLElement | null) {
     setNode(node);
-  }, []);
+  }
 
   useEffect(() => {
     let timeoutId: NodeJS.Timeout;
@@ -42,6 +33,7 @@ export function useOutsideClick<ElementType = HTMLDivElement>(
       clearTimeout(timeoutId);
       document.removeEventListener('click', memoizedCallback);
     };
+    // biome-ignore lint/correctness/useExhaustiveDependencies:<react compiler>
   }, [when, memoizedCallback]);
 
   return ref;

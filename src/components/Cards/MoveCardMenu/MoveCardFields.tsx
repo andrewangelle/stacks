@@ -1,5 +1,4 @@
 import { useNavigate } from '@tanstack/react-router';
-import { useCallback } from 'react';
 import {
   CreateBoardCloseBorder,
   PopoverClose,
@@ -15,14 +14,14 @@ export function MoveCardFields({ id }: { id: string }) {
   const sourceBoardId = useCurrentBoardId();
   const navigate = useNavigate();
 
-  const handleMoved = useCallback(() => {
+  function handleMoved() {
     navigate({
       to: '/board/$id',
       params: { id: sourceBoardId },
       hash: '',
       search: { from: `card-${id}` },
     });
-  }, [navigate, sourceBoardId, id]);
+  }
 
   return (
     <MoveCardMenuContent

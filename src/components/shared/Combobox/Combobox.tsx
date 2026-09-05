@@ -1,6 +1,6 @@
 import { useCombobox } from 'downshift';
 import type { MouseEvent } from 'react';
-import { useMemo, useState } from 'react';
+import { useState } from 'react';
 import { RxCaretDown } from 'react-icons/rx';
 import {
   ComboboxIconButton,
@@ -38,45 +38,42 @@ export function Combobox({
 }: ComboboxProps) {
   const [query, setQuery] = useState('');
 
-  const filteredItems = useMemo(() => {
-    if (query.length === 0) {
-      return items;
-    }
+  const filteredItems =
+    query.length === 0
+      ? items
+      : items.filter((item) => {
+          const startsWith = item.label
+            .trim()
+            .toLowerCase()
+            .startsWith(query.trim().toLowerCase());
 
-    return items.filter((item) => {
-      const startsWith = item.label
-        .trim()
-        .toLowerCase()
-        .startsWith(query.trim().toLowerCase());
+          if (startsWith) {
+            if (debug) {
+              console.log({
+                label: item.label,
+                query,
+                startsWith,
+              });
+            }
+            return true;
+          }
 
-      if (startsWith) {
-        if (debug) {
-          console.log({
-            label: item.label,
-            query,
-            startsWith,
-          });
-        }
-        return true;
-      }
+          const contains = item.label
+            .trim()
+            .toLowerCase()
+            .includes(query.trim().toLowerCase());
 
-      const contains = item.label
-        .trim()
-        .toLowerCase()
-        .includes(query.trim().toLowerCase());
+          if (debug) {
+            console.log({
+              label: item.label,
+              query,
+              startsWith,
+              contains,
+            });
+          }
 
-      if (debug) {
-        console.log({
-          label: item.label,
-          query,
-          startsWith,
-          contains,
+          return contains;
         });
-      }
-
-      return contains;
-    });
-  }, [items, query, debug]);
 
   const {
     isOpen,

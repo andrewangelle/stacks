@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { AiOutlineCheck } from 'react-icons/ai';
 import { GoPaperclip } from 'react-icons/go';
 import {
@@ -51,7 +51,7 @@ export function ActivityTimestamp({
     navigator.clipboard.writeText(shareableLink);
   }
 
-  const clearCopiedCheckmark = useCallback(() => {
+  function clearCopiedCheckmark() {
     let timer: NodeJS.Timeout | undefined;
 
     if (showCheckmark) {
@@ -61,8 +61,9 @@ export function ActivityTimestamp({
     }
 
     return () => clearTimeout(timer);
-  }, [showCheckmark]);
+  }
 
+  // biome-ignore lint/correctness/useExhaustiveDependencies:<react compiler>
   useEffect(clearCopiedCheckmark, [clearCopiedCheckmark]);
 
   // Once another entry becomes the selected one, drop this entry's lingering

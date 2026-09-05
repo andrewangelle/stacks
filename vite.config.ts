@@ -1,6 +1,5 @@
 import netlify from '@netlify/vite-plugin-tanstack-start';
-// import { pigment } from '@pigment-css/vite-plugin';
-import viteReact from '@vitejs/plugin-react';
+import viteReact, { reactCompilerPreset } from '@vitejs/plugin-react'
 import { tanstackStart } from '@tanstack/react-start/plugin/vite';
 import * as dotenv from 'dotenv';
 import { defineConfig } from 'vite';
@@ -78,7 +77,9 @@ export default defineConfig({
       },
     }),
     rsc(),
-    viteReact(),
+    viteReact({
+      compiler: true
+    }),
     sentryTanstackStart({
       org: "andrewangelle",
       project: "stacks",

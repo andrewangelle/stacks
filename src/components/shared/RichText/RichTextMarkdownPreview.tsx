@@ -1,6 +1,6 @@
 import { $convertToMarkdownString } from '@lexical/markdown';
 import { useLexicalComposerContext } from '@lexical/react/LexicalComposerContext';
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { FaRegCopy } from 'react-icons/fa';
 import { RxCross2 } from 'react-icons/rx';
 import {
@@ -27,13 +27,9 @@ export function RichTextMarkdownPreview({
   const [editor] = useLexicalComposerContext();
   const [hasCopied, setHasCopied] = useState(false);
 
-  const markdown = useMemo(
-    () =>
-      editor
-        .getEditorState()
-        .read(() => $convertToMarkdownString(richTextTransformers)),
-    [editor],
-  );
+  const markdown = editor
+    .getEditorState()
+    .read(() => $convertToMarkdownString(richTextTransformers));
 
   useEffect(() => {
     if (!hasCopied) {

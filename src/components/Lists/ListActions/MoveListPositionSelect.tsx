@@ -1,4 +1,3 @@
-import { useCallback, useMemo } from 'react';
 import { SelectSkeleton } from '~/components/Cards/MoveCardMenu/MoveCardMenu.styled';
 import {
   Combobox,
@@ -26,32 +25,22 @@ export function MoveListPositionSelect({
   selectedPosition,
   setSelectedPosition,
 }: MoveListPositionSelectProps) {
-  const items = useMemo(
-    () =>
-      Array.from({ length: positions }, (_, index) => index + 1).map(
-        (position) => ({
-          id: position.toString(),
-          label: position.toString(),
-          current: isSameBoard && currentPosition === position - 1,
-        }),
-      ),
-    [positions, isSameBoard, currentPosition],
+  const items = Array.from({ length: positions }, (_, index) => index + 1).map(
+    (position) => ({
+      id: position.toString(),
+      label: position.toString(),
+      current: isSameBoard && currentPosition === position - 1,
+    }),
   );
 
-  const selectedItem = useMemo(
-    () =>
-      items.find((item) => item.id === selectedPosition?.toString()) ?? null,
-    [items, selectedPosition],
-  );
+  const selectedItem =
+    items.find((item) => item.id === selectedPosition?.toString()) ?? null;
 
-  const onSelectedItemChange = useCallback(
-    (item: ComboboxItemType | null) => {
-      if (item) {
-        setSelectedPosition(Number(item.id));
-      }
-    },
-    [setSelectedPosition],
-  );
+  function onSelectedItemChange(item: ComboboxItemType | null) {
+    if (item) {
+      setSelectedPosition(Number(item.id));
+    }
+  }
 
   if (isListsLoading) {
     return (
