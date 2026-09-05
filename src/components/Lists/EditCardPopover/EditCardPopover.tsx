@@ -37,13 +37,6 @@ export function EditCardPopoverActions({
   const [isCopied, setIsCopied] = useState(false);
   const deleteCard = useDeleteCard();
 
-  useEffect(() => {
-    if (!popoverOpen) {
-      setIsMoveOpen(false);
-      setIsCopied(false);
-    }
-  }, [popoverOpen]);
-
   function handleOpenCard() {
     onClose();
     onOpenCard();
@@ -63,6 +56,13 @@ export function EditCardPopoverActions({
   function handleMoved() {
     onClose();
   }
+
+  useEffect(() => {
+    if (!popoverOpen) {
+      setIsMoveOpen(false);
+      setIsCopied(false);
+    }
+  }, [popoverOpen]);
 
   useEffect(() => {
     if (isCopied) {

@@ -15,7 +15,7 @@ export const ListCardTitleDetailsContainer = styled.div.attrs<DataAttributes>({
 
   display: inline-flex;
   align-items: center;
-  width: 100%;
+  width: 86%;
   min-width: 0;
   word-break: break-word;
   color: ${({ $isCompleted }) => ($isCompleted ? 'rgba(0, 0, 0, 0.5)' : 'inherit')};

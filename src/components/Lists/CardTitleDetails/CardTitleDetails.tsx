@@ -1,7 +1,6 @@
 import { Popover } from 'radix-ui';
 import { type MouseEvent, Suspense, useEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
-import { LuPencil } from 'react-icons/lu';
 import { CardModalTrigger } from '~/components/Cards/Card.styled';
 import { CardCompletedIndicator } from '~/components/Cards/CardCompletedIndicator';
 import {
@@ -12,15 +11,10 @@ import {
 } from '~/components/Lists/CardTitleDetails/CardTitleDetails.styled';
 import { CardTitleDetailsContent } from '~/components/Lists/CardTitleDetails/CardTitleDetailsContent';
 import { EditCardPopoverActions } from '~/components/Lists/EditCardPopover/EditCardPopover';
-import {
-  EditCardPopoverOverlay,
-  EditCardPopoverTrigger,
-  EditCardSaveButton,
-  EditCardTitleTextarea,
-} from '~/components/Lists/EditCardPopover/EditCardPopover.styled';
+import { EditCardPopoverOverlay } from '~/components/Lists/EditCardPopover/EditCardPopover.styled';
+import { EditCardPopoverTrigger } from '~/components/Lists/EditCardPopover/EditCardPopoverTrigger';
+import { EditCardTitle } from '~/components/Lists/EditCardPopover/EditCardTitle';
 import { ListCardContainer } from '~/components/Lists/List.styled';
-import { Tooltip } from '~/components/shared/Tooltip/Tooltip';
-import { useUpdateCard } from '~/db/cards/cards.query';
 import { useCardModalTrigger } from '~/utils/useCardModalTrigger';
 
 type CardTitleDetailsProps = {
@@ -52,12 +46,10 @@ export function CardTitleDetails({
     onShowMore,
     open,
   } = useCardModalTrigger(id);
-
   const [isEditOpen, setIsEditOpen] = useState(false);
   const [editedTitle, setEditedTitle] = useState(title);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const wasEditOpenRef = useRef(false);
-  const updateCard = useUpdateCard();
 
   function handleEditOpenChange(nextOpen: boolean) {
     if (!nextOpen) {
@@ -80,11 +72,11 @@ export function CardTitleDetails({
     open();
   }
 
-  function handleSave() {
-    if (editedTitle.trim() && editedTitle !== title) {
-      updateCard({ cardId: id, listId, cardTitle: editedTitle.trim() });
+  function openEditCardPopover(event: MouseEvent) {
+    if (!isEditOpen && (isHovering || isFocused)) {
+      event.preventDefault();
+      handleEditOpenChange(true);
     }
-    handleEditOpenChange(false);
   }
 
   useEffect(() => {
@@ -96,7 +88,10 @@ export function CardTitleDetails({
 
   return (
     <Popover.Root open={isEditOpen} onOpenChange={handleEditOpenChange}>
-      <CardModalTrigger onClick={handleCardClick}>
+      <CardModalTrigger
+        onClick={handleCardClick}
+        onContextMenu={openEditCardPopover}
+      >
         <Popover.Anchor asChild>
           <ListCardContainer
             ref={ref}
@@ -111,60 +106,42 @@ export function CardTitleDetails({
             onMouseLeave={onMouseLeave}
             onPointerDown={onPointerDown}
           >
-            {isEditOpen ? (
-              <EditCardTitleTextarea
-                ref={textareaRef}
-                value={editedTitle}
-                onChange={(e) => setEditedTitle(e.target.value)}
-                onClick={(e) => e.stopPropagation()}
-                onKeyDown={(e) => {
-                  if (e.key === 'Enter' && !e.shiftKey) {
-                    e.preventDefault();
-                    handleSave();
-                  }
-                }}
-              />
-            ) : (
-              <ListCardTitleDetailsContainer $isCompleted={isCompleted}>
-                <CardCompletedIndicator
-                  cardId={id}
-                  visible={isHovering || isFocused}
-                />
-                {title}
-              </ListCardTitleDetailsContainer>
-            )}
-
-            <Suspense fallback={<CardTitleDetailsContentSkeleton />}>
-              <CardTitleDetailsContent
-                cardId={id}
-                description={description}
-                onShowMore={onShowMore}
-              />
-            </Suspense>
-
             {isEditOpen && (
-              <EditCardSaveButton
-                onClick={(e) => {
-                  e.stopPropagation();
-                  handleSave();
-                }}
-              >
-                Save
-              </EditCardSaveButton>
+              <EditCardTitle
+                id={id}
+                listId={listId}
+                title={title}
+                description={description}
+                editedTitle={editedTitle}
+                setEditedTitle={setEditedTitle}
+                handleEditOpenChange={handleEditOpenChange}
+              />
             )}
 
-            <Tooltip content="Edit card" disabled={isEditOpen}>
-              <Popover.Trigger asChild>
-                <EditCardPopoverTrigger
-                  data-visible={
-                    !isEditOpen && (isHovering || isFocused) ? '' : undefined
-                  }
-                  onClick={(e) => e.stopPropagation()}
-                >
-                  <LuPencil size={14} />
-                </EditCardPopoverTrigger>
-              </Popover.Trigger>
-            </Tooltip>
+            {!isEditOpen && (
+              <>
+                <ListCardTitleDetailsContainer $isCompleted={isCompleted}>
+                  <CardCompletedIndicator
+                    cardId={id}
+                    visible={isHovering || isFocused}
+                  />
+                  {title}
+                </ListCardTitleDetailsContainer>
+
+                <Suspense fallback={<CardTitleDetailsContentSkeleton />}>
+                  <CardTitleDetailsContent
+                    cardId={id}
+                    description={description}
+                    onShowMore={onShowMore}
+                  />
+                </Suspense>
+              </>
+            )}
+
+            <EditCardPopoverTrigger
+              isOpen={isEditOpen}
+              isInteractive={!isEditOpen && (isHovering || isFocused)}
+            />
 
             {isLoading && (
               <CardTitleDetailsSpinnerContainer>

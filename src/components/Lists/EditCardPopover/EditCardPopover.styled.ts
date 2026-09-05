@@ -4,14 +4,16 @@ import { fontFamily } from '~/components/Boards/Boards.styled';
 import { Button } from '~/styles/Page.styled';
 import { focusRingBlue } from '~/styles/tokens';
 
-export const EditCardPopoverTrigger = styled.button.attrs<DataAttributes>({
-  'data-testid': 'EditCardPopoverTrigger',
-})`
+export const EditCardPopoverTriggerContainer = styled.button.attrs<DataAttributes>(
+  {
+    'data-testid': 'EditCardPopoverTrigger',
+  },
+)`
   position: absolute;
   top: 4px;
-  right: 4px;
-  display: inline-flex;
-  align-items: center;
+  right: 8px;
+  display: flex;
+  align-items: initial;
   justify-content: center;
   width: 28px;
   height: 28px;
@@ -46,6 +48,11 @@ export const EditCardPopoverTrigger = styled.button.attrs<DataAttributes>({
   &[data-state='open'] {
     opacity: 0;
     pointer-events: none;
+  }
+  
+  svg {
+    margin-top: 6px;
+    margin-left: 6px;
   }
 `;
 
@@ -101,6 +108,16 @@ export const EditCardPopoverBackButton = styled.button.attrs<DataAttributes>({
   }
 `;
 
+export const EditCardTextareaContainer = styled.div.attrs<DataAttributes>({
+  'data-testid': 'EditCardTextareaContainer',
+})`
+  background: #fff;
+  border-radius: 8px;
+  padding: 8px;
+  margin-right: 8px;
+  margin-bottom: 8px;
+`;
+
 export const EditCardTitleTextarea = styled.textarea.attrs<DataAttributes>({
   'data-testid': 'EditCardTitleTextarea',
 })`
@@ -149,6 +166,7 @@ export const EditCardActionOption = styled.button.attrs<DataAttributes>({
   color: #172b4d;
   text-align: left;
   font-size: 14px;
+  font-weight: 500;
   font-family: ${fontFamily};
   display: flex;
   align-items: center;
@@ -158,7 +176,7 @@ export const EditCardActionOption = styled.button.attrs<DataAttributes>({
   box-shadow: 0px 1px 1px #091e4240;
 
   &:hover {
-    background: #f1f2f4;
+    background: #e4e7ec
   }
 
   &:active {
