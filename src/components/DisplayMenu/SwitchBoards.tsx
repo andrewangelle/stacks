@@ -9,6 +9,7 @@ import {
   SwitchBoardsContent,
   SwitchBoardsEmpty,
   SwitchBoardsGrid,
+  SwitchBoardsLoadingOverlay,
   SwitchBoardsOverlay,
   SwitchBoardsSearchClear,
   SwitchBoardsSearchField,
@@ -17,6 +18,7 @@ import {
   SwitchBoardsTrigger,
 } from '~/components/DisplayMenu/SwitchBoards.styled';
 import { SwitchBoardsIcon } from '~/components/DisplayMenu/SwitchBoardsIcon';
+import { CardTitleDetailsSpinner } from '~/components/Lists/CardTitleDetails/CardTitleDetails.styled';
 import { Tooltip } from '~/components/shared/Tooltip/Tooltip';
 import { boardsQueryOptions } from '~/db/boards/boards.query';
 import { useCurrentBoardId } from '~/utils/useCurrentBoardId';
@@ -33,6 +35,7 @@ export function SwitchBoards() {
   const router = useRouterState();
   const previousLoad = usePrevious(isLoading);
   const isMobile = useIsMobile();
+  const routerState = useRouterState();
 
   const query = search.trim().toLowerCase();
   const matchingBoards = boards
@@ -78,6 +81,12 @@ export function SwitchBoards() {
             $isMobile={isMobile}
             aria-describedby={undefined}
           >
+            {routerState.isLoading && (
+              <SwitchBoardsLoadingOverlay>
+                <CardTitleDetailsSpinner />
+              </SwitchBoardsLoadingOverlay>
+            )}
+
             <SwitchBoardsTitle>Switch boards</SwitchBoardsTitle>
 
             <SwitchBoardsSearchField $isMobile={isMobile}>

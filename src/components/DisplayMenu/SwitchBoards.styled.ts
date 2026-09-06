@@ -1,13 +1,9 @@
 import { Dialog } from 'radix-ui';
-import { type DataAttributes, styled } from 'styled-components';
+import { css, type DataAttributes, styled } from 'styled-components';
 import { displayMenuItemStyles } from '~/components/DisplayMenu/DisplayMenu.styled';
 import { blue, fontFamily } from '~/styles/tokens';
 
-export const SwitchBoardsOverlay = styled(Dialog.Overlay).attrs<DataAttributes>(
-  {
-    'data-testid': 'SwitchBoardsOverlay',
-  },
-)`
+const overlay = css`
   background-color: rgba(0, 0, 0, 0.4);
   position: fixed;
   top: 0;
@@ -21,6 +17,22 @@ export const SwitchBoardsOverlay = styled(Dialog.Overlay).attrs<DataAttributes>(
   backdrop-filter: blur(3px);
   -webkit-backdrop-filter: blur(3px);
   inset: 0;
+`;
+
+export const SwitchBoardsOverlay = styled(Dialog.Overlay).attrs<DataAttributes>(
+  {
+    'data-testid': 'SwitchBoardsOverlay',
+  },
+)`
+  ${overlay}
+  position: fixed;
+`;
+
+export const SwitchBoardsLoadingOverlay = styled.div.attrs<DataAttributes>({
+  'data-testid': 'SwitchBoardsLoadingOverlay',
+})`
+  ${overlay}
+  position: absolute;
 `;
 
 export const SwitchBoardsTrigger = styled(Dialog.Trigger).attrs<DataAttributes>(
@@ -44,6 +56,7 @@ export const SwitchBoardsContent = styled(Dialog.Content).attrs<DataAttributes>(
     'data-testid': 'SwitchBoardsContent',
   },
 )<IsMobileProps>`
+  position: relative;
   box-sizing: border-box;
   display: flex;
   flex-direction: column;
