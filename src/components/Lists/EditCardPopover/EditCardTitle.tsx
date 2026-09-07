@@ -1,14 +1,20 @@
-import type { Dispatch, SetStateAction } from 'react';
+import type { Dispatch, MouseEvent, SetStateAction } from 'react';
 import { useEffect, useRef } from 'react';
 import { CardTitleDetailsContentIcons } from '~/components/Lists/CardTitleDetails/CardTitleDetailsContentIcons';
 import {
   EditCardSaveButton,
   EditCardTextareaContainer,
+  EditCardTitleContainer,
   EditCardTitleTextarea,
 } from '~/components/Lists/EditCardPopover/EditCardPopover.styled';
 import { useUpdateCard } from '~/db/cards/cards.query';
+import {
+  useGetCardTitleDetailsChecklists,
+  useSetCardChecklistExpanded,
+} from '~/db/checklists/checklists.query';
+import { useIsMobile } from '~/utils/useIsMobile';
 
-type EditCardTitleProps = {
+export type EditCardTitleProps = {
   id: string;
   listId: string;
   title: string;
@@ -30,6 +36,19 @@ export function EditCardTitle({
   const containerRef = useRef<HTMLDivElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const updateCard = useUpdateCard();
+  const { mutate: setChecklistExpanded } = useSetCardChecklistExpanded();
+  const { data } = useGetCardTitleDetailsChecklists({
+    cardId: id,
+  });
+  const isMobile = useIsMobile();
+
+  const isOpen = data?.isChecklistsExpanded ?? false;
+
+  function toggleOpen(event: MouseEvent<HTMLDivElement>) {
+    event.preventDefault();
+    event.stopPropagation();
+    setChecklistExpanded({ cardId: id, isChecklistsExpanded: !isOpen });
+  }
 
   function handleSave() {
     if (editedTitle.trim() && editedTitle !== title) {
@@ -39,14 +58,13 @@ export function EditCardTitle({
   }
 
   useEffect(() => {
-    containerRef.current?.scrollIntoView({
-      behavior: 'smooth',
-      block: 'nearest',
-    });
-  }, []);
+    if (!isMobile) {
+      textareaRef.current?.select();
+    }
+  }, [isMobile]);
 
   return (
-    <div ref={containerRef}>
+    <EditCardTitleContainer ref={containerRef}>
       <EditCardTextareaContainer>
         <EditCardTitleTextarea
           ref={textareaRef}
@@ -64,8 +82,8 @@ export function EditCardTitle({
         <CardTitleDetailsContentIcons
           cardId={id}
           description={description}
-          isOpen={false}
-          toggleOpen={() => null}
+          isOpen={isOpen}
+          toggleOpen={toggleOpen}
         />
       </EditCardTextareaContainer>
 
@@ -77,6 +95,6 @@ export function EditCardTitle({
       >
         Save
       </EditCardSaveButton>
-    </div>
+    </EditCardTitleContainer>
   );
 }

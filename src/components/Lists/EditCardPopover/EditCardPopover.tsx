@@ -1,5 +1,5 @@
 import { Popover } from 'radix-ui';
-import { Suspense, useEffect, useState } from 'react';
+import { Suspense, useEffect, useRef, useState } from 'react';
 import { AiOutlineCheck } from 'react-icons/ai';
 import { GoLink } from 'react-icons/go';
 import { LuArchive, LuArrowRight, LuExternalLink, LuX } from 'react-icons/lu';
@@ -17,6 +17,7 @@ import {
   MoveCardViewPanelHeader,
 } from '~/components/Lists/EditCardPopover/EditCardPopover.styled';
 import { useDeleteCard } from '~/db/cards/cards.query';
+import { EditCardTitle, type EditCardTitleProps } from './EditCardTitle';
 
 type EditCardPopoverActionsProps = {
   cardId: string;
@@ -24,18 +25,24 @@ type EditCardPopoverActionsProps = {
   open: boolean;
   onOpenCard: () => void;
   onClose: () => void;
-};
+} & Omit<EditCardTitleProps, 'id'>;
 
 export function EditCardPopoverActions({
+  title,
+  description,
+  editedTitle,
   cardId,
   listId,
   open: popoverOpen,
   onOpenCard,
   onClose,
+  setEditedTitle,
+  handleEditOpenChange,
 }: EditCardPopoverActionsProps) {
   const [isMoveOpen, setIsMoveOpen] = useState(false);
   const [isCopied, setIsCopied] = useState(false);
   const deleteCard = useDeleteCard();
+  const popoverRef = useRef<HTMLDivElement>(null);
 
   function handleOpenCard() {
     onClose();
@@ -74,9 +81,10 @@ export function EditCardPopoverActions({
   return (
     <Popover.Portal>
       <EditCardPopoverContent
+        ref={popoverRef}
         side="right"
         align="start"
-        sideOffset={8}
+        sideOffset={-260}
         onInteractOutside={(e) => {
           const target = e.target as HTMLElement;
           if (target.closest('[data-edit-open]')) {
@@ -84,6 +92,16 @@ export function EditCardPopoverActions({
           }
         }}
       >
+        <EditCardTitle
+          id={cardId}
+          listId={listId}
+          title={title}
+          description={description}
+          editedTitle={editedTitle}
+          setEditedTitle={setEditedTitle}
+          handleEditOpenChange={handleEditOpenChange}
+        />
+
         <EditCardActionsContainer>
           <EditCardActionOption onClick={handleOpenCard}>
             <LuExternalLink size={16} />
