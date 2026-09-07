@@ -13,7 +13,6 @@ import { CardTitleDetailsContent } from '~/components/Lists/CardTitleDetails/Car
 import { EditCardPopoverActions } from '~/components/Lists/EditCardPopover/EditCardPopover';
 import { EditCardPopoverOverlay } from '~/components/Lists/EditCardPopover/EditCardPopover.styled';
 import { EditCardPopoverTrigger } from '~/components/Lists/EditCardPopover/EditCardPopoverTrigger';
-import { EditCardTitle } from '~/components/Lists/EditCardPopover/EditCardTitle';
 import { ListCardContainer } from '~/components/Lists/List.styled';
 import { useCardModalTrigger } from '~/utils/useCardModalTrigger';
 
@@ -48,7 +47,6 @@ export function CardTitleDetails({
   } = useCardModalTrigger(id);
   const [isEditOpen, setIsEditOpen] = useState(false);
   const [editedTitle, setEditedTitle] = useState(title);
-  const textareaRef = useRef<HTMLTextAreaElement>(null);
   const wasEditOpenRef = useRef(false);
 
   function handleEditOpenChange(nextOpen: boolean) {
@@ -80,11 +78,13 @@ export function CardTitleDetails({
   }
 
   useEffect(() => {
-    if (isEditOpen && textareaRef.current) {
-      textareaRef.current.focus();
-      textareaRef.current.select();
+    if (isEditOpen && ref.current) {
+      ref.current.scrollIntoView({
+        behavior: 'smooth',
+        block: 'nearest',
+      });
     }
-  }, [isEditOpen]);
+  }, [isEditOpen, ref.current]);
 
   return (
     <Popover.Root open={isEditOpen} onOpenChange={handleEditOpenChange}>
@@ -106,37 +106,21 @@ export function CardTitleDetails({
             onMouseLeave={onMouseLeave}
             onPointerDown={onPointerDown}
           >
-            {isEditOpen && (
-              <EditCardTitle
-                id={id}
-                listId={listId}
-                title={title}
-                description={description}
-                editedTitle={editedTitle}
-                setEditedTitle={setEditedTitle}
-                handleEditOpenChange={handleEditOpenChange}
+            <ListCardTitleDetailsContainer $isCompleted={isCompleted}>
+              <CardCompletedIndicator
+                cardId={id}
+                visible={isHovering || isFocused}
               />
-            )}
+              {title}
+            </ListCardTitleDetailsContainer>
 
-            {!isEditOpen && (
-              <>
-                <ListCardTitleDetailsContainer $isCompleted={isCompleted}>
-                  <CardCompletedIndicator
-                    cardId={id}
-                    visible={isHovering || isFocused}
-                  />
-                  {title}
-                </ListCardTitleDetailsContainer>
-
-                <Suspense fallback={<CardTitleDetailsContentSkeleton />}>
-                  <CardTitleDetailsContent
-                    cardId={id}
-                    description={description}
-                    onShowMore={onShowMore}
-                  />
-                </Suspense>
-              </>
-            )}
+            <Suspense fallback={<CardTitleDetailsContentSkeleton />}>
+              <CardTitleDetailsContent
+                cardId={id}
+                description={description}
+                onShowMore={onShowMore}
+              />
+            </Suspense>
 
             <EditCardPopoverTrigger
               isOpen={isEditOpen}
@@ -160,6 +144,11 @@ export function CardTitleDetails({
         open={isEditOpen}
         onOpenCard={open}
         onClose={() => handleEditOpenChange(false)}
+        title={title}
+        description={description}
+        editedTitle={editedTitle}
+        setEditedTitle={setEditedTitle}
+        handleEditOpenChange={handleEditOpenChange}
       />
     </Popover.Root>
   );

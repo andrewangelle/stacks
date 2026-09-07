@@ -16,8 +16,8 @@ import {
   SwitchBoardsSearchInput,
   SwitchBoardsTitle,
   SwitchBoardsTrigger,
-} from '~/components/DisplayMenu/SwitchBoards.styled';
-import { SwitchBoardsIcon } from '~/components/DisplayMenu/SwitchBoardsIcon';
+} from '~/components/DisplayMenu/SwitchBoards/SwitchBoards.styled';
+import { SwitchBoardsIcon } from '~/components/DisplayMenu/SwitchBoards/SwitchBoardsIcon';
 import { CardTitleDetailsSpinner } from '~/components/Lists/CardTitleDetails/CardTitleDetails.styled';
 import { Tooltip } from '~/components/shared/Tooltip/Tooltip';
 import { boardsQueryOptions } from '~/db/boards/boards.query';
@@ -37,10 +37,10 @@ export function SwitchBoards() {
   const isMobile = useIsMobile();
   const routerState = useRouterState();
 
-  const query = search.trim().toLowerCase();
+  const searchQuery = search.trim().toLowerCase();
   const matchingBoards = boards
     .filter((board) => board.id !== currentBoardId)
-    .filter((board) => board.boardTitle.toLowerCase().includes(query));
+    .filter((board) => board.boardTitle.toLowerCase().includes(searchQuery));
 
   function onOpenChange(nextOpen: boolean) {
     setOpen(nextOpen);
@@ -108,15 +108,17 @@ export function SwitchBoards() {
               )}
             </SwitchBoardsSearchField>
 
-            {matchingBoards.length ? (
+            {matchingBoards.length && (
               <SwitchBoardsGrid $isMobile={isMobile}>
                 {matchingBoards.map((board) => (
                   <Board key={board.id} boardId={board.id} />
                 ))}
               </SwitchBoardsGrid>
-            ) : (
+            )}
+
+            {!matchingBoards.length && (
               <SwitchBoardsEmpty $isMobile={isMobile}>
-                {query
+                {searchQuery
                   ? `No boards match "${search.trim()}".`
                   : 'You have no other boards.'}
               </SwitchBoardsEmpty>

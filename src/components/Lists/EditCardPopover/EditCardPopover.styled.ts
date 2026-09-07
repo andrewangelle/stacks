@@ -62,13 +62,25 @@ export const EditCardPopoverOverlay = styled.div.attrs<DataAttributes>({
   position: fixed;
   inset: 0;
   background: rgba(0, 0, 0, 0.7);
-  z-index: 2;
+  z-index: 3;
 `;
 
 export const EditCardPopoverContent = styled(
   Popover.Content,
 ).attrs<DataAttributes>({
   'data-testid': 'EditCardPopoverContent',
+})`
+  display: flex;
+  gap: 4px;
+  z-index: 3;
+  background: transparent;
+  outline: none;
+`;
+
+export const EditCardPopoverActionsContent = styled(
+  Popover.Content,
+).attrs<DataAttributes>({
+  'data-testid': 'EditCardPopoverActionsContent',
 })`
   display: flex;
   flex-direction: column;
@@ -111,11 +123,31 @@ export const EditCardPopoverBackButton = styled.button.attrs<DataAttributes>({
 export const EditCardTextareaContainer = styled.div.attrs<DataAttributes>({
   'data-testid': 'EditCardTextareaContainer',
 })`
+  min-width: 246px;
   background: #fff;
   border-radius: 8px;
   padding: 8px;
   margin-right: 8px;
   margin-bottom: 8px;
+  min-height: 100px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-content: baseline;
+`;
+
+export const EditCardTitleContainer = styled.div.attrs<DataAttributes>({
+  'data-testid': 'EditCardTitleContainer',
+})`
+  ${EditCardTextareaContainer} {
+    border: 2px solid transparent;
+  }
+  
+  &:focus-within {
+    ${EditCardTextareaContainer} {
+      border: 2px solid ${focusRingBlue};
+    }
+  }
 `;
 
 export const EditCardTitleTextarea = styled.textarea.attrs<DataAttributes>({
@@ -124,7 +156,7 @@ export const EditCardTitleTextarea = styled.textarea.attrs<DataAttributes>({
   display: block;
   width: 100%;
   box-sizing: border-box;
-  border: 2px solid ${focusRingBlue};
+  border: none;
   border-radius: 4px;
   padding: 8px;
   font-family: ${fontFamily};

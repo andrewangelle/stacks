@@ -5,7 +5,7 @@ import {
   DisplayMenuContainer,
   DisplayMenuSeperator,
 } from '~/components/DisplayMenu/DisplayMenu.styled';
-import { SwitchBoards } from '~/components/DisplayMenu/SwitchBoards';
+import { SwitchBoards } from '~/components/DisplayMenu/SwitchBoards/SwitchBoards';
 import { Tooltip } from '~/components/shared/Tooltip/Tooltip';
 import { useIsMobile } from '~/utils/useIsMobile';
 
