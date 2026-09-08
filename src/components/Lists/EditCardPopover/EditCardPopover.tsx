@@ -44,25 +44,21 @@ export function EditCardPopoverActions({
   const [isCopied, setIsCopied] = useState(false);
   const deleteCard = useDeleteCard();
   const popoverRef = useRef<HTMLDivElement>(null);
-  const handleBoardWheel = useBoardPageScrollHandler();
+  const boardScrollHandlers = useBoardPageScrollHandler();
 
   function handleOpenCard() {
     onClose();
     onOpenCard();
   }
 
-  function handleCopyLink() {
+  function copyLinkToCardPage() {
     const url = `${window.location.origin}/card/${cardId.slice(0, 8)}`;
     navigator.clipboard.writeText(url);
     setIsCopied(true);
   }
 
-  function handleArchive() {
+  function deleteCardAndClosePopover() {
     deleteCard({ cardId, listId });
-    onClose();
-  }
-
-  function handleMoved() {
     onClose();
   }
 
@@ -87,13 +83,7 @@ export function EditCardPopoverActions({
         side="right"
         align="start"
         sideOffset={-260}
-        onInteractOutside={(e) => {
-          const target = e.target as HTMLElement;
-          if (target.closest('[data-edit-open]')) {
-            e.preventDefault();
-          }
-        }}
-        onWheel={handleBoardWheel}
+        {...boardScrollHandlers}
       >
         <EditCardTitle
           id={cardId}
@@ -124,29 +114,31 @@ export function EditCardPopoverActions({
               <MoveCardViewPanel>
                 <MoveCardViewPanelHeader>
                   <span>Move card</span>
+
                   <MoveCardCloseButton onClick={() => setIsMoveOpen(false)}>
                     <LuX size={16} />
                   </MoveCardCloseButton>
                 </MoveCardViewPanelHeader>
+
                 <MoveCardFormContainer>
                   <Suspense
                     fallback={<SelectSkeleton style={{ minHeight: '44px' }} />}
                   >
-                    <MoveCardForm id={cardId} onMoved={handleMoved} />
+                    <MoveCardForm id={cardId} onMoved={onClose} />
                   </Suspense>
                 </MoveCardFormContainer>
               </MoveCardViewPanel>
             )}
           </MoveCardOptionWrapper>
 
-          <EditCardActionOption onClick={handleCopyLink}>
+          <EditCardActionOption onClick={copyLinkToCardPage}>
             <CopyLinkIconContainer data-copied={isCopied ? '' : undefined}>
               {isCopied ? <AiOutlineCheck size={10} /> : <GoLink size={16} />}
             </CopyLinkIconContainer>
             Copy link
           </EditCardActionOption>
 
-          <EditCardActionOption onClick={handleArchive}>
+          <EditCardActionOption onClick={deleteCardAndClosePopover}>
             <LuArchive size={16} />
             Archive
           </EditCardActionOption>

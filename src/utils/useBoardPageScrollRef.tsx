@@ -2,6 +2,7 @@ import {
   createContext,
   type ReactNode,
   type RefObject,
+  type TouchEvent,
   useContext,
   useRef,
   type WheelEvent,
@@ -46,9 +47,23 @@ export function useBoardScrollRef() {
 
 export function useBoardPageScrollHandler() {
   const scrollRef = useBoardScrollRef();
-  return (event: WheelEvent) => {
-    if (scrollRef.current) {
-      scrollRef.current.scrollLeft += event.deltaX || event.deltaY;
-    }
+  const lastTouchXRef = useRef(0);
+
+  return {
+    onWheel(event: WheelEvent) {
+      if (scrollRef.current) {
+        scrollRef.current.scrollLeft += event.deltaX || event.deltaY;
+      }
+    },
+    onTouchStart(event: TouchEvent) {
+      lastTouchXRef.current = event.touches[0].clientX;
+    },
+    onTouchMove(event: TouchEvent) {
+      if (scrollRef.current && event.touches.length > 0) {
+        const currentX = event.touches[0].clientX;
+        scrollRef.current.scrollLeft += lastTouchXRef.current - currentX;
+        lastTouchXRef.current = currentX;
+      }
+    },
   };
 }

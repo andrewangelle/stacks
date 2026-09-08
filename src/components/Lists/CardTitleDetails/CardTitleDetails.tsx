@@ -49,7 +49,7 @@ export function CardTitleDetails({
   const [isEditOpen, setIsEditOpen] = useState(false);
   const [editedTitle, setEditedTitle] = useState(title);
   const wasEditOpenRef = useRef(false);
-  const handleBoardWheel = useBoardPageScrollHandler();
+  const boardScrollHandlers = useBoardPageScrollHandler();
 
   function handleEditOpenChange(nextOpen: boolean) {
     if (!nextOpen) {
@@ -140,7 +140,7 @@ export function CardTitleDetails({
 
       {isEditOpen &&
         createPortal(
-          <EditCardPopoverOverlay onWheel={handleBoardWheel} />,
+          <EditCardPopoverOverlay {...boardScrollHandlers} />,
           document.body,
         )}
 

@@ -63,6 +63,7 @@ export const EditCardPopoverOverlay = styled.div.attrs<DataAttributes>({
   inset: 0;
   background: rgba(0, 0, 0, 0.7);
   z-index: 3;
+  touch-action: none;
 `;
 
 export const EditCardPopoverContent = styled(
@@ -123,7 +124,7 @@ export const EditCardPopoverBackButton = styled.button.attrs<DataAttributes>({
 export const EditCardTextareaContainer = styled.div.attrs<DataAttributes>({
   'data-testid': 'EditCardTextareaContainer',
 })`
-  min-width: 246px;
+  min-width: 240px;
   background: #fff;
   border-radius: 8px;
   padding: 8px;
