@@ -14,6 +14,7 @@ import { EditCardPopoverActions } from '~/components/Lists/EditCardPopover/EditC
 import { EditCardPopoverOverlay } from '~/components/Lists/EditCardPopover/EditCardPopover.styled';
 import { EditCardPopoverTrigger } from '~/components/Lists/EditCardPopover/EditCardPopoverTrigger';
 import { ListCardContainer } from '~/components/Lists/List.styled';
+import { useBoardPageScrollHandler } from '~/utils/useBoardPageScrollRef';
 import { useCardModalTrigger } from '~/utils/useCardModalTrigger';
 
 type CardTitleDetailsProps = {
@@ -48,6 +49,7 @@ export function CardTitleDetails({
   const [isEditOpen, setIsEditOpen] = useState(false);
   const [editedTitle, setEditedTitle] = useState(title);
   const wasEditOpenRef = useRef(false);
+  const handleBoardWheel = useBoardPageScrollHandler();
 
   function handleEditOpenChange(nextOpen: boolean) {
     if (!nextOpen) {
@@ -136,7 +138,11 @@ export function CardTitleDetails({
         </Popover.Anchor>
       </CardModalTrigger>
 
-      {isEditOpen && createPortal(<EditCardPopoverOverlay />, document.body)}
+      {isEditOpen &&
+        createPortal(
+          <EditCardPopoverOverlay onWheel={handleBoardWheel} />,
+          document.body,
+        )}
 
       <EditCardPopoverActions
         cardId={id}

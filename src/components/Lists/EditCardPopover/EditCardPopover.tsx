@@ -17,6 +17,7 @@ import {
   MoveCardViewPanelHeader,
 } from '~/components/Lists/EditCardPopover/EditCardPopover.styled';
 import { useDeleteCard } from '~/db/cards/cards.query';
+import { useBoardPageScrollHandler } from '~/utils/useBoardPageScrollRef';
 import { EditCardTitle, type EditCardTitleProps } from './EditCardTitle';
 
 type EditCardPopoverActionsProps = {
@@ -33,7 +34,7 @@ export function EditCardPopoverActions({
   editedTitle,
   cardId,
   listId,
-  open: popoverOpen,
+  open,
   onOpenCard,
   onClose,
   setEditedTitle,
@@ -43,6 +44,7 @@ export function EditCardPopoverActions({
   const [isCopied, setIsCopied] = useState(false);
   const deleteCard = useDeleteCard();
   const popoverRef = useRef<HTMLDivElement>(null);
+  const handleBoardWheel = useBoardPageScrollHandler();
 
   function handleOpenCard() {
     onClose();
@@ -65,11 +67,11 @@ export function EditCardPopoverActions({
   }
 
   useEffect(() => {
-    if (!popoverOpen) {
+    if (!open) {
       setIsMoveOpen(false);
       setIsCopied(false);
     }
-  }, [popoverOpen]);
+  }, [open]);
 
   useEffect(() => {
     if (isCopied) {
@@ -91,6 +93,7 @@ export function EditCardPopoverActions({
             e.preventDefault();
           }
         }}
+        onWheel={handleBoardWheel}
       >
         <EditCardTitle
           id={cardId}
