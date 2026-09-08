@@ -15,6 +15,7 @@ import {
 } from '~/components/server/Nav.functions';
 import { boardsQueryOptions } from '~/db/boards/boards.query';
 import { getBoardIdByCardId } from '~/db/cards/cards.functions';
+import { BoardPageScrollRefProvider } from '~/utils/useBoardPageScrollRef';
 
 export const Route = createFileRoute('/card/$cardId')({
   async loader({ context, params }) {
@@ -84,15 +85,17 @@ export const Route = createFileRoute('/card/$cardId')({
         ) : (
           BoardPageServer && (
             <CompositeComponent src={BoardPageServer.src}>
-              <Suspense
-                fallback={<BoardListsFallback $background={boardColor} />}
-              >
-                <BoardLists>
-                  <Suspense fallback={<CardFallback />}>
-                    <Card />
-                  </Suspense>
-                </BoardLists>
-              </Suspense>
+              <BoardPageScrollRefProvider>
+                <Suspense
+                  fallback={<BoardListsFallback $background={boardColor} />}
+                >
+                  <BoardLists>
+                    <Suspense fallback={<CardFallback />}>
+                      <Card />
+                    </Suspense>
+                  </BoardLists>
+                </Suspense>
+              </BoardPageScrollRefProvider>
             </CompositeComponent>
           )
         )}

@@ -15,6 +15,7 @@ import {
   getNavBarServer,
 } from '~/components/server/Nav.functions';
 import { getBoardColor } from '~/db/boards/boards.functions';
+import { BoardPageScrollRefProvider } from '~/utils/useBoardPageScrollRef';
 
 export const Route = createFileRoute('/board/$id')({
   async loader({ context, params }) {
@@ -72,15 +73,17 @@ export const Route = createFileRoute('/board/$id')({
         </NavBarContainer>
 
         <CompositeComponent src={BoardPageServer.src}>
-          <Suspense
-            fallback={
-              <BoardPageListsSkeleton data-testid="BoardPageListsSkeleton" />
-            }
-          >
-            <BoardLists>
-              <Outlet />
-            </BoardLists>
-          </Suspense>
+          <BoardPageScrollRefProvider>
+            <Suspense
+              fallback={
+                <BoardPageListsSkeleton data-testid="BoardPageListsSkeleton" />
+              }
+            >
+              <BoardLists>
+                <Outlet />
+              </BoardLists>
+            </Suspense>
+          </BoardPageScrollRefProvider>
         </CompositeComponent>
 
         <DisplayMenu />
