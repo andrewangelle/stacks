@@ -21,6 +21,9 @@ const SUPPRESSED_PATTERNS = [
   /Cannot read properties of null \(reading 'useContext'\)/,
   /\[Unhandled error\].*Switched to client rendering/s,
   /The render was aborted by the server without a reason/s,
+  /AbortError/s,
+  /AbortError:/s,
+  /Error: aborted/s,
 ];
 
 function isSuppressed(msg: string): boolean {
