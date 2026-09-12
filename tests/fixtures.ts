@@ -1,4 +1,5 @@
 import { test as base, expect } from '@playwright/test';
+import { CardPage } from './helpers/CardPage';
 
 /**
  * Playwright's mobile emulation "shrink-to-fits": when page content is wider
@@ -13,8 +14,15 @@ import { test as base, expect } from '@playwright/test';
  * real device. Applied only to the Mobile projects; desktop browsers are
  * untouched. Injected on every navigation so it survives page.goto.
  */
-// biome-ignore lint/suspicious/noConfusingVoidType: <nothing else works>
-export const test = base.extend<{ clampMobileViewport: void }>({
+export const test = base.extend<{
+  // biome-ignore lint/suspicious/noConfusingVoidType: <nothing else works>
+  clampMobileViewport: void;
+  cardPage: CardPage;
+}>({
+  cardPage: async ({ page, request }, use) => {
+    const cardPage = new CardPage(page, request);
+    await use(cardPage);
+  },
   clampMobileViewport: [
     async ({ page }, use, testInfo) => {
       if (testInfo.project.name.startsWith('Mobile')) {
