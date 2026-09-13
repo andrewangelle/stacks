@@ -1,5 +1,5 @@
 import { expect, test } from '@playwright/test';
-import { BoardPageLists } from '~test/helpers/BoardPageLists';
+import { BoardPage } from '~test/helpers/BoardPage';
 import { resetDb } from '~test/helpers/resetDb';
 import { seedBoard, seedCard, seedListCard } from '~test/helpers/seed';
 
@@ -7,10 +7,10 @@ test.describe('List', () => {
   // First navigation in a run can wait on Vite cold-compile; allow extra time.
   test.describe.configure({ timeout: 60_000 });
 
-  let boardPage: BoardPageLists;
+  let boardPage: BoardPage;
 
   test.beforeEach(async ({ page, request }) => {
-    boardPage = new BoardPageLists(page, request);
+    boardPage = new BoardPage(page, request);
   });
 
   test('truncates checklists and items on a list card', async () => {
@@ -342,10 +342,10 @@ test.describe('Move list', () => {
   // Cold Vite compile on the first navigation of a run can exceed 30s.
   test.describe.configure({ timeout: 60_000 });
 
-  let boardPage: BoardPageLists;
+  let boardPage: BoardPage;
 
   test.beforeEach(async ({ page, request }) => {
-    boardPage = new BoardPageLists(page, request);
+    boardPage = new BoardPage(page, request);
   });
 
   test('moves a list to another board at the selected position', async () => {
@@ -424,10 +424,10 @@ test.describe('Move list', () => {
 test.describe('Edit card popover', () => {
   test.describe.configure({ timeout: 60_000 });
 
-  let boardPage: BoardPageLists;
+  let boardPage: BoardPage;
 
   test.beforeEach(async ({ page, request }) => {
-    boardPage = new BoardPageLists(page, request);
+    boardPage = new BoardPage(page, request);
   });
 
   test('shows the edit trigger on hover and hides it on mouse leave', async () => {

@@ -1,13 +1,13 @@
 import { expect, test } from '@playwright/test';
-import { BoardsPage } from '~test/helpers/BoardsPage';
+import { BasePage } from '~test/helpers/BasePage';
 import { resetDb } from '~test/helpers/resetDb';
 import { seedBoard } from '~test/helpers/seed';
 
 test.describe('Boards', () => {
-  let boardsPage: BoardsPage;
+  let boardsPage: BasePage;
 
   test.beforeEach(async ({ page, request }) => {
-    boardsPage = new BoardsPage(page, request);
+    boardsPage = new BasePage(page, request);
   });
 
   test('shows a seeded board on the boards page', async () => {

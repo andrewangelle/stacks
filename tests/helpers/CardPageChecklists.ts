@@ -1,35 +1,7 @@
 import { expect, type Locator } from '@playwright/test';
-import { resetDb } from '~test/helpers/resetDb';
-import { seedBoard, seedListCard } from '~test/helpers/seed';
-import { BasePage } from './BasePage';
+import { CardPage } from '~test/helpers/CardPage';
 
-export type ChecklistSeed = {
-  title: string;
-  items: string[];
-};
-
-export class ChecklistPage extends BasePage {
-  async openCardWithChecklists(checklists: ChecklistSeed[]) {
-    await resetDb(this.request);
-    const board = await seedBoard(this.request, 'Sprint Board');
-    const { card } = await seedListCard(this.request, {
-      boardId: board.id,
-      listTitle: 'To Do',
-      cardTitle: 'Ship feature',
-      checklists,
-    });
-
-    await this.page.goto(`/board/${board.id}/card/${card.id}`);
-    await expect(this.page.getByTestId('CardModalContent')).toBeVisible();
-    await expect(
-      this.page.getByTestId('ChecklistContainer').first(),
-    ).toBeVisible();
-
-    await expect(this.page.getByTestId('ActivityListViewport')).toBeAttached();
-
-    return { board, card };
-  }
-
+export class CardPageChecklists extends CardPage {
   firstChecklist() {
     return this.page.getByTestId('ChecklistContainer').first();
   }

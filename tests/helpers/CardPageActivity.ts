@@ -127,35 +127,6 @@ export class CardPageActivity extends CardPage {
     );
   }
 
-  async installClipboardSpy() {
-    await this.page.addInitScript(() => {
-      window.__copiedText = '';
-
-      const record = (text: string) => {
-        window.__copiedText = text;
-      };
-
-      try {
-        Object.defineProperty(navigator, 'clipboard', {
-          configurable: true,
-          value: {
-            writeText: (text: string) => {
-              record(text);
-              return Promise.resolve();
-            },
-            readText: () => Promise.resolve(window.__copiedText),
-          },
-        });
-      } catch {
-        // Clipboard not configurable in this browser; tests fall back to the URL.
-      }
-    });
-  }
-
-  readCopiedText() {
-    return this.page.evaluate(() => window.__copiedText);
-  }
-
   async waitForSaveButton(commentContainer: Locator) {
     await expect(async () => {
       const editInput = commentContainer.getByTestId('AddCommentInput');

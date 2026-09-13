@@ -1,6 +1,7 @@
-import { expect } from '@playwright/test';
+import { expect, type Locator } from '@playwright/test';
+import { BasePage } from '~test/helpers/BasePage';
 import { resetDb } from '~test/helpers/resetDb';
-import { seedBoard, seedCard } from '~test/helpers/seed';
+import { seedBoard, seedCard, seedListCard } from '~test/helpers/seed';
 
 const slideProgress = [0, 0.25, 0.5];
 
@@ -9,7 +10,10 @@ type Slide = {
   end: number;
 };
 
-import { BasePage } from '~test/helpers/BasePage';
+export type ChecklistSeed = {
+  title: string;
+  items: string[];
+};
 
 export class CardPage extends BasePage {
   async setup(cardTitle: string) {
@@ -48,6 +52,60 @@ export class CardPage extends BasePage {
     return seeded;
   }
 
+  async seedBoardsScenario() {
+    await resetDb(this.request);
+    const source = await seedBoard(this.request, 'Sprint Board');
+    const { card } = await seedCard(this.request, {
+      boardId: source.id,
+      listTitle: 'To Do',
+      cardTitle: 'Write docs',
+    });
+    const target = await seedBoard(this.request, 'Backlog');
+    await seedCard(this.request, {
+      boardId: target.id,
+      listTitle: 'Later',
+      cardTitle: 'Existing card',
+    });
+    return { source, target, card };
+  }
+
+  async seedListsScenario() {
+    await resetDb(this.request);
+    const board = await seedBoard(this.request, 'Sprint Board');
+    const { card } = await seedCard(this.request, {
+      boardId: board.id,
+      listTitle: 'To Do',
+      cardTitle: 'Write docs',
+    });
+    await seedCard(this.request, {
+      boardId: board.id,
+      listTitle: 'Doing',
+      cardTitle: 'Plan sprint',
+    });
+    return { board, card };
+  }
+
+  async setupWithChecklists(checklists: ChecklistSeed[]) {
+    await resetDb(this.request);
+    const board = await seedBoard(this.request, 'Sprint Board');
+    const { card } = await seedListCard(this.request, {
+      boardId: board.id,
+      listTitle: 'To Do',
+      cardTitle: 'Ship feature',
+      checklists,
+    });
+
+    await this.page.goto(`/board/${board.id}/card/${card.id}`);
+    await expect(this.page.getByTestId('CardModalContent')).toBeVisible();
+    await expect(
+      this.page.getByTestId('ChecklistContainer').first(),
+    ).toBeVisible();
+
+    await expect(this.page.getByTestId('ActivityListViewport')).toBeAttached();
+
+    return { board, card };
+  }
+
   async waitForCardModal() {
     await expect(async () => {
       await expect(this.page.getByTestId('CardModalContent')).toBeVisible();
@@ -60,13 +118,12 @@ export class CardPage extends BasePage {
       .getByTestId('CardModalTitle')
       .first();
 
-    const trigger = () =>
-      this.page.getByTestId('DescriptionPlaceholder').click();
-    const isDone = async () =>
-      (await cardTitle.count()) > 0 &&
-      (await cardTitle.textContent())?.trim() === 'Write E2E docs';
-
-    return this.waitForHydratedAction(trigger, isDone);
+    return this.waitForHydratedAction(
+      () => this.page.getByTestId('DescriptionPlaceholder').click(),
+      async () =>
+        (await cardTitle.count()) > 0 &&
+        (await cardTitle.textContent())?.trim() === 'Write E2E docs',
+    );
   }
 
   async selectBlockType(label: string) {
@@ -94,15 +151,13 @@ export class CardPage extends BasePage {
   }
 
   async expectCompletedCheckmark() {
-    await expect(this.modalCompletionCircle()).toHaveAttribute(
-      'data-completed',
-      '',
+    const completionCircle = this.modalCompletionCircle();
+    await expect(completionCircle).toHaveAttribute('data-completed', '');
+
+    const completionCheckmark = completionCircle.getByTestId(
+      'CardCompletedIndicatorCheckmark',
     );
-    await expect(
-      this.modalCompletionCircle().getByTestId(
-        'CardCompletedIndicatorCheckmark',
-      ),
-    ).toBeVisible();
+    await expect(completionCheckmark).toBeVisible();
   }
 
   async expectCardCompletionActivity(
@@ -173,6 +228,22 @@ export class CardPage extends BasePage {
     return box?.height ?? 0;
   }
 
+  async openDescriptionEditor(): Promise<Locator> {
+    await this.setup('Write docs');
+
+    await this.waitForInteractiveTrigger(
+      '[data-testid="DescriptionInput"]',
+      '[data-testid="DescriptionPlaceholder"]',
+    );
+
+    return this.page.getByTestId('DescriptionInput');
+  }
+
+  async saveDescription() {
+    await this.page.getByTestId('SaveDescriptionButton').click();
+    await expect(this.page.getByTestId('CardDescriptionText')).toBeVisible();
+  }
+
   async selectedText() {
     return this.page.evaluate(() => window.getSelection()?.toString() ?? '');
   }
@@ -180,39 +251,6 @@ export class CardPage extends BasePage {
   async gotoSettled(url: string) {
     await this.page.goto(url);
     await this.page.waitForLoadState('networkidle');
-  }
-
-  async seedBoardsScenario() {
-    await resetDb(this.request);
-    const source = await seedBoard(this.request, 'Sprint Board');
-    const { card } = await seedCard(this.request, {
-      boardId: source.id,
-      listTitle: 'To Do',
-      cardTitle: 'Write docs',
-    });
-    const target = await seedBoard(this.request, 'Backlog');
-    await seedCard(this.request, {
-      boardId: target.id,
-      listTitle: 'Later',
-      cardTitle: 'Existing card',
-    });
-    return { source, target, card };
-  }
-
-  async seedListsScenario() {
-    await resetDb(this.request);
-    const board = await seedBoard(this.request, 'Sprint Board');
-    const { card } = await seedCard(this.request, {
-      boardId: board.id,
-      listTitle: 'To Do',
-      cardTitle: 'Write docs',
-    });
-    await seedCard(this.request, {
-      boardId: board.id,
-      listTitle: 'Doing',
-      cardTitle: 'Plan sprint',
-    });
-    return { board, card };
   }
 
   async openMoveMenu(boardId: string, cardId: string) {
