@@ -1,13 +1,13 @@
 import { expect, type Locator } from '@playwright/test';
+import { BoardPage } from '~test/helpers/BoardPage';
 import { resetDb } from '~test/helpers/resetDb';
 import { seedBoard, seedCard, seedListCard } from '~test/helpers/seed';
-import { BoardPageLists } from './BoardPageLists';
 
 const autoScrollBand = 0.2;
 const viewportInset = 8;
 const targetReachTimeout = 10_000;
 
-export class BoardPageDrag extends BoardPageLists {
+export class BoardPageDrag extends BoardPage {
   async setupDrag(cards: string[]) {
     await resetDb(this.request);
     const board = await seedBoard(this.request, 'Sprint Board');

@@ -1,11 +1,11 @@
 import { expect, test } from '~test/fixtures';
-import { CardPageRichText } from '~test/helpers/CardPageRichText';
+import { CardPage } from '~test/helpers/CardPage';
 
 test.describe('Rich text markdown', () => {
-  let cardPage: CardPageRichText;
+  let cardPage: CardPage;
 
   test.beforeEach(async ({ page, request }) => {
-    cardPage = new CardPageRichText(page, request);
+    cardPage = new CardPage(page, request);
   });
 
   test('formats inline markdown as it is typed', async () => {

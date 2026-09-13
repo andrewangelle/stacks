@@ -18,9 +18,6 @@ test.describe('Activity', () => {
   test('keeps a comment being written while the entries load', async () => {
     await cardPage.setupActivity();
 
-    // Deliberately no settling: the entries are still loading, and the panel
-    // used to re-suspend once they arrived, tearing down the composer and the
-    // draft in it.
     await cardPage.waitForInteractiveTrigger(
       '[data-testid="AddCommentInput"]',
       '[data-testid="AddCommentTrigger"]',
@@ -258,7 +255,3 @@ test.describe('Activity copy link', () => {
     }).toPass();
   });
 });
-
-declare global {
-  var __copiedText: string;
-}
