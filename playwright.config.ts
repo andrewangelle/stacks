@@ -1,36 +1,27 @@
 import { defineConfig, devices } from '@playwright/test';
 
-/**
- * @see https://playwright.dev/docs/test-configuration
- */
 export default defineConfig({
   testDir: './tests',
   tsconfig: './tests/tsconfig.json',
   globalSetup: './tests/global-setup.ts',
-  // Shared local Postgres via dev:e2e — one worker avoids cross-test races.
-  fullyParallel: false,
+  fullyParallel: false,   // Shared local Postgres via dev:e2e — one worker avoids cross-test races.
   workers: 1,
-  /* Fail the build on CI if you accidentally left test.only in the source code. */
   forbidOnly: !!process.env.CI,
   retries: 1,
-  // CI shards emit blob reports that the merge-reports job stitches into HTML.
-  reporter: process.env.CI ? 'blob' : [['list'], ['html', { open: 'never' }]],
-  
-  /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
+  reporter: process.env.CI ? [['blob'], ['list']] : [['list'], ['html', { open: 'never' }]],
+  timeout: process.env.CI ? 60_000 : 30_000,
+  expect: { timeout: process.env.CI ? 10_000 : 5_000 },
   use: {
     baseURL: 'http://localhost:3100',
-
-    /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
     trace: 'on-first-retry',
-
     video: 'on',
   },
-
-    // Longer timeouts for slower CI runners
-    timeout: process.env.CI ? 60_000 : 30_000,
-    expect: { timeout: process.env.CI ? 10_000 : 5_000 },
-    
-  /* Configure projects for major browsers */
+  webServer: {
+    command: 'pnpm test:db:setup && pnpm dev:e2e',
+    url: 'http://localhost:3100/__test/health',
+    reuseExistingServer: false,
+    timeout: 120_000,
+  },
   projects: [
     {
       name: 'chromium',
@@ -46,8 +37,6 @@ export default defineConfig({
       name: 'webkit',
       use: { ...devices['Desktop Safari'] },
     },
-
-    /* Test against mobile viewports. */
     {
       name: 'Mobile Chrome',
       use: { ...devices['Pixel 5'] },
@@ -56,8 +45,6 @@ export default defineConfig({
       name: 'Mobile Safari',
       use: { ...devices['iPhone 12'] },
     },
-
-    /* Test against branded browsers. */
     {
       name: 'Microsoft Edge',
       use: { ...devices['Desktop Edge'], channel: 'msedge' },
@@ -66,15 +53,5 @@ export default defineConfig({
       name: 'Google Chrome',
       use: { ...devices['Desktop Chrome'], channel: 'chrome' },
     },
-  ],
-
-  /* Run your local dev server before starting the tests */
-  webServer: {
-    // Bring up the local Postgres container (left running between runs) and
-    // apply migrations before starting the e2e dev server.
-    command: 'pnpm test:db:setup && pnpm dev:e2e',
-    url: 'http://localhost:3100/__test/health',
-    reuseExistingServer: false,
-    timeout: 120_000,
-  },
+  ]
 }); 
