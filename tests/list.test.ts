@@ -595,11 +595,10 @@ test.describe('Edit card popover', () => {
     await boardPage.expectListCardCount(0);
   });
 
-  test('copies the card link and shows a checkmark', async ({ context }) => {
+  test('copies the card link and shows a checkmark', async () => {
     const { board } = await boardPage.seedEditCardBoard();
 
-    await context.grantPermissions(['clipboard-read', 'clipboard-write']);
-
+    await boardPage.installClipboardSpy();
     await boardPage.page.goto(`/board/${board.id}`);
     await boardPage.waitForListCard('Edit me');
 
@@ -614,9 +613,7 @@ test.describe('Edit card popover', () => {
       boardPage.page.getByTestId('EditCardPopoverContent'),
     ).toBeVisible();
 
-    const clipboardText = await boardPage.page.evaluate(() =>
-      navigator.clipboard.readText(),
-    );
+    const clipboardText = await boardPage.readCopiedText();
     expect(clipboardText).toMatch(/\/card\/[a-f0-9]{8}$/);
   });
 
