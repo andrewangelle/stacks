@@ -770,7 +770,7 @@ test.describe('Edit card popover', () => {
 
     await boardPage.page
       .getByTestId('EditCardPopoverOverlay')
-      .click({ force: true });
+      .click({ force: true, position: { x: 10, y: 10 } });
     await expect(
       boardPage.page.getByTestId('EditCardPopoverContent'),
     ).toHaveCount(0);

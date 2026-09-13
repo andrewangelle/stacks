@@ -140,7 +140,10 @@ export function CardTitleDetails({
 
       {isEditOpen &&
         createPortal(
-          <EditCardPopoverOverlay {...boardScrollHandlers} />,
+          <EditCardPopoverOverlay
+            {...boardScrollHandlers}
+            onClick={() => handleEditOpenChange(false)}
+          />,
           document.body,
         )}
 

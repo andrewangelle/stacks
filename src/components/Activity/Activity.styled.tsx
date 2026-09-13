@@ -36,7 +36,7 @@ export const ActivityListViewport = styled.div.attrs<DataAttributes>({
   position: relative;
   box-sizing: border-box;
   flex: 1 1 auto;
-  min-height: 0;
+  min-height: 200px;
   min-width: 0;
   width: 100%;
   overflow-y: auto;
@@ -44,6 +44,7 @@ export const ActivityListViewport = styled.div.attrs<DataAttributes>({
   max-height: 60vh;
 
   @media (min-width: 851px) {
+    min-height: 0;
     max-height: none;
   }
 `;
@@ -126,7 +127,7 @@ export const ActivityContainer = styled.div.attrs<DataAttributes>({
   border-left: ${({ $isSelected }) => ($isSelected ? '4px solid #0C66E4' : '4px solid transparent')};
 
   @media (min-width: 851px) {
-    padding: '8px 12px 8px 8px',
+    padding: 8px 12px 8px 8px;
   }
 `;
 
