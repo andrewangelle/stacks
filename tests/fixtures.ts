@@ -1,19 +1,6 @@
 import { test as base, expect } from '@playwright/test';
 import { CardPage } from './helpers/CardPage';
 
-/**
- * Playwright's mobile emulation "shrink-to-fits": when page content is wider
- * than the device — here the board's horizontally-scrolling lists — it zooms
- * the layout viewport out (e.g. ~614px on a 393px Pixel 5) so the overflow
- * fits. That balloons the fixed card modal past the screen and pushes its lower
- * content (activity column, checklist controls) out of pointer reach. A real
- * phone never does this: it keeps the layout viewport at device width and lets
- * the board scroll sideways, so the modal fits and scrolls internally.
- *
- * Clamping the document to the viewport width makes the emulator behave like a
- * real device. Applied only to the Mobile projects; desktop browsers are
- * untouched. Injected on every navigation so it survives page.goto.
- */
 export const test = base.extend<{
   // biome-ignore lint/suspicious/noConfusingVoidType: <nothing else works>
   clampMobileViewport: void;
@@ -24,6 +11,19 @@ export const test = base.extend<{
     await use(cardPage);
   },
   clampMobileViewport: [
+    /**
+     * Playwright's mobile emulation "shrink-to-fits": when page content is wider
+     * than the device — here the board's horizontally-scrolling lists — it zooms
+     * the layout viewport out (e.g. ~614px on a 393px Pixel 5) so the overflow
+     * fits. That balloons the fixed card modal past the screen and pushes its lower
+     * content (activity column, checklist controls) out of pointer reach. A real
+     * phone never does this: it keeps the layout viewport at device width and lets
+     * the board scroll sideways, so the modal fits and scrolls internally.
+     *
+     * Clamping the document to the viewport width makes the emulator behave like a
+     * real device. Applied only to the Mobile projects; desktop browsers are
+     * untouched. Injected on every navigation so it survives page.goto.
+     */
     async ({ page }, use, testInfo) => {
       if (testInfo.project.name.startsWith('Mobile')) {
         await page.addInitScript(() => {
