@@ -1,34 +1,45 @@
 import { expect, test } from '@playwright/test';
+import { BoardsPage } from '~test/helpers/BoardsPage';
 import { resetDb } from '~test/helpers/resetDb';
 import { seedBoard } from '~test/helpers/seed';
-import { waitForInteractiveTrigger } from '~test/helpers/waitForInteractiveTrigger';
 
 test.describe('Boards', () => {
-  test('shows a seeded board on the boards page', async ({ page, request }) => {
-    await resetDb(request);
-    await seedBoard(request, 'Test Board');
-    await page.goto('/boards');
+  let boardsPage: BoardsPage;
 
-    await expect(page.getByTestId('BoardCardTitle')).toHaveText('Test Board');
+  test.beforeEach(async ({ page, request }) => {
+    boardsPage = new BoardsPage(page, request);
   });
 
-  test('creates a board from the boards page', async ({ page, request }) => {
-    await resetDb(request);
-    await page.goto('/boards');
+  test('shows a seeded board on the boards page', async () => {
+    await resetDb(boardsPage.request);
+    await seedBoard(boardsPage.request, 'Test Board');
+    await boardsPage.page.goto('/boards');
 
-    await expect(page.getByTestId('CreateBoardCard')).toBeVisible();
+    await expect(boardsPage.page.getByTestId('BoardCardTitle')).toHaveText(
+      'Test Board',
+    );
+  });
 
-    await waitForInteractiveTrigger(
-      page,
+  test('creates a board from the boards page', async () => {
+    await resetDb(boardsPage.request);
+    await boardsPage.page.goto('/boards');
+
+    await expect(boardsPage.page.getByTestId('CreateBoardCard')).toBeVisible();
+
+    await boardsPage.waitForInteractiveTrigger(
       '[data-testid="CreateBoardPopoverContent"]',
       '[data-testid="CreateBoardCard"]',
     );
 
-    await page.getByTestId('CreateBoardTitleInput').fill('Sprint Planning');
-    await page.getByTestId('CreateBoardButton').click();
+    await boardsPage.page
+      .getByTestId('CreateBoardTitleInput')
+      .fill('Sprint Planning');
+    await boardsPage.page.getByTestId('CreateBoardButton').click();
 
     await expect(
-      page.getByTestId('BoardCardTitle').filter({ hasText: 'Sprint Planning' }),
+      boardsPage.page
+        .getByTestId('BoardCardTitle')
+        .filter({ hasText: 'Sprint Planning' }),
     ).toBeVisible();
   });
 });

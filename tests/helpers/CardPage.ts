@@ -1,8 +1,6 @@
-import { type APIRequestContext, expect, type Page } from '@playwright/test';
+import { expect } from '@playwright/test';
 import { resetDb } from '~test/helpers/resetDb';
 import { seedBoard, seedCard } from '~test/helpers/seed';
-import { waitForHydratedAction } from '~test/helpers/waitForHydratedAction';
-import { waitForInteractiveTrigger } from '~test/helpers/waitForInteractiveTrigger';
 
 const slideProgress = [0, 0.25, 0.5];
 
@@ -11,12 +9,9 @@ type Slide = {
   end: number;
 };
 
-export class CardPage {
-  constructor(
-    public readonly page: Page,
-    public readonly request: APIRequestContext,
-  ) {}
+import { BasePage } from '~test/helpers/BasePage';
 
+export class CardPage extends BasePage {
   async setup(cardTitle: string) {
     await resetDb(this.request);
     const board = await seedBoard(this.request, 'Sprint Board');
@@ -37,8 +32,7 @@ export class CardPage {
   async setupWithDescription() {
     const seeded = await this.setup('Write docs');
 
-    await waitForInteractiveTrigger(
-      this.page,
+    await this.waitForInteractiveTrigger(
       '[data-testid="DescriptionInput"]',
       '[data-testid="DescriptionPlaceholder"]',
     );
@@ -46,8 +40,7 @@ export class CardPage {
       .getByTestId('DescriptionInput')
       .pressSequentially('Add acceptance criteria.');
 
-    await waitForInteractiveTrigger(
-      this.page,
+    await this.waitForInteractiveTrigger(
       '[data-testid="CardDescriptionText"]',
       '[data-testid="SaveDescriptionButton"]',
     );
@@ -73,7 +66,7 @@ export class CardPage {
       (await cardTitle.count()) > 0 &&
       (await cardTitle.textContent())?.trim() === 'Write E2E docs';
 
-    return waitForHydratedAction(trigger, isDone);
+    return this.waitForHydratedAction(trigger, isDone);
   }
 
   async selectBlockType(label: string) {
@@ -87,7 +80,7 @@ export class CardPage {
   async waitForCardCompleted() {
     const completionCircle = this.modalCompletionCircle();
 
-    return waitForHydratedAction(
+    return this.waitForHydratedAction(
       () => completionCircle.click(),
       async () =>
         (await completionCircle.getAttribute('data-completed')) === '',
@@ -134,7 +127,7 @@ export class CardPage {
   async waitForCardIncomplete() {
     const completionCircle = this.modalCompletionCircle();
 
-    return waitForHydratedAction(
+    return this.waitForHydratedAction(
       () => completionCircle.click(),
       async () =>
         (await completionCircle.getAttribute('data-completed')) !== '',
@@ -225,8 +218,7 @@ export class CardPage {
   async openMoveMenu(boardId: string, cardId: string) {
     await this.page.goto(`/board/${boardId}/card/${cardId}`);
     await this.waitForCardModal();
-    await waitForInteractiveTrigger(
-      this.page,
+    await this.waitForInteractiveTrigger(
       '[data-testid="MoveCardMenuContent"]',
       '[data-testid="MoveCardMenuTrigger"]',
     );
@@ -408,5 +400,24 @@ export class CardPage {
     }
 
     expect(slide.end).toBeCloseTo(to, 0);
+  }
+
+  async expectListCardCount(count: number) {
+    const list = this.page.getByTestId('ListContainer');
+    await expect(list.getByTestId('ListCardContainer')).toHaveCount(count);
+    await this.expectListHeaderCardCount(count);
+  }
+
+  async expectListHeaderCardCount(count: number) {
+    const list = this.page.getByTestId('ListContainer');
+    await expect(list.getByTestId('ListHeaderCardCount')).toHaveText(
+      `${count} `,
+    );
+  }
+
+  listByTitle(listTitle: string) {
+    return this.page.getByTestId('ListContainer').filter({
+      has: this.page.getByTestId('ListName').filter({ hasText: listTitle }),
+    });
   }
 }

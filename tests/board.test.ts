@@ -1,175 +1,185 @@
-import { expect, type Page, test } from '@playwright/test';
-import { expectListCardCount } from '~test/helpers/expectListHeaderCardCount';
+import { expect, test } from '@playwright/test';
+import { BoardPage } from '~test/helpers/BoardPage';
 import { resetDb } from '~test/helpers/resetDb';
 import { seedBoard, seedListCard } from '~test/helpers/seed';
-import { waitForHydratedAction } from '~test/helpers/waitForHydratedAction';
-import { waitForInteractiveTrigger } from '~test/helpers/waitForInteractiveTrigger';
 
 test.describe('Board', () => {
-  test('adds a list and card on a board', async ({ page, request }) => {
-    await resetDb(request);
-    const board = await seedBoard(request, 'Product Roadmap');
-    await page.goto(`/board/${board.id}`);
-    await expect(page.getByTestId('AddListContainer')).toBeVisible();
+  let boardPage: BoardPage;
 
-    await waitForInteractiveTrigger(
-      page,
+  test.beforeEach(async ({ page, request }) => {
+    boardPage = new BoardPage(page, request);
+  });
+
+  test('adds a list and card on a board', async () => {
+    await resetDb(boardPage.request);
+    const board = await seedBoard(boardPage.request, 'Product Roadmap');
+    await boardPage.page.goto(`/board/${board.id}`);
+    await expect(boardPage.page.getByTestId('AddListContainer')).toBeVisible();
+
+    await boardPage.waitForInteractiveTrigger(
       '[data-testid="AddListInput"]',
       '[data-testid="AddListContainer"] button',
     );
 
-    await expect(page.getByTestId('AddListInput')).toBeVisible();
-    await page.getByTestId('AddListInput').fill('To Do');
-    await page.getByTestId('CreateListButton').click();
+    await expect(boardPage.page.getByTestId('AddListInput')).toBeVisible();
+    await boardPage.page.getByTestId('AddListInput').fill('To Do');
+    await boardPage.page.getByTestId('CreateListButton').click();
 
-    await expect(page.getByTestId('ListContainer')).toBeVisible();
-    await expectListCardCount(page.getByTestId('ListContainer'), 0);
+    await expect(boardPage.page.getByTestId('ListContainer')).toBeVisible();
+    await boardPage.expectListCardCount(0);
 
-    await page.getByTestId('AddCardText').click();
-    await page.getByTestId('AddCardInput').fill('Write E2E tests');
-    await page.getByTestId('AddCardButton').click();
+    await boardPage.page.getByTestId('AddCardText').click();
+    await boardPage.page.getByTestId('AddCardInput').fill('Write E2E tests');
+    await boardPage.page.getByTestId('AddCardButton').click();
 
-    await expectListCardCount(page.getByTestId('ListContainer'), 1);
-    await expect(page.getByTestId('ListCardContainer')).toHaveText(
+    await boardPage.expectListCardCount(1);
+    await expect(boardPage.page.getByTestId('ListCardContainer')).toHaveText(
       'Write E2E tests',
     );
   });
 
-  test('edits the board name', async ({ page, request }) => {
-    await resetDb(request);
-    const board = await seedBoard(request, 'Product Roadmap');
-    await page.goto(`/board/${board.id}`);
-    await expect(page.getByTestId('BoardTitle')).toHaveText('Product Roadmap');
+  test('edits the board name', async () => {
+    await resetDb(boardPage.request);
+    const board = await seedBoard(boardPage.request, 'Product Roadmap');
+    await boardPage.page.goto(`/board/${board.id}`);
+    await expect(boardPage.page.getByTestId('BoardTitle')).toHaveText(
+      'Product Roadmap',
+    );
 
-    await waitForInteractiveTrigger(
-      page,
+    await boardPage.waitForInteractiveTrigger(
       '[data-testid="EditBoardTitleInput"]',
       '[data-testid="BoardTitle"]',
     );
 
-    await page.getByTestId('EditBoardTitleInput').fill('Q3 Roadmap');
+    await boardPage.page.getByTestId('EditBoardTitleInput').fill('Q3 Roadmap');
 
     // click outside to save
-    await page.getByTestId('AddListContainer').click();
+    await boardPage.page.getByTestId('AddListContainer').click();
 
-    await expect(page.getByTestId('BoardTitle')).toHaveText('Q3 Roadmap');
+    await expect(boardPage.page.getByTestId('BoardTitle')).toHaveText(
+      'Q3 Roadmap',
+    );
   });
 
-  test('archives a board and its lists and cards', async ({
-    page,
-    request,
-  }) => {
-    await resetDb(request);
-    const board = await seedBoard(request, 'Product Roadmap');
-    await seedBoard(request, 'Open Source');
+  test('archives a board and its lists and cards', async () => {
+    await resetDb(boardPage.request);
+    const board = await seedBoard(boardPage.request, 'Product Roadmap');
+    await seedBoard(boardPage.request, 'Open Source');
 
-    await seedListCard(request, {
+    await seedListCard(boardPage.request, {
       boardId: board.id,
       listTitle: 'In Progress',
       cardTitle: 'Launch feature',
       checklists: [],
     });
 
-    await page.goto(`/board/${board.id}`);
-    await expect(page.getByTestId('ListContainer')).toBeVisible();
+    await boardPage.page.goto(`/board/${board.id}`);
+    await expect(boardPage.page.getByTestId('ListContainer')).toBeVisible();
 
-    await waitForInteractiveTrigger(
-      page,
+    await boardPage.waitForInteractiveTrigger(
       '[data-testid="BoardMenuOptionsContainer"]',
       '[data-testid="BoardMenuPopoverButton"]',
     );
 
-    await waitForHydratedAction(
+    await boardPage.waitForHydratedAction(
       async () => {
-        await page
+        await boardPage.page
           .getByTestId('BoardMenuOption')
           .filter({ hasText: 'Archive this board' })
           .click();
-        await page.getByTestId('DeleteBoardButton').click();
+        await boardPage.page.getByTestId('DeleteBoardButton').click();
       },
-      async () => page.url().endsWith('/boards'),
+      async () => boardPage.page.url().endsWith('/boards'),
     );
 
-    await expect(page.getByTestId('BoardCardTitle')).toHaveText('Open Source');
+    await expect(boardPage.page.getByTestId('BoardCardTitle')).toHaveText(
+      'Open Source',
+    );
 
     // The board is gone from the database, not just from the cache.
-    await page.reload();
-    await expect(page.getByTestId('BoardCardTitle')).toHaveText('Open Source');
+    await boardPage.page.reload();
+    await expect(boardPage.page.getByTestId('BoardCardTitle')).toHaveText(
+      'Open Source',
+    );
   });
 });
 
-async function openSwitchBoards(page: Page) {
-  await waitForInteractiveTrigger(
-    page,
-    '[data-testid="SwitchBoardsContent"]',
-    '[data-testid="SwitchBoardsTrigger"]',
-  );
-
-  await expect(page.getByTestId('SwitchBoardsContent')).toBeVisible();
-}
-
 test.describe('Display menu', () => {
-  test('lists every board except the current one', async ({
-    page,
-    request,
-  }) => {
-    await resetDb(request);
-    const current = await seedBoard(request, 'Experian');
-    await seedBoard(request, 'Open Source');
-    await seedBoard(request, 'Interview Prep');
-    await page.goto(`/board/${current.id}`);
+  let boardPage: BoardPage;
 
-    await expect(page.getByTestId('DisplayMenuBoardButton')).toHaveText(
-      'Board',
-    );
+  test.beforeEach(async ({ page, request }) => {
+    boardPage = new BoardPage(page, request);
+  });
 
-    await openSwitchBoards(page);
+  test('lists every board except the current one', async () => {
+    await resetDb(boardPage.request);
+    const current = await seedBoard(boardPage.request, 'Experian');
+    await seedBoard(boardPage.request, 'Open Source');
+    await seedBoard(boardPage.request, 'Interview Prep');
+    await boardPage.page.goto(`/board/${current.id}`);
 
-    const titles = page
+    await expect(
+      boardPage.page.getByTestId('DisplayMenuBoardButton'),
+    ).toHaveText('Board');
+
+    await boardPage.openSwitchBoards();
+
+    const titles = boardPage.page
       .getByTestId('SwitchBoardsGrid')
       .getByTestId('BoardCardTitle');
 
     await expect(titles).toHaveText(['Open Source', 'Interview Prep']);
   });
 
-  test('filters the boards by the search text', async ({ page, request }) => {
-    await resetDb(request);
-    const current = await seedBoard(request, 'Experian');
-    await seedBoard(request, 'Open Source');
-    await seedBoard(request, 'Interview Prep');
-    await page.goto(`/board/${current.id}`);
+  test('filters the boards by the search text', async () => {
+    await resetDb(boardPage.request);
+    const current = await seedBoard(boardPage.request, 'Experian');
+    await seedBoard(boardPage.request, 'Open Source');
+    await seedBoard(boardPage.request, 'Interview Prep');
+    await boardPage.page.goto(`/board/${current.id}`);
 
-    await openSwitchBoards(page);
+    await boardPage.openSwitchBoards();
 
-    const titles = page
+    const titles = boardPage.page
       .getByTestId('SwitchBoardsGrid')
       .getByTestId('BoardCardTitle');
 
-    await page.getByTestId('SwitchBoardsSearchInput').fill('open');
+    await boardPage.page.getByTestId('SwitchBoardsSearchInput').fill('open');
     await expect(titles).toHaveText(['Open Source']);
 
-    await page.getByTestId('SwitchBoardsSearchInput').fill('nothing matches');
-    await expect(page.getByTestId('SwitchBoardsGrid')).toHaveCount(0);
-    await expect(page.getByTestId('SwitchBoardsEmpty')).toBeVisible();
+    await boardPage.page
+      .getByTestId('SwitchBoardsSearchInput')
+      .fill('nothing matches');
+    await expect(boardPage.page.getByTestId('SwitchBoardsGrid')).toHaveCount(0);
+    await expect(boardPage.page.getByTestId('SwitchBoardsEmpty')).toBeVisible();
 
-    await page.getByTestId('SwitchBoardsSearchClear').click();
-    await expect(page.getByTestId('SwitchBoardsSearchInput')).toHaveValue('');
+    await boardPage.page.getByTestId('SwitchBoardsSearchClear').click();
+    await expect(
+      boardPage.page.getByTestId('SwitchBoardsSearchInput'),
+    ).toHaveValue('');
     await expect(titles).toHaveText(['Open Source', 'Interview Prep']);
   });
 
-  test('switches to the board that was picked', async ({ page, request }) => {
-    await resetDb(request);
-    const current = await seedBoard(request, 'Experian');
-    const target = await seedBoard(request, 'Open Source');
-    await page.goto(`/board/${current.id}`);
+  test('switches to the board that was picked', async () => {
+    await resetDb(boardPage.request);
+    const current = await seedBoard(boardPage.request, 'Experian');
+    const target = await seedBoard(boardPage.request, 'Open Source');
+    await boardPage.page.goto(`/board/${current.id}`);
 
-    await openSwitchBoards(page);
+    await boardPage.openSwitchBoards();
 
-    await page.getByTestId('SwitchBoardsSearchInput').fill('open');
-    await page.getByTestId('SwitchBoardsGrid').getByRole('link').click();
+    await boardPage.page.getByTestId('SwitchBoardsSearchInput').fill('open');
+    await boardPage.page
+      .getByTestId('SwitchBoardsGrid')
+      .getByRole('link')
+      .click();
 
-    await expect(page).toHaveURL(`/board/${target.id.slice(0, 8)}`);
-    await expect(page.getByTestId('BoardTitle')).toHaveText('Open Source');
-    await expect(page.getByTestId('SwitchBoardsContent')).toHaveCount(0);
+    await expect(boardPage.page).toHaveURL(`/board/${target.id.slice(0, 8)}`);
+    await expect(boardPage.page.getByTestId('BoardTitle')).toHaveText(
+      'Open Source',
+    );
+    await expect(boardPage.page.getByTestId('SwitchBoardsContent')).toHaveCount(
+      0,
+    );
   });
 });
