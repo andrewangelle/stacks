@@ -40,12 +40,17 @@ export function resetDB(): Plugin {
         }
 
         if (req.url === '/__test/reset' && req.method === 'POST') {
-          const { resetDB } = await server.ssrLoadModule(
-            path.join(fixturesDir, 'reset.ts'),
-          );
-          await resetDB();
-          res.statusCode = 204;
-          res.end();
+          try {
+            const { resetDB } = await server.ssrLoadModule(
+              path.join(fixturesDir, 'reset.ts'),
+            );
+            await resetDB();
+            res.statusCode = 204;
+            res.end();
+          } catch {
+            res.statusCode = 500;
+            res.end();
+          }
           return;
         }
 
