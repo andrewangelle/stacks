@@ -1,8 +1,6 @@
 import { expect, test } from '~test/fixtures';
 import { CardPage } from '~test/helpers/CardPage';
-import { expectListCardCount } from '~test/helpers/expectListHeaderCardCount';
 import { seedCard } from '~test/helpers/seed';
-import { waitForInteractiveTrigger } from '~test/helpers/waitForInteractiveTrigger';
 
 test.describe('Card', () => {
   let cardPage: CardPage;
@@ -19,8 +17,7 @@ test.describe('Card', () => {
         .getByTestId('CardModalTitle'),
     ).toHaveText('Write docs');
 
-    await waitForInteractiveTrigger(
-      cardPage.page,
+    await cardPage.waitForInteractiveTrigger(
       '[data-testid="EditCardTitleInput"]',
       '[data-testid="CardModalTitleContainer"] [data-testid="CardModalTitle"]',
     );
@@ -48,8 +45,7 @@ test.describe('Card', () => {
         .getByTestId('CardModalTitle'),
     ).toHaveText('Write docs');
 
-    await waitForInteractiveTrigger(
-      cardPage.page,
+    await cardPage.waitForInteractiveTrigger(
       '[data-testid="DescriptionInput"]',
       '[data-testid="DescriptionPlaceholder"]',
     );
@@ -58,8 +54,7 @@ test.describe('Card', () => {
       .getByTestId('DescriptionInput')
       .pressSequentially('Add acceptance criteria.');
 
-    await waitForInteractiveTrigger(
-      cardPage.page,
+    await cardPage.waitForInteractiveTrigger(
       '[data-testid="CardDescriptionText"]',
       '[data-testid="SaveDescriptionButton"]',
     );
@@ -72,8 +67,7 @@ test.describe('Card', () => {
   test('formats a description with the rich text toolbar', async () => {
     await cardPage.setup('Write docs');
 
-    await waitForInteractiveTrigger(
-      cardPage.page,
+    await cardPage.waitForInteractiveTrigger(
       '[data-testid="DescriptionInput"]',
       '[data-testid="DescriptionPlaceholder"]',
     );
@@ -124,8 +118,7 @@ test.describe('Card', () => {
     const { board } = await cardPage.setup('Ship feature');
     await cardPage.waitForCardModal();
 
-    await waitForInteractiveTrigger(
-      cardPage.page,
+    await cardPage.waitForInteractiveTrigger(
       '[data-testid="PopoverOptionsContent"]',
       '[data-testid="CardActionsContainer"] [data-testid="DeleteCardPopoverTrigger"]',
     );
@@ -139,10 +132,10 @@ test.describe('Card', () => {
     // once the server confirms. Reloading before that lands cancels the
     // in-flight delete, so wait for it in-app first, then reload to prove the
     // delete persisted.
-    await expectListCardCount(cardPage.page.getByTestId('ListContainer'), 0);
+    await cardPage.expectListCardCount(0);
 
     await cardPage.page.goto(`/board/${board.id}`);
-    await expectListCardCount(cardPage.page.getByTestId('ListContainer'), 0);
+    await cardPage.expectListCardCount(0);
   });
 });
 
@@ -256,8 +249,7 @@ test.describe('Description collapse', () => {
       .getByTestId('DescriptionInput')
       .pressSequentially(' plus more');
 
-    await waitForInteractiveTrigger(
-      cardPage.page,
+    await cardPage.waitForInteractiveTrigger(
       '[data-testid="CardDescriptionText"]',
       '[data-testid="SaveDescriptionButton"]',
     );

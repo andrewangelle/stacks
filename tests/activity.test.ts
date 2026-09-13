@@ -1,7 +1,5 @@
 import { expect, test } from '~test/fixtures';
 import { CardPageActivity } from '~test/helpers/CardPageActivity';
-import { waitForHydratedAction } from '~test/helpers/waitForHydratedAction';
-import { waitForInteractiveTrigger } from '~test/helpers/waitForInteractiveTrigger';
 
 test.describe('Activity', () => {
   let cardPage: CardPageActivity;
@@ -23,8 +21,7 @@ test.describe('Activity', () => {
     // Deliberately no settling: the entries are still loading, and the panel
     // used to re-suspend once they arrived, tearing down the composer and the
     // draft in it.
-    await waitForInteractiveTrigger(
-      cardPage.page,
+    await cardPage.waitForInteractiveTrigger(
       '[data-testid="AddCommentInput"]',
       '[data-testid="AddCommentTrigger"]',
     );
@@ -74,8 +71,7 @@ test.describe('Activity', () => {
     await cardPage.setupActivity();
     await cardPage.addComment('Looks good');
 
-    await waitForInteractiveTrigger(
-      cardPage.page,
+    await cardPage.waitForInteractiveTrigger(
       '[data-testid="PopoverOptionsContent"]',
       '[data-testid="ActivityCommentContainer"] [data-testid="DeleteCommentLink"]',
     );
@@ -127,8 +123,7 @@ test.describe('Activity details toggle', () => {
     const { board } = await cardPage.seedCard();
     await cardPage.page.goto(`/board/${board.id}`);
 
-    await waitForInteractiveTrigger(
-      cardPage.page,
+    await cardPage.waitForInteractiveTrigger(
       '[data-testid="AddCardInput"]',
       '[data-testid="AddCardText"]',
     );
@@ -144,7 +139,7 @@ test.describe('Activity details toggle', () => {
     // it reach the server before the card modal fetches the feed.
     await cardPage.page.waitForLoadState('networkidle');
 
-    await waitForHydratedAction(
+    await cardPage.waitForHydratedAction(
       () => newCard.click(),
       () => cardPage.page.getByTestId('CardModalContent').isVisible(),
     );
@@ -153,7 +148,7 @@ test.describe('Activity details toggle', () => {
     // details takes the rest of the feed away and keeps only the pinned one.
     const completionCircle = cardPage.modalCompletionCircle();
 
-    await waitForHydratedAction(
+    await cardPage.waitForHydratedAction(
       () => completionCircle.click(),
       async () =>
         (await completionCircle.getAttribute('data-completed')) === '',

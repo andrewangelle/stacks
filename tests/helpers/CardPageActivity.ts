@@ -2,8 +2,6 @@ import { expect, type Locator } from '@playwright/test';
 import { CardPage } from '~test/helpers/CardPage';
 import { resetDb } from '~test/helpers/resetDb';
 import { seedActivities, seedBoard, seedCard } from '~test/helpers/seed';
-import { waitForHydratedAction } from '~test/helpers/waitForHydratedAction';
-import { waitForInteractiveTrigger } from '~test/helpers/waitForInteractiveTrigger';
 
 export class CardPageActivity extends CardPage {
   async seedCard() {
@@ -87,25 +85,17 @@ export class CardPageActivity extends CardPage {
       .getByTestId('ActivityCommentContent')
       .filter({ hasText: text });
 
-    await waitForInteractiveTrigger(
-      this.page,
+    await this.waitForInteractiveTrigger(
       '[data-testid="AddCommentInput"]',
       '[data-testid="AddCommentTrigger"]',
     );
 
     await expect(input).toBeVisible();
 
-    await waitForHydratedAction(
+    await this.waitForHydratedAction(
       async () => {
-        // Clearing before typing is what makes this retryable. A fill that lands
-        // before React hydrates leaves the text in the DOM only: hydration then
-        // initializes React's value tracker to that same text, so re-filling it
-        // dispatches no change event, `comment` stays empty and Save never enables.
-        // Writing '' first guarantees the next fill is a real change.
         await input.fill('');
         await input.fill(text);
-        // Bounded so an un-hydrated form fails this attempt instead of waiting out
-        // the whole test on a Save button that will never enable.
         await saveButton.click({ timeout: 5_000 });
       },
       async () => (await commentContent.count()) > 0,
@@ -113,8 +103,6 @@ export class CardPageActivity extends CardPage {
 
     await expect(commentContent).toBeVisible();
 
-    // Scoped by shape, not by text: the edit test rewrites the content, and a
-    // locator filtered on `text` would stop matching the moment it does.
     return activityColumn
       .getByTestId('ActivityContainer')
       .filter({ has: this.page.getByTestId('ActivityCommentContainer') })
@@ -133,7 +121,7 @@ export class CardPageActivity extends CardPage {
       .getByTestId('CardActivityColumn')
       .getByTestId('HideActivityButton');
 
-    return waitForHydratedAction(
+    return this.waitForHydratedAction(
       () => toggleButton.click(),
       async () => (await toggleButton.textContent()) === 'Show details',
     );
