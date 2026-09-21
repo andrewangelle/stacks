@@ -74,6 +74,7 @@ export const AddCardFooter = styled.div.attrs<DataAttributes>({
   flex-direction: column;
   background-color: ${listBackground};
   padding-bottom: 8px;
+  margin-top: 4px;
 
   /* While adding a card the footer rejoins the flow, so the input and its
      buttons scroll with the cards. */
@@ -191,7 +192,7 @@ export const ListCardContainer = styled.div.attrs<DataAttributes>({
 
     &:focus:not([data-edit-open]) {
       outline: 2px solid ${focusRingBlue};
-      outline-offset: -2px;
+      outline-offset: 2px;
     }
   }
 
