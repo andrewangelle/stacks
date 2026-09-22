@@ -28,7 +28,6 @@ export const ListContainer = styled.div.attrs<DataAttributes>({
   position: relative;
   white-space: normal;
   width: 275px;
-  padding: 0px 8px;
   margin: 0 15px;
   overflow: auto;
 `;
@@ -37,7 +36,7 @@ export const ListContentContainer = styled.div.attrs<DataAttributes>({
   'data-testid': 'ListContentContainer',
 })`
   overscroll-behavior: contain;
-  width: 100%;
+  margin: 0px 8px;
   min-width: 0;
 `;
 
@@ -58,7 +57,7 @@ export const ListHeaderContainer = styled.div.attrs<DataAttributes>({
   justify-content: space-between;
   align-items: baseline;
   background-color: ${listBackground};
-  padding-top: 8px;
+  padding: 8px 8px 0px;
 `;
 
 export const AddCardFooter = styled.div.attrs<DataAttributes>({
@@ -73,8 +72,8 @@ export const AddCardFooter = styled.div.attrs<DataAttributes>({
   display: flex;
   flex-direction: column;
   background-color: ${listBackground};
-  padding-bottom: 8px;
   margin-top: 4px;
+  padding: 0px 8px 8px;
 
   /* While adding a card the footer rejoins the flow, so the input and its
      buttons scroll with the cards. */
