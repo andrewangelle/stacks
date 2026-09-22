@@ -26,7 +26,7 @@ export const EditCardPopoverTriggerContainer = styled.button.attrs<DataAttribute
   opacity: 0;
   transform: scale(0.8);
   transition: opacity 150ms ease, transform 150ms ease, background-color 150ms ease;
-  z-index: 1;
+  z-index: 0;
 
   &:hover {
     background: rgba(9, 30, 66, 0.13);
