@@ -22,7 +22,9 @@
       "!**/node_modules",
       "./.vscode/settings.json",
       "!**/netlify",
-      "!**/.claude/worktrees",
+      "!.claude/*.json",
+      "!.claude/worktrees",
+      "**/.claude/loops/audit/**",
       "!**/.netlify",
       "!**/test-results"
     ]
