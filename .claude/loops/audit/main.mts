@@ -1,11 +1,20 @@
 import {
+  type EffortLevel,
+  type Options,
+  type PermissionMode,
+  query,
+} from '@anthropic-ai/claude-agent-sdk';
+import {
   AUDIT_EFFORT,
   AUDIT_MODEL,
   FIX_EFFORT,
   FIX_MODEL,
+  LOAD_PROJECT_CONTEXT,
+  REPO_ROOT,
   REQUIRED_CLEAN,
+  TURN_CAP,
 } from './constants.mts';
-import { run } from './run.mts';
+import { AUDIT_PROMPT, FIX_PROMPT } from './prompt.mts';
 import {
   colors,
   colorVerdicts,
@@ -20,59 +29,6 @@ export type MainArgs = {
   testCmd: string;
   maxIters: number;
 };
-
-type AuditPromptArgs = {
-  plan: string;
-  scope: string;
-  testsClause: string;
-};
-
-type FixPromptArgs = {
-  plan: string;
-  findings: string;
-};
-
-const AUDIT_PROMPT = ({ plan, scope, testsClause }: AuditPromptArgs) => `\
-You are a skeptical staff engineer reviewing an implementation plan that another
-agent will execute. ASSUME the plan contains incorrect assumptions until you have
-verified otherwise against the actual codebase.
-
-The plan is at: ${plan}
-Restrict your investigation to these paths (read/grep only what you need here):
-${scope}
-
-For every assumption the plan makes about existing code -- function signatures,
-exported symbols, file locations, data shapes${testsClause} -- VERIFY it by reading
-the relevant files or grepping. Do not speculate, and do not read files outside the
-scoped paths unless a scoped file directly references them.
-
-Report ONLY issues you can back with concrete evidence. For each, give:
-  - the plan's claim
-  - the contradicting evidence (file:line or grep result)
-  - the concrete fix
-
-Be efficient: read the plan once, verify the specific claims, then decide. Do not
-re-read files you have already seen.
-
-Put all of your explanation and findings ABOVE the verdict. Then finish with a
-single final line that is EXACTLY one of the following, with no other text on that
-line (no parentheses, no commentary):
-VERDICT: PASS
-VERDICT: FAIL
-`;
-
-const FIX_PROMPT = ({ plan, findings }: FixPromptArgs) => `\
-Revise the implementation plan at ${plan} to resolve every issue in the audit
-findings below. Edit the file in place. Preserve its structure and intent; change
-only what the findings require, and update any downstream steps that depended on a
-corrected assumption. Do not add unrelated content. Do not mark anything resolved
-that you did not actually change.
-
-When done, briefly summarize what you changed.
-
-Audit findings:
-${findings}
-`;
 
 export async function main({
   plan,
@@ -201,4 +157,73 @@ export async function main({
     ),
   );
   return 1;
+}
+
+/** One headless call. */
+type RunResult = {
+  text: string;
+  subtype: string;
+  cost: number;
+};
+
+type RunArgs = {
+  prompt: string;
+  model: string;
+  effort: EffortLevel;
+  allowedTools: string[];
+  permissionMode: PermissionMode;
+  disallowedTools?: string[];
+};
+
+async function run({
+  prompt,
+  model,
+  effort,
+  allowedTools,
+  permissionMode,
+  disallowedTools = [],
+}: RunArgs): Promise<RunResult> {
+  let text = '';
+  let subtype = 'unknown';
+  let cost = 0;
+
+  const options: Options = {
+    cwd: REPO_ROOT,
+    model,
+    effort,
+    allowedTools,
+    disallowedTools,
+    permissionMode,
+    maxTurns: TURN_CAP,
+    settingSources: LOAD_PROJECT_CONTEXT ? ['project'] : [],
+    ...(permissionMode === 'bypassPermissions'
+      ? { allowDangerouslySkipPermissions: true }
+      : {}),
+  };
+
+  let turn = 0;
+
+  for await (const msg of query({ prompt, options })) {
+    if (msg.type === 'assistant') {
+      for (const block of msg.message.content) {
+        if (block.type === 'tool_use') {
+          turn++;
+          const inp = (block.input ?? {}) as Record<string, unknown>;
+          const detail = inp.file_path ?? inp.pattern ?? inp.command ?? '';
+          console.log(
+            `  ${colors.dim(`[${turn}/${TURN_CAP}]`)} ${colors.tool(block.name)} ${colors.dim(String(detail))}`,
+          );
+        }
+      }
+    } else if (msg.type === 'result') {
+      subtype = msg.subtype;
+      if (typeof msg.total_cost_usd === 'number') {
+        cost = msg.total_cost_usd;
+      }
+      if (msg.subtype === 'success' && msg.result) {
+        text = msg.result;
+      }
+    }
+  }
+  return { text, subtype, cost };
 }
