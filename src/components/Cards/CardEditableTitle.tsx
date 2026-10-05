@@ -7,8 +7,8 @@ import {
 } from '~/components/Cards/Card.styled';
 import { CardCompletedIndicator } from '~/components/Cards/CardCompletedIndicator';
 import { useGetCardById, useUpdateCard } from '~/db/cards/cards.query';
-import { useCurrentCardId } from '~/utils/useCurrentCardId';
-import { useOutsideClick } from '~/utils/useOutsideClick';
+import { useCurrentCardId } from '~/hooks/useCurrentCardId';
+import { useOutsideClick } from '~/hooks/useOutsideClick';
 
 export function CardEditableTitle() {
   const id = useCurrentCardId();

@@ -7,7 +7,7 @@ import {
 } from '~/components/DisplayMenu/DisplayMenu.styled';
 import { SwitchBoards } from '~/components/DisplayMenu/SwitchBoards/SwitchBoards';
 import { Tooltip } from '~/components/shared/Tooltip/Tooltip';
-import { useIsMobile } from '~/utils/useIsMobile';
+import { useIsMobile } from '~/hooks/useIsMobile';
 
 export function DisplayMenu() {
   const isMobile = useIsMobile();

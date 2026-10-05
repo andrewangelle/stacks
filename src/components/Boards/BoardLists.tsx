@@ -6,7 +6,7 @@ import { ListSkeleton } from '~/components/Lists/ListSkeleton';
 import { Draggable } from '~/components/shared/dnd/Draggable';
 import { reorderDraggedList } from '~/db/lists/lists.cache';
 import { listsQueryOptions } from '~/db/lists/lists.query';
-import { useCurrentBoardId } from '~/utils/useCurrentBoardId';
+import { useCurrentBoardId } from '~/hooks/useCurrentBoardId';
 
 export function BoardLists({ children }: { children?: ReactNode }) {
   const boardId = useCurrentBoardId();

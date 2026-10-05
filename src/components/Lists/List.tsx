@@ -10,8 +10,8 @@ import { Draggable } from '~/components/shared/dnd/Draggable';
 import { DropTargetFallback } from '~/components/shared/dnd/DropTargetFallback';
 import { moveCardToNewList, reorderCardsByIndex } from '~/db/cards/cards.cache';
 import { useGetListById } from '~/db/lists/lists.query';
-import { useCrossContainerMove } from '~/utils/useCrossContainerMove';
-import { useIsMobile } from '~/utils/useIsMobile';
+import { useCrossContainerMove } from '~/hooks/useCrossContainerMove';
+import { useIsMobile } from '~/hooks/useIsMobile';
 
 export function List({ id: listId }: { id: string }) {
   const { ref, onMove } = useCrossContainerMove((args) => {

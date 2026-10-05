@@ -15,7 +15,7 @@ import {
   useGetCardTitleDetailsChecklists,
   useSetCardChecklistExpanded,
 } from '~/db/checklists/checklists.query';
-import { useCardTitleDetailsVisibility } from '~/utils/useCardTitleDetailsVisibility';
+import { useCardTitleDetailsVisibility } from '~/hooks/useCardTitleDetailsVisibility';
 
 const MAX_VISIBLE_CHECKLISTS = 3;
 

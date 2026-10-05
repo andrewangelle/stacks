@@ -6,7 +6,7 @@ import {
   useDeleteChecklistItem,
   useGetChecklistItem,
 } from '~/db/checklistItems/checklistItems.query';
-import { useCurrentBoardId } from '~/utils/useCurrentBoardId';
+import { useCurrentBoardId } from '~/hooks/useCurrentBoardId';
 
 type ConvertChecklistItemToCardButtonProps = {
   id: string;

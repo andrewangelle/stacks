@@ -14,11 +14,11 @@ import {
 } from '~/components/Nav/BoardMenu/BoardMenu.styled';
 import { ChangeBoardBackground } from '~/components/Nav/BoardMenu/ChangeBoardBackground';
 import { useDeleteBoard } from '~/db/boards/boards.query';
+import { useCurrentBoardId } from '~/hooks/useCurrentBoardId';
 import {
   PopoverOptionsContent,
   PopoverOptionsContentContainer,
 } from '~/styles/Page.styled';
-import { useCurrentBoardId } from '~/utils/useCurrentBoardId';
 
 type Views = 'actions' | 'changeBackground' | 'delete';
 

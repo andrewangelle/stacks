@@ -17,7 +17,7 @@ import {
   MoveCardViewPanelHeader,
 } from '~/components/Lists/EditCardPopover/EditCardPopover.styled';
 import { useDeleteCard } from '~/db/cards/cards.query';
-import { useBoardPageScrollHandler } from '~/utils/useBoardPageScrollRef';
+import { useBoardPageScrollHandler } from '~/hooks/useBoardPageScrollRef';
 import { EditCardTitle, type EditCardTitleProps } from './EditCardTitle';
 
 type EditCardPopoverActionsProps = {

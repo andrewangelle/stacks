@@ -5,7 +5,7 @@ import { ActivityLinkToCard } from '~/components/Activity/Activity.styled';
 import { boardByIdQueryOptions } from '~/db/boards/boards.query';
 import { useGetCardById } from '~/db/cards/cards.query';
 import { useGetListById } from '~/db/lists/lists.query';
-import { useCurrentBoardId } from '~/utils/useCurrentBoardId';
+import { useCurrentBoardId } from '~/hooks/useCurrentBoardId';
 
 const LINK_COMPONENTS = {
   linkToBoard: LinkToBoard,

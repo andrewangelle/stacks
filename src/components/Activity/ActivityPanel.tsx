@@ -15,7 +15,7 @@ import {
   useGetShowActivityDetails,
   useSetShowActivityDetails,
 } from '~/db/activity/activity.query';
-import { useCurrentCardId } from '~/utils/useCurrentCardId';
+import { useCurrentCardId } from '~/hooks/useCurrentCardId';
 
 export function ActivityPanel() {
   const location = useLocation();

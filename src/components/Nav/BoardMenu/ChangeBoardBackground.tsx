@@ -3,9 +3,9 @@ import { FaCheck } from 'react-icons/fa';
 import type { BoardBackground } from '~/components/Boards/Boards.styled';
 import { ChangeBoardBackgroundChoice } from '~/components/Nav/BoardMenu/BoardMenu.styled';
 import { useGetBoard, useUpdateBoard } from '~/db/boards/boards.query';
+import { useBoardBackgroundColor } from '~/hooks/useBoardBackgroundColor';
+import { useCurrentBoardId } from '~/hooks/useCurrentBoardId';
 import { Center, Flex } from '~/styles/Page.styled';
-import { useBoardBackgroundColor } from '~/utils/useBoardBackgroundColor';
-import { useCurrentBoardId } from '~/utils/useCurrentBoardId';
 
 const backgroundChoices: BoardBackground[] = [
   'green',

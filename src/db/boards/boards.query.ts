@@ -20,7 +20,7 @@ import type {
   DeleteBoardArgs,
   UpdateBoardArgs,
 } from '~/db/boards/boards.schemas';
-import { useCurrentBoardId } from '~/utils/useCurrentBoardId';
+import { useCurrentBoardId } from '~/hooks/useCurrentBoardId';
 
 export const boardsQueryOptions = {
   queryKey: boardsQueryKey,

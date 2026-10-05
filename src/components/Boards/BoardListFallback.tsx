@@ -1,5 +1,5 @@
 import { BoardCardSkeleton } from '~/components/Boards/Boards.styled';
-import { useIsMobile } from '~/utils/useIsMobile';
+import { useIsMobile } from '~/hooks/useIsMobile';
 
 export function BoardListFallback() {
   const isMobile = useIsMobile();

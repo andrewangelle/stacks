@@ -1,8 +1,8 @@
 import { useState } from 'react';
 import { EditListNameInput, ListName } from '~/components/Lists/List.styled';
 import { useGetListById, useUpdateList } from '~/db/lists/lists.query';
-import { useCurrentBoardId } from '~/utils/useCurrentBoardId';
-import { useOutsideClick } from '~/utils/useOutsideClick';
+import { useCurrentBoardId } from '~/hooks/useCurrentBoardId';
+import { useOutsideClick } from '~/hooks/useOutsideClick';
 
 type EditableListNameProps = {
   listId: string;

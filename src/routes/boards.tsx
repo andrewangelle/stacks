@@ -10,7 +10,7 @@ import { UserNavContent } from '~/components/Nav/UserNavContent';
 import { getBoardsServer } from '~/components/server/Boards.functions';
 import { getNavBarServer } from '~/components/server/Nav.functions';
 import { boardsQueryOptions } from '~/db/boards/boards.query';
-import { useIsMobile } from '~/utils/useIsMobile';
+import { useIsMobile } from '~/hooks/useIsMobile';
 
 export const Route = createFileRoute('/boards')({
   async loader({ context }) {

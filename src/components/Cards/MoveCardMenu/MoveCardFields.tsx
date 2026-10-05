@@ -8,7 +8,7 @@ import {
   MoveCardMenuContent,
   MoveCardMenuHeader,
 } from '~/components/Cards/MoveCardMenu/MoveCardMenu.styled';
-import { useCurrentBoardId } from '~/utils/useCurrentBoardId';
+import { useCurrentBoardId } from '~/hooks/useCurrentBoardId';
 
 export function MoveCardFields({ id }: { id: string }) {
   const sourceBoardId = useCurrentBoardId();

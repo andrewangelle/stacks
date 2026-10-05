@@ -8,8 +8,8 @@ import {
 } from '~/components/Lists/List.styled';
 import { useCreateActivity } from '~/db/activity/activity.query';
 import { useCreateCard } from '~/db/cards/cards.query';
+import { useCurrentBoardId } from '~/hooks/useCurrentBoardId';
 import { Flex } from '~/styles/Page.styled';
-import { useCurrentBoardId } from '~/utils/useCurrentBoardId';
 
 type AddNewCardProps = {
   listId: string;

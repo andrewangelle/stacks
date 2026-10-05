@@ -14,11 +14,11 @@ import {
 import { MoveListMenu } from '~/components/Lists/ListActions/MoveListMenu';
 import { Tooltip } from '~/components/shared/Tooltip/Tooltip';
 import { useDeleteList } from '~/db/lists/lists.query';
+import { useCurrentBoardId } from '~/hooks/useCurrentBoardId';
 import {
   PopoverOptionsContent,
   PopoverOptionsContentContainer,
 } from '~/styles/Page.styled';
-import { useCurrentBoardId } from '~/utils/useCurrentBoardId';
 
 type ListActionsProps = {
   id: string;

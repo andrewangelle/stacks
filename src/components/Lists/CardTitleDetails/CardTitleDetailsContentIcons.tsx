@@ -8,8 +8,8 @@ import {
 } from '~/components/Lists/CardTitleDetails/CardTitleDetails.styled';
 import { Tooltip } from '~/components/shared/Tooltip/Tooltip';
 import { useGetCardTitleDetailsChecklists } from '~/db/checklists/checklists.query';
+import { useCardTitleDetailsVisibility } from '~/hooks/useCardTitleDetailsVisibility';
 import { Flex } from '~/styles/Page.styled';
-import { useCardTitleDetailsVisibility } from '~/utils/useCardTitleDetailsVisibility';
 
 type CardTitleDetailsContentIconsProps = {
   cardId: string;

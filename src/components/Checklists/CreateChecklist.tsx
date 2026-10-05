@@ -21,8 +21,8 @@ import { Tooltip } from '~/components/shared/Tooltip/Tooltip';
 import { useCreateActivity } from '~/db/activity/activity.query';
 import { useGetCardById } from '~/db/cards/cards.query';
 import { useCreateChecklist } from '~/db/checklists/checklists.query';
-import { useCurrentBoardId } from '~/utils/useCurrentBoardId';
-import { useCurrentCardId } from '~/utils/useCurrentCardId';
+import { useCurrentBoardId } from '~/hooks/useCurrentBoardId';
+import { useCurrentCardId } from '~/hooks/useCurrentCardId';
 
 export function CreateChecklist() {
   const [open, setOpen] = useState(false);

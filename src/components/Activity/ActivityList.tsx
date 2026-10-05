@@ -6,7 +6,7 @@ import {
 import { ActivityComment } from '~/components/Activity/ActivityComment';
 import { ActivityEntry } from '~/components/Activity/ActivityEntry';
 import { ActivityEntrySkeleton } from '~/components/Activity/ActivitySkeleton';
-import { useActivityList } from '~/utils/useActivityList';
+import { useActivityList } from '~/hooks/useActivityList';
 
 type ActivityListProps = {
   showActivity: boolean;

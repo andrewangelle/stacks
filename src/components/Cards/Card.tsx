@@ -24,9 +24,9 @@ import { CardChecklists } from '~/components/Checklists/Checklists';
 import { ChecklistsContainer } from '~/components/Checklists/Checklists.styled';
 import { CreateChecklist } from '~/components/Checklists/CreateChecklist';
 import { usePreventModalCloseOnDevToolsEvent } from '~/components/DevTools';
-import { useCardColumnWidth } from '~/utils/useCardColumnWidth';
-import { useCurrentBoardId } from '~/utils/useCurrentBoardId';
-import { useCurrentCardId } from '~/utils/useCurrentCardId';
+import { useCardColumnWidth } from '~/hooks/useCardColumnWidth';
+import { useCurrentBoardId } from '~/hooks/useCurrentBoardId';
+import { useCurrentCardId } from '~/hooks/useCurrentCardId';
 
 type CardProps = {
   variant?: 'modal' | 'page';

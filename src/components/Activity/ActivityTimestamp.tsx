@@ -8,8 +8,8 @@ import {
   PaperclipReveal,
 } from '~/components/Activity/Activity.styled';
 import { useGetActivityById } from '~/db/activity/activity.query';
+import { useCurrentCardId } from '~/hooks/useCurrentCardId';
 import { formatActivityTime } from '~/utils/formatDateTime';
-import { useCurrentCardId } from '~/utils/useCurrentCardId';
 
 type ActivityTimestampProps = {
   id: string;

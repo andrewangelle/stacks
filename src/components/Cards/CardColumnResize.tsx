@@ -3,7 +3,7 @@ import { ResizeableCardColumnHandle } from '~/components/Cards/Card.styled';
 import {
   ACTIVITY_COLUMN_MAX_WIDTH,
   ACTIVITY_COLUMN_MIN_WIDTH,
-} from '~/utils/useCardColumnWidth';
+} from '~/hooks/useCardColumnWidth';
 
 type CardColumnResizeProps = {
   columnWidth: number;

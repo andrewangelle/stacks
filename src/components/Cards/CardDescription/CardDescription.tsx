@@ -27,9 +27,9 @@ import {
   useSetDescriptionExpanded,
   useUpdateCard,
 } from '~/db/cards/cards.query';
+import { useCurrentCardId } from '~/hooks/useCurrentCardId';
+import { useDeliberateClick } from '~/hooks/useDeliberateClick';
 import { Flex } from '~/styles/Page.styled';
-import { useCurrentCardId } from '~/utils/useCurrentCardId';
-import { useDeliberateClick } from '~/utils/useDeliberateClick';
 
 export function CardDescription() {
   const cardId = useCurrentCardId();

@@ -5,7 +5,7 @@ import { ChecklistsContainer } from '~/components/Checklists/Checklists.styled';
 import { Draggable } from '~/components/shared/dnd/Draggable';
 import { reorderChecklistsByIndex } from '~/db/checklists/checklists.cache';
 import { useGetChecklists } from '~/db/checklists/checklists.query';
-import { useCurrentCardId } from '~/utils/useCurrentCardId';
+import { useCurrentCardId } from '~/hooks/useCurrentCardId';
 
 export function CardChecklists() {
   const cardId = useCurrentCardId();

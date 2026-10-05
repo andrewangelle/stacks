@@ -12,8 +12,8 @@ import { CloseAddCardButton } from '~/components/Lists/List.styled';
 import { RichTextEditor } from '~/components/shared/RichText/RichTextEditor';
 import { useCreateActivity } from '~/db/activity/activity.query';
 import { useGetCardById } from '~/db/cards/cards.query';
-import { useCurrentBoardId } from '~/utils/useCurrentBoardId';
-import { useCurrentCardId } from '~/utils/useCurrentCardId';
+import { useCurrentBoardId } from '~/hooks/useCurrentBoardId';
+import { useCurrentCardId } from '~/hooks/useCurrentCardId';
 
 export function AddComment() {
   const cardId = useCurrentCardId();

@@ -15,7 +15,7 @@ import {
 } from '~/components/server/Nav.functions';
 import { boardsQueryOptions } from '~/db/boards/boards.query';
 import { getBoardIdByCardId } from '~/db/cards/cards.functions';
-import { BoardPageScrollRefProvider } from '~/utils/useBoardPageScrollRef';
+import { BoardPageScrollRefProvider } from '~/hooks/useBoardPageScrollRef';
 
 export const Route = createFileRoute('/card/$cardId')({
   async loader({ context, params }) {

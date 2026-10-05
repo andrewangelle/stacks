@@ -5,11 +5,11 @@ import { DeleteChecklistPopoverButton } from '~/components/ChecklistItem/Checkli
 import { ChecklistPopoverHeader } from '~/components/Checklists/Checklists.styled';
 import { useDeleteActivity } from '~/db/activity/activity.query';
 import type { Activity } from '~/generated/prisma/client';
+import { useCurrentCardId } from '~/hooks/useCurrentCardId';
 import {
   PopoverOptionsContent,
   PopoverOptionsContentContainer,
 } from '~/styles/Page.styled';
-import { useCurrentCardId } from '~/utils/useCurrentCardId';
 
 const strings = {
   deleteComment: 'Delete comment',
