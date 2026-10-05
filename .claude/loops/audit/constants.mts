@@ -2,10 +2,9 @@ import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import type { EffortLevel } from '@anthropic-ai/claude-agent-sdk';
 
-// This file lives at <repo>/.claude/loops/audit.ts
 export const REPO_ROOT = resolve(
   dirname(fileURLToPath(import.meta.url)),
-  '../..',
+  '../../..',
 );
 export const PLANS_DIR = resolve(REPO_ROOT, '.claude/plans');
 
