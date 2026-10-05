@@ -7,8 +7,8 @@ import {
   useGetComments,
   useGetFirstActivity,
 } from '~/db/activity/activity.query';
-import { useCurrentCardId } from '~/utils/useCurrentCardId';
-import { getHashId } from '~/utils/useScrollToHashId';
+import { useCurrentCardId } from '~/hooks/useCurrentCardId';
+import { getHashId } from '~/hooks/useScrollToHashId';
 
 /**
  * Rows are measured after they mount, so this only has to be close enough to

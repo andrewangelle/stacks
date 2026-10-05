@@ -11,7 +11,7 @@ import {
 import { useCreateActivity } from '~/db/activity/activity.query';
 import { useUpdateChecklistItem } from '~/db/checklistItems/checklistItems.query';
 import { useGetChecklist } from '~/db/checklists/checklists.query';
-import { useCurrentBoardId } from '~/utils/useCurrentBoardId';
+import { useCurrentBoardId } from '~/hooks/useCurrentBoardId';
 
 const INITIAL_VISIBLE = 3;
 const STEP = 2;

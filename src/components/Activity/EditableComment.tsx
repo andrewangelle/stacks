@@ -6,7 +6,7 @@ import { EditCommentForm } from '~/components/Activity/EditCommentForm';
 import { RichTextContent } from '~/components/shared/RichText/RichTextContent';
 import { useGetActivityById } from '~/db/activity/activity.query';
 import type { Activity } from '~/generated/prisma/client';
-import { useCurrentCardId } from '~/utils/useCurrentCardId';
+import { useCurrentCardId } from '~/hooks/useCurrentCardId';
 
 type EditableCommentProps = Pick<Activity, 'id'>;
 

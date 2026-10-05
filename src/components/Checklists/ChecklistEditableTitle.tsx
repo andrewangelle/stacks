@@ -9,8 +9,8 @@ import {
   useGetChecklist,
   useUpdateChecklist,
 } from '~/db/checklists/checklists.query';
+import { useOutsideClick } from '~/hooks/useOutsideClick';
 import { Flex } from '~/styles/Page.styled';
-import { useOutsideClick } from '~/utils/useOutsideClick';
 
 type ChecklistEditableTitleProps = {
   id: string;

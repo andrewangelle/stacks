@@ -11,7 +11,7 @@ import {
   ComboboxWrapper,
 } from '~/components/shared/Combobox/Combobox.styled';
 import { useMoveListMutation } from '~/db/lists/lists.query';
-import { useMoveListSelectOptions } from '~/utils/useMoveListSelectOptions';
+import { useMoveListSelectOptions } from '~/hooks/useMoveListSelectOptions';
 
 type MoveListMenuProps = {
   id: string;

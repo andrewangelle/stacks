@@ -4,7 +4,7 @@ import {
   type ComboboxItemType,
 } from '~/components/shared/Combobox/Combobox';
 import { useGetBoards } from '~/db/boards/boards.query';
-import { useCurrentBoardId } from '~/utils/useCurrentBoardId';
+import { useCurrentBoardId } from '~/hooks/useCurrentBoardId';
 
 type BoardSelectProps = {
   cardId: string;

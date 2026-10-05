@@ -8,7 +8,7 @@ import { CloseAddCardButton } from '~/components/Lists/List.styled';
 import { RichTextEditor } from '~/components/shared/RichText/RichTextEditor';
 import { useUpdateActivity } from '~/db/activity/activity.query';
 import type { Activity } from '~/generated/prisma/client';
-import { useCurrentCardId } from '~/utils/useCurrentCardId';
+import { useCurrentCardId } from '~/hooks/useCurrentCardId';
 
 type EditCommentFormProps = Pick<Activity, 'id' | 'content'> & {
   setIsEditing: (isEditing: boolean) => void;

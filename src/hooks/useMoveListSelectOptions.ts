@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useGetListById, useGetListsByBoardId } from '~/db/lists/lists.query';
-import { useCurrentBoardId } from '~/utils/useCurrentBoardId';
+import { useCurrentBoardId } from '~/hooks/useCurrentBoardId';
 
 export function useMoveListSelectOptions({ listId }: { listId: string }) {
   const sourceBoardId = useCurrentBoardId();

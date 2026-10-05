@@ -30,8 +30,8 @@ import {
   useGetChecklist,
   useUpdateChecklist,
 } from '~/db/checklists/checklists.query';
-import { useCrossContainerMove } from '~/utils/useCrossContainerMove';
-import { useScrollToHashId } from '~/utils/useScrollToHashId';
+import { useCrossContainerMove } from '~/hooks/useCrossContainerMove';
+import { useScrollToHashId } from '~/hooks/useScrollToHashId';
 
 export function Checklist({ id }: { id: string }) {
   const { isSuccess, data: checklist } = useGetChecklist({ checklistId: id });

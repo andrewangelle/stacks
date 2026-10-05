@@ -6,7 +6,7 @@ import {
   BoardColorSwatch,
 } from '~/components/Boards/Boards.styled';
 import { boardByIdQueryOptions } from '~/db/boards/boards.query';
-import { useIsMobile } from '~/utils/useIsMobile';
+import { useIsMobile } from '~/hooks/useIsMobile';
 
 export function Board({ boardId }: { boardId: string }) {
   const { data: board } = useSuspenseQuery(boardByIdQueryOptions(boardId));

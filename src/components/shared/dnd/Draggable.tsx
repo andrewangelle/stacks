@@ -10,8 +10,8 @@ import {
   getTargetDropZoneGroup,
   getTargetSortableGroup,
 } from '~/components/shared/dnd/utils';
+import type { CrossGroupMoveArgs } from '~/hooks/useCrossContainerMove';
 import { assignRef } from '~/utils/ref';
-import type { CrossGroupMoveArgs } from '~/utils/useCrossContainerMove';
 
 export type DraggableSource = {
   id: string;

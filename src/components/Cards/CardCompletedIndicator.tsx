@@ -4,7 +4,7 @@ import { CardCompletedIndicatorCircle } from '~/components/Lists/CardTitleDetail
 import { Tooltip } from '~/components/shared/Tooltip/Tooltip';
 import { useCreateActivity } from '~/db/activity/activity.query';
 import { useGetCard, useUpdateCard } from '~/db/cards/cards.query';
-import { useCurrentBoardId } from '~/utils/useCurrentBoardId';
+import { useCurrentBoardId } from '~/hooks/useCurrentBoardId';
 
 type CardCompletedIndicatorProps = {
   cardId: string;

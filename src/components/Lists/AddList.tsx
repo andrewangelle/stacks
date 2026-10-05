@@ -7,9 +7,9 @@ import {
 } from '~/components/Boards/Board.styled';
 import { AddListButton } from '~/components/Lists/List.styled';
 import { useCreateList } from '~/db/lists/lists.query';
+import { useCurrentBoardId } from '~/hooks/useCurrentBoardId';
+import { useOutsideClick } from '~/hooks/useOutsideClick';
 import { Flex } from '~/styles/Page.styled';
-import { useCurrentBoardId } from '~/utils/useCurrentBoardId';
-import { useOutsideClick } from '~/utils/useOutsideClick';
 
 export function AddLists() {
   const boardId = useCurrentBoardId();

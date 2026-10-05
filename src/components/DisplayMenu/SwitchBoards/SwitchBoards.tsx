@@ -21,9 +21,9 @@ import { SwitchBoardsIcon } from '~/components/DisplayMenu/SwitchBoards/SwitchBo
 import { CardTitleDetailsSpinner } from '~/components/Lists/CardTitleDetails/CardTitleDetails.styled';
 import { Tooltip } from '~/components/shared/Tooltip/Tooltip';
 import { boardsQueryOptions } from '~/db/boards/boards.query';
-import { useCurrentBoardId } from '~/utils/useCurrentBoardId';
-import { useIsMobile } from '~/utils/useIsMobile';
-import { usePrevious } from '~/utils/usePrevious';
+import { useCurrentBoardId } from '~/hooks/useCurrentBoardId';
+import { useIsMobile } from '~/hooks/useIsMobile';
+import { usePrevious } from '~/hooks/usePrevious';
 
 export function SwitchBoards() {
   const [open, setOpen] = useState(false);

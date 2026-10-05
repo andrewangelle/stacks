@@ -11,12 +11,12 @@ import { DeleteChecklistPopoverButton } from '~/components/ChecklistItem/Checkli
 import { ChecklistPopoverHeader } from '~/components/Checklists/Checklists.styled';
 import { Tooltip } from '~/components/shared/Tooltip/Tooltip';
 import { useDeleteCard, useGetCardById } from '~/db/cards/cards.query';
+import { useCurrentBoardId } from '~/hooks/useCurrentBoardId';
+import { useCurrentCardId } from '~/hooks/useCurrentCardId';
 import {
   PopoverOptionsContent,
   PopoverOptionsContentContainer,
 } from '~/styles/Page.styled';
-import { useCurrentBoardId } from '~/utils/useCurrentBoardId';
-import { useCurrentCardId } from '~/utils/useCurrentCardId';
 
 export function DeleteCardPopover() {
   const [open, setOpen] = useState(false);

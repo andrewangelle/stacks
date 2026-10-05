@@ -14,11 +14,11 @@ import {
   useDeleteChecklist,
   useGetChecklist,
 } from '~/db/checklists/checklists.query';
+import { useCurrentBoardId } from '~/hooks/useCurrentBoardId';
 import {
   PopoverOptionsContent,
   PopoverOptionsContentContainer,
 } from '~/styles/Page.styled';
-import { useCurrentBoardId } from '~/utils/useCurrentBoardId';
 
 export function DeleteChecklist({ id }: { id: string }) {
   const [open, setOpen] = useState(false);

@@ -11,8 +11,8 @@ import {
 } from '~/components/Cards/MoveCardMenu/MoveCardMenu.styled';
 import { PositionSelect } from '~/components/Cards/MoveCardMenu/PositionSelect';
 import { useMoveCardMutation } from '~/db/cards/cards.query';
-import { useCurrentBoardId } from '~/utils/useCurrentBoardId';
-import { useMoveCardSelectOptions } from '~/utils/useMoveCardSelectOptions';
+import { useCurrentBoardId } from '~/hooks/useCurrentBoardId';
+import { useMoveCardSelectOptions } from '~/hooks/useMoveCardSelectOptions';
 
 type MoveCardFormProps = {
   id: string;

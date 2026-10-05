@@ -4,7 +4,7 @@ import {
   useGetListByCardId,
   useGetListsByBoardId,
 } from '~/db/lists/lists.query';
-import { useCurrentBoardId } from '~/utils/useCurrentBoardId';
+import { useCurrentBoardId } from '~/hooks/useCurrentBoardId';
 
 export function useMoveCardSelectOptions({ cardId }: { cardId: string }) {
   const { data: currentList } = useGetListByCardId({ id: cardId });

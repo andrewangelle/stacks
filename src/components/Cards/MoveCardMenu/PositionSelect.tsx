@@ -9,7 +9,7 @@ import {
   ComboboxWrapper,
 } from '~/components/shared/Combobox/Combobox.styled';
 import { useGetCardById } from '~/db/cards/cards.query';
-import { useCurrentCardId } from '~/utils/useCurrentCardId';
+import { useCurrentCardId } from '~/hooks/useCurrentCardId';
 
 type PositionSelectProps = {
   isListsLoading: boolean;

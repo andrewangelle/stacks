@@ -9,9 +9,9 @@ import {
   EditBoardTitleInput,
 } from '~/components/Nav/Nav.styled';
 import { useGetBoard, useUpdateBoard } from '~/db/boards/boards.query';
+import { useBoardBackgroundColor } from '~/hooks/useBoardBackgroundColor';
+import { useOutsideClick } from '~/hooks/useOutsideClick';
 import { Flex } from '~/styles/Page.styled';
-import { useBoardBackgroundColor } from '~/utils/useBoardBackgroundColor';
-import { useOutsideClick } from '~/utils/useOutsideClick';
 
 export function BoardHeader() {
   const currentColor = useBoardBackgroundColor();

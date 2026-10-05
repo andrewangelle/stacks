@@ -25,7 +25,7 @@ import type {
   MoveListArgs,
   UpdateListArgs,
 } from '~/db/lists/lists.schemas';
-import { useCurrentBoardId } from '~/utils/useCurrentBoardId';
+import { useCurrentBoardId } from '~/hooks/useCurrentBoardId';
 
 /**
  * The shape the board page renders: a list with its card fronts, where

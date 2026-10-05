@@ -7,8 +7,8 @@ import {
   useState,
 } from 'react';
 import { prefetchActivities } from '~/db/activity/activity.cache';
-import { useCurrentBoardId } from '~/utils/useCurrentBoardId';
-import { useIsMobile } from '~/utils/useIsMobile';
+import { useCurrentBoardId } from '~/hooks/useCurrentBoardId';
+import { useIsMobile } from '~/hooks/useIsMobile';
 
 export function useCardModalTrigger(id: string) {
   const boardId = useCurrentBoardId();

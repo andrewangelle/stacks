@@ -12,7 +12,7 @@ import {
   useGetCardTitleDetailsChecklists,
   useSetCardChecklistExpanded,
 } from '~/db/checklists/checklists.query';
-import { useIsMobile } from '~/utils/useIsMobile';
+import { useIsMobile } from '~/hooks/useIsMobile';
 
 export type EditCardTitleProps = {
   id: string;

@@ -15,7 +15,7 @@ import {
   getNavBarServer,
 } from '~/components/server/Nav.functions';
 import { getBoardColor } from '~/db/boards/boards.functions';
-import { BoardPageScrollRefProvider } from '~/utils/useBoardPageScrollRef';
+import { BoardPageScrollRefProvider } from '~/hooks/useBoardPageScrollRef';
 
 export const Route = createFileRoute('/board/$id')({
   async loader({ context, params }) {

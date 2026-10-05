@@ -10,8 +10,8 @@ import {
 import { ConvertChecklistItemToCardButton } from '~/components/ChecklistItem/ConvertChecklistItemToCardButton';
 import { ChecklistPopoverHeader } from '~/components/Checklists/Checklists.styled';
 import { useDeleteChecklistItem } from '~/db/checklistItems/checklistItems.query';
+import { useOutsideClick } from '~/hooks/useOutsideClick';
 import { PopoverOptionsContent } from '~/styles/Page.styled';
-import { useOutsideClick } from '~/utils/useOutsideClick';
 
 type ChecklistItemOptionsProps = {
   id: string;
