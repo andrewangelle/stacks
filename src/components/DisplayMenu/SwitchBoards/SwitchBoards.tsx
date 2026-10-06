@@ -108,7 +108,7 @@ export function SwitchBoards() {
               )}
             </SwitchBoardsSearchField>
 
-            {matchingBoards.length && (
+            {matchingBoards.length > 0 && (
               <SwitchBoardsGrid $isMobile={isMobile}>
                 {matchingBoards.map((board) => (
                   <Board key={board.id} boardId={board.id} />
@@ -118,9 +118,7 @@ export function SwitchBoards() {
 
             {!matchingBoards.length && (
               <SwitchBoardsEmpty $isMobile={isMobile}>
-                {searchQuery
-                  ? `No boards match "${search.trim()}".`
-                  : 'You have no other boards.'}
+                {searchQuery ? 'No results' : 'You have no other boards.'}
               </SwitchBoardsEmpty>
             )}
           </SwitchBoardsContent>

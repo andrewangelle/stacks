@@ -151,7 +151,18 @@ test.describe('Display menu', () => {
       .getByTestId('SwitchBoardsSearchInput')
       .fill('nothing matches');
     await expect(boardPage.page.getByTestId('SwitchBoardsGrid')).toHaveCount(0);
-    await expect(boardPage.page.getByTestId('SwitchBoardsEmpty')).toBeVisible();
+    const empty = boardPage.page.getByTestId('SwitchBoardsEmpty');
+    await expect(empty).toBeVisible();
+    await expect(empty).toHaveText('No results');
+    await expect(
+      empty.evaluate(
+        (el, searchFieldTestId) =>
+          (el.previousSibling as HTMLElement | null)?.getAttribute(
+            'data-testid',
+          ) === searchFieldTestId,
+        'SwitchBoardsSearchField',
+      ),
+    ).resolves.toBe(true);
 
     await boardPage.page.getByTestId('SwitchBoardsSearchClear').click();
     await expect(
