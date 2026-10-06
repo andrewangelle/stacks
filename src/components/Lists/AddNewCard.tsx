@@ -10,6 +10,7 @@ import { useCreateActivity } from '~/db/activity/activity.query';
 import { useCreateCard } from '~/db/cards/cards.query';
 import { useCurrentBoardId } from '~/hooks/useCurrentBoardId';
 import { Flex } from '~/styles/Page.styled';
+import { onEnter } from '~/utils/keyboard';
 
 type AddNewCardProps = {
   listId: string;
@@ -59,6 +60,7 @@ export function AddNewCard({ listId }: AddNewCardProps) {
           onChange={(event) =>
             setNewCardTitle((_prevState) => event.target.value)
           }
+          onKeyDown={onEnter(onCardCreate)}
         />
       )}
 

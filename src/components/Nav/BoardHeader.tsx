@@ -12,6 +12,7 @@ import { useGetBoard, useUpdateBoard } from '~/db/boards/boards.query';
 import { useBoardBackgroundColor } from '~/hooks/useBoardBackgroundColor';
 import { useOutsideClick } from '~/hooks/useOutsideClick';
 import { Flex } from '~/styles/Page.styled';
+import { onEnter } from '~/utils/keyboard';
 
 export function BoardHeader() {
   const currentColor = useBoardBackgroundColor();
@@ -70,6 +71,7 @@ export function BoardHeader() {
               autoFocus
               onChange={(event) => setEditedBoardTitle(event.target.value)}
               onBlur={onOutsideNameEditClick}
+              onKeyDown={onEnter((input) => input.blur())}
             />
           </EditBoardTitleForm>
         )}

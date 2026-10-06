@@ -139,6 +139,56 @@ test.describe('Card', () => {
   });
 });
 
+test.describe('Enter to save', () => {
+  let cardPage: CardPage;
+
+  test.beforeEach(async ({ page, request }) => {
+    cardPage = new CardPage(page, request);
+  });
+
+  test('renames the card via Enter in the title input', async () => {
+    await cardPage.setup('Write docs');
+
+    await cardPage.waitForInteractiveTrigger(
+      '[data-testid="EditCardTitleInput"]',
+      '[data-testid="CardModalTitleContainer"] [data-testid="CardModalTitle"]',
+    );
+
+    const input = cardPage.page.getByTestId('EditCardTitleInput');
+    await input.fill('Write E2E docs');
+    const urlBefore = cardPage.page.url();
+    await input.press('Enter');
+
+    await expect(input).toHaveCount(0);
+    await expect(
+      cardPage.page
+        .getByTestId('CardModalTitleContainer')
+        .getByTestId('CardModalTitle'),
+    ).toHaveText('Write E2E docs');
+    expect(cardPage.page.url()).toBe(urlBefore);
+  });
+
+  test('Enter on a blank card title does nothing', async () => {
+    await cardPage.setup('Write docs');
+
+    await cardPage.waitForInteractiveTrigger(
+      '[data-testid="EditCardTitleInput"]',
+      '[data-testid="CardModalTitleContainer"] [data-testid="CardModalTitle"]',
+    );
+
+    const input = cardPage.page.getByTestId('EditCardTitleInput');
+    await input.fill('');
+    await input.press('Enter');
+
+    await expect(input).toBeVisible();
+    await expect(
+      cardPage.page
+        .getByTestId('CardModalTitleContainer')
+        .getByTestId('CardModalTitle'),
+    ).toHaveCount(0);
+  });
+});
+
 test.describe('Description collapse', () => {
   // Cold Vite compile on the first navigation of a run can exceed 30s.
   test.describe.configure({ timeout: 60_000 });

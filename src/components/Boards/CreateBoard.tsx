@@ -16,8 +16,8 @@ import {
   PopoverClose,
 } from '~/components/Boards/Boards.styled';
 import { useCreateBoard } from '~/db/boards/boards.query';
-
 import { Center } from '~/styles/Page.styled';
+import { onEnter } from '~/utils/keyboard';
 
 const backgroundChoices: BoardBackground[] = [
   'green',
@@ -86,6 +86,7 @@ export function CreateBoard() {
           onChange={(event) => setBoardTitle(event.target.value)}
           value={boardTitle}
           autoFocus
+          onKeyDown={onEnter(onBoardCreate)}
         />
 
         <CreateBoardButton disabled={!boardTitle} onClick={onBoardCreate}>

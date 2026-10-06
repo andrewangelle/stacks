@@ -9,6 +9,7 @@ import {
 } from '~/components/ChecklistItem/ChecklistItem.styled';
 import { useCreateChecklistItem } from '~/db/checklistItems/checklistItems.query';
 import { useGetChecklist } from '~/db/checklists/checklists.query';
+import { onEnter } from '~/utils/keyboard';
 
 export function AddChecklistItem({ checklistId }: { checklistId: string }) {
   const { data: checklist } = useGetChecklist({ checklistId });
@@ -42,6 +43,7 @@ export function AddChecklistItem({ checklistId }: { checklistId: string }) {
             placeholder={'Add an item'}
             autoFocus
             onChange={(event) => setLabel(event.target.value)}
+            onKeyDown={onEnter(createItem)}
           />
 
           <ChecklistItemActionsIndented>

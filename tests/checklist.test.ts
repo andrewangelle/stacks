@@ -235,6 +235,131 @@ test.describe('Checklist', () => {
   });
 });
 
+test.describe('Enter to save', () => {
+  let cardPage: CardPageChecklists;
+
+  test.beforeEach(async ({ page, request }) => {
+    cardPage = new CardPageChecklists(page, request);
+  });
+
+  test.describe.configure({ timeout: 60_000 });
+
+  test('renames the checklist title via Enter', async () => {
+    await cardPage.setupWithChecklists([
+      { title: 'Launch checklist', items: ['Deploy to staging'] },
+    ]);
+
+    await cardPage.waitForInteractiveTrigger(
+      '[data-testid="EditCardTitleInput"]',
+      '[data-testid="ChecklistTitle"]',
+    );
+
+    const input = cardPage.page
+      .getByTestId('ChecklistContainer')
+      .getByTestId('EditCardTitleInput');
+    await input.fill('Release checklist');
+    const urlBefore = cardPage.page.url();
+    await input.press('Enter');
+
+    await expect(input).toHaveCount(0);
+    await expect(cardPage.page.getByTestId('ChecklistTitle')).toHaveText(
+      'Release checklist',
+    );
+    expect(cardPage.page.url()).toBe(urlBefore);
+  });
+
+  test('creates a checklist via Enter in the create-checklist popover', async () => {
+    await cardPage.setup('Ship feature');
+
+    await cardPage.waitForInteractiveTrigger(
+      '[data-testid="ChecklistPopoverContent"]',
+      '[data-testid="CreateChecklistPopoverTrigger"]',
+    );
+
+    const input = cardPage.page.getByTestId('CreateChecklistInput');
+    await input.fill('Launch checklist');
+    await input.press('Enter');
+
+    await expect(cardPage.page.getByTestId('ChecklistTitle')).toHaveText(
+      'Launch checklist',
+    );
+  });
+
+  test('Enter on a blank create-checklist title does nothing', async () => {
+    await cardPage.setup('Ship feature');
+
+    await cardPage.waitForInteractiveTrigger(
+      '[data-testid="ChecklistPopoverContent"]',
+      '[data-testid="CreateChecklistPopoverTrigger"]',
+    );
+
+    const input = cardPage.page.getByTestId('CreateChecklistInput');
+    await input.press('Enter');
+
+    await expect(input).toBeVisible();
+    await expect(cardPage.page.getByTestId('ChecklistTitle')).toHaveCount(0);
+  });
+
+  test('adds a checklist item via Enter', async () => {
+    await cardPage.setupWithChecklists([
+      { title: 'Launch checklist', items: [] },
+    ]);
+
+    await cardPage.waitForInteractiveTrigger(
+      '[data-testid="AddChecklistItemInput"]',
+      '[data-testid="AddChecklistItemButton"]',
+    );
+
+    const input = cardPage.page.getByTestId('AddChecklistItemInput');
+    await input.fill('Deploy to staging');
+    await input.press('Enter');
+
+    await expect(cardPage.page.getByTestId('CheckboxLabel')).toHaveText(
+      'Deploy to staging',
+    );
+  });
+
+  test('Shift+Enter inserts a newline instead of saving a new checklist item', async () => {
+    await cardPage.setupWithChecklists([
+      { title: 'Launch checklist', items: [] },
+    ]);
+
+    await cardPage.waitForInteractiveTrigger(
+      '[data-testid="AddChecklistItemInput"]',
+      '[data-testid="AddChecklistItemButton"]',
+    );
+
+    const input = cardPage.page.getByTestId('AddChecklistItemInput');
+    await input.fill('Deploy to staging');
+    await input.press('Shift+Enter');
+    await input.pressSequentially('and production');
+
+    await expect(input).toHaveValue('Deploy to staging\nand production');
+    await expect(cardPage.page.getByTestId('CheckboxLabel')).toHaveCount(0);
+  });
+
+  test('edits a checklist item label via Enter', async () => {
+    await cardPage.setupWithChecklists([
+      { title: 'Launch checklist', items: ['Deploy to staging'] },
+    ]);
+
+    await cardPage.waitForInteractiveTrigger(
+      '[data-testid="EditChecklistItemContainer"]',
+      '[data-testid="CheckboxLabel"]',
+    );
+
+    const editForm = cardPage.page.getByTestId('EditChecklistItemContainer');
+    const input = editForm.getByTestId('AddChecklistItemInput');
+    await input.fill('Deploy to production');
+    await input.press('Enter');
+
+    await expect(editForm).toHaveCount(0);
+    await expect(cardPage.page.getByTestId('CheckboxLabel')).toHaveText(
+      'Deploy to production',
+    );
+  });
+});
+
 test.describe('Checklist collapse', () => {
   let cardPage: CardPageChecklists;
 

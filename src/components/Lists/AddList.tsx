@@ -10,6 +10,7 @@ import { useCreateList } from '~/db/lists/lists.query';
 import { useCurrentBoardId } from '~/hooks/useCurrentBoardId';
 import { useOutsideClick } from '~/hooks/useOutsideClick';
 import { Flex } from '~/styles/Page.styled';
+import { onEnter } from '~/utils/keyboard';
 
 export function AddLists() {
   const boardId = useCurrentBoardId();
@@ -49,6 +50,7 @@ export function AddLists() {
             value={listName}
             autoFocus
             onChange={(event) => setListName(event.target.value)}
+            onKeyDown={onEnter(onListCreate)}
           />
 
           <Flex style={{ margin: '0' }}>
