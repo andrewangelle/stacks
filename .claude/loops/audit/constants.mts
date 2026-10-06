@@ -15,5 +15,5 @@ export const AUDIT_EFFORT: EffortLevel = 'high'; // low | medium | high | xhigh 
 export const FIX_EFFORT: EffortLevel = 'medium';
 export const REQUIRED_CLEAN = 2; // consecutive clean audits before declaring convergence
 export const TURN_CAP = 30; // hard stop on tool-use round trips per call
-export const LOAD_PROJECT_CONTEXT = true; // loads CLAUDE.md/skills; false saves tokens
+export const LOAD_PROJECT_CONTEXT = false; // loads CLAUDE.md/skills; false saves tokens
 export const MAX_ITERS = 8;
