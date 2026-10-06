@@ -8,7 +8,6 @@ export function initSentry(router: ReturnType<typeof getRouter>) {
   Sentry.init({
     dsn: sentryDsn,
     enabled: import.meta.env.PROD,
-    sendDefaultPii: true,
     integrations: [
       Sentry.tanstackRouterBrowserTracingIntegration(router),
       Sentry.replayIntegration(),
@@ -18,6 +17,5 @@ export function initSentry(router: ReturnType<typeof getRouter>) {
     tracesSampleRate: 1.0,
     replaysSessionSampleRate: 0.1,
     replaysOnErrorSampleRate: 1.0,
-    enableLogs: true,
   });
 }

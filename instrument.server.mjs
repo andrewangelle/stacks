@@ -8,8 +8,6 @@ if (!sentryDsn) {
   Sentry.init({
     dsn: sentryDsn,
     enabled: process.env.NODE_ENV === "production",
-    // Adds request headers and IP for users
-    sendDefaultPii: true,
     tracesSampleRate: 1.0
   })
 }
