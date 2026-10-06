@@ -3,6 +3,7 @@ import { EditListNameInput, ListName } from '~/components/Lists/List.styled';
 import { useGetListById, useUpdateList } from '~/db/lists/lists.query';
 import { useCurrentBoardId } from '~/hooks/useCurrentBoardId';
 import { useOutsideClick } from '~/hooks/useOutsideClick';
+import { onEnter } from '~/utils/keyboard';
 
 type EditableListNameProps = {
   listId: string;
@@ -56,6 +57,7 @@ export function EditableListName({ listId }: EditableListNameProps) {
             setEditedListTitle((_prevState) => event.target.value)
           }
           onBlur={onOutsideNameEditClick}
+          onKeyDown={onEnter((input) => input.blur())}
         />
       )}
     </div>

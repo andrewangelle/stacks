@@ -11,6 +11,7 @@ import {
   useGetChecklistItem,
   useUpdateChecklistItem,
 } from '~/db/checklistItems/checklistItems.query';
+import { onEnter } from '~/utils/keyboard';
 
 type EditableChecklistLabelProps = {
   id: string;
@@ -73,6 +74,7 @@ export function EditableChecklistLabel({
         placeholder={editedLabel}
         autoFocus
         onChange={(event) => setEditedLabel(event.target.value)}
+        onKeyDown={onEnter(addChecklistItem)}
       />
 
       <ChecklistItemActions>

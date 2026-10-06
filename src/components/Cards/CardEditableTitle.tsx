@@ -9,6 +9,7 @@ import { CardCompletedIndicator } from '~/components/Cards/CardCompletedIndicato
 import { useGetCardById, useUpdateCard } from '~/db/cards/cards.query';
 import { useCurrentCardId } from '~/hooks/useCurrentCardId';
 import { useOutsideClick } from '~/hooks/useOutsideClick';
+import { onEnter } from '~/utils/keyboard';
 
 export function CardEditableTitle() {
   const id = useCurrentCardId();
@@ -60,6 +61,7 @@ export function CardEditableTitle() {
             onChange={(event) =>
               setEditedTitle((_prevState) => event.target.value)
             }
+            onKeyDown={onEnter(onOutsideTitleEditClick)}
           />
         </EditCardTitleForm>
       )}

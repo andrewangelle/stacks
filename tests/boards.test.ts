@@ -43,3 +43,47 @@ test.describe('Boards', () => {
     ).toBeVisible();
   });
 });
+
+test.describe('Enter to save', () => {
+  let boardsPage: BasePage;
+
+  test.beforeEach(async ({ page, request }) => {
+    boardsPage = new BasePage(page, request);
+  });
+
+  test('creates a board via Enter in the title input', async () => {
+    await resetDb(boardsPage.request);
+    await boardsPage.page.goto('/boards');
+
+    await boardsPage.waitForInteractiveTrigger(
+      '[data-testid="CreateBoardPopoverContent"]',
+      '[data-testid="CreateBoardCard"]',
+    );
+
+    const input = boardsPage.page.getByTestId('CreateBoardTitleInput');
+    await input.fill('Sprint Planning');
+    await input.press('Enter');
+
+    await expect(
+      boardsPage.page
+        .getByTestId('BoardCardTitle')
+        .filter({ hasText: 'Sprint Planning' }),
+    ).toBeVisible();
+  });
+
+  test('Enter on a blank create-board title does nothing', async () => {
+    await resetDb(boardsPage.request);
+    await boardsPage.page.goto('/boards');
+
+    await boardsPage.waitForInteractiveTrigger(
+      '[data-testid="CreateBoardPopoverContent"]',
+      '[data-testid="CreateBoardCard"]',
+    );
+
+    const input = boardsPage.page.getByTestId('CreateBoardTitleInput');
+    await input.press('Enter');
+
+    await expect(input).toBeVisible();
+    await expect(boardsPage.page.getByTestId('BoardCardTitle')).toHaveCount(0);
+  });
+});

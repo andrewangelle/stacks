@@ -61,6 +61,28 @@ test.describe('Board', () => {
     );
   });
 
+  test('renames the board via Enter in the title input', async () => {
+    await resetDb(boardPage.request);
+    const board = await seedBoard(boardPage.request, 'Product Roadmap');
+    await boardPage.page.goto(`/board/${board.id}`);
+
+    await boardPage.waitForInteractiveTrigger(
+      '[data-testid="EditBoardTitleInput"]',
+      '[data-testid="BoardTitle"]',
+    );
+
+    const input = boardPage.page.getByTestId('EditBoardTitleInput');
+    await input.fill('Q3 Roadmap');
+    const urlBefore = boardPage.page.url();
+    await input.press('Enter');
+
+    await expect(input).toHaveCount(0);
+    await expect(boardPage.page.getByTestId('BoardTitle')).toHaveText(
+      'Q3 Roadmap',
+    );
+    expect(boardPage.page.url()).toBe(urlBefore);
+  });
+
   test('archives a board and its lists and cards', async () => {
     await resetDb(boardPage.request);
     const board = await seedBoard(boardPage.request, 'Product Roadmap');

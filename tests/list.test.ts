@@ -351,6 +351,171 @@ test.describe('List', () => {
   });
 });
 
+test.describe('Enter to save', () => {
+  // First navigation in a run can wait on Vite cold-compile; allow extra time.
+  test.describe.configure({ timeout: 60_000 });
+
+  let boardPage: BoardPage;
+
+  test.beforeEach(async ({ page, request }) => {
+    boardPage = new BoardPage(page, request);
+  });
+
+  test('adds a card via Enter in the add-card input', async () => {
+    await resetDb(boardPage.request);
+    const board = await seedBoard(boardPage.request, 'Sprint Board');
+    await seedCard(boardPage.request, {
+      boardId: board.id,
+      listTitle: 'To Do',
+      cardTitle: 'Alpha',
+    });
+    await boardPage.page.goto(`/board/${board.id}`);
+    await boardPage.waitForListCard('Alpha');
+    await boardPage.expectListCardCount(1);
+
+    await boardPage.waitForInteractiveTrigger(
+      '[data-testid="AddCardInput"]',
+      '[data-testid="AddCardText"]',
+    );
+
+    const input = boardPage.page.getByTestId('AddCardInput');
+    await input.fill('Write E2E tests');
+    await input.press('Enter');
+
+    await boardPage.expectListCardCount(2);
+    await expect(
+      boardPage.page
+        .getByTestId('ListCardContainer')
+        .filter({ hasText: 'Write E2E tests' }),
+    ).toBeVisible();
+  });
+
+  test('Enter on a blank or whitespace-only add-card input does nothing', async () => {
+    await resetDb(boardPage.request);
+    const board = await seedBoard(boardPage.request, 'Sprint Board');
+    await seedCard(boardPage.request, {
+      boardId: board.id,
+      listTitle: 'To Do',
+      cardTitle: 'Alpha',
+    });
+    await boardPage.page.goto(`/board/${board.id}`);
+    await boardPage.waitForListCard('Alpha');
+
+    await boardPage.waitForInteractiveTrigger(
+      '[data-testid="AddCardInput"]',
+      '[data-testid="AddCardText"]',
+    );
+
+    const input = boardPage.page.getByTestId('AddCardInput');
+    await input.press('Enter');
+    await boardPage.expectListCardCount(1);
+    await expect(input).toBeVisible();
+
+    await input.fill('   ');
+    await input.press('Enter');
+    await boardPage.expectListCardCount(1);
+    await expect(input).toBeVisible();
+  });
+
+  test('adds a card via Enter in the add-card-at-position input', async () => {
+    await resetDb(boardPage.request);
+    const board = await seedBoard(boardPage.request, 'Sprint Board');
+    await seedCard(boardPage.request, {
+      boardId: board.id,
+      listTitle: 'To Do',
+      cardTitle: 'Alpha',
+    });
+
+    await boardPage.page.goto(`/board/${board.id}`);
+    await boardPage.waitForListCard('Alpha');
+    await boardPage.expectListCardCount(1);
+
+    await boardPage.addCardAtEnd('Charlie');
+    await boardPage.expectListCardCount(2);
+
+    const slot = boardPage.page.getByTestId('AddNewCardAtPosition-0');
+    await boardPage.openAddCardAtPosition(slot);
+
+    const input = slot.getByTestId('AddCardInput');
+    await input.fill('Bravo');
+    await input.press('Enter');
+
+    await boardPage.expectListCardCount(3);
+    const cards = boardPage.page.getByTestId('ListCardContainer');
+    await expect(cards.nth(0)).toContainText('Alpha');
+    await expect(cards.nth(1)).toContainText('Bravo');
+    await expect(cards.nth(2)).toContainText('Charlie');
+  });
+
+  test('creates a list via Enter in the add-list input', async () => {
+    await resetDb(boardPage.request);
+    const board = await seedBoard(boardPage.request, 'Empty Board');
+    await boardPage.page.goto(`/board/${board.id}`);
+
+    await boardPage.waitForInteractiveTrigger(
+      '[data-testid="AddListInput"]',
+      '[data-testid="AddListContainer"] button',
+    );
+
+    const input = boardPage.page.getByTestId('AddListInput');
+    await input.fill('To Do');
+    await input.press('Enter');
+
+    await expect(boardPage.page.getByTestId('ListName')).toHaveText('To Do');
+  });
+
+  test('Enter on a blank or whitespace-only add-list input does nothing', async () => {
+    await resetDb(boardPage.request);
+    const board = await seedBoard(boardPage.request, 'Empty Board');
+    await boardPage.page.goto(`/board/${board.id}`);
+
+    await boardPage.waitForInteractiveTrigger(
+      '[data-testid="AddListInput"]',
+      '[data-testid="AddListContainer"] button',
+    );
+
+    const input = boardPage.page.getByTestId('AddListInput');
+    await input.press('Enter');
+    await expect(boardPage.page.getByTestId('ListContainer')).toHaveCount(0);
+    await expect(input).toBeVisible();
+
+    await input.fill('   ');
+    await input.press('Enter');
+    await expect(boardPage.page.getByTestId('ListContainer')).toHaveCount(0);
+    await expect(input).toBeVisible();
+  });
+
+  test('renames a list via Enter in the list name input', async () => {
+    await resetDb(boardPage.request);
+    const board = await seedBoard(boardPage.request, 'Sprint Board');
+    await seedListCard(boardPage.request, {
+      boardId: board.id,
+      listTitle: 'In Progress',
+      cardTitle: 'Launch feature',
+      checklists: [],
+    });
+
+    await boardPage.page.goto(`/board/${board.id}`);
+    await boardPage.waitForList('In Progress');
+
+    await boardPage.waitForInteractiveTrigger(
+      '[data-testid="EditListNameInput"]',
+      '[data-testid="EditableListName"] [data-testid="ListName"]',
+    );
+
+    const input = boardPage.page
+      .getByTestId('EditableListName')
+      .getByTestId('EditListNameInput');
+    await input.fill('Done');
+    await input.press('Enter');
+
+    await expect(input).toHaveCount(0);
+    await expect(boardPage.page.getByTestId('ListName')).toHaveText('Done');
+
+    await boardPage.waitForListAfterReload('Done');
+  });
+});
+
 test.describe('Move list', () => {
   // Cold Vite compile on the first navigation of a run can exceed 30s.
   test.describe.configure({ timeout: 60_000 });

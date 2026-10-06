@@ -11,6 +11,7 @@ import {
 } from '~/db/checklists/checklists.query';
 import { useOutsideClick } from '~/hooks/useOutsideClick';
 import { Flex } from '~/styles/Page.styled';
+import { onEnter } from '~/utils/keyboard';
 
 type ChecklistEditableTitleProps = {
   id: string;
@@ -64,6 +65,7 @@ export function ChecklistEditableTitle({ id }: ChecklistEditableTitleProps) {
             onChange={(event) =>
               setEditedTitle((_prevState) => event.target.value)
             }
+            onKeyDown={onEnter(onOutsideTitleEditClick)}
           />
         </EditChecklistTitleForm>
       )}

@@ -23,6 +23,7 @@ import { useGetCardById } from '~/db/cards/cards.query';
 import { useCreateChecklist } from '~/db/checklists/checklists.query';
 import { useCurrentBoardId } from '~/hooks/useCurrentBoardId';
 import { useCurrentCardId } from '~/hooks/useCurrentCardId';
+import { onEnter } from '~/utils/keyboard';
 
 export function CreateChecklist() {
   const [open, setOpen] = useState(false);
@@ -88,6 +89,7 @@ export function CreateChecklist() {
           value={checklistTitle}
           autoFocus
           onChange={(event) => setChecklistTitle(event.target.value)}
+          onKeyDown={onEnter(addChecklist)}
         />
 
         <CreateChecklistAddButton onClick={addChecklist}>
