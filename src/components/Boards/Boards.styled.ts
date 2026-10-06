@@ -251,50 +251,18 @@ export const PopoverClose = styled(Popover.Close).attrs<DataAttributes>({
   }
 `;
 
-export const CreateBoardPopoverContent = styled(
-  Popover.Content,
-).attrs<DataAttributes>({
-  'data-testid': 'CreateBoardPopoverContent',
-})` 
-  height: auto;
-  width: 225px;
-  border: 2px solid rgba(9, 30, 66, 0.08);
-  border-radius: 8px; 
-  font-family: ${fontFamily};
-  font-size: 14px;
-  background: #fff;
-  padding: 10px 25px 25px 25px;
-`;
-
-export const CreateBoardPopoverHeader = styled.div.attrs<DataAttributes>({
-  'data-testid': 'CreateBoardPopoverHeader',
-})` 
-  display: flex;
-  justify-content: center;
-  color: rgba(9, 30, 66, .75);
-  font-weight: 700;
-`;
-
 export const CreateBoardCloseBorder = styled.hr.attrs<DataAttributes>({
   'data-testid': 'CreateBoardCloseBorder',
-})` 
+})`
   margin: 5px;
-`;
-
-export const CreateBoardBackgroundText = styled.div.attrs<DataAttributes>({
-  'data-testid': 'CreateBoardBackgroundText',
-})` 
-  font-family: ${fontFamily};
-  font-size: 12px;
-  font-weight: 700;
-  color: rgba(9, 30, 66, .75);
 `;
 
 export const CreateBoardBackgroundChoices = styled.div.attrs<DataAttributes>({
   'data-testid': 'CreateBoardBackgroundChoices',
-})` 
+})`
   display: flex;
   flex-wrap: wrap;
+  margin: 0 5px 10px;
 `;
 
 export const CreateBoardBackgroundChoice = styled.div.attrs<DataAttributes>({
@@ -313,45 +281,7 @@ export const CreateBoardBackgroundChoice = styled.div.attrs<DataAttributes>({
   }
 `;
 
-export const CreateBoardTitleInput = styled.input.attrs<DataAttributes>({
-  'data-testid': 'CreateBoardTitleInput',
-})`
-  width: 200px;
-  margin: 5px;
-  height: 20px;
-`;
-
-type CreateBoardButtonProps = {
-  disabled: boolean;
-};
-
-export const CreateBoardButton = styled.button.attrs<DataAttributes>({
-  'data-testid': 'CreateBoardButton',
-})<CreateBoardButtonProps>`
-  border: none;
-  border-radius: 5px;
-  width: 200px;
-  height: 20px;
-  margin: auto;
-  display: flex;
-  align-self: center;
-  text-align: center;
-  justify-content: center;
-  cursor: pointer;
-
-  ${({ disabled }) =>
-    disabled
-      ? css`
-      background: rgba(9, 30, 66, 0.04);
-      color: rgba(9, 30, 66, 0.08);
-    `
-      : css`
-      background: ${blue};
-      color: #fff;
-    `}
-`;
-
-export const DeleteBoardIcon = styled(TiDelete)` 
+export const DeleteBoardIcon = styled(TiDelete)`
   position: absolute;
   bottom: 0;
   right: 0;

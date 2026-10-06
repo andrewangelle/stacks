@@ -5,16 +5,18 @@ import {
   type BoardBackground,
   CreateBoardBackgroundChoice,
   CreateBoardBackgroundChoices,
-  CreateBoardBackgroundText,
-  CreateBoardButton,
   CreateBoardCard,
   CreateBoardCloseBorder,
-  CreateBoardPopoverContent,
-  CreateBoardPopoverHeader,
   CreateBoardPopoverTrigger,
-  CreateBoardTitleInput,
   PopoverClose,
 } from '~/components/Boards/Boards.styled';
+import {
+  CreateBoardBackgroundText,
+  CreateBoardButton,
+  CreateBoardPopoverContent,
+  CreateBoardPopoverHeader,
+  CreateBoardTitleInput,
+} from '~/components/Boards/CreateBoard.styled';
 import { useCreateBoard } from '~/db/boards/boards.query';
 import { Center } from '~/styles/Page.styled';
 import { onEnter } from '~/utils/keyboard';
@@ -33,6 +35,15 @@ export function CreateBoard() {
   const [boardTitle, setBoardTitle] = useState('');
   const createBoard = useCreateBoard();
 
+  function handleOpenChange(next: boolean) {
+    setCreateOpen(next);
+
+    if (!next) {
+      setBoardTitle('');
+      setSelectedColor('blue');
+    }
+  }
+
   function onBoardCreate() {
     if (!boardTitle) {
       return;
@@ -42,22 +53,25 @@ export function CreateBoard() {
       boardColor: selectedColor,
       boardTitle,
     });
+
+    handleOpenChange(false);
   }
 
   return (
-    <Popover.Root open={isCreateOpen}>
+    <Popover.Root open={isCreateOpen} onOpenChange={handleOpenChange}>
       <CreateBoardPopoverTrigger>
-        <CreateBoardCard
-          onClick={() => setCreateOpen((prevState) => !prevState)}
-        >
-          Create new board
-        </CreateBoardCard>
+        <CreateBoardCard>Create new board</CreateBoardCard>
       </CreateBoardPopoverTrigger>
 
-      <CreateBoardPopoverContent side="bottom">
+      <CreateBoardPopoverContent
+        side="bottom"
+        align="start"
+        sideOffset={8}
+        alignOffset={4}
+      >
         <CreateBoardPopoverHeader>
-          Create Board
-          <PopoverClose onClick={() => setCreateOpen(false)}>X</PopoverClose>
+          Create board
+          <PopoverClose>X</PopoverClose>
         </CreateBoardPopoverHeader>
 
         <CreateBoardCloseBorder />

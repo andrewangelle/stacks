@@ -41,6 +41,75 @@ test.describe('Boards', () => {
         .getByTestId('BoardCardTitle')
         .filter({ hasText: 'Sprint Planning' }),
     ).toBeVisible();
+    await expect(
+      boardsPage.page.getByTestId('CreateBoardPopoverContent'),
+    ).toHaveCount(0);
+
+    await boardsPage.waitForInteractiveTrigger(
+      '[data-testid="CreateBoardPopoverContent"]',
+      '[data-testid="CreateBoardCard"]',
+    );
+    await expect(
+      boardsPage.page.getByTestId('CreateBoardTitleInput'),
+    ).toHaveValue('');
+  });
+
+  test('closes the create-board popover on Escape and resets its fields', async () => {
+    await resetDb(boardsPage.request);
+    await boardsPage.page.goto('/boards');
+
+    await boardsPage.waitForInteractiveTrigger(
+      '[data-testid="CreateBoardPopoverContent"]',
+      '[data-testid="CreateBoardCard"]',
+    );
+
+    await boardsPage.page
+      .getByTestId('CreateBoardTitleInput')
+      .fill('Draft title');
+    await boardsPage.page
+      .getByTestId('CreateBoardBackgroundChoice')
+      .nth(0)
+      .click();
+
+    await boardsPage.page.keyboard.press('Escape');
+    await expect(
+      boardsPage.page.getByTestId('CreateBoardPopoverContent'),
+    ).toHaveCount(0);
+
+    await boardsPage.waitForInteractiveTrigger(
+      '[data-testid="CreateBoardPopoverContent"]',
+      '[data-testid="CreateBoardCard"]',
+    );
+    await expect(
+      boardsPage.page.getByTestId('CreateBoardTitleInput'),
+    ).toHaveValue('');
+  });
+
+  test('closes the create-board popover on an outside click and resets its fields', async () => {
+    await resetDb(boardsPage.request);
+    await boardsPage.page.goto('/boards');
+
+    await boardsPage.waitForInteractiveTrigger(
+      '[data-testid="CreateBoardPopoverContent"]',
+      '[data-testid="CreateBoardCard"]',
+    );
+
+    await boardsPage.page
+      .getByTestId('CreateBoardTitleInput')
+      .fill('Draft title');
+
+    await boardsPage.page.mouse.click(900, 650);
+    await expect(
+      boardsPage.page.getByTestId('CreateBoardPopoverContent'),
+    ).toHaveCount(0);
+
+    await boardsPage.waitForInteractiveTrigger(
+      '[data-testid="CreateBoardPopoverContent"]',
+      '[data-testid="CreateBoardCard"]',
+    );
+    await expect(
+      boardsPage.page.getByTestId('CreateBoardTitleInput'),
+    ).toHaveValue('');
   });
 });
 
@@ -69,6 +138,9 @@ test.describe('Enter to save', () => {
         .getByTestId('BoardCardTitle')
         .filter({ hasText: 'Sprint Planning' }),
     ).toBeVisible();
+    await expect(
+      boardsPage.page.getByTestId('CreateBoardPopoverContent'),
+    ).toHaveCount(0);
   });
 
   test('Enter on a blank create-board title does nothing', async () => {
