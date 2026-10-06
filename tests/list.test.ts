@@ -108,12 +108,25 @@ test.describe('List', () => {
       .first()
       .click();
 
-    await expect(
-      boardPage.page.getByTestId('AllTasksCompletedContainer'),
-    ).toBeVisible();
-    await expect(
-      boardPage.page.getByTestId('AllTasksCompletedContainer'),
-    ).toContainText('All tasks completed!');
+    const allTasksCompleted = boardPage.page.getByTestId(
+      'AllTasksCompletedContainer',
+    );
+    await expect(allTasksCompleted).toBeVisible();
+    await expect(allTasksCompleted).toContainText('All tasks completed!');
+
+    const listCard = boardPage.page.getByTestId('ListCardContainer').filter({
+      has: allTasksCompleted,
+    });
+    const [containerBox, cardBox] = await Promise.all([
+      allTasksCompleted.boundingBox(),
+      listCard.boundingBox(),
+    ]);
+    if (!containerBox || !cardBox) {
+      throw new Error('expected both bounding boxes to be measurable');
+    }
+    const containerCenter = containerBox.x + containerBox.width / 2;
+    const cardCenter = cardBox.x + cardBox.width / 2;
+    expect(Math.abs(containerCenter - cardCenter)).toBeLessThanOrEqual(1);
   });
 
   test('edits the list name', async () => {

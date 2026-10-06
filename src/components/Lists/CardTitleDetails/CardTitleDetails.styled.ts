@@ -424,9 +424,9 @@ export const AllTasksCompletedContainer = styled.div.attrs<DataAttributes>({
   display: flex;
   flex-direction: column;
   align-items: center;
+  align-self: stretch;
   gap: 12px;
   padding: 12px;
-  width: stretch;
   animation: allTasksCompletedReveal 250ms ease-out;
 
   @keyframes allTasksCompletedReveal {
