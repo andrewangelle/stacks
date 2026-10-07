@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import {
   AddCardButton,
   AddCardFooter,
@@ -27,6 +27,7 @@ export function AddNewCard({ listId }: AddNewCardProps) {
   } = useCreateCard();
   const createActivity = useCreateActivity();
   const boardId = useCurrentBoardId();
+  const scrollRef = useRef<HTMLInputElement | null>(null);
 
   function onCardCreate() {
     createCard({
@@ -50,10 +51,17 @@ export function AddNewCard({ listId }: AddNewCardProps) {
     }
   }, [isSuccess, response, boardId, createActivity, reset]);
 
+  useEffect(() => {
+    if (isAddingCard) {
+      scrollRef.current?.scrollIntoView({ behavior: 'smooth' });
+    }
+  }, [isAddingCard]);
+
   return (
     <AddCardFooter data-editing={isAddingCard ? '' : undefined}>
       {isAddingCard && (
         <AddCardInput
+          ref={scrollRef}
           value={newCardTitle}
           placeholder="Enter a title"
           autoFocus
