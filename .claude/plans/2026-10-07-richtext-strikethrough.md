@@ -1,6 +1,6 @@
 # Rich text strikethrough toolbar button: implementation plan
 
-Branch: `next`. Small change, five files.
+Branch: `next`. Small change, four files.
 
 ## Where things stand
 
@@ -44,7 +44,8 @@ type TextFormat = 'bold' | 'italic' | 'underline' | 'strikethrough';
   ```
 - Add `strikethrough: false` to `initialToolbarState.formats`.
 
-`toolbar.formats[format]` in the toolbar is indexed by `TextFormat`, so steps 1–2
+`toolbar.formats[format]` in the toolbar is indexed by `TextFormat`, and
+`setToolbar` in `syncToolbar` must match the widened state type, so steps 1–3
 have to land together or `pnpm test:types` fails. That failure is useful: it
 confirms the button can't be added without its state.
 
