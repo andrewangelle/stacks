@@ -26,11 +26,9 @@ type EditCardPopoverActionsProps = {
   open: boolean;
   onOpenCard: () => void;
   onClose: () => void;
-} & Omit<EditCardTitleProps, 'id'>;
+} & Omit<EditCardTitleProps, 'id' | 'listId'>;
 
 export function EditCardPopoverActions({
-  title,
-  description,
   editedTitle,
   cardId,
   open,
@@ -87,9 +85,6 @@ export function EditCardPopoverActions({
       >
         <EditCardTitle
           id={cardId}
-          listId={listId}
-          title={title}
-          description={description}
           editedTitle={editedTitle}
           setEditedTitle={setEditedTitle}
           handleEditOpenChange={handleEditOpenChange}

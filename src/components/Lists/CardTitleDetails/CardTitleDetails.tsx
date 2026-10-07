@@ -141,12 +141,9 @@ export function CardTitleDetails({ id }: CardTitleDetailsProps) {
 
       <EditCardPopoverActions
         cardId={id}
-        listId={listId}
         open={isEditOpen}
         onOpenCard={open}
         onClose={() => handleEditOpenChange(false)}
-        title={card?.cardTitle ?? ''}
-        description={card?.cardDescription ?? ''}
         editedTitle={editedTitle ?? ''}
         setEditedTitle={setEditedTitle}
         handleEditOpenChange={handleEditOpenChange}
