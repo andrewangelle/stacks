@@ -87,6 +87,26 @@ export function useGetListById({ id }: { id: string }) {
   });
 }
 
+export function useGetCardByListId({
+  listId,
+  cardId,
+}: {
+  listId: string;
+  cardId: string;
+}) {
+  return useSuspenseQuery({
+    ...boardsQueryOptions,
+    select(boards: BoardsPayload) {
+      const list = findList(boards, listId);
+      const listItem = list ? toListItem(list) : undefined;
+      const card = listItem
+        ? listItem.cards.find(({ id }) => id === cardId)
+        : undefined;
+      return card;
+    },
+  });
+}
+
 export function useGetListCardCount({ listId }: { listId: string }) {
   return useSuspenseQuery({
     ...boardsQueryOptions,

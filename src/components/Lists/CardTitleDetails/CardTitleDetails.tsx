@@ -14,24 +14,18 @@ import { EditCardPopoverActions } from '~/components/Lists/EditCardPopover/EditC
 import { EditCardPopoverOverlay } from '~/components/Lists/EditCardPopover/EditCardPopover.styled';
 import { EditCardPopoverTrigger } from '~/components/Lists/EditCardPopover/EditCardPopoverTrigger';
 import { ListCardContainer } from '~/components/Lists/List.styled';
+import { useGetCardByListId } from '~/db/lists/lists.query';
 import { useBoardPageScrollHandler } from '~/hooks/useBoardPageScrollRef';
 import { useCardModalTrigger } from '~/hooks/useCardModalTrigger';
+import { useListId } from '~/hooks/useListId';
 
 type CardTitleDetailsProps = {
   id: string;
-  listId: string;
-  description: string;
-  isCompleted: boolean;
-  title: string;
 };
 
-export function CardTitleDetails({
-  id,
-  listId,
-  title,
-  description,
-  isCompleted,
-}: CardTitleDetailsProps) {
+export function CardTitleDetails({ id }: CardTitleDetailsProps) {
+  const listId = useListId();
+  const { data: card } = useGetCardByListId({ listId, cardId: id });
   const {
     ref,
     isHovering,
@@ -47,7 +41,7 @@ export function CardTitleDetails({
     open,
   } = useCardModalTrigger(id);
   const [isEditOpen, setIsEditOpen] = useState(false);
-  const [editedTitle, setEditedTitle] = useState(title);
+  const [editedTitle, setEditedTitle] = useState(card?.cardTitle);
   const wasEditOpenRef = useRef(false);
   const boardScrollHandlers = useBoardPageScrollHandler();
 
@@ -60,7 +54,7 @@ export function CardTitleDetails({
     }
     setIsEditOpen(nextOpen);
     if (nextOpen) {
-      setEditedTitle(title);
+      setEditedTitle(card?.cardTitle);
     }
   }
 
@@ -108,20 +102,18 @@ export function CardTitleDetails({
             onMouseLeave={onMouseLeave}
             onPointerDown={onPointerDown}
           >
-            <ListCardTitleDetailsContainer $isCompleted={isCompleted}>
+            <ListCardTitleDetailsContainer
+              $isCompleted={card?.isCompleted ?? false}
+            >
               <CardCompletedIndicator
                 cardId={id}
                 visible={isHovering || isFocused}
               />
-              {title}
+              {card?.cardTitle}
             </ListCardTitleDetailsContainer>
 
             <Suspense fallback={<CardTitleDetailsContentSkeleton />}>
-              <CardTitleDetailsContent
-                cardId={id}
-                description={description}
-                onShowMore={onShowMore}
-              />
+              <CardTitleDetailsContent cardId={id} onShowMore={onShowMore} />
             </Suspense>
 
             <EditCardPopoverTrigger
@@ -153,9 +145,9 @@ export function CardTitleDetails({
         open={isEditOpen}
         onOpenCard={open}
         onClose={() => handleEditOpenChange(false)}
-        title={title}
-        description={description}
-        editedTitle={editedTitle}
+        title={card?.cardTitle ?? ''}
+        description={card?.cardDescription ?? ''}
+        editedTitle={editedTitle ?? ''}
         setEditedTitle={setEditedTitle}
         handleEditOpenChange={handleEditOpenChange}
       />
