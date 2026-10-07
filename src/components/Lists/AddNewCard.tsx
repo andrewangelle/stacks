@@ -9,14 +9,12 @@ import {
 import { useCreateActivity } from '~/db/activity/activity.query';
 import { useCreateCard } from '~/db/cards/cards.query';
 import { useCurrentBoardId } from '~/hooks/useCurrentBoardId';
+import { useListId } from '~/hooks/useListId';
 import { Flex } from '~/styles/Page.styled';
 import { onEnter } from '~/utils/keyboard';
 
-type AddNewCardProps = {
-  listId: string;
-};
-
-export function AddNewCard({ listId }: AddNewCardProps) {
+export function AddNewCard() {
+  const listId = useListId();
   const [isAddingCard, setIsAddingCard] = useState(false);
   const [newCardTitle, setNewCardTitle] = useState('');
   const {

@@ -2,14 +2,12 @@ import { useState } from 'react';
 import { EditListNameInput, ListName } from '~/components/Lists/List.styled';
 import { useGetListById, useUpdateList } from '~/db/lists/lists.query';
 import { useCurrentBoardId } from '~/hooks/useCurrentBoardId';
+import { useListId } from '~/hooks/useListId';
 import { useOutsideClick } from '~/hooks/useOutsideClick';
 import { onEnter } from '~/utils/keyboard';
 
-type EditableListNameProps = {
-  listId: string;
-};
-
-export function EditableListName({ listId }: EditableListNameProps) {
+export function EditableListName() {
+  const listId = useListId();
   const { data: list } = useGetListById({ id: listId });
   const [isEditingListName, setIsEditingListName] = useState(false);
   const [editedListTitle, setEditedListTitle] = useState('');
@@ -36,9 +34,6 @@ export function EditableListName({ listId }: EditableListNameProps) {
     <div data-testid="EditableListName">
       {!isEditingListName && (
         <ListName
-          style={{
-            margin: '8px 0px 12px 8px',
-          }}
           onClick={() => {
             setIsEditingListName(true);
             setEditedListTitle(list?.listTitle ?? '');

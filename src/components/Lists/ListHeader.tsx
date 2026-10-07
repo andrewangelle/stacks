@@ -4,14 +4,14 @@ import { ListActions } from '~/components/Lists/ListActions/ListActions';
 import { ListHeaderCardCount } from '~/components/Lists/ListHeaderCardCount';
 import { Flex } from '~/styles/Page.styled';
 
-export function ListHeader({ id: listId }: { id: string }) {
+export function ListHeader() {
   return (
     <ListHeaderContainer>
-      <EditableListName listId={listId} />
+      <EditableListName />
 
       <Flex style={{ gap: '8px', alignItems: 'center' }}>
-        <ListHeaderCardCount listId={listId} />
-        <ListActions id={listId} />
+        <ListHeaderCardCount />
+        <ListActions />
       </Flex>
     </ListHeaderContainer>
   );

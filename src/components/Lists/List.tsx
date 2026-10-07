@@ -12,8 +12,13 @@ import { moveCardToNewList, reorderCardsByIndex } from '~/db/cards/cards.cache';
 import { useGetListById } from '~/db/lists/lists.query';
 import { useCrossContainerMove } from '~/hooks/useCrossContainerMove';
 import { useIsMobile } from '~/hooks/useIsMobile';
+import { ListIdProvider } from '~/hooks/useListId';
 
-export function List({ id: listId }: { id: string }) {
+type ListProps = {
+  id: string;
+};
+
+export function List({ id: listId }: ListProps) {
   const { ref, onMove } = useCrossContainerMove((args) => {
     moveCardToNewList({
       cardId: args.itemId,
@@ -24,49 +29,44 @@ export function List({ id: listId }: { id: string }) {
   });
   const { data: list } = useGetListById({ id: listId });
   const isMobile = useIsMobile();
+
   return (
-    <ListContainer key={listId} $isMobile={isMobile}>
-      <ListHeader id={listId} />
+    <ListIdProvider listId={listId}>
+      <ListContainer key={listId} $isMobile={isMobile}>
+        <ListHeader />
 
-      <ListContentContainer ref={ref}>
-        {list?.cards?.map((card, index) => {
-          return (
-            <Draggable
-              key={card.id}
-              id={card.id}
-              name={card.cardTitle}
-              type="card"
-              parentId={listId}
-              index={index}
-              group={listId}
-              onReorder={(fromIndex, toIndex) =>
-                reorderCardsByIndex(listId, fromIndex, toIndex)
-              }
-              onMove={onMove}
-            >
-              {index === 0 && (
-                <AddNewCardAtPosition listId={listId} position={-1} />
-              )}
-
-              <CardTitleDetails
+        <ListContentContainer ref={ref}>
+          {list?.cards?.map((card, index) => {
+            return (
+              <Draggable
+                key={card.id}
                 id={card.id}
-                listId={listId}
-                description={card.cardDescription}
-                isCompleted={card.isCompleted}
-                title={card.cardTitle}
-              />
+                name={card.cardTitle}
+                type="card"
+                parentId={listId}
+                index={index}
+                group={listId}
+                onReorder={(fromIndex, toIndex) =>
+                  reorderCardsByIndex(listId, fromIndex, toIndex)
+                }
+                onMove={onMove}
+              >
+                {index === 0 && <AddNewCardAtPosition position={-1} />}
 
-              {index !== list?.cards?.length - 1 && (
-                <AddNewCardAtPosition listId={listId} position={index} />
-              )}
-            </Draggable>
-          );
-        })}
-      </ListContentContainer>
+                <CardTitleDetails id={card.id} />
 
-      <DropTargetFallback id={`list-drop:${listId}`} type="card" />
+                {index !== list?.cards?.length - 1 && (
+                  <AddNewCardAtPosition position={index} />
+                )}
+              </Draggable>
+            );
+          })}
+        </ListContentContainer>
 
-      <AddNewCard listId={listId} />
-    </ListContainer>
+        <DropTargetFallback id={`list-drop:${listId}`} type="card" />
+
+        <AddNewCard />
+      </ListContainer>
+    </ListIdProvider>
   );
 }

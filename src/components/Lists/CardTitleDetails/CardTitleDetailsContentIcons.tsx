@@ -8,12 +8,13 @@ import {
 } from '~/components/Lists/CardTitleDetails/CardTitleDetails.styled';
 import { Tooltip } from '~/components/shared/Tooltip/Tooltip';
 import { useGetCardTitleDetailsChecklists } from '~/db/checklists/checklists.query';
+import { useGetCardByListId } from '~/db/lists/lists.query';
 import { useCardTitleDetailsVisibility } from '~/hooks/useCardTitleDetailsVisibility';
+import { useListId } from '~/hooks/useListId';
 import { Flex } from '~/styles/Page.styled';
 
 type CardTitleDetailsContentIconsProps = {
   cardId: string;
-  description: string;
   isOpen: boolean;
   toggleOpen: (
     event: MouseEvent<HTMLDivElement, globalThis.MouseEvent>,
@@ -22,10 +23,11 @@ type CardTitleDetailsContentIconsProps = {
 
 export function CardTitleDetailsContentIcons({
   cardId,
-  description,
   isOpen,
   toggleOpen,
 }: CardTitleDetailsContentIconsProps) {
+  const listId = useListId();
+  const { data: card } = useGetCardByListId({ listId, cardId });
   const { data } = useGetCardTitleDetailsChecklists({ cardId });
   const { commentsCount, hasChecklistDetails } =
     useCardTitleDetailsVisibility(cardId);
@@ -51,7 +53,7 @@ export function CardTitleDetailsContentIcons({
         </Tooltip>
       )}
 
-      {description && (
+      {card?.cardDescription && (
         <Tooltip content="Description">
           <Flex style={{ fontSize: '12px', lineHeight: '16px', gap: '4px' }}>
             <IoMdList size={15} />

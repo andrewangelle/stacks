@@ -18,11 +18,11 @@ import {
 } from '~/components/Lists/EditCardPopover/EditCardPopover.styled';
 import { useDeleteCard } from '~/db/cards/cards.query';
 import { useBoardPageScrollHandler } from '~/hooks/useBoardPageScrollRef';
+import { useListId } from '~/hooks/useListId';
 import { EditCardTitle, type EditCardTitleProps } from './EditCardTitle';
 
 type EditCardPopoverActionsProps = {
   cardId: string;
-  listId: string;
   open: boolean;
   onOpenCard: () => void;
   onClose: () => void;
@@ -33,13 +33,13 @@ export function EditCardPopoverActions({
   description,
   editedTitle,
   cardId,
-  listId,
   open,
   onOpenCard,
   onClose,
   setEditedTitle,
   handleEditOpenChange,
 }: EditCardPopoverActionsProps) {
+  const listId = useListId();
   const [isMoveOpen, setIsMoveOpen] = useState(false);
   const [isCopied, setIsCopied] = useState(false);
   const deleteCard = useDeleteCard();

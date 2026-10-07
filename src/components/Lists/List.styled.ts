@@ -30,6 +30,7 @@ export const ListContainer = styled.div.attrs<DataAttributes>({
   width: 275px;
   margin: 0 15px;
   overflow: auto;
+  overscroll-behavior-y: none;
 `;
 
 export const ListContentContainer = styled.div.attrs<DataAttributes>({
@@ -89,6 +90,7 @@ export const ListName = styled.div.attrs<DataAttributes>({
   color: black;
   font-weight: 700;
   font-size: 14px;
+  margin: 8px 0px 12px 8px;
 `;
 
 export const EditListNameInput = styled.input.attrs<DataAttributes>({

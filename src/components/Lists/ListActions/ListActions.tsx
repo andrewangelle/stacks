@@ -15,14 +15,11 @@ import { MoveListMenu } from '~/components/Lists/ListActions/MoveListMenu';
 import { Tooltip } from '~/components/shared/Tooltip/Tooltip';
 import { useDeleteList } from '~/db/lists/lists.query';
 import { useCurrentBoardId } from '~/hooks/useCurrentBoardId';
+import { useListId } from '~/hooks/useListId';
 import {
   PopoverOptionsContent,
   PopoverOptionsContentContainer,
 } from '~/styles/Page.styled';
-
-type ListActionsProps = {
-  id: string;
-};
 
 type Views = 'actions' | 'move' | 'delete';
 
@@ -32,7 +29,8 @@ const viewTitles: Record<Views, string> = {
   delete: 'Are you sure?',
 };
 
-export function ListActions({ id }: ListActionsProps) {
+export function ListActions() {
+  const listId = useListId();
   const boardId = useCurrentBoardId();
   const deleteList = useDeleteList();
   const [open, setOpen] = useState(false);
@@ -84,7 +82,7 @@ export function ListActions({ id }: ListActionsProps) {
           )}
 
           {view === 'move' && (
-            <MoveListMenu id={id} closeMenu={() => closePopover(false)} />
+            <MoveListMenu id={listId} closeMenu={() => closePopover(false)} />
           )}
 
           {view === 'delete' && (
@@ -93,7 +91,7 @@ export function ListActions({ id }: ListActionsProps) {
               <DeleteListButton
                 onClick={() =>
                   deleteList({
-                    listId: id,
+                    listId,
                     boardId,
                   })
                 }

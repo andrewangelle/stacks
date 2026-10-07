@@ -12,18 +12,16 @@ import {
 import { useCreateActivity } from '~/db/activity/activity.query';
 import { useCreateCard } from '~/db/cards/cards.query';
 import { useCurrentBoardId } from '~/hooks/useCurrentBoardId';
+import { useListId } from '~/hooks/useListId';
 import { Flex } from '~/styles/Page.styled';
 import { onEnter } from '~/utils/keyboard';
 
 type AddNewCardAtPositionProps = {
-  listId: string;
   position: number;
 };
 
-export function AddNewCardAtPosition({
-  listId,
-  position,
-}: AddNewCardAtPositionProps) {
+export function AddNewCardAtPosition({ position }: AddNewCardAtPositionProps) {
+  const listId = useListId();
   const [isHovering, setIsHovering] = useState(false);
   const [isAddingCard, setIsAddingCard] = useState(false);
   const [newCardTitle, setNewCardTitle] = useState('');

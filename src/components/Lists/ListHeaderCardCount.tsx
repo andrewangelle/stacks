@@ -1,7 +1,9 @@
 import { Tooltip } from '~/components/shared/Tooltip/Tooltip';
 import { useGetListCardCount } from '~/db/lists/lists.query';
+import { useListId } from '~/hooks/useListId';
 
-export function ListHeaderCardCount({ listId }: { listId: string }) {
+export function ListHeaderCardCount() {
+  const listId = useListId();
   const { data: cardCount } = useGetListCardCount({ listId });
 
   return (

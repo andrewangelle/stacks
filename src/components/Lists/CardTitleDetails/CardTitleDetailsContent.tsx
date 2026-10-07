@@ -15,21 +15,23 @@ import {
   useGetCardTitleDetailsChecklists,
   useSetCardChecklistExpanded,
 } from '~/db/checklists/checklists.query';
+import { useGetCardByListId } from '~/db/lists/lists.query';
 import { useCardTitleDetailsVisibility } from '~/hooks/useCardTitleDetailsVisibility';
+import { useListId } from '~/hooks/useListId';
 
 const MAX_VISIBLE_CHECKLISTS = 3;
 
 type CardTitleDetailsContentProps = {
   cardId: string;
-  description: string;
   onShowMore: (checklistId: string) => void;
 };
 
 export function CardTitleDetailsContent({
   cardId,
-  description,
   onShowMore,
 }: CardTitleDetailsContentProps) {
+  const listId = useListId();
+  const { data: card } = useGetCardByListId({ listId, cardId });
   const { hasDetailInfo } = useCardTitleDetailsVisibility(cardId);
   const { data } = useGetCardTitleDetailsChecklists({
     cardId,
@@ -75,7 +77,7 @@ export function CardTitleDetailsContent({
     return () => clearTimeout(timer);
   }, [showAllCompleteView]);
 
-  if (!hasDetailInfo && !description) {
+  if (!hasDetailInfo && !card?.cardDescription) {
     return null;
   }
 
@@ -83,7 +85,6 @@ export function CardTitleDetailsContent({
     <>
       <CardTitleDetailsContentIcons
         cardId={cardId}
-        description={description}
         isOpen={isOpen}
         toggleOpen={toggleOpen}
       />
