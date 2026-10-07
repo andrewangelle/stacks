@@ -12,13 +12,12 @@ import {
   useGetCardTitleDetailsChecklists,
   useSetCardChecklistExpanded,
 } from '~/db/checklists/checklists.query';
+import { useGetCardByListId } from '~/db/lists/lists.query';
 import { useIsMobile } from '~/hooks/useIsMobile';
+import { useListId } from '~/hooks/useListId';
 
 export type EditCardTitleProps = {
   id: string;
-  listId: string;
-  title: string;
-  description: string;
   editedTitle: string;
   setEditedTitle: Dispatch<SetStateAction<string>>;
   handleEditOpenChange: (nextOpen: boolean) => void;
@@ -26,13 +25,12 @@ export type EditCardTitleProps = {
 
 export function EditCardTitle({
   id,
-  listId,
-  title,
-  description,
   editedTitle,
   setEditedTitle,
   handleEditOpenChange,
 }: EditCardTitleProps) {
+  const listId = useListId();
+  const { data: card } = useGetCardByListId({ cardId: id, listId });
   const containerRef = useRef<HTMLDivElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const updateCard = useUpdateCard();
@@ -51,7 +49,7 @@ export function EditCardTitle({
   }
 
   function handleSave() {
-    if (editedTitle.trim() && editedTitle !== title) {
+    if (editedTitle.trim() && editedTitle !== card?.cardTitle) {
       updateCard({ cardId: id, listId, cardTitle: editedTitle.trim() });
     }
     handleEditOpenChange(false);
@@ -81,7 +79,6 @@ export function EditCardTitle({
 
         <CardTitleDetailsContentIcons
           cardId={id}
-          description={description}
           isOpen={isOpen}
           toggleOpen={toggleOpen}
         />
