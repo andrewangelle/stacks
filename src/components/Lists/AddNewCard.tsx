@@ -25,7 +25,7 @@ export function AddNewCard() {
   } = useCreateCard();
   const createActivity = useCreateActivity();
   const boardId = useCurrentBoardId();
-  const scrollRef = useRef<HTMLInputElement | null>(null);
+  const footerRef = useRef<HTMLDivElement | null>(null);
 
   function onCardCreate() {
     createCard({
@@ -50,16 +50,21 @@ export function AddNewCard() {
   }, [isSuccess, response, boardId, createActivity, reset]);
 
   useEffect(() => {
-    if (isAddingCard) {
-      scrollRef.current?.scrollIntoView({ behavior: 'smooth' });
+    const list = footerRef.current?.parentElement;
+    if (!isAddingCard || !list) {
+      return;
     }
+    const observer = new ResizeObserver(() => {
+      list.scrollTop = list.scrollHeight;
+    });
+    observer.observe(list);
+    return () => observer.disconnect();
   }, [isAddingCard]);
 
   return (
-    <AddCardFooter data-editing={isAddingCard ? '' : undefined}>
+    <AddCardFooter ref={footerRef} data-editing={isAddingCard ? '' : undefined}>
       {isAddingCard && (
         <AddCardInput
-          ref={scrollRef}
           value={newCardTitle}
           placeholder="Enter a title"
           autoFocus
