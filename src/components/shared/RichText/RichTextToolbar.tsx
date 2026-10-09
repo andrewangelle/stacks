@@ -84,6 +84,7 @@ export function RichTextToolbar({
         bold: selection.hasFormat('bold'),
         italic: selection.hasFormat('italic'),
         underline: selection.hasFormat('underline'),
+        strikethrough: selection.hasFormat('strikethrough'),
       },
     };
 

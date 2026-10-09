@@ -6,6 +6,7 @@ import {
   FaAlignRight,
   FaBold,
   FaItalic,
+  FaStrikethrough,
   FaUnderline,
 } from 'react-icons/fa';
 import type {
@@ -30,6 +31,7 @@ export const TEXT_FORMAT_BUTTONS: TextFormatButton[] = [
   { format: 'bold', label: 'Bold', Icon: FaBold },
   { format: 'italic', label: 'Italic', Icon: FaItalic },
   { format: 'underline', label: 'Underline', Icon: FaUnderline },
+  { format: 'strikethrough', label: 'Strikethrough', Icon: FaStrikethrough },
 ];
 
 export const ALIGNMENT_BUTTONS: AlignmentButton[] = [
@@ -42,7 +44,12 @@ export const ALIGNMENT_BUTTONS: AlignmentButton[] = [
 export const initialToolbarState = {
   blockType: 'paragraph' as BlockType,
   alignment: '' as ElementFormatType,
-  formats: { bold: false, italic: false, underline: false },
+  formats: {
+    bold: false,
+    italic: false,
+    underline: false,
+    strikethrough: false,
+  },
   canUndo: false,
   canRedo: false,
 };
