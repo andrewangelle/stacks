@@ -32,7 +32,7 @@ export type BlockType =
   | 'number'
   | HeadingTagType;
 
-type TextFormat = 'bold' | 'italic' | 'underline';
+type TextFormat = 'bold' | 'italic' | 'underline' | 'strikethrough';
 
 export type BlockTypeOption = {
   value: BlockType;

@@ -130,6 +130,32 @@ test.describe('Rich text markdown', () => {
     await expect(cardPage.page.getByTestId('DescriptionInput')).toBeVisible();
   });
 
+  test('toggles strikethrough from the toolbar', async () => {
+    const editor = await cardPage.openDescriptionEditor();
+    const strikethrough = cardPage.page.getByRole('button', {
+      name: 'Strikethrough',
+    });
+
+    await expect(strikethrough).toHaveAttribute('aria-pressed', 'false');
+
+    await strikethrough.click();
+    await expect(strikethrough).toHaveAttribute('aria-pressed', 'true');
+    await editor.pressSequentially('Gone');
+
+    await strikethrough.click();
+    await expect(strikethrough).toHaveAttribute('aria-pressed', 'false');
+    await editor.pressSequentially(' kept');
+
+    await expect(editor.locator('.rich-text-strikethrough')).toHaveText('Gone');
+
+    await cardPage.saveDescription();
+
+    const description = cardPage.page.getByTestId('CardDescriptionText');
+
+    await expect(description.locator('s')).toHaveText('Gone');
+    await expect(description).toContainText('Gone kept');
+  });
+
   test('opens the editor help dialog', async () => {
     await cardPage.openDescriptionEditor();
 
