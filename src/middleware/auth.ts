@@ -1,6 +1,6 @@
 import { auth, clerkClient } from '@clerk/tanstack-react-start/server';
 import { createMiddleware, createServerFn } from '@tanstack/react-start';
-import { upsertUser } from '~/db/upsertUser';
+import { isUserPersisted, upsertUser } from '~/db/upsertUser';
 import { data } from '~/utils/response';
 
 export const userIdMiddleware = createMiddleware().server(async ({ next }) => {
@@ -30,8 +30,13 @@ export const authMiddleware = createMiddleware()
       );
     }
     const response = await next();
-    const user = await clerkClient().users.getUser(context.uid);
-    await upsertUser(user);
+
+    try {
+      await isUserPersisted(context.uid);
+    } catch {
+      const user = await clerkClient().users.getUser(context.uid);
+      await upsertUser(user);
+    }
 
     return response;
   });
