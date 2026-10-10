@@ -11,3 +11,9 @@ export async function upsertUser(claims: User): Promise<void> {
     update: { email },
   });
 }
+
+export async function isUserPersisted(id: string) {
+  return prisma.user.findFirstOrThrow({
+    where: { id },
+  });
+}
