@@ -6,7 +6,7 @@ A display menu sits under the card modal with one **Comments** toggle button.
 
 - **Selected** means the comments/activity panel is hidden. **Deselected** means it shows.
 - The state lives on the user (`User.commentsVisible`), so it applies to every card on every list and board, and it survives a reload.
-- **Desktop only.** On mobile (`useIsMobile()`), the card opens as the full-page `variant="page"` card. It gets no menu, always shows comments/activity, and behaves exactly as it does today.
+- **Desktop only.** On mobile (`useIsMobile()`), the card gets no menu, always shows comments/activity, and behaves exactly as it does today. Mobile normally opens the full-page `variant="page"` card, but the modal card (`/board/$id/card/$cardId`) also renders on mobile: activity links (`LinkToCard`) and direct loads reach it on every device. So every modal-only change below is gated on `!isMobile`, not assumed unreachable.
 - While the card modal is open, its display menu slides up and the board page's display menu slides down. When the modal closes, the reverse happens.
 - The activity column slides in and out when the toggle changes.
 
@@ -111,7 +111,7 @@ This is a plain `useQuery`, not a suspense query. Card.tsx calls it on both vari
 
 ### Prefetch in loaders (desktop only)
 
-On desktop the query has to be in the cache before the card renders. Otherwise a user who has hidden comments sees the column flash visible and then slide away. Add `if (!context.isMobile) await context.queryClient.ensureQueryData(userPreferencesQueryOptions)` to:
+On desktop the query has to be in the cache before the card renders. Otherwise a user who has hidden comments sees the column flash visible and then slide away. The prefetch only fixes the data: the server-rendered layout comes from CSS, because `useCardColumnWidth` returns `isWideLayout = false` during SSR and the inline `gridTemplateColumns` is never applied there. That is why the collapsed state lives in CSS (section 6). Add `if (!context.isMobile) await context.queryClient.ensureQueryData(userPreferencesQueryOptions)` to:
 
 - `src/routes/board.$id.tsx` (covers `/board/$id/card/$cardId`, which is a child of it)
 - `src/routes/card.$cardId.tsx` (desktop renders the board and the modal here)
@@ -127,9 +127,9 @@ On desktop the query has to be in the cache before the card renders. Otherwise a
 
 New components in the same file, each with a `data-testid` per repo convention:
 
-- `CardDisplayMenuContainer = styled(DisplayMenuContainer).attrs({ 'data-testid': 'CardDisplayMenuContainer' })`. Same styling and **no separator**. It renders inside `CardModalOverlay` (`z-index: 2`), so it already sits above the board. Set `pointer-events: auto` on it explicitly too. Radix gives the overlay `pointerEvents: 'auto'` inline while the modal sets `pointer-events: none` on `body`, and this keeps the menu clickable no matter what Radix does to its ancestors.
-- `DisplayMenuToggleButton = styled.button.attrs({ 'data-testid': 'DisplayMenuToggleButton', type: 'button' })<{ $selected: boolean }>`. It uses `${displayMenuItemStyles}`, plus `displayMenuSelectedItemStyles` when selected or `displayMenuItemHoverStyles` when not.
-- `DisplayMenuToggleLabel` (span) uses `displayMenuSelectedLabelStyles` only when `$selected`. This matches how the board button shows its current state.
+- `CardDisplayMenuContainer = styled(DisplayMenuContainer).attrs<DataAttributes>({ 'data-testid': 'CardDisplayMenuContainer' })`. Same styling and **no separator**. It renders inside `CardModalOverlay` (`z-index: 2`), so it already sits above the board. Set `pointer-events: auto` on it explicitly too. Radix gives the overlay `pointerEvents: 'auto'` inline while the modal sets `pointer-events: none` on `body`, and this keeps the menu clickable no matter what Radix does to its ancestors.
+- `DisplayMenuToggleButton = styled.button.attrs<DataAttributes>({ 'data-testid': 'DisplayMenuToggleButton', type: 'button' })<{ $selected: boolean }>`. It uses `${displayMenuItemStyles}`, plus `displayMenuSelectedItemStyles` when selected or `displayMenuItemHoverStyles` when not.
+- `DisplayMenuToggleLabel` (span, also `.attrs<DataAttributes>({ 'data-testid': 'DisplayMenuToggleLabel' })`) uses `displayMenuSelectedLabelStyles` only when `$selected`. This matches how the board button shows its current state.
 
 ## 4. `CardDisplayMenu` component
 
@@ -158,25 +158,26 @@ export function CardDisplayMenu({ hidden, menuRef }: { hidden: boolean; menuRef:
 }
 ```
 
-It only renders on desktop (section 5), so `$isMobile` is always `false`.
+Card.tsx renders it only when `!isMobile` (section 5), so `$isMobile` is always `false`.
 
 The icon is `BiCommentDetail` from `react-icons/bi`, the same one `CardTitleDetailsContentIcons.tsx` uses. `displayMenuItemStyles` already sizes the svg at `flex: 0 0 16px`.
 
 ## 5. Card integration (`src/components/Cards/Card.tsx`)
 
 - Read `commentsVisible` with `useCommentsVisible()`. It is always `true` on mobile, so the `variant="page"` card and its `CardPageActivityColumn` behave exactly as today. **Don't change the page branch at all.**
-- In the modal branch only, render `<CardDisplayMenu hidden={isClosingCard} menuRef={cardDisplayMenuRef} />` **as a sibling after `CardModalContent`**, inside `CardModalOverlay`:
+- Read `isMobile` with `useIsMobile()`.
+- In the modal branch only, and only when `!isMobile`, render `<CardDisplayMenu hidden={isClosingCard} menuRef={cardDisplayMenuRef} />` **as a sibling after `CardModalContent`**, inside `CardModalOverlay`:
 
   ```tsx
   <CardModalOverlay>
     <CardModalContent onPointerDownOutside={handlePointerDownOutside} …>
       {cardBody}
     </CardModalContent>
-    <CardDisplayMenu hidden={isClosingCard} menuRef={cardDisplayMenuRef} />
+    {!isMobile && <CardDisplayMenu hidden={isClosingCard} menuRef={cardDisplayMenuRef} />}
   </CardModalOverlay>
   ```
 
-  `isClosingCard` already turns true in `handleOpenChange`, so the menu starts sliding down while the close navigation runs. The modal branch only ever renders on desktop, because mobile always gets `variant="page"`.
+  `isClosingCard` already turns true in `handleOpenChange`, so the menu starts sliding down while the close navigation runs. The modal branch also renders on mobile (`/board/$id/card/$cardId` reached from `LinkToCard` or a direct load), which is why the menu is gated on `!isMobile`. There the modal shows comments always, since `useCommentsVisible()` returns `true` on mobile.
 
 ### Keeping the modal open when the menu is clicked
 
@@ -211,11 +212,11 @@ See **Known limitations** at the top for what placing the menu outside the conte
 
 ### Modal space for the menu (`Card.styled.ts`)
 
-All of these changes are modal-only. `CardPageContent` (mobile) is untouched.
+All of these changes are modal-only **and desktop-only**. `CardPageContent` is untouched. The modal also renders on mobile, which has no menu, so it must keep today's sizes. `CardModalContent` and `CardModalOverlay` take a `$reserveMenuSpace` prop, passed as `!isMobile` from Card.tsx; when false, the current CSS applies unchanged.
 
 - Export a `cardDisplayMenuReservedSpace` constant from `DisplayMenu.styled.ts`: menu height (6 + 36 + 6 = 48px) + `bottom: 24px` + a 12px gap = `84px`.
-- `CardModalContent`: `height: calc(95vh - 84px)`. Inside `@media (max-width: 850px)`: `max-height: calc(99vh - 84px)`.
-- `CardModalOverlay`: `padding-bottom: 84px`, so the centered modal sits above the menu. The overlay is the scroll container, so the padding also keeps scrolled content clear of the menu.
+- `CardModalContent` (when `$reserveMenuSpace`): `height: calc(95vh - 84px)`. Inside `@media (max-width: 850px)`: `max-height: calc(99vh - 84px)`.
+- `CardModalOverlay` (when `$reserveMenuSpace`): `padding-bottom: 84px`, so the centered modal sits above the menu. The overlay is the scroll container, so the padding also keeps scrolled content clear of the menu.
 
 ## 6. Animations
 
@@ -234,19 +235,19 @@ transition: transform 150ms ease-out, visibility 150ms ease-out;
 **Card menu on open.** The menu mounts already visible, and a transition can't run on mount. Add a mount keyframe to `CardDisplayMenuContainer` only:
 `animation: ${displayMenuSlideUpFrames} 150ms ease-out` (from `translateX(-50%) translateY(calc(100% + 24px))` to `translateX(-50%) translateY(0)`). Put the keyframes in `src/styles/animations.ts` next to `fadeIn`.
 
-**Board menu (`DisplayMenu.tsx`).** `hidden` = the `/board/$id/card/$cardId` route is in `useMatches()`. It only renders in `board.$id.tsx`, so opening a card from the board makes it slide down and closing makes it slide up, using the transition above. On a direct load of a card URL, SSR renders it hidden with no transition. That's correct: nothing should animate on first paint.
+**Board menu (`DisplayMenu.tsx`).** `hidden` = `!isMobile` and the `/board/$id/card/$cardId` route is in `useMatches()`. The `!isMobile` gate matters because the modal route renders on mobile too (no card menu there), and the board menu must stay visible. It only renders in `board.$id.tsx`, so opening a card from the board makes it slide down and closing makes it slide up, using the transition above. On a direct load of a card URL, SSR renders it hidden with no transition. That's correct: nothing should animate on first paint.
 
-**Edge case: closing from `/card/$cardId` on desktop.** That route renders no board `DisplayMenu`, so the close navigation *mounts* a fresh one at `/board/$id`. A fresh mount gets no transition. Fix: start the board menu `hidden` when `!isMobile && search.from?.startsWith('card-')` (the close navigation always sets `from`). Then flip it to visible in a `useEffect` after mount, so the transition runs.
+**Edge case: closing from `/card/$cardId` on desktop.** That route renders no board `DisplayMenu`, so the close navigation *mounts* a fresh one at `/board/$id`. A fresh mount gets no transition. Fix: start the board menu `hidden` only when `!isMobile` and the mount comes from a client-side navigation whose previous route was `/card/$cardId` (e.g. the router's `resolvedLocation` pathname at mount starts with `/card/`). Then flip it to visible in a `useEffect` after mount, so the transition runs. Don't gate on `search.from` alone: `from=card-…` stays in the URL after any desktop modal close, so a reload of that URL would render the menu hidden on the server and slide it in after hydration.
 
-- A normal board load has no `from`, so it renders visible straight away. That keeps today's no-animation board load and avoids hiding the menu until hydration.
+- A normal board load, and any reload or direct load (even one with `?from=card-…`), has no previous route, so it renders visible straight away. That keeps today's no-animation first paint and avoids hiding the menu until hydration. Confirm in the running app that `resolvedLocation` is empty on a reload; if it isn't, use a client-only flag set by the close navigation instead.
 - On mobile, closing the page card also lands on `/board/$id?from=card-…`. The `!isMobile` gate keeps mobile's menu appearing exactly as it does today.
-- The `/board/$id/card/$cardId` route match can't happen on mobile (mobile always navigates to `/card/$cardId`), so the route-based hide is desktop-only already.
+- The `/board/$id/card/$cardId` route match can happen on mobile (see Goal), so the route-based hide is gated explicitly on `!isMobile` above.
 
 ### Activity column slide in/out
 
-**Wide layout (≥851px).** `CardModalBody` already gets `gridTemplateColumns` inline (`minmax(0, 1fr) 8px ${columnWidth}px`).
+**Wide layout (≥851px).** `CardModalBody` already gets `gridTemplateColumns` inline (`minmax(0, 1fr) 8px ${columnWidth}px`), but only when `isWideLayout` is true, which is never the case during SSR. The CSS default (`Card.styled.ts:108`) is `minmax(0, 1fr) 8px minmax(200px, 280px)`.
 
-- When hidden, set it to `minmax(0, 1fr) 0px 0px`.
+- Put the collapsed state in CSS, not the inline style. `CardModalBody` gets a `$commentsVisible` prop that sets `grid-template-columns: minmax(0, 1fr) 0px 0px` inside `@media (min-width: 851px)` when false. Keep the inline `gridTemplateColumns` only for the visible, resizable width, and don't set it when comments are hidden. The server-rendered card then renders collapsed on a direct load or reload. Removing the inline style on toggle changes the computed value, so the transition below still runs.
 - Add `transition: grid-template-columns 150ms ease-out` to `CardModalBody`, **but turn it off while the user drags the resize handle**. Otherwise every pointermove becomes a 150ms tween and the column lags behind the cursor. Move `isResizing` into `useCardColumnWidth` as state, set it in `initializePointer`/`releasePointer` in `CardColumnResize.tsx`, and pass `$isResizing` to `CardModalBody`.
 - `CardActivityColumn` gets `$visible`: `overflow: hidden` while collapsed, plus `visibility` with a matching 150ms transition. The panel content keeps its width during the slide-out instead of reflowing narrower.
 
@@ -256,12 +257,18 @@ transition: transform 150ms ease-out, visibility 150ms ease-out;
 
 Add to `tests/card.test.ts`, plus helpers in `tests/helpers/CardPage.ts`. Follow `.claude/CLAUDE.md`: **drive the transitions with `getAnimations()`, `pause()` and `currentTime`. Never sample frames.**
 
+The card tests load `/board/${board.id}/card/${card.id}` directly and have no mobile skip, so they also run in the `Mobile Chrome` and `Mobile Safari` projects, where that URL renders the modal. Tests 1–4, 6 and 7 are desktop-only: skip them in the mobile projects (new tests only; don't change existing ones).
+
 1. **Menu renders.** Open a card. `CardDisplayMenuContainer` is visible and contains one `DisplayMenuToggleButton` with text "Comments" and `aria-pressed="false"`. There is no `DisplayMenuSeperator` inside it. `CardActivityColumn` is visible.
 2. **Toggle hides comments.** Click it. `aria-pressed="true"` and `CardActivityColumn` is hidden (visibility). Click again and it's visible again.
-3. **Persisted and global.** Hide comments, then reload: still hidden. Open a card in another list, and a card on a second seeded board: hidden on both.
-4. **Clicking the menu doesn't close the modal.** After clicking the toggle (both directions), `CardModalContent` is still visible and the URL is still `/board/$id/card/$cardId`. Clicking the overlay outside both the content and the menu still closes the modal (a regression guard for the guard).
-5. **Mobile is unchanged.** Run this in the `Mobile Safari`/`Mobile Chrome` projects only (skip elsewhere). With the user's `commentsVisible` set to `false`, open a card. It's the page variant: no `CardDisplayMenuContainer`, and `CardActivityColumn` is visible. Set the preference through the toggle on desktop first, or add a test-only seed for the user row. Don't change what an existing test does.
-6. **Board menu hands off.** On `/board/$id`, `DisplayMenuContainer` is visible. Open a card: it's hidden and the card menu is visible. Close with Escape: the board menu is visible and the card menu is gone. Repeat the close from a `/card/$cardId` direct load on desktop (the mount edge case).
+3. **Persisted and global.** Hide comments, then reload: still hidden, with `visibility: hidden` **and** `CardActivityColumn` width of about 0 (this catches the SSR layout, which `visibility` alone doesn't). Open a card in another list, and a card on a second seeded board: hidden on both.
+4. **Clicking the menu doesn't close the modal.** After clicking the toggle (both directions), `CardModalContent` is still visible and the URL is unchanged: record `urlBefore` before the click and assert equality afterward, as `tests/card.test.ts:159-168` does. (Don't hardcode `/board/$id/card/$cardId`: a client-side open is masked as `/card/<first 8 chars of id>` by `routeMasks.ts`.) Clicking the overlay outside both the content and the menu still closes the modal (a regression guard for the guard).
+5. **Mobile is unchanged.** Run this in the `Mobile Safari`/`Mobile Chrome` projects only (skip elsewhere). Set the user's `commentsVisible` to `false` via the seed helper below, then:
+   - Open the page variant, either by loading `/card/$cardId` or by clicking the card from the board: no `CardDisplayMenuContainer`, and `CardActivityColumn` is visible.
+   - Load `/board/$id/card/$cardId` directly (the modal on mobile): no `CardDisplayMenuContainer`, `CardActivityColumn` is visible, and the board `DisplayMenuContainer` is not hidden by the route match.
+
+   Seed over HTTP like the rest of the suite: add a fixture in `tests/fixtures/` (the only place that calls Prisma directly, e.g. `prisma.user.update` setting `commentsVisible` for the test user), a `/__test/...` endpoint in `tests/plugins/resetDB.ts` that calls it, and a helper in `tests/helpers/seed.ts` that posts to it with `request.post`. The desktop toggle can't be used to set the preference here, because mobile has no menu. Don't change what an existing test does.
+6. **Board menu hands off.** On `/board/$id`, `DisplayMenuContainer` is visible. Open a card: it's hidden and the card menu is visible. Close with Escape: the board menu is visible and the card menu is gone. Repeat the close from a `/card/$cardId` direct load on desktop (the mount edge case). Also reload `/board/$id?from=card-…` and assert the board menu is visible on first paint with no running transform animation.
 7. **Animations.** Add a generic `driveTransition(testId, property, read)` helper, generalized from `driveSlide`: find the animation by `transitionProperty` (or `animationName` for the mount keyframe), pause it, step `currentTime`, read a layout value, `finish()`. Assert the value is strictly between the endpoints and moving monotonically, like `expectSlide`:
    - Board menu `transform` on card open/close: read `getBoundingClientRect().top`.
    - Activity column `grid-template-columns` on `CardModalBody` when toggling: read `CardActivityColumn` width.
@@ -275,7 +282,7 @@ If a failure names a browser, rerun only `--project=<that browser>`.
 - Render-check in the running app:
   - The card menu sits under the modal without overlapping it, at wide and ≤850px desktop widths.
   - Clicking the menu leaves the modal open.
-  - The mobile page card looks and behaves as it does today.
+  - The mobile page card and the mobile modal card (`/board/$id/card/$cardId`) look and behave as they do today: no card menu, original modal sizing, board menu still visible.
   - The selected state matches the board button's look.
   - Both menus slide.
   - The column slides, and the resize handle still drags smoothly with no lag.
@@ -294,3 +301,4 @@ If a failure names a browser, rerun only `--project=<that browser>`.
 - `src/hooks/useCardColumnWidth.ts`
 - `src/styles/animations.ts`
 - `tests/card.test.ts`, `tests/helpers/CardPage.ts`
+- `tests/fixtures/` (new user-preference fixture), `tests/plugins/resetDB.ts` (new `/__test/...` endpoint), `tests/helpers/seed.ts` (new seed helper)
