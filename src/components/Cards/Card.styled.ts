@@ -2,6 +2,7 @@ import { Dialog, Popover } from 'radix-ui';
 import { css, type DataAttributes, styled } from 'styled-components';
 import { fontFamily } from '~/components/Boards/Boards.styled';
 import { cardDisplayMenuReservedSpace } from '~/components/DisplayMenu/DisplayMenu.styled';
+import { ACTIVITY_COLUMN_DEFAULT_WIDTH } from '~/hooks/useCardColumnWidth';
 import { focusRingBlue } from '~/styles/tokens';
 
 /** Section icon width (description list icon, checklist icon, etc.). */
@@ -326,14 +327,32 @@ export const CardPageActivityColumn = styled(CardActivityColumn)`
   }
 `;
 
+type CardModalContentProps = ReserveMenuSpaceProps & {
+  $commentsVisible: boolean;
+};
+
 export const CardModalContent = styled(Dialog.Content).attrs<DataAttributes>({
   'data-testid': 'CardModalContent',
-})<ReserveMenuSpaceProps>`
+})<CardModalContentProps>`
   position: relative;
   font-family: ${fontFamily};
   display: flex;
   flex-direction: column;
   max-width: 88vw;
+
+  @media (min-width: 851px) {
+    ${({ $commentsVisible }) =>
+      /**
+       * Hiding comments narrows the modal by the activity column and its 8px resize
+       * track, in step with `CardModalBody` collapsing them, so the main column
+       * keeps its width. `--card-activity-width` is the column's current width.
+       */
+      $commentsVisible
+        ? ''
+        : `max-width: calc(88vw - var(--card-activity-width, ${ACTIVITY_COLUMN_DEFAULT_WIDTH}px) - 8px);`}
+    transition: max-width 150ms ease-out;
+  }
+
   height: ${({ $reserveMenuSpace }) =>
     $reserveMenuSpace
       ? `calc(95vh - ${cardDisplayMenuReservedSpace})`
