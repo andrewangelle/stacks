@@ -303,6 +303,10 @@ export const CardActivityColumn = styled.div<VisibleProps>`
 export const CardActivityCollapse = styled.div.attrs<DataAttributes>({
   'data-testid': 'CardActivityCollapse',
 })<VisibleProps>`
+  @media (min-width: 851px) {
+    height: 100%;
+  }
+
   @media (max-width: 850px) {
     display: grid;
     grid-template-rows: ${({ $visible }) => ($visible ? '1fr' : '0fr')};
@@ -313,6 +317,10 @@ export const CardActivityCollapse = styled.div.attrs<DataAttributes>({
 export const CardActivityCollapseInner = styled.div.attrs<DataAttributes>({
   'data-testid': 'CardActivityCollapseInner',
 })`
+  @media (min-width: 851px) {
+    height: 100%;
+  }
+
   @media (max-width: 850px) {
     min-height: 0;
     overflow: hidden;
