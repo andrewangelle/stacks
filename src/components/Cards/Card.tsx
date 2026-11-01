@@ -191,6 +191,8 @@ export function Card({ variant = 'modal' }: CardProps) {
         <CardModalOverlay $reserveMenuSpace={!isMobile}>
           <CardModalContent
             $reserveMenuSpace={!isMobile}
+            $commentsVisible={commentsVisible}
+            style={{ '--card-activity-width': `${columnWidth}px` }}
             aria-describedby={undefined}
             onEscapeKeyDown={keepOpenOnBoundaryEscape}
             onCloseAutoFocus={(event) => {

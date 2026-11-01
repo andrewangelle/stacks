@@ -5,10 +5,12 @@ import {
   CardModalPortal,
   CardModalRoot,
 } from '~/components/Cards/Card.styled';
+import { useCommentsVisible } from '~/db/user/user.query';
 import { useIsMobile } from '~/hooks/useIsMobile';
 
 export function CardFallback() {
   const isMobile = useIsMobile();
+  const commentsVisible = useCommentsVisible();
 
   return (
     <CardModalRoot open>
@@ -16,6 +18,7 @@ export function CardFallback() {
         <CardModalOverlay $reserveMenuSpace={!isMobile}>
           <CardModalContent
             $reserveMenuSpace={!isMobile}
+            $commentsVisible={commentsVisible}
             aria-describedby={undefined}
           >
             <CardModalHiddenTitle>Loading card</CardModalHiddenTitle>

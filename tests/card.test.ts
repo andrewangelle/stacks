@@ -839,6 +839,60 @@ test.describe('Card display menu', () => {
       cardPage.expectSlide(expand, { from: 0, to: openWidth });
     });
 
+    test('narrows the card by the comments column when hiding comments', async () => {
+      await cardPage.setup('Write docs');
+      const modalWidth = {
+        testId: 'CardModalContent',
+        edge: 'width',
+      } as const;
+      const modalSlide = {
+        testId: 'CardModalContent',
+        property: 'max-width',
+      };
+      const mainColumnWidth = {
+        testId: 'CardMainColumn',
+        edge: 'width',
+      } as const;
+
+      const openWidth = await cardPage.readEdge(modalWidth);
+      const mainWidth = await cardPage.readEdge(mainColumnWidth);
+      const handleWidth = await cardPage.readEdge({
+        testId: 'ResizeableCardColumnHandle',
+        edge: 'width',
+      });
+      const columnWidth = await cardPage.readEdge({
+        testId: 'CardActivityColumn',
+        edge: 'width',
+      });
+      const closedWidth = openWidth - columnWidth - handleWidth;
+
+      const shrink = await cardPage.driveTransition(
+        modalSlide,
+        modalWidth,
+        () => cardPage.toggleComments(true),
+      );
+      cardPage.expectSlide(shrink, { from: openWidth, to: closedWidth });
+      expect(await cardPage.readEdge(mainColumnWidth)).toBeCloseTo(
+        mainWidth,
+        0,
+      );
+
+      // The narrowed card is server-rendered, not shrunk after hydration.
+      await cardPage.page.waitForLoadState('networkidle');
+      await cardPage.page.reload();
+      await cardPage.waitForCardModal();
+      expect(await cardPage.readEdge(modalWidth)).toBeCloseTo(closedWidth, 0);
+
+      const grow = await cardPage.driveTransition(modalSlide, modalWidth, () =>
+        cardPage.toggleComments(false),
+      );
+      cardPage.expectSlide(grow, { from: closedWidth, to: openWidth });
+      expect(await cardPage.readEdge(mainColumnWidth)).toBeCloseTo(
+        mainWidth,
+        0,
+      );
+    });
+
     test('slides the stacked comments panel closed and open', async () => {
       await cardPage.page.setViewportSize({ width: 800, height: 900 });
       await cardPage.setup('Write docs');
