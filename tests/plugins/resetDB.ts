@@ -155,6 +155,29 @@ export function resetDB(): Plugin {
           return;
         }
 
+        if (
+          req.url === '/__test/set-comments-visible' &&
+          req.method === 'POST'
+        ) {
+          try {
+            const { setCommentsVisible } = await server.ssrLoadModule(
+              path.join(fixturesDir, 'setCommentsVisible.ts'),
+            );
+
+            const body = await readJsonBody<{ commentsVisible: boolean }>(req);
+
+            const updated = await setCommentsVisible(body);
+
+            res.setHeader('Content-Type', 'application/json');
+            res.statusCode = 200;
+            res.end(JSON.stringify(updated));
+          } catch {
+            res.statusCode = 400;
+            res.end();
+          }
+          return;
+        }
+
         next();
       });
     },

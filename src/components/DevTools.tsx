@@ -2,7 +2,7 @@ import { TanStackDevtools } from '@tanstack/react-devtools';
 import { ReactQueryDevtoolsPanel } from '@tanstack/react-query-devtools';
 import { TanStackRouterDevtoolsPanel } from '@tanstack/react-router-devtools';
 
-type PointerDownOutsideEvent = CustomEvent<{
+export type PointerDownOutsideEvent = CustomEvent<{
   originalEvent: PointerEvent;
 }>;
 

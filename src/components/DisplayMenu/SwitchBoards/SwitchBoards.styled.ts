@@ -1,6 +1,9 @@
 import { Dialog } from 'radix-ui';
 import { css, type DataAttributes, styled } from 'styled-components';
-import { displayMenuItemStyles } from '~/components/DisplayMenu/DisplayMenu.styled';
+import {
+  displayMenuItemHoverStyles,
+  displayMenuItemStyles,
+} from '~/components/DisplayMenu/DisplayMenu.styled';
 import { blue, fontFamily } from '~/styles/tokens';
 
 const overlay = css`
@@ -41,10 +44,7 @@ export const SwitchBoardsTrigger = styled(Dialog.Trigger).attrs<DataAttributes>(
   },
 )`
   ${displayMenuItemStyles}
-
-  &:hover {
-    background: rgba(9, 30, 66, 0.06);
-  }
+  ${displayMenuItemHoverStyles}
 `;
 
 type IsMobileProps = {

@@ -9,6 +9,15 @@ const fadeInFrames = keyframes`
   }
 `;
 
+export const displayMenuSlideUpFrames = keyframes`
+  from {
+    transform: translateX(-50%) translateY(calc(100% + 24px));
+  }
+  to {
+    transform: translateX(-50%) translateY(0);
+  }
+`;
+
 const pulseFrames = keyframes`
   0%,
   100% {

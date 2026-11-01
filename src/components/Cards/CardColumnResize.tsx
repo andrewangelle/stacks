@@ -8,26 +8,31 @@ import {
 type CardColumnResizeProps = {
   columnWidth: number;
   setColumnWidth: (width: number) => void;
+  isResizing: boolean;
+  setIsResizing: (isResizing: boolean) => void;
+  visible: boolean;
 };
 
 export function CardColumnResize({
   columnWidth,
   setColumnWidth,
+  isResizing,
+  setIsResizing,
+  visible,
 }: CardColumnResizeProps) {
-  const isResizingRef = useRef(false);
   const resizeStartXRef = useRef(0);
   const resizeStartWidthRef = useRef(columnWidth);
 
   function initializePointer(event: PointerEvent<HTMLDivElement>) {
     event.preventDefault();
-    isResizingRef.current = true;
+    setIsResizing(true);
     resizeStartXRef.current = event.clientX;
     resizeStartWidthRef.current = columnWidth;
     event.currentTarget.setPointerCapture(event.pointerId);
   }
 
   function resizeColumnWidth(event: PointerEvent<HTMLDivElement>) {
-    if (!isResizingRef.current) {
+    if (!isResizing) {
       return;
     }
 
@@ -37,7 +42,7 @@ export function CardColumnResize({
   }
 
   function releasePointer(event: PointerEvent<HTMLDivElement>) {
-    isResizingRef.current = false;
+    setIsResizing(false);
     event.currentTarget.releasePointerCapture(event.pointerId);
   }
 
@@ -50,6 +55,7 @@ export function CardColumnResize({
 
   return (
     <ResizeableCardColumnHandle
+      $visible={visible}
       onPointerDown={initializePointer}
       onPointerMove={resizeColumnWidth}
       onPointerUp={releasePointer}

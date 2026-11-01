@@ -7,6 +7,7 @@ export const ACTIVITY_COLUMN_MAX_WIDTH = 620;
 
 export function useCardColumnWidth() {
   const [columnWidth, setColumnWidth] = useState(ACTIVITY_COLUMN_DEFAULT_WIDTH);
+  const [isResizing, setIsResizing] = useState(false);
   const [isWideLayout, setIsWideLayout] = useState(() =>
     typeof window !== 'undefined'
       ? window.matchMedia(CARD_MODAL_WIDE_LAYOUT_QUERY).matches
@@ -21,5 +22,11 @@ export function useCardColumnWidth() {
     return () => mediaQuery.removeEventListener('change', syncWideLayout);
   }, []);
 
-  return { columnWidth, setColumnWidth, isWideLayout };
+  return {
+    columnWidth,
+    setColumnWidth,
+    isResizing,
+    setIsResizing,
+    isWideLayout,
+  };
 }

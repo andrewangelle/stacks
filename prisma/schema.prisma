@@ -9,16 +9,17 @@ datasource db {
 }
 
 model User {
-  id             String          @id
-  email          String          @unique
-  createdAt      DateTime        @default(now()) @map("created_at")
-  updatedAt      DateTime        @updatedAt @map("updated_at")
-  stacks         Stack[]
-  lists          List[]
-  cards          Card[]
-  checklists     Checklist[]
-  checklistItems ChecklistItem[]
-  activities     Activity[]
+  id              String          @id
+  email           String          @unique
+  createdAt       DateTime        @default(now()) @map("created_at")
+  updatedAt       DateTime        @updatedAt @map("updated_at")
+  commentsVisible Boolean         @default(true) @map("comments_visible")
+  stacks          Stack[]
+  lists           List[]
+  cards           Card[]
+  checklists      Checklist[]
+  checklistItems  ChecklistItem[]
+  activities      Activity[]
 
   @@map("users")
 }

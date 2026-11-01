@@ -15,6 +15,7 @@ import {
   getNavBarServer,
 } from '~/components/server/Nav.functions';
 import { getBoardColor } from '~/db/boards/boards.functions';
+import { userPreferencesQueryOptions } from '~/db/user/user.query';
 import { BoardPageScrollRefProvider } from '~/hooks/useBoardPageScrollRef';
 
 export const Route = createFileRoute('/board/$id')({
@@ -22,6 +23,10 @@ export const Route = createFileRoute('/board/$id')({
     if (!context.userId) {
       context.queryClient.clear();
       throw redirect({ to: '/auth/sign-in' });
+    }
+
+    if (!context.isMobile) {
+      await context.queryClient.ensureQueryData(userPreferencesQueryOptions);
     }
 
     const boardColor = await getBoardColor({

@@ -1,6 +1,6 @@
 import { expect, test } from '~test/fixtures';
 import { CardPage } from '~test/helpers/CardPage';
-import { seedCard } from '~test/helpers/seed';
+import { seedCard, setCommentsVisible } from '~test/helpers/seed';
 
 test.describe('Card', () => {
   let cardPage: CardPage;
@@ -588,5 +588,312 @@ test.describe('Move card', () => {
 
     await cardPage.page.keyboard.press('Escape');
     await expect(cardPage.page.getByTestId('CardModalContent')).toBeHidden();
+  });
+});
+
+test.describe('Card display menu', () => {
+  // Cold Vite compile on the first navigation of a run can exceed 30s.
+  test.describe.configure({ timeout: 60_000 });
+
+  let cardPage: CardPage;
+
+  test.beforeEach(async ({ page, request }) => {
+    cardPage = new CardPage(page, request);
+  });
+
+  test.describe('desktop', () => {
+    test.skip(({ isMobile }) => isMobile, 'The card menu is desktop-only');
+
+    test('renders a Comments toggle under the card', async () => {
+      await cardPage.setup('Write docs');
+
+      const menu = cardPage.page.getByTestId('CardDisplayMenuContainer');
+      await expect(menu).toBeVisible();
+      await expect(menu.getByTestId('DisplayMenuToggleButton')).toHaveCount(1);
+      await expect(cardPage.commentsToggle()).toHaveText('Comments');
+      await expect(cardPage.commentsToggle()).toHaveAttribute(
+        'aria-pressed',
+        'false',
+      );
+      await expect(menu.getByTestId('DisplayMenuSeperator')).toHaveCount(0);
+      await expect(
+        cardPage.page.getByTestId('CardActivityColumn'),
+      ).toBeVisible();
+    });
+
+    test('hides and shows the comments panel', async () => {
+      await cardPage.setup('Write docs');
+      const activity = cardPage.page.getByTestId('CardActivityColumn');
+
+      await cardPage.toggleComments(true);
+      await expect(activity).toBeHidden();
+
+      await cardPage.toggleComments(false);
+      await expect(activity).toBeVisible();
+    });
+
+    test('keeps comments hidden across a reload, lists and boards', async () => {
+      const { board, card, otherBoard, otherBoardCard } =
+        await cardPage.seedCommentsScenario();
+      const activity = cardPage.page.getByTestId('CardActivityColumn');
+
+      await cardPage.page.goto(`/board/${board.id}/card/${card.id}`);
+      await cardPage.waitForCardModal();
+      await cardPage.toggleComments(true);
+
+      // The toggle is written to the user, so let it reach the server before a
+      // reload drops the optimistic cache.
+      await cardPage.page.waitForLoadState('networkidle');
+      await cardPage.page.reload();
+      await cardPage.waitForCardModal();
+
+      await expect(cardPage.commentsToggle()).toHaveAttribute(
+        'aria-pressed',
+        'true',
+      );
+      await expect(activity).toBeHidden();
+      // Visibility alone would pass with the column still taking its width;
+      // the server-rendered layout has to be collapsed too.
+      expect(
+        await cardPage.readEdge({
+          testId: 'CardActivityColumn',
+          edge: 'width',
+        }),
+      ).toBeLessThan(1);
+
+      await cardPage.closeCardWithEscape();
+      await cardPage.openCardFromBoard('Plan sprint');
+      await expect(activity).toBeHidden();
+
+      await cardPage.page.goto(
+        `/board/${otherBoard.id}/card/${otherBoardCard.id}`,
+      );
+      await cardPage.waitForCardModal();
+      await expect(activity).toBeHidden();
+    });
+
+    test('clicking the menu leaves the card open', async () => {
+      await cardPage.setup('Write docs');
+      const content = cardPage.page.getByTestId('CardModalContent');
+      const urlBefore = cardPage.page.url();
+
+      await cardPage.toggleComments(true);
+      await expect(content).toBeVisible();
+      expect(cardPage.page.url()).toBe(urlBefore);
+
+      await cardPage.toggleComments(false);
+      await expect(content).toBeVisible();
+      expect(cardPage.page.url()).toBe(urlBefore);
+
+      // The guard is scoped to the menu: the rest of the overlay still closes.
+      await cardPage.page.mouse.click(5, 5);
+      await expect(content).toBeHidden();
+    });
+
+    test('hands the bottom of the screen between the board and card menus', async () => {
+      const { board, card } = await cardPage.seedCommentsScenario();
+      const boardMenu = cardPage.page.getByTestId('DisplayMenuContainer');
+      const cardMenu = cardPage.page.getByTestId('CardDisplayMenuContainer');
+
+      await cardPage.page.goto(`/board/${board.id}`);
+      await expect(boardMenu).toBeVisible();
+
+      await cardPage.openCardFromBoard('Write docs');
+      await expect(boardMenu).toBeHidden();
+      await expect(cardMenu).toBeVisible();
+
+      await cardPage.closeCardWithEscape();
+      await expect(boardMenu).toBeVisible();
+      await expect(cardMenu).toHaveCount(0);
+
+      await cardPage.page.goto(`/card/${card.id}`);
+      await cardPage.waitForCardModal();
+      await expect(cardMenu).toBeVisible();
+
+      const reveal = await cardPage.driveTransition(
+        { testId: 'DisplayMenuContainer', property: 'transform' },
+        { testId: 'DisplayMenuContainer', edge: 'top' },
+        () => cardPage.closeCardWithEscape(),
+      );
+      await expect(boardMenu).toBeVisible();
+      await expect(cardMenu).toHaveCount(0);
+      expect(reveal.heights[0]).toBeGreaterThan(reveal.end);
+    });
+
+    test('paints the board menu without sliding on a reload', async () => {
+      const { board, card } = await cardPage.seedCommentsScenario();
+
+      await cardPage.page.addInitScript(() => {
+        const runs: string[] = [];
+        Object.assign(window, { __boardMenuTransitions: runs });
+        document.addEventListener(
+          'transitionrun',
+          (event) => {
+            if (
+              event.target instanceof HTMLElement &&
+              event.target.dataset.testid === 'DisplayMenuContainer'
+            ) {
+              runs.push(event.propertyName);
+            }
+          },
+          true,
+        );
+      });
+
+      await cardPage.page.goto(`/board/${board.id}?from=card-${card.id}`);
+      await expect(
+        cardPage.page.getByTestId('DisplayMenuContainer'),
+      ).toBeVisible();
+      await cardPage.page.waitForLoadState('networkidle');
+
+      expect(
+        await cardPage.page.evaluate(
+          () =>
+            (window as Window & { __boardMenuTransitions?: string[] })
+              .__boardMenuTransitions,
+        ),
+      ).toEqual([]);
+    });
+
+    test('slides the board menu out and in with the card', async () => {
+      const { board } = await cardPage.seedCommentsScenario();
+      const boardMenuTop = {
+        testId: 'DisplayMenuContainer',
+        edge: 'top',
+      } as const;
+      const boardMenuSlide = {
+        testId: 'DisplayMenuContainer',
+        property: 'transform',
+      };
+
+      await cardPage.page.goto(`/board/${board.id}`);
+      await expect(
+        cardPage.page.getByTestId('DisplayMenuContainer'),
+      ).toBeVisible();
+      const shownTop = await cardPage.readEdge(boardMenuTop);
+
+      const hide = await cardPage.driveTransition(
+        boardMenuSlide,
+        boardMenuTop,
+        () => cardPage.openCardFromBoard('Write docs'),
+      );
+      cardPage.expectSlide(hide, {
+        from: shownTop,
+        to: cardPage.page.viewportSize()?.height ?? 0,
+      });
+
+      const show = await cardPage.driveTransition(
+        boardMenuSlide,
+        boardMenuTop,
+        () => cardPage.closeCardWithEscape(),
+      );
+      cardPage.expectSlide(show, { from: hide.end, to: shownTop });
+    });
+
+    test('slides the card menu up when the card opens', async () => {
+      const { board } = await cardPage.seedCommentsScenario();
+
+      await cardPage.page.goto(`/board/${board.id}`);
+      const shownTop = await cardPage.readEdge({
+        testId: 'DisplayMenuContainer',
+        edge: 'top',
+      });
+
+      const open = await cardPage.driveTransition(
+        { testId: 'CardDisplayMenuContainer', property: 'animation' },
+        { testId: 'CardDisplayMenuContainer', edge: 'top' },
+        () => cardPage.openCardFromBoard('Write docs'),
+      );
+      cardPage.expectSlide(open, {
+        from: cardPage.page.viewportSize()?.height ?? 0,
+        to: shownTop,
+      });
+    });
+
+    test('slides the comments column closed and open', async () => {
+      await cardPage.setup('Write docs');
+      const columnWidth = {
+        testId: 'CardActivityColumn',
+        edge: 'width',
+      } as const;
+      const columnSlide = {
+        testId: 'CardModalBody',
+        property: 'grid-template-columns',
+      };
+
+      const openWidth = await cardPage.readEdge(columnWidth);
+      expect(openWidth).toBeGreaterThan(0);
+
+      const collapse = await cardPage.driveTransition(
+        columnSlide,
+        columnWidth,
+        () => cardPage.toggleComments(true),
+      );
+      cardPage.expectSlide(collapse, { from: openWidth, to: 0 });
+
+      const expand = await cardPage.driveTransition(
+        columnSlide,
+        columnWidth,
+        () => cardPage.toggleComments(false),
+      );
+      cardPage.expectSlide(expand, { from: 0, to: openWidth });
+    });
+
+    test('slides the stacked comments panel closed and open', async () => {
+      await cardPage.page.setViewportSize({ width: 800, height: 900 });
+      await cardPage.setup('Write docs');
+      const innerHeight = {
+        testId: 'CardActivityCollapseInner',
+        edge: 'height',
+      } as const;
+      const panelSlide = {
+        testId: 'CardActivityCollapse',
+        property: 'grid-template-rows',
+      };
+
+      await expect(
+        cardPage.page.getByTestId('ActivityListViewport'),
+      ).toBeAttached();
+      const openHeight = await cardPage.readEdge(innerHeight);
+      expect(openHeight).toBeGreaterThan(0);
+
+      const collapse = await cardPage.driveTransition(
+        panelSlide,
+        innerHeight,
+        () => cardPage.toggleComments(true),
+      );
+      cardPage.expectSlide(collapse, { from: openHeight, to: 0 });
+
+      const expand = await cardPage.driveTransition(
+        panelSlide,
+        innerHeight,
+        () => cardPage.toggleComments(false),
+      );
+      cardPage.expectSlide(expand, { from: 0, to: openHeight });
+    });
+  });
+
+  test.describe('mobile', () => {
+    test.skip(({ isMobile }) => !isMobile, 'Covers the mobile card only');
+
+    test('always shows comments and renders no card menu', async () => {
+      const { board, card } = await cardPage.seedCommentsScenario();
+      await setCommentsVisible(cardPage.request, false);
+      const activity = cardPage.page.getByTestId('CardActivityColumn');
+      const cardMenu = cardPage.page.getByTestId('CardDisplayMenuContainer');
+
+      await cardPage.page.goto(`/card/${card.id}`);
+      await cardPage.waitForCardModal();
+      await expect(activity).toBeVisible();
+      await expect(cardMenu).toHaveCount(0);
+
+      await cardPage.page.goto(`/board/${board.id}/card/${card.id}`);
+      await cardPage.waitForCardModal();
+      await expect(activity).toBeVisible();
+      await expect(cardMenu).toHaveCount(0);
+      await expect(
+        cardPage.page.getByTestId('DisplayMenuContainer'),
+      ).toBeVisible();
+    });
   });
 });

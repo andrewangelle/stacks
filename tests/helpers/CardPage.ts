@@ -10,6 +10,21 @@ type Slide = {
   end: number;
 };
 
+/**
+ * What to step through: a CSS transition on `property`, or the element's
+ * keyframe animation when `property` is `'animation'`.
+ */
+type DrivenTransition = {
+  testId: string;
+  property: string;
+};
+
+/** The layout value read at each step, from `testId`'s bounding box. */
+type TransitionReading = {
+  testId: string;
+  edge: 'top' | 'width' | 'height';
+};
+
 export type ChecklistSeed = {
   title: string;
   items: string[];
@@ -438,6 +453,159 @@ export class CardPage extends BasePage {
     }
 
     expect(slide.end).toBeCloseTo(to, 0);
+  }
+
+  /**
+   * `driveSlide` for any element and property: catches the transition `act`
+   * starts, pauses it, and reads `read` at fixed fractions of its duration
+   * instead of sampling frames. The element may not exist yet when this is
+   * called, as with a menu that mounts on open.
+   */
+  async driveTransition(
+    transition: DrivenTransition,
+    read: TransitionReading,
+    act: () => Promise<void>,
+  ): Promise<Slide> {
+    const sliding = this.page.evaluate(
+      ({ transition, read, progress }) => {
+        const readValue = () => {
+          const element = document.querySelector(
+            `[data-testid="${read.testId}"]`,
+          );
+
+          if (!element) {
+            throw new Error(`${read.testId} is not mounted`);
+          }
+
+          return element.getBoundingClientRect()[read.edge];
+        };
+
+        const findAnimation = () =>
+          document
+            .querySelector(`[data-testid="${transition.testId}"]`)
+            ?.getAnimations()
+            .find((candidate) =>
+              transition.property === 'animation'
+                ? candidate instanceof CSSAnimation
+                : (candidate as Animation & { transitionProperty?: string })
+                    .transitionProperty === transition.property,
+            );
+
+        return new Promise<Slide>((resolve, reject) => {
+          const start = performance.now();
+
+          function pollForAnimation() {
+            const animation = findAnimation();
+
+            if (!animation) {
+              if (performance.now() - start > 15_000) {
+                reject(
+                  new Error(
+                    `${transition.testId} ${transition.property} never started`,
+                  ),
+                );
+              } else {
+                setTimeout(pollForAnimation);
+              }
+              return;
+            }
+
+            animation.pause();
+
+            const duration = Number(
+              animation.effect?.getComputedTiming().duration,
+            );
+
+            if (!Number.isFinite(duration) || duration <= 0) {
+              reject(new Error(`Animation has no duration: ${duration}`));
+              return;
+            }
+
+            const heights = progress.map((fraction) => {
+              animation.currentTime = duration * fraction;
+              return readValue();
+            });
+
+            animation.finish();
+
+            resolve({ heights, end: readValue() });
+          }
+
+          pollForAnimation();
+        });
+      },
+      { transition, read, progress: slideProgress },
+    );
+
+    await act();
+
+    return sliding;
+  }
+
+  async readEdge({ testId, edge }: TransitionReading) {
+    const box = await this.page.getByTestId(testId).boundingBox();
+
+    if (!box) {
+      throw new Error(`${testId} has no box`);
+    }
+
+    return { top: box.y, width: box.width, height: box.height }[edge];
+  }
+
+  async seedCommentsScenario() {
+    await resetDb(this.request);
+    const board = await seedBoard(this.request, 'Sprint Board');
+    const { card } = await seedCard(this.request, {
+      boardId: board.id,
+      listTitle: 'To Do',
+      cardTitle: 'Write docs',
+    });
+    const { card: otherListCard } = await seedCard(this.request, {
+      boardId: board.id,
+      listTitle: 'Doing',
+      cardTitle: 'Plan sprint',
+    });
+    const otherBoard = await seedBoard(this.request, 'Backlog');
+    const { card: otherBoardCard } = await seedCard(this.request, {
+      boardId: otherBoard.id,
+      listTitle: 'Later',
+      cardTitle: 'Existing card',
+    });
+    return { board, card, otherListCard, otherBoard, otherBoardCard };
+  }
+
+  commentsToggle() {
+    return this.page
+      .getByTestId('CardDisplayMenuContainer')
+      .getByTestId('DisplayMenuToggleButton');
+  }
+
+  async toggleComments(pressed: boolean) {
+    const toggle = this.commentsToggle();
+
+    await this.waitForHydratedAction(
+      () => toggle.click(),
+      async () => (await toggle.getAttribute('aria-pressed')) === `${pressed}`,
+    );
+  }
+
+  async openCardFromBoard(cardTitle: string) {
+    await this.waitForHydratedAction(
+      () =>
+        this.page
+          .getByTestId('CardModalTrigger')
+          .filter({ hasText: cardTitle })
+          .click(),
+      () => this.page.getByTestId('CardModalContent').isVisible(),
+    );
+  }
+
+  async closeCardWithEscape() {
+    await this.waitForHydratedAction(
+      () => this.page.keyboard.press('Escape'),
+      async () =>
+        !(await this.page.getByTestId('CardModalContent').isVisible()),
+    );
   }
 
   async expectListCardCount(count: number) {
