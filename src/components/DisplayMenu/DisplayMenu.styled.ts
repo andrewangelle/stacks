@@ -1,4 +1,5 @@
 import { css, type DataAttributes, styled } from 'styled-components';
+import { displayMenuSlideUpFrames } from '~/styles/animations';
 import { blue, fontFamily } from '~/styles/tokens';
 
 export const displayMenuItemStyles = css`
@@ -21,16 +22,55 @@ export const displayMenuItemStyles = css`
   }
 `;
 
-type IsMobileProps = {
+export const displayMenuItemHoverStyles = css`
+  &:hover {
+    background: rgba(9, 30, 66, 0.06);
+  }
+`;
+
+export const displayMenuSelectedItemStyles = css`
+  background: #e9f2fe;
+  color: ${blue};
+
+  &:hover {
+    background: #cfe1fd;
+  }
+`;
+
+export const displayMenuSelectedLabelStyles = css`
+  position: relative;
+
+  &::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    bottom: -6px;
+    width: 18px;
+    height: 3px;
+    border-radius: 2px;
+    background: ${blue};
+  }
+`;
+
+/** Card menu height (6 + 36 + 6) + its 24px bottom offset + a 12px gap. */
+export const cardDisplayMenuReservedSpace = '84px';
+
+type DisplayMenuContainerProps = {
   $isMobile: boolean;
+  $hidden: boolean;
 };
 export const DisplayMenuContainer = styled.div.attrs<DataAttributes>({
   'data-testid': 'DisplayMenuContainer',
-})<IsMobileProps>`
+})<DisplayMenuContainerProps>`
   position: fixed;
   left: 50%;
   bottom: 24px;
-  transform: translateX(-50%);
+  transform: translateX(-50%)
+    translateY(${({ $hidden }) => ($hidden ? 'calc(100% + 24px)' : '0')});
+  visibility: ${({ $hidden }) => ($hidden ? 'hidden' : 'visible')};
+  transition:
+    transform 150ms ease-out,
+    visibility 150ms ease-out;
   display: flex;
   align-items: stretch;
   gap: 4px;
@@ -57,30 +97,14 @@ export const DisplayMenuBoardButton = styled.button.attrs<DataAttributes>({
   type: 'button',
 })`
   ${displayMenuItemStyles}
-  background: #e9f2fe;
-  color: ${blue};
+  ${displayMenuSelectedItemStyles}
   cursor: not-allowed;
-
-  &:hover {
-    background: #cfe1fd;
-  }
 `;
 
 export const DisplayMenuBoardLabel = styled.span.attrs<DataAttributes>({
   'data-testid': 'DisplayMenuBoardLabel',
 })`
-  position: relative;
-
-  &::after {
-    content: '';
-    position: absolute;
-    left: 0;
-    bottom: -6px;
-    width: 18px;
-    height: 3px;
-    border-radius: 2px;
-    background: ${blue};
-  }
+  ${displayMenuSelectedLabelStyles}
 `;
 
 export const DisplayMenuSeperator = styled.div.attrs<DataAttributes>({
@@ -93,4 +117,31 @@ export const DisplayMenuSeperator = styled.div.attrs<DataAttributes>({
   align-self: stretch;
   display: block;
   height: auto;
+`;
+
+export const CardDisplayMenuContainer = styled(
+  DisplayMenuContainer,
+).attrs<DataAttributes>({
+  'data-testid': 'CardDisplayMenuContainer',
+})`
+  pointer-events: auto;
+  animation: ${displayMenuSlideUpFrames} 150ms ease-out;
+`;
+
+type SelectedProps = {
+  $selected: boolean;
+};
+export const DisplayMenuToggleButton = styled.button.attrs<DataAttributes>({
+  'data-testid': 'DisplayMenuToggleButton',
+  type: 'button',
+})<SelectedProps>`
+  ${displayMenuItemStyles}
+  ${({ $selected }) =>
+    $selected ? displayMenuSelectedItemStyles : displayMenuItemHoverStyles}
+`;
+
+export const DisplayMenuToggleLabel = styled.span.attrs<DataAttributes>({
+  'data-testid': 'DisplayMenuToggleLabel',
+})<SelectedProps>`
+  ${({ $selected }) => ($selected ? displayMenuSelectedLabelStyles : '')}
 `;

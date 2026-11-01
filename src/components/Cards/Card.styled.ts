@@ -1,6 +1,7 @@
 import { Dialog, Popover } from 'radix-ui';
 import { css, type DataAttributes, styled } from 'styled-components';
 import { fontFamily } from '~/components/Boards/Boards.styled';
+import { cardDisplayMenuReservedSpace } from '~/components/DisplayMenu/DisplayMenu.styled';
 import { focusRingBlue } from '~/styles/tokens';
 
 /** Section icon width (description list icon, checklist icon, etc.). */
@@ -86,9 +87,12 @@ export const CardModalRoot = styled(Dialog.Root).attrs<DataAttributes>({
 export const CardModalPortal = styled(Dialog.Portal).attrs<DataAttributes>({
   'data-testid': 'CardModalPortal',
 })``;
+type ReserveMenuSpaceProps = {
+  $reserveMenuSpace: boolean;
+};
 export const CardModalOverlay = styled(Dialog.Overlay).attrs<DataAttributes>({
   'data-testid': 'CardModalOverlay',
-})` 
+})<ReserveMenuSpaceProps>` 
   background: rgba(0 0 0 / 0.8);
   position: fixed;
   top: 0;
@@ -99,19 +103,32 @@ export const CardModalOverlay = styled(Dialog.Overlay).attrs<DataAttributes>({
   place-items: center;
   overflow-y: auto;
   z-index: 2;
+  padding-bottom: ${({ $reserveMenuSpace }) =>
+    $reserveMenuSpace ? cardDisplayMenuReservedSpace : '0'};
 `;
 
+type CardModalBodyProps = {
+  $commentsVisible: boolean;
+  $isResizing: boolean;
+};
 export const CardModalBody = styled.div.attrs<DataAttributes>({
   'data-testid': 'CardModalBody',
-})`
+})<CardModalBodyProps>`
   display: grid;
   grid-template-columns: minmax(0, 1fr) 8px minmax(200px, 280px);
   grid-template-rows: minmax(0, 1fr);
+  transition: ${({ $isResizing }) =>
+    $isResizing ? 'none' : 'grid-template-columns 150ms ease-out'};
   gap: 0;
   align-items: stretch;
   flex: 1 1 auto;
   min-height: 0;
   overflow: hidden;
+
+  @media (min-width: 851px) {
+    ${({ $commentsVisible }) =>
+      $commentsVisible ? '' : 'grid-template-columns: minmax(0, 1fr) 0px 0px;'}
+  }
 
   @media (max-width: 850px) {
     display: flex;
@@ -208,10 +225,15 @@ export const DeleteCardPopoverTrigger = styled(
   width: auto;
 `;
 
+type VisibleProps = {
+  $visible: boolean;
+};
 export const ResizeableCardColumnHandle = styled.div.attrs<DataAttributes>({
   'data-testid': 'ResizeableCardColumnHandle',
-})`
+})<VisibleProps>`
   height: 100%;
+  visibility: ${({ $visible }) => ($visible ? 'visible' : 'hidden')};
+  pointer-events: ${({ $visible }) => ($visible ? 'auto' : 'none')};
   cursor: ew-resize;
   touch-action: none;
   position: relative;
@@ -254,19 +276,45 @@ export const CardMainColumn = styled.div.attrs<DataAttributes>({
   }
 `;
 
-export const CardActivityColumn = styled.div`
+export const CardActivityColumn = styled.div<VisibleProps>`
   min-width: 0;
   min-height: 0;
   padding: 12px;
   background:rgb(248, 248, 248); 
-  overflow-y: auto;
+  overflow-y: ${({ $visible }) => ($visible ? 'auto' : 'hidden')};
   padding: 0;
+  visibility: ${({ $visible }) => ($visible ? 'visible' : 'hidden')};
+  transition: visibility 150ms ease-out;
 
   @media (max-width: 850px) {
     background: white;
     flex-shrink: 0;
     min-height: unset;
     overflow: visible;
+  }
+`;
+
+/**
+ * Below 850px the activity column stacks under the main column, so it
+ * collapses by height instead: the same `0fr`/`1fr` row trick as the
+ * description body, which needs no measuring and keeps the panel mounted.
+ */
+export const CardActivityCollapse = styled.div.attrs<DataAttributes>({
+  'data-testid': 'CardActivityCollapse',
+})<VisibleProps>`
+  @media (max-width: 850px) {
+    display: grid;
+    grid-template-rows: ${({ $visible }) => ($visible ? '1fr' : '0fr')};
+    transition: grid-template-rows 150ms ease-out;
+  }
+`;
+
+export const CardActivityCollapseInner = styled.div.attrs<DataAttributes>({
+  'data-testid': 'CardActivityCollapseInner',
+})`
+  @media (max-width: 850px) {
+    min-height: 0;
+    overflow: hidden;
   }
 `;
 
@@ -280,13 +328,16 @@ export const CardPageActivityColumn = styled(CardActivityColumn)`
 
 export const CardModalContent = styled(Dialog.Content).attrs<DataAttributes>({
   'data-testid': 'CardModalContent',
-})`
+})<ReserveMenuSpaceProps>`
   position: relative;
   font-family: ${fontFamily};
   display: flex;
   flex-direction: column;
   max-width: 88vw;
-  height: 95vh;
+  height: ${({ $reserveMenuSpace }) =>
+    $reserveMenuSpace
+      ? `calc(95vh - ${cardDisplayMenuReservedSpace})`
+      : '95vh'};
   width: 100%;
   margin: 0 30px;
   overflow: hidden;
@@ -297,7 +348,10 @@ export const CardModalContent = styled(Dialog.Content).attrs<DataAttributes>({
     min-width: unset;
     max-width: calc(100% - 30px);
     height: auto;
-    max-height: 99vh;
+    max-height: ${({ $reserveMenuSpace }) =>
+      $reserveMenuSpace
+        ? `calc(99vh - ${cardDisplayMenuReservedSpace})`
+        : '99vh'};
   }
 `;
 

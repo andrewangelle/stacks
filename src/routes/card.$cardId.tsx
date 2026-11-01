@@ -15,6 +15,7 @@ import {
 } from '~/components/server/Nav.functions';
 import { boardsQueryOptions } from '~/db/boards/boards.query';
 import { getBoardIdByCardId } from '~/db/cards/cards.functions';
+import { userPreferencesQueryOptions } from '~/db/user/user.query';
 import { BoardPageScrollRefProvider } from '~/hooks/useBoardPageScrollRef';
 
 export const Route = createFileRoute('/card/$cardId')({
@@ -25,6 +26,10 @@ export const Route = createFileRoute('/card/$cardId')({
     }
 
     await context.queryClient.ensureQueryData(boardsQueryOptions);
+
+    if (!context.isMobile) {
+      await context.queryClient.ensureQueryData(userPreferencesQueryOptions);
+    }
 
     const cardQuery = await getBoardIdByCardId({
       data: { cardId: params.cardId },

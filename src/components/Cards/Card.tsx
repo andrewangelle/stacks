@@ -4,6 +4,8 @@ import { ActivityPanel } from '~/components/Activity/ActivityPanel';
 import { ActivitySkeleton } from '~/components/Activity/ActivitySkeleton';
 import {
   CardActionsContainer,
+  CardActivityCollapse,
+  CardActivityCollapseInner,
   CardActivityColumn,
   CardMainColumn,
   CardModalBody,
@@ -23,10 +25,16 @@ import { ChecklistSkeleton } from '~/components/Checklists/ChecklistSkeleton';
 import { CardChecklists } from '~/components/Checklists/Checklists';
 import { ChecklistsContainer } from '~/components/Checklists/Checklists.styled';
 import { CreateChecklist } from '~/components/Checklists/CreateChecklist';
-import { usePreventModalCloseOnDevToolsEvent } from '~/components/DevTools';
+import {
+  type PointerDownOutsideEvent,
+  usePreventModalCloseOnDevToolsEvent,
+} from '~/components/DevTools';
+import { CardDisplayMenu } from '~/components/DisplayMenu/CardDisplayMenu';
+import { useCommentsVisible } from '~/db/user/user.query';
 import { useCardColumnWidth } from '~/hooks/useCardColumnWidth';
 import { useCurrentBoardId } from '~/hooks/useCurrentBoardId';
 import { useCurrentCardId } from '~/hooks/useCurrentCardId';
+import { useIsMobile } from '~/hooks/useIsMobile';
 
 type CardProps = {
   variant?: 'modal' | 'page';
@@ -38,12 +46,34 @@ export function Card({ variant = 'modal' }: CardProps) {
   const navigate = useNavigate();
   const { isLoading: isRouteLoading } = useRouterState();
   const [isClosingCard, setIsClosingCard] = useState(false);
-  const { columnWidth, setColumnWidth, isWideLayout } = useCardColumnWidth();
+  const {
+    columnWidth,
+    setColumnWidth,
+    isResizing,
+    setIsResizing,
+    isWideLayout,
+  } = useCardColumnWidth();
   const mainColumnRef = useRef<HTMLDivElement>(null);
+  const cardDisplayMenuRef = useRef<HTMLDivElement>(null);
   const preventCloseOnDevToolsEvent = usePreventModalCloseOnDevToolsEvent();
+  const isMobile = useIsMobile();
+  const commentsVisible = useCommentsVisible();
 
   const gridTemplateColumns = `minmax(0, 1fr) 8px ${columnWidth}px`;
-  const cardModalBodyStyle = isWideLayout ? { gridTemplateColumns } : undefined;
+  const cardModalBodyStyle =
+    isWideLayout && commentsVisible ? { gridTemplateColumns } : undefined;
+  const activityInnerStyle = isWideLayout
+    ? { minWidth: columnWidth }
+    : undefined;
+
+  function handlePointerDownOutside(event: PointerDownOutsideEvent) {
+    if (cardDisplayMenuRef.current?.contains(event.target as Node)) {
+      event.preventDefault();
+      return;
+    }
+
+    preventCloseOnDevToolsEvent(event);
+  }
 
   function handleOpenChange(open: boolean) {
     if (open) {
@@ -84,7 +114,11 @@ export function Card({ variant = 'modal' }: CardProps) {
         asPage={isPage}
       />
 
-      <CardModalBody style={cardModalBodyStyle}>
+      <CardModalBody
+        style={cardModalBodyStyle}
+        $commentsVisible={commentsVisible}
+        $isResizing={isResizing}
+      >
         <CardMainColumn ref={mainColumnRef}>
           <CardEditableTitle />
 
@@ -110,13 +144,23 @@ export function Card({ variant = 'modal' }: CardProps) {
           <CardColumnResize
             columnWidth={columnWidth}
             setColumnWidth={setColumnWidth}
+            isResizing={isResizing}
+            setIsResizing={setIsResizing}
+            visible={commentsVisible}
           />
         )}
 
-        <ActivityColumn data-testid="CardActivityColumn">
-          <Suspense fallback={<ActivitySkeleton />}>
-            <ActivityPanel />
-          </Suspense>
+        <ActivityColumn
+          data-testid="CardActivityColumn"
+          $visible={commentsVisible}
+        >
+          <CardActivityCollapse $visible={commentsVisible}>
+            <CardActivityCollapseInner style={activityInnerStyle}>
+              <Suspense fallback={<ActivitySkeleton />}>
+                <ActivityPanel />
+              </Suspense>
+            </CardActivityCollapseInner>
+          </CardActivityCollapse>
         </ActivityColumn>
       </CardModalBody>
     </>
@@ -144,17 +188,25 @@ export function Card({ variant = 'modal' }: CardProps) {
   return (
     <CardModalRoot open onOpenChange={handleOpenChange}>
       <CardModalPortal>
-        <CardModalOverlay>
+        <CardModalOverlay $reserveMenuSpace={!isMobile}>
           <CardModalContent
+            $reserveMenuSpace={!isMobile}
             aria-describedby={undefined}
             onEscapeKeyDown={keepOpenOnBoundaryEscape}
             onCloseAutoFocus={(event) => {
               event.preventDefault();
             }}
-            onPointerDownOutside={preventCloseOnDevToolsEvent}
+            onPointerDownOutside={handlePointerDownOutside}
           >
             {cardBody}
           </CardModalContent>
+
+          {!isMobile && (
+            <CardDisplayMenu
+              hidden={isClosingCard}
+              menuRef={cardDisplayMenuRef}
+            />
+          )}
         </CardModalOverlay>
       </CardModalPortal>
     </CardModalRoot>

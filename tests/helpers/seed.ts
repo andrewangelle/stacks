@@ -94,3 +94,16 @@ export async function seedListCard(
 
   return (await response.json()) as SeededListCard;
 }
+
+export async function setCommentsVisible(
+  request: APIRequestContext,
+  commentsVisible: boolean,
+) {
+  const response = await request.post('/__test/set-comments-visible', {
+    data: { commentsVisible },
+  });
+
+  if (!response.ok()) {
+    throw new Error(`Failed to set comments visible: ${response.status()}`);
+  }
+}
