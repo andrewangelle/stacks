@@ -542,6 +542,15 @@ export class CardPage extends BasePage {
     return sliding;
   }
 
+  async settleAnimations(testId: string) {
+    await this.page.evaluate(async (testId) => {
+      const element = document.querySelector(`[data-testid="${testId}"]`);
+      await Promise.all(
+        (element?.getAnimations() ?? []).map((animation) => animation.finished),
+      );
+    }, testId);
+  }
+
   async readEdge({ testId, edge }: TransitionReading) {
     const box = await this.page.getByTestId(testId).boundingBox();
 

@@ -794,6 +794,9 @@ test.describe('Card display menu', () => {
       const { board } = await cardPage.seedCommentsScenario();
 
       await cardPage.page.goto(`/board/${board.id}`);
+      await expect(
+        cardPage.page.getByTestId('DisplayMenuContainer'),
+      ).toBeVisible();
       const shownTop = await cardPage.readEdge({
         testId: 'DisplayMenuContainer',
         edge: 'top',
@@ -872,6 +875,7 @@ test.describe('Card display menu', () => {
         () => cardPage.toggleComments(true),
       );
       cardPage.expectSlide(shrink, { from: openWidth, to: closedWidth });
+      await cardPage.settleAnimations('CardModalBody');
       expect(await cardPage.readEdge(mainColumnWidth)).toBeCloseTo(
         mainWidth,
         0,
@@ -887,6 +891,7 @@ test.describe('Card display menu', () => {
         cardPage.toggleComments(false),
       );
       cardPage.expectSlide(grow, { from: closedWidth, to: openWidth });
+      await cardPage.settleAnimations('CardModalBody');
       expect(await cardPage.readEdge(mainColumnWidth)).toBeCloseTo(
         mainWidth,
         0,
