@@ -12,7 +12,7 @@ import {
 } from '@tanstack/react-router';
 import type { ReactNode } from 'react';
 import { StyleSheetManager } from 'styled-components';
-import { rscPlugin } from 'styled-components/plugins';
+import { prefixPlugin, rtlPlugin } from 'styled-components/plugins';
 import { DevTools } from '~/components/DevTools';
 import { fetchUserId } from '~/middleware/auth';
 import type { queryClient } from '~/query';
@@ -27,7 +27,10 @@ function Providers({ children }: { children: ReactNode }) {
   const sheet = useServerStyleSheet();
 
   return (
-    <StyleSheetManager plugins={[rscPlugin]} sheet={sheet?.instance}>
+    <StyleSheetManager
+      plugins={[prefixPlugin, rtlPlugin]}
+      sheet={sheet?.instance}
+    >
       <ClerkProvider>
         <DragDropProvider>{children}</DragDropProvider>
       </ClerkProvider>
